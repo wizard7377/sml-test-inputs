@@ -1,0 +1,13 @@
+(* ml-ulex-tool.cm
+ *
+ * COPYRIGHT (c) 2022 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *
+ * The plugin library for ML-ULex
+ *)
+
+Library
+  structure ULexTool
+is
+  $smlnj/cm/tools.cm
+  ml-ulex-tool.sml

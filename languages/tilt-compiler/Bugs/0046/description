@@ -1,0 +1,25 @@
+Number: 0046
+Title:       Generativity bug.
+Keywords:    elaborator, generativity
+Submitter:   Leaf Petersen <leaf+@cs.cmu.edu>
+Date:        2/20/2001
+Version:     CVS
+System:	     any
+Severity:    major
+Problem:
+	The following code *does* compile:
+
+	structure S1 = struct datatype foo = FOO end
+	structure S2 = struct datatype foo = FOO end
+	val x = case S1.FOO of S2.FOO => 3
+Code:
+Transcript:
+Comments:
+	[Supporting files in CVS prior to 1/6/04.]
+
+	[Leaf] This was from the hybrid interpretation
+Fix:
+	[Leaf] The move to the opaque interpretation fixed this.
+Test:
+Owner: swasey
+Status: closed

@@ -1,0 +1,72 @@
+Number: 0108
+Title:       Parsing of infix(r) declarations is not correct.
+Keywords:    SML/NJ parser parsing infix picky
+Submitter:   tom7
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     
+
+     The SML/NJ parser parses infix(r) declarations incorrectly,
+     primarily because it does not look for a single decimal
+     digit after infix(r), and instead attempts to lex the next
+     token and extract a number from it. This can result in
+     correct programs being rejected, incorrect programs being
+     accepted, and incorrect program behavior.
+
+Code:
+
+     Some declarations that should be accepted:
+
+     infix 0x0
+     infix 0e0
+     infix 0w0
+     
+     infix 0x90 a
+
+     Some declarations that should be rejected:
+
+     infix 00 x
+     infix ~0 x
+
+     Example code that runs incorrectly:
+
+     (* should parse as infix 0 x0 l,
+	  but parses as infix 0 l *)
+     infix 0x0 l
+	
+     val op x0 = 0
+     fun f _ _ = 2
+     fun f x0 0 = 1
+       | f x0 x = f 0 (x - 1)
+
+     val x = if f x0 1 = 1 then print "WRONG\n"
+ 	                   else print "OK\n"
+
+Transcript:
+Comments: 
+
+	The lexer and parser were incorrect because they did not look
+	for a single digit in infix declarations.
+
+	This bug report is also incorrect.  The Definition says "[a]t each
+	stage [of lexical analysis] the longest next item is taken" (page
+	5).  In the preceeding code example, the declaration "infix 0x0 l"
+	should lex as INFIX INT ID (a syntax error) not as INFIX DIGIT ID
+	ID.  (This example has another bug:  If the infix declaration were
+	correct as written, then the expression "f x0 1 = 1" would parse
+	as x0(f,=(1,1)) rather than =(x0(f,1),1) and would fail to
+	typecheck.)
+
+Fix:
+
+	Updated the lexer to recognize a single digit token and the parser
+	to require these in infix declarations.
+
+	Removed test 0005; it was based on the preceeding buggy code.
+	Updated test 0006.
+
+Test: 0006
+Owner: swasey
+Status: closed

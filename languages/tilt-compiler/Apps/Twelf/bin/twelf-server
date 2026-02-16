@@ -1,0 +1,3 @@
+#!/bin/sh
+dir=`dirname $0`
+"$dir/sml110" "@SMLload=$dir/.heap/twelf-server" @SMLdebug=/dev/null

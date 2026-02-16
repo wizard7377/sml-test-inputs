@@ -1,0 +1,1525 @@
+=IGN
+********************************************************************************
+dtd086.doc: this file is part of the PPZed system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+%  dtd086.doc  %Z% $Revision: 1.30 $ $RCSfile: dtd086.doc,v $ $Date: 2011/08/07 14:54:36 $
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Detailed Design of the Z Library Numbers and Finiteness}
+
+\def\AbstractText{This document contains the detailed design of the Z Library Numbers and Finiteness and their proof support.}
+
+\def\Reference{DS/FMU/IED/DTD086}
+
+\def\Author{D.J. King, K. Blackburn, R.D. Arthan}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: % TQtemplate.tex
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+\def\Hide#1{}
+%% LaTeX2e port: \def\Bool{``$\it{:}bool\,$''}
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{FST PROJECT}  %% Mandatory field
+%% LaTeX2e port: %\TPPvolume{}
+%% LaTeX2e port: %\TPPpart{}
+%% LaTeX2e port: \TPPtitle{Detailed Design of the Z Library Numbers and Finiteness}  %% Mandatory field
+%% LaTeX2e port: \TPPref{DS/FMU/IED/DTD086}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Revision: 1.30 $%
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2011/08/07 14:54:36 $%
+%% LaTeX2e port: }}
+%% LaTeX2e port: %\TPPstatus{Approved}
+%% LaTeX2e port: \TPPstatus{Draft}
+%% LaTeX2e port: \TPPtype{Specification}
+%% LaTeX2e port: \TPPkeywords{HOL}
+%% LaTeX2e port: \TPPauthors{D.J.~King & WIN01\\K.~Blackburn & WIN01\\R.D.~Arthan & WIN01}
+%% LaTeX2e port: %\TPPauthor{D.J.~King & WIN01}  %% Mandatory field
+%% LaTeX2e port: \TPPauthorisation{R.D.~Arthan & FST Team Leader}
+%% LaTeX2e port: \TPPabstract{This document contains the detailed design of
+%% LaTeX2e port: the Z Library Numbers and Finiteness and their proof support.}
+%% LaTeX2e port: %\TPPabstractB{}
+%% LaTeX2e port: %\TPPabstractC{}
+%% LaTeX2e port: %\TPPabstractD{}
+%% LaTeX2e port: %\TPPabstractE{}
+%% LaTeX2e port: %\TPPabstractF{}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port:       Library}}
+%% LaTeX2e port: 
+%% LaTeX2e port: %\TPPclass{CLASSIFICATION}
+%% LaTeX2e port: %\def\TPPheadlhs{}
+%% LaTeX2e port: %\def\TPPheadcentre{}
+%% LaTeX2e port: %def\TPPheadrhs{}
+%% LaTeX2e port: %\def\TPPfootlhs{}
+%% LaTeX2e port: %\def\TPPfootcentre{}
+%% LaTeX2e port: %\def\TPPfootrhs{}
+%% LaTeX2e port: 
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \TPPsetsizes
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: 
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: 
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: 
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+
+\newpage
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu}
+
+\subsection{Changes History}  % to get section number `0.3'
+\begin{description}
+\item [Issue 1.1 (1992/10/28) (22nd October 1992)]
+First version, derived from 078 and 083.
+\item [Issue 1.2 (1992/10/30) (30th October 1992)]
+Indexing of $\_ ç \_ ê$ changed so that it works!
+\item [Issue 1.3 (1992/10/30) (30th October 1992)]
+Tidying.
+\item [Issue 1.4 (1992/11/12), 12th November 1992]
+Changes as a consequence of changes in dependences.
+\item [Issue 1.5 (1992/11/16), 16th November 1992]
+Added some theorems.
+\item [Issue 1.6 (1992/11/19), 16th November 1992]
+Changed names of system control flag. Corrected definition of $div$ and $mod$.
+\item [Issue 1.7 (1992/12/08), 8th December 1992]
+Added more theorems, computational conversions and a proof context.
+\item [Issue 1.8 (1992/12/09), 9th December 1992]
+Changes in the light of comments received. Added error messages for
+syntax functions, etc.
+\item[Issue 1.9 (1992/12/11) (11th December 1992)]
+Global rename from wrk038.doc issue 1.9.
+\item[Issue 1.10 (1993/02/10),1.11 (1993/02/11) (10th-11th February 1993)]
+Rearranging proof contexts, etc.
+\item[Issue 1.12 (1993/08/11) (10th August 1993)]
+addition of some new induction theorems and tactics.
+\item[Issue 1.13 (1993/08/11), 1.14 (1993/08/18) (17th August 1993)]
+addition of course of values induction theorem and tactic.
+\item[Issue 1.15 (1993/09/22) (22nd September 1993)]
+tidying up of description of z\_cov\_induction\_tac.
+\item[Issue 1.16 (1996/02/12)]
+Fixed bug in definition of relational iteration.
+\item[Issue 1.17 (1996/03/07), 1.18 (1996/03/08)]
+Introduced new proof contexts that normalise to $¼$, exposed $z\_\_î‰1\_thm$.
+\item[Issue 1.19 (1999/03/07)] Update for new INTEGER type.
+\item[Issue 1.20 (2001/07/05)] Inserted missing index brackets.
+\item[Issue 1.21 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.22 (2002/10/17)] PPZed-specific updates for open source release
+\item[Issue 1.23 (2004/01/19)] The Z universal set is now called ƒ.
+\item[Issue 1.24 (2005/02/26)] Precedences and associativity of toolkit operators now follow \cite{ISO02}.
+\item[Issue 1.25 (2006/04/28)] Fixed typo in documentation.
+\item[Issue 1.26 (2006/10/18)] Fixed another typo.
+\item[Issue 1.27 (2007/05/28)] Added pointer to {\em z\_dot\_dot\_conv}.
+\item[Issue 1.28 (2007/08/04)] The integer range operator is now referred to as {\em dot\_dot} in all cases.
+\item[Issue 1.29 (2007/09/11)] Standardised on {\em z\_simple} rather than {\em simple\_z}.
+\item[Issue 1.30 (2011/08/07)] Added ISO Z-like symbol as an alias for monadic minus.
+\item[Issue 1.31 (2011/09/18)] Added forgotten theorem to the signature.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported PPZed to Lemma 1 document template.
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+\subsection{Changes Forecast}
+All theorems involving quantification over $ƒ$ may now be changed to
+use quantification over $ú$, since adequate support for $ƒ$-simplification
+is now in place.
+\pagebreak
+\section{GENERAL}
+\subsection{Scope}
+This document contains the detailed design
+of the Z Library Numbers and Finiteness, and their proof support.
+The high level design for this material is given in \cite{DS/FMU/IED/HLD017}.
+\subsection{Introduction}
+
+\subsection{Purpose and Background}
+See \cite{DS/FMU/IED/HLD017}.
+\subsection{Dependencies}
+Loading this document and its implementation relies on having loaded
+\cite{DS/FMU/IED/IMP085}.
+
+\subsection{Possible Enhancements}
+\subsection{Deficiencies}
+Proof support for the objects defined after $div$ and $mod$.
+\section{PROLOGUE}
+
+=SML
+open_theory"z_functions";
+push_pc "z_sets_alg";
+delete_theory"z_numbers" handle Fail _ => ();
+set_flag ("z_type_check_only", false);
+set_flag ("z_use_axioms", true);
+new_theory"z_numbers";
+=TEX
+\section {DEFINITION OF FIXITY}
+
+The following fixity information is taken from \cite{ISO02}.
+
+¹Z
+function 20 leftassoc _ .. _
+°
+
+¹Z
+function 30 leftassoc _ + _, _ - _
+°
+
+¹Z
+function 40 leftassoc _ * _, _ div _, _ mod _
+°
+The following three are {\Product}-specific (the standard doesn't support numerical precedences for these):
+¹Z
+function 50 ~ _, ø _
+°
+¹Z
+function 50 abs _
+°
+¹Z
+function 70 _ ç _ ê
+°
+
+¹Z
+relation _ < _, _ ¼ _, _ ¾ _, _ > _
+°
+¹Z
+generic 5 _ Ÿ _, _  _
+°
+
+¹Z
+generic 70 æ _, æ‰1 _
+°
+
+\section{NUMBERS AND FINITENESS}
+
+\subsection{Natural Numbers, Integers and Basic Operators}
+
+We need to break out into extended Z to define the set of integers
+and to define the semantic constant for numeric literals.
+=SML
+val _ = set_flag("standard_z_paras", false);
+=TEX
+¹Z
+ú ¦ ƒ[¬Totality:ú SET®]
+°
+
+We begin by defining addition, monadic minus and î.
+We want to assert that under addition ú is the infinite cyclic group
+generated by $1$.
+We use four clauses to do this: the first clause
+says that $+$ is the operation of an Abelian group with $\sim$ as
+inverse operation and $0$ as identity element; the second says
+that any subgroup, $h$, containing $1$ is equal to ú itself (i.e.
+that ú is a cyclic group with $1$ as a generator);
+î is then defined to be the smallest set which contains $0$ and
+is closed under the operation of adding $1$; finally, we assert that
+$\sim1$ is not a member of î (which ensures that î is
+infinite by disallowing the possibility that $n + 1 = 0$ for $n$ in î).
+¹ZAX
+Ü	_ + _ : ú ¸ ú ­ ú;
+Ü	~ _ : ú ­ ú;
+Ü	î : ğ ú
+÷üüüüüüüüüüüüüüüüüü
+Ü	µi, j, k : ú·
+Ü		(i + j) + k = i + (j + k)
+Ü	±	i + j = j + i
+Ü	±	i + ~i = 0
+Ü	±	i + 0 = i;
+Ü	µh : ğ ú·
+Ü		1  h
+Ü	±	(µi, j : h· i + j  h ± ~i  h)
+Ü	´	h = ú;
+Ü	î = ¥{s : ğ ú | 0  s ± {i:s·i + 1} € s};
+Ü	~1  î
+°
+
+In order to link this with the representation of
+numeric literals we must give a defining property for the semantic
+constant $Z'Int$ used to give them meaning. (No base clause
+is required here, because $ñ0®$ is
+syntactically identical with $¬Z'Int\,0®$).
+=SML
+new_axiom(["z'int_def", "Z'Int"], ¬µi· Z'Int (i+1) = ñ¬Z'Int i® + 1®®);
+=TEX
+N.B. the above is not appropriate for a conservative treatment since
+it is making an axiomatic assertion about $Z'Int$. In a conservative treatment,
+one would first define the integers and associated operations in HOL
+including a definition of the standard embedding of the natural numbers
+in the integers; $Z'Int$ would then be defined
+in the definition of $+$, $\sim$ and $î$.
+
+=SML
+val _ = reset_flag"standard_z_paras";
+=TEX
+We define
+=INLINEFT
+ø _
+=TEX
+\ as an alias for monadic minus, to give visual compatibility with the standard if desired.
+¹Z
+Ü ø _ ¦ (~ _)
+°
+
+Now we define dyadic minus with the obvious definition in terms of addition
+and monadic minus.
+¹ZAX
+Ü	_ - _ : ú ¸ ú ­ ú
+÷üüüüüüüüüüüüüüüüüü
+Ü	µi, j : ú· i - j = i + ~j
+°
+The theorems which follow are formulated on the assumption that dyadic
+minus will normally be rewritten away using the above definition. This
+has the technical benefit of simplicity.
+
+=TEX
+Now we characterise multiplication as the, necessarily unique,
+operation under which the integers become a commutative
+ring with $1$ as identity element for the multiplication.
+¹ZAX
+Ü	_ * _ : ú ¸ ú ­ ú
+÷üüüüüüüüüüüüüüüüüü
+Ü	(µi, j, k : ú·
+Ü		(i * j) * k = i * (j * k)
+Ü	±	i * j = j * i
+Ü	±	i * (j + k) = i*j + i*k
+Ü	±	1 * i = i)
+°
+
+=TEX
+Now we can define the four variants of the ordering relation:
+¹ZAX
+Ü	_ ¼ _, _ < _, _ ¾ _, _ > _ : ú ª ú
+÷üüüüüüüüüüüüüüüüüü
+Ü	µi, j : ú·
+Ü		(i ¼ j ¤ j - i  î)
+Ü	±	(i < j ¤ i + 1 ¼ j)
+Ü	±	(i ¾ j ¤ j ¼ i)
+Ü	±	(i > j ¤ j < i)
+°
+=TEX
+\cite{Spivey89} does not give the absolute value function, but it
+is convenient for defining division and modulus, and is useful for the
+user:
+¹ZAX
+Ü	abs _ : ú ­ î
+÷üüüüüüüüüüüüüüüüüü
+Ü	(abs _) = (~ _) « id î
+°
+
+=TEX
+Finally division and modulus can be defined:
+¹ZAX
+Ü	_ div _, _ mod _ : ú ¸ (ú \ {0}) ­ ú
+÷üüüüüüüüüüüüüüüüüü
+Ü	µi: ú; j : ú \ {0}·
+Ü		i = (i div j) * j + i mod j
+Ü	±	0 ¼ i mod j < abs j
+°
+
+Note: \cite{Spivey89} says that ``integer division and the modulo operation
+use truncation towards minus infinity'' and lists three laws they obey.
+Unfortunately, it is not entirely clear what this means because {\em(a)}
+``truncation'' is not a well-defined notion (it implies ``discarding a
+fractional part'', but the effect of that depends on how numbers are
+represented), {\em(b)} the idea of truncation seems inappropriate for
+$mod$ (which one does not think of as being obtained by ``truncation''
+of a rational number), and {\em(c)} it is not entirely clear where
+``truncation'' is to be used in the definition.
+The most obvious interpretation of what \cite{Spivey89} says is
+that $i\,div\,j$ should be the floor of (i.e., the least integer not greater
+than) the rational number $i/j$. Unfortunately, this is both
+mathematically unsatisfactory and different from most programming languages.
+
+The problem is that the naive definition for $i\,div\,j$ and
+$i\,mod\,j$ is that, for $j\,½\,0$, they should be the two numbers,
+$d$ and $r$ say, satisfying the formula:
+=GFT Informal Mathematics
+	i = d * j + r  ±  0 ¼ abs(r) ¼ abs(j)
+=TEX
+Sadly, unless $i$ is an exact multiple of $j$, this has two solutions, one
+with $r$ negative and one with $r$ positive. Programming languages
+tend either to take $r$ to have the same sign as $j$ (e.g. Ada, Standard ML),
+or to have the same sign as $i$ (e.g. Algol-68, many C compilers).
+Mathematically, it seems sensible always to take the non-negative solution,
+since this results in simpler laws (fewer case splits) and is, in
+my opinion, more compatible with what is normally done in pure mathematics
+--- algebraists don't talk of $div$ and $mod$, they talk of arithmetic in the
+ring of integers modulo $j$ or of euclidean rings, for which solutions
+exist to an analogue of the above formulae with $abs$ replaced by some given
+function mapping the non-zero elements of the ring to the natural numbers
+(e.g. the ring of polynomials over the integers is such a ring if one takes
+the degree of a polynomial as the replacement for $abs$).
+The definition we have given for \ProductZ, therefore, makes $mod$ always
+non-negative. It is suspected that this is what is
+intended in \cite{Spivey89}, since the only other plausible interpretation,
+in which one takes $i\,div\,j$ to be the floor of the rational quotient
+$i/j$, leads to the unpleasant rule that $i\,mod\,j$ is non-negative
+unless $i$ is positive and $j$ is negative.
+
+\subsection{Strictly Positive Integers and the Successor Function}
+
+¹Z
+Ûî‰1İ ¦ î \ {0}
+°
+
+¹ZAX
+Ü Ûsuccİ : î ­ î
+÷üüüüüüüüüüüüüüüüüü
+Ü µ n : î · succ (n) = n + 1
+°
+
+\subsection{Iteration}
+
+[X]œœœœœœœœœœœœœœœœ
+Ü Ûiterİ : ú ­ (X ª X) ­ (X ª X)
+÷üüüüüüüüüüüüüüüüüü
+Ü µ r : X ª X ·
+Ü	iter 0 r = id X ±
+Ü	(µ k : î · iter (k + 1) r = r » (iter k r)) ±
+Ü	(µ k : î · iter (~ k) r = iter k (r ç~ê))
+ˆüüüüüüüüüüüüüüüüüüüü
+
+[X]œœœœœœœœœœœœœœœœ
+Ü_ ç _ ê : (X ª X) ¸ ú ­ (X ª X)
+÷üüüüüüüüüüüüüüüüüü
+Ü µ r : X ª X; k : ú ·
+Ü	Ûr ç k êİ = iter k r
+ˆüüüüüüüüüüüüüüüüüüüü
+
+
+\subsection{Number Range}
+
+¹ZAX
+Ü _ Û..İ _ : ú ¸ ú ­ ğ ú
+÷üüüüüüüüüüüüüüüüüü
+Ü µ x, y : ú ·
+Ü	x .. y = {k : ú | x ¼ k ± k ¼ y}
+°
+
+\subsection{Finite Sets}
+
+
+¹Z
+æ X ¦ {S : ğ X | (¶ n:  î · ¶ f :1 .. n ­ S · ran f = S)}
+°
+
+¹Z
+Ûæ‰1İ X ¦ (æ X) \ { š }
+°
+
+[X]œœœœœœœœœœœœœœœœ
+Ü Û#İ : æ X ­ î
+÷üüüüüüüüüüüüüüüüüü
+Ü µ S : æ X ·
+Ü	# S = (Í n : î | (¶ f : 1 .. n à S · ran f = S) · n)
+ˆüüüüüüüüüüüüüüüüüüüü
+
+\subsection{Finite Partial Functions}
+
+¹Z
+X ÛŸİ Y ¦ {f : X ß Y | dom f  æ X}
+°
+
+¹Z
+X Ûİ Y ¦ (X Ÿ Y) ¡ (X ş Y)
+°
+
+\subsection{Minimum and Maximum of a Set of Numbers}
+
+¹ZAX
+Ü Ûminİ : ğ‰1 ú ß ú
+÷üüüüüüüüüüüüüüüüüü
+Ü min = {S : ğ‰1 ú; m : ú | m  S ± (µ n : S · m ¼ n) · S í m}
+°
+
+¹ZAX
+Ü Ûmaxİ : ğ‰1 ú ß ú
+÷üüüüüüüüüüüüüüüüüü
+Ü max = {S : ğ‰1 ú; m : ú | m  S ± (µ n : S · m ¾ n) · S í m}
+°
+\section{START OF SIGNATURE}
+=DOC
+signature ÛZNumbersİ = sig
+=DESCRIBE
+This provides the basic proof support for the Z library relations.
+It creates the theory $z\_numbers$.
+=ENDDOC
+=THDOC
+req_name Û"z_numbers"İ (Value "z_functions");
+req_language "Z";
+set_flag("tc_thms_only",true);
+=DESCRIBE
+The theory $z\_numbers$ contains various definitions of numbers and finiteness constants and types, and ``defining theorems'' of Z library constants derived from these definitions.
+It is created in structure $ZNumbers$.
+=ENDDOC
+\section{THEOREMS}
+The current offering of theorems only covers the basic operations (i.e.
+the operations defined above up to and including $div$ and $mod$), and
+within that the repertoire of theorems is restricted to some
+fairly basic facts.
+In particular, the following simplifying assumptions are made:
+
+\begin{enumerate}
+\item
+Dyadic minus will be eliminated in favour of addition and monadic minus
+as a matter of course. Thus theorems like
+=INLINEFT
+z_plus_order_thm
+=TEX
+, but handling dyadic minus are not required.
+\item
+$<$ will usually be eliminated in favour of $¼$, and if not basic facts such
+as irreflexivity for $<$ will be derivable by a decision procedure for linear
+arithmetic.
+\end{enumerate}
+=THDOC
+req_thm(Û"z_plus_comm_thm"İ, ([],
+	ñµ i, j : ƒ · i + j = j + i®));
+=DESCRIBE
+Commutativity of addition.
+=ENDDOC
+=THDOC
+req_thm(Û"z_plus_assoc_thm"İ, ([],
+	ñµ i, j, k : ƒ · (i + j) + k = i + (j + k)®));
+req_thm(Û"z_plus_assoc_thm1"İ, ([],
+	ñµ i, j, k : ƒ · i + (j + k) = (i + j) + k®));
+=DESCRIBE
+=DESCRIBE
+Associativity of addition: first form moves brackets to the right;
+second moves brackets to the left.
+=ENDDOC
+=THDOC
+req_thm(Û"z_plus_order_thm"İ, ([],
+	ñµ i : ƒ · µ j, k : ƒ ·
+	j + i = i + j ± (i + j) + k = i + (j + k) ± j + (i + k) = i + (j + k)®));
+=DESCRIBE
+Magic theorem for reordering sums. If $i$ is specialised to $t$, rewriting
+with the result floats $t$ to the beginning of the sum.
+=ENDDOC
+=THDOC
+req_thm(Û"z_plus0_thm"İ, ([],
+	ñµ i : ƒ · i + 0 = i ± 0 + i = i®));
+=DESCRIBE
+0 is the additive identity.
+=ENDDOC
+=THDOC
+req_thm(Û"z_plus_minus_thm"İ, ([],
+	ñµ i : ƒ · i + ~ i = 0 ± ~ i + i = 0®));
+=DESCRIBE
+=INLINEFT
+~x
+=TEX
+\ is the additive inverse of $x$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_plus_clauses"İ, ([],
+	ñµ i, j, k : ƒ·	(i + k = j + k ¤ i = j)
+			±	(k + i = j + k ¤ i = j)
+			±	(i + k = k + j ¤ i = j)
+			±	(k + i = k + j ¤ i = j)
+			±	(i + k = k ¤ i = 0)
+			±	(k + i = k ¤ i = 0)
+			±	(k = k + j ¤ j = 0)
+			±	(k = j + k ¤ j = 0)
+			±	i + 0 = i
+			±	0 + i = i
+			±	³ 1 = 0
+			±	³ 0 = 1®));
+=DESCRIBE
+Facts about addition of ubiquitous utility.
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_thm"İ, ([],
+	ñî = ¥ {s : ƒ | 0  s ± {i : s · i + 1} € s} ± ³ ~ 1  î®));
+=DESCRIBE
+The defining property of the natural numbers extracted from the definition.
+=ENDDOC
+=THDOC
+req_thm(Û"z_plus_cyclic_group_thm"İ, ([],
+	ñµ h : ƒ · 1  h ± (µ i, j : h · i + j  h ± ~ i  h) ´ h = ƒ®));
+=DESCRIBE
+The fact that the integers are a cyclic group generated by $1$ under addition
+extracted from their definition.
+=ENDDOC
+=THDOC
+req_thm(Û"z_int_homomorphism_thm"İ, ([],
+	¬µ i j· ñ¬Z'Int (i + j)®® = ñ¬Z'Int i® + ¬Z'Int j®®®));
+=DESCRIBE
+The fact that $Z'Int$ us a homomorphism (of monoids).
+=ENDDOC
+=THDOC
+req_thm(Û"z_ú_induction_thm"İ, ([],
+	¬µ p·	p ñ1®
+	±	(µ i· p i ´ p ñ~ i®)
+	±	(µ i j· p i ± p j ´ p ñi + j®)
+	´	(µ m· p m)®));
+=DESCRIBE
+An induction principle for the integers: any property which holds for $1$, and
+which is preserved under negation and addition, holds everywhere.
+The theorem is stated in a mixture of HOL and Z suitable for use as an
+argument to $gen\_induction\_tac$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_plus1_thm"İ, ([],
+	ñµ i : î · i + 1  î®));
+=DESCRIBE
+Closure of the natural numbers under addition of $1$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_0_î_thm"İ, ([],
+	ñ0  î®));
+=DESCRIBE
+Zero is a natural number.
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_induction_thm"İ, ([],
+	¬µ p· p ñ0® ± (µ i· i  ñî® ± p i ´ p ñi + 1®) ´ (µ m· m  ñî® ´ p m)®));
+=DESCRIBE
+Ordinary induction for the natural numbers.
+The theorem is stated in a mixture of HOL and Z suitable for use as an
+argument to $gen\_induction\_tac1$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_¼_induction_thm"İ, ([],
+	¬µ j : ú · µ p : ú ­ BOOL · p j
+	±	(µ i : ú · ñj ¼ i® ± p i ´ p ñi + 1®)
+	´	(µ m : ú · ñj ¼ m® ´ p m)®));
+=DESCRIBE
+A more friendly induction principle for the integers.  The theorem is stated
+as a mixture of HOL and Z to be used as an argument to $gen\_induction\_tac1$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_cov_induction_thm"İ, ([],
+	¬µ (j:ú) (p:ú­BOOL) ·
+	(µ i · ñj ¼ i® ± ñµ k : ú· j ¼ k ± k < i ´ ¬p k®® ´ p i)
+	´ (µ i · ñj ¼ i® ´ p i)®));
+=DESCRIBE
+A course of values induction theorem for the integers.  The theorem is stated
+as a mixture of HOL and Z to be used as an argument to $gen\_induction\_tac1$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_plus_thm"İ, ([],
+	ñµ i, j : î · i + j  î®));
+=DESCRIBE
+The natural numbers are closed under addition.
+=ENDDOC
+=THDOC
+req_thm(Û"z_ú_eq_thm"İ, ([],
+	ñµ i, j : ƒ · i = j ¤ i + ~ j = 0®));
+=DESCRIBE
+Reduction of an equation between integers to one with the simplest
+possible right-hand side. N.b. the theorem is intended for use
+with
+=INLINEFT
+once_rewrite_tac
+=TEX
+, since repeated rewriting would loop.
+=ENDDOC
+=THDOC
+req_thm(Û"z_ø_minus_thm"İ, ([],
+	ñ(ø _) = (~ _)®));
+=DESCRIBE
+The ISO Z style monadic minus symbol is identical with the ML-like monadic minus.
+=ENDDOC
+=THDOC
+req_thm(Û"z_minus_thm"İ, ([],
+	ñµ i, j : ƒ ·
+		~ ~ i = i
+	±	i + ~ i = 0
+	±	~ i + i = 0
+	±	~ (i + j) = ~ i + ~ j
+	±	~ 0 = 0®));
+=DESCRIBE
+Standard facts about negation and addition. Rewriting with this moves negation inside
+addition.
+=ENDDOC
+=THDOC
+req_thm(Û"z_minus_clauses"İ, ([],
+	ñµ i : ƒ · ~ ~ i = i ± ~ 0 = 0 ± i + ~ i = 0 ± ~ i + i = 0®));
+=DESCRIBE
+Facts about negation which are nearly always wanted as rewrite rules
+for use in the proof context $z\_numbers$.
+(This is like $z\_minus\_thm$, but with the equation which makes an
+expansibe rewrite rule omitted.)
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_cases_thm"İ, ([],
+	ñµ i : î · i = 0 ² (¶ j : î · i = j + 1)®));
+req_thm(Û"z_î_³_minus_thm"İ, ([],
+	ñµ i : î · i = 0 ² ³ ~ i  î®));
+=DESCRIBE
+Case analyses for the natural numbers.
+=ENDDOC
+=THDOC
+req_thm(Û"z_³_î_thm"İ, ([],
+	ñµ i : ƒ · ³ i  î ´ ~ i  î®));
+=DESCRIBE
+Integers which are not natural numbers are the negatives of natural numbers.
+=ENDDOC
+=THDOC
+req_thm(Û"z_ú_cases_thm"İ, ([],
+	ñµ i : ƒ · ¶ j : î · i = j ² i = ~ j®));
+req_thm(Û"z_ú_cases_thm1"İ, ([],
+	ñµ i : ƒ · i  î ² (¶ j : î · i = ~ (j + 1))®));
+=DESCRIBE
+Two forms of case analysis for the integers.
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_³_plus1_thm"İ, ([],
+	ñµ i : î · ³ i + 1 = 0®));
+=DESCRIBE
+$1$ is not the additive inverse of any natural number.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times_comm_thm"İ, ([],
+	ñµ i, j : ƒ · i * j = j * i®));
+=DESCRIBE
+Commutativity of multiplication.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times_assoc_thm"İ, ([],
+	ñµ i, j, k : ƒ · (i * j) * k = i * (j * k)®));
+req_thm(Û"z_times_assoc_thm1"İ, ([],
+	ñµ i, j, k : ƒ · i * (j * k) = (i * j) * k®));
+=DESCRIBE
+Associativity of multiplication: first form moves brackets to the right;
+second moves brackets to the left.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times_order_thm"İ, ([],
+	ñµ i : ƒ · µ j, k : ƒ ·
+	j * i = i * j ± (i * j) * k = i * (j * k) ± j * (i * k) = i * (j * k)®));
+=DESCRIBE
+Magic theorem for reordering products. If $i$ is specialised to $t$, rewriting
+with the result floats $t$ to the beginning of the product.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times1_thm"İ, ([],
+	ñµ i : ƒ · i * 1 = i ± 1 * i = i®));
+=DESCRIBE
+1 is the identity for multiplication.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times_plus_distrib_thm"İ, ([],
+	ñµ i, j, k : ƒ · i * (j + k) = i * j + i * k ± (i + j) * k = i * k + j * k®));
+=DESCRIBE
+Multiplication is distributive over addition. Rewriting with this expands
+all subterms of the form
+=INLINEFT
+t1*(t2 + t3)
+=TEX
+\ or
+=INLINEFT
+(t1 + t2)*t3
+=TEX
+.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times0_thm"İ, ([],
+	ñµ i : ƒ · 0 * i = 0 ± i * 0 = 0®));
+req_thm(Û"z_times_eq_0_thm"İ, ([],
+	ñµ i, j : ƒ · i * j = 0 ¤ i = 0 ² j = 0®));
+=DESCRIBE
+0 is an annihilator of any element, and moreover, by the second theorem
+it is the only annihilator of any element apart from itself.
+=ENDDOC
+=THDOC
+req_thm(Û"z_minus_times_thm"İ, ([],
+	ñµ i, j : ƒ · ~ i * j = ~ (i * j) ± i * ~ j = ~ (i * j) ± ~ i * ~ j = i * j®));
+=DESCRIBE
+Standard facts about negation and multiplication.
+Rewriting with this moves negation outside multiplication.
+=ENDDOC
+=THDOC
+req_thm(Û"z_times_clauses"İ, ([],
+	ñµ i, j : ƒ · 0 * i = 0 ± i * 0 = 0 ± i * 1 = i ± 1 * i = i®));
+=DESCRIBE
+Ubiquitously useful facts about multiplication.
+=ENDDOC
+=THDOC
+req_thm(Û"z_î_times_thm"İ, ([],
+	ñµ i, j : î · i * j  î®));
+=DESCRIBE
+The natural numbers are closed under multiplication.
+=ENDDOC
+=THDOC
+req_thm(Û"z_¼_trans_thm"İ, ([],
+	ñµ i, j, k : ƒ | i ¼ j ± j ¼ k · i ¼ k®));
+req_thm(Û"z_¼_cases_thm"İ, ([],
+	ñµ i, j : ƒ · i ¼ j ² j ¼ i®));
+req_thm(Û"z_¼_refl_thm"İ, ([],
+	ñµ i : ƒ · i ¼ i®));
+req_thm(Û"z_¼_antisym_thm"İ, ([],
+	ñµi, j : ƒ | i ¼ j ± j ¼ i · i = j®));
+=DESCRIBE
+¼ is transitive, reflexive, antisymmetric and total.
+=ENDDOC
+=THDOC
+req_thm(Û"z_less_trans_thm"İ, ([],
+	ñµ i, j, k : ƒ | i < j ± j < k · i < k®));
+req_thm(Û"z_less_irrefl_thm"İ, ([],
+	ñµ i, j : ƒ · ³ (i < j ± j < i)®));
+=DESCRIBE
+$<$ is transitive and irreflexive.
+=ENDDOC
+=THDOC
+req_thm(Û"z_less_plus1_thm"İ, ([],
+	ñµ m, n : ƒ · m < n + 1 ¤ m = n ² m < n®));
+=DESCRIBE
+Simple fact about $<$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_¼_less_eq_thm"İ,([],
+	ñµ x, y : ƒ · x ¼ y ¤ (x < y ² x = y)®));
+=DESCRIBE
+The natural definition of $¼$ in terms of $<$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_less_¼_trans_thm"İ, ([],
+	ñµ i, j, k : ƒ | i < j ± j ¼ k · i < k®));
+req_thm(Û"z_¼_less_trans_thm"İ, ([],
+	ñµ i, j, k : ƒ | i ¼ j ± j < k · i < k®));
+=DESCRIBE
+Forms of ``transitivity'' in which
+s strict and a non-strict inequality give a strict inequality.
+=ENDDOC
+=THDOC
+req_thm(Û"z_minus_î_¼_thm"İ, ([],
+	ñµ i : ƒ; j : î · i + ~ j ¼ i®));
+req_thm(Û"z_¼_plus_î_thm"İ, ([],
+	ñµ i : ƒ; j : î · i ¼ i + j®));
+=DESCRIBE
+Subtracting a natural number from any integer gives a smaller one,
+and adding  a natural number to any integer gives a larger one.
+=ENDDOC
+=THDOC
+req_thm(Û"z__î_thm"İ, ([],
+	ñµ i : ƒ · i  î ¤ 0 ¼ i®));
+=DESCRIBE
+The natural numbers are precisely those which are bounded below by $0$.
+=ENDDOC
+=THDOC
+req_thm(Û"z_¼_¼_0_thm"İ, ([],
+	ñµi, j : ƒ · i ¼ j ¤ i + ~j ¼ 0®));
+=DESCRIBE
+Reduction of an inequality between integers to one with the simplest
+possible right-hand side. N.b. the theorem is intended for use
+with
+=INLINEFT
+once_rewrite_tac
+=TEX
+, since repeated rewriting would loop.
+
+=ENDDOC
+=THDOC
+req_thm(Û"z_¼_clauses"İ, ([],
+	ñµ i, j, k : ƒ·	(i + k ¼ j + k ¤ i ¼ j)
+	 	±	(k + i ¼ j + k ¤ i ¼ j)
+	 	±	(i + k ¼ k + j ¤ i ¼ j)
+	 	±	(k + i ¼ k + j ¤ i ¼ j)
+	 	±	(i + k ¼ k ¤ i ¼ 0)
+	 	±	(k + i ¼ k ¤ i ¼ 0)
+	 	±	(i ¼ k + i ¤ 0 ¼ k)
+	 	±	(i ¼ i + k ¤ 0 ¼ k)
+	 	±	i ¼ i
+	 	±	³ 1 ¼ 0
+	 	±	0 ¼ 1
+®));
+=DESCRIBE
+Facts about ¼ of ubiquitous utility
+=ENDDOC
+=THDOC
+req_thm(Û"z_less_clauses"İ, ([],
+	ñµ i, j, k : ƒ ·	(i + k < j + k ¤ i < j)
+		±	(k + i < j + k ¤ i < j)
+		±	(i + k < k + j ¤ i < j)
+		±	(k + i < k + j ¤ i < j)
+		±	(i + k < k ¤ i < 0)
+		±	(k + i < k ¤ i < 0)
+		±	(i < k + i ¤ 0 < k)
+		±	(i < i + k ¤ 0 < k)
+		±	³ i < i
+		±	0 < 1
+		±	³ 1 < 0
+®));
+=DESCRIBE
+Facts about $<$ of ubiquitous utility
+=ENDDOC
+=THDOC
+req_thm(Û"z_³_¼_thm"İ, ([], ñµ i, j : ƒ · ³ i ¼ j ¤ j < i®));
+req_thm(Û"z_³_less_thm"İ, ([], ñµ i, j : ƒ · ³ i < j ¤ j ¼ i®));
+=DESCRIBE
+Facts about < of ubiquitous utility
+=ENDDOC
+=THDOC
+req_thm(Û"z_abs_thm"İ, ([],
+	ñµ i : î · abs i = i ± abs ~ i = i®));
+req_thm(Û"z_abs_î_thm"İ, ([],
+	ñµ i : ƒ · abs i  î®));
+req_thm(Û"z_abs_eq_0_thm"İ, ([],
+	ñµ i : ƒ · abs i = 0 ¤ i = 0®));
+req_thm(Û"z_abs_minus_thm"İ, ([],
+	ñµ i : ƒ · abs ~ i = abs i®));
+req_thm(Û"z_î_abs_minus_thm"İ, ([],
+	ñµ i, j : î | j ¼ i · abs (i + ~ j) ¼ i®));
+req_thm(Û"z_abs_times_thm"İ, ([],
+	ñµ i, j : ƒ · abs (i * j) = abs i * abs j®));
+req_thm(Û"z_abs_plus_thm"İ, ([],
+	ñµ i, j : ƒ · abs (i + j) ¼ abs i + abs j®));
+=DESCRIBE
+Standard properties of the absolute value function. The last of these is
+commonly known as the {\em triangle inequality}.
+=ENDDOC
+=THDOC
+req_thm(Û"z_div_mod_unique_thm"İ, ([],
+	ñ
+	µ i, j, d, r : ƒ
+	|	³ j = 0
+	·		i = d * j + r ± 0 ¼ r ± r < abs j
+		¤	d = i div j ± r = i mod j®));
+=DESCRIBE
+The defining property of the division and modulo operations characterises
+those operations.
+=ENDDOC
+=THDOC
+req_thm(Û"z__î‰1_thm"İ, ([],
+	ñµ x:ƒ · x  î‰1 ¤ 0 < x®));
+=DESCRIBE
+Positive integers.
+=ENDDOC
+=THDOC
+req_thm(Û"z_æ_thm"İ, ([],
+	ñµ X : ƒ ·
+	æ X = {S : ğ X | ¶ n : î · ¶ f : 1 .. n ­ S · ran f = S}®));
+req_thm(Û"z_æ‰1_thm"İ, ([],
+	ñµ X : ƒ · æ‰1 X = (æ X) \ {š}®));
+req_thm(Û"z_æ_empty_thm"İ, ([],
+	ñæ {} = ğ {}®));
+=DESCRIBE
+Finiteness
+=ENDDOC
+The next (big) step here is to prove a theorem of the form:
+=GFT
+ô µ x : ƒ· æ ¬Z'Setd x® = ğ ¬Z'Setd x®
+=TEX
+This is then the basis of a $z\_æ\_setd\_conv$.
+
+=DOC
+val Ûz__î_thmİ : THM;			val Ûz_³_¼_thmİ : THM;
+val Ûz_³_î_thmİ : THM;			val Ûz_³_less_thmİ : THM;
+val Ûz_¼_¼_0_thmİ : THM;			val Ûz_¼_antisym_thmİ : THM;
+val Ûz_¼_cases_thmİ : THM;			val Ûz_¼_clausesİ : THM;
+val Ûz_¼_induction_thmİ : THM;		val Ûz_¼_less_trans_thmİ : THM;
+val Ûz_¼_plus_î_thmİ : THM;		val Ûz_¼_refl_thmİ : THM;
+val Ûz_¼_trans_thmİ : THM;			val Ûz_î_³_minus_thmİ : THM;
+val Ûz_î_³_plus1_thmİ : THM;		val Ûz_î_abs_minus_thmİ : THM;
+val Ûz_î_cases_thmİ : THM;			val Ûz_î_induction_thmİ : THM;
+val Ûz_î_plus1_thmİ : THM;			val Ûz_î_plus_thmİ : THM;
+val Ûz_î_thmİ : THM;			val Ûz_î_times_thmİ : THM;
+val Ûz_ú_cases_thmİ : THM;			val Ûz_ú_cases_thm1İ : THM;
+val Ûz_ú_eq_thmİ : THM;			val Ûz_ú_induction_thmİ : THM;
+val Ûz_0_î_thmİ : THM;			val Ûz_abs_î_thmİ : THM;
+val Ûz_abs_eq_0_thmİ : THM;		val Ûz_abs_minus_thmİ : THM;
+val Ûz_abs_plus_thmİ : THM;		val Ûz_abs_thmİ : THM;
+val Ûz_abs_times_thmİ : THM;		val Ûz_cov_induction_thmİ : THM;
+val Ûz_div_mod_unique_thmİ : THM;	val Ûz_int_homomorphism_thmİ : THM;
+val Ûz_less_¼_trans_thmİ : THM;		val Ûz_less_clausesİ : THM;
+val Ûz_less_irrefl_thmİ : THM;		val Ûz_less_trans_thmİ : THM;
+val Ûz_less_plus1_thmİ : THM;
+val Ûz_minus_î_¼_thmİ : THM;		val Ûz_minus_clausesİ : THM;
+val Ûz_minus_thmİ : THM;			val Ûz_minus_times_thmİ : THM;
+val Ûz_ø_minus_thmİ : THM;
+val Ûz_plus0_thmİ : THM;			val Ûz_plus_assoc_thmİ : THM;
+val Ûz_plus_assoc_thm1İ : THM;		val Ûz_plus_clausesİ : THM;
+val Ûz_plus_comm_thmİ : THM;		val Ûz_plus_cyclic_group_thmİ : THM;
+val Ûz_plus_minus_thmİ : THM;		val Ûz_plus_order_thmİ : THM;
+val Ûz_times0_thmİ : THM;			val Ûz_times1_thmİ : THM;
+val Ûz_times_assoc_thmİ : THM;		val Ûz_times_assoc_thm1İ : THM;
+val Ûz_times_clausesİ : THM;		val Ûz_times_comm_thmİ : THM;
+val Ûz_times_eq_0_thmİ : THM;		val Ûz_times_order_thmİ : THM;
+val Ûz_times_plus_distrib_thmİ : THM;	val Ûz_¼_less_eq_thmİ : THM;
+val Ûz_æ_thmİ : THM;				val Ûz_æ‰1_thmİ : THM;
+val Ûz_æ_empty_thmİ : THM;			val Ûz__î‰1_thmİ : THM;
+=DESCRIBE
+These are the ML value bindings for the theorems saved in the theory
+=INLINEFT
+z_numbers
+=TEX
+.
+=ENDDOC
+
+\section{DEFINITIONS}
+=DOC
+val Ûz_ú_defİ : THM;					val Ûz_î_defİ : THM;
+val Ûz_arith_defİ : THM;				val Ûz_inequality_defİ : THM;
+val Ûz_î‰1_defİ : THM;				val Ûz_succ_defİ : THM;
+val Ûz_iter_defİ : THM;				val Ûz_dot_dot_defİ : THM;
+val Ûz_æ_defİ : THM;					val Ûz_æ‰1_defİ : THM;
+val Ûz_hash_defİ : THM;				val Ûz_Ÿ_defİ : THM;
+val Ûz__defİ : THM;					val Ûz_min_defİ : THM;
+val Ûz_max_defİ : THM;				val Ûz'int_defİ : THM
+=DESCRIBE
+These are the ML bindings of the definitions of the theory $z\_numbers$.
+=ENDDOC
+\section{TACTICS}
+=DOC
+val Ûz_î_induction_tacİ : TACTIC
+=DESCRIBE
+This tactic implements induction over the natural numbers in Z:
+to prove
+=INLINEFT
+x  î ´ t
+=TEX
+, it suffices to prove $t[0/x]$ and to prove $t[x+1/x]$ on the
+assumption that $t$. The conclusion of the goal must have the
+form
+=INLINEFT
+x  î ´ t
+=TEX
+.
+=FRULE 2 Tactic
+z_î_induction_tac
+÷
+{ ‡ } x  î ´ t
+÷
+{ ‡ } t[0/x] ; strip{t, ‡} t[x+1/x]
+=TEX
+=SEEALSO
+=INLINEFT
+z_ú_cases_thm
+=TEX
+,
+=INLINEFT
+z_intro_µ_tac
+=TEX
+,
+=INLINEFT
+z_ú_induction_tac
+=TEX
+,
+
+=INLINEFT
+z_¼_induction_tac
+=TEX
+,
+=INLINEFT
+z_cov_induction_tac
+=TEX
+=FAILUREC
+\paragraph{Errors} As for $gen\_induction\_tac1$.
+=ENDDOC
+=DOC
+val Ûz_ú_induction_tacİ : TERM -> TACTIC
+=DESCRIBE
+An induction-like tactic for the integers, based on the fact
+that any subset of the integers containing $1$ and closed under
+negation and addition must contain every integer.
+=TEX
+=FRULE 2 Tactic
+z_ú_induction_tac ñx®
+÷
+{ ‡ } t
+÷
+{ ‡ } t[1/x] ;
+strip{t[i/x], ‡} t[~i/x] ;
+strip{t[i/x] ± t[j/x], ‡} t[i+j/x]
+=TEX
+=SEEALSO
+=INLINEFT
+z_ú_cases_thm
+=TEX
+,
+=INLINEFT
+z_intro_µ_tac
+=TEX
+,
+=INLINEFT
+z_î_induction_tac
+=TEX
+,
+
+=INLINEFT
+z_¼_induction_tac
+=TEX
+,
+=INLINEFT
+z_cov_induction_tac
+=TEX
+=FAILUREC
+\paragraph{Errors} As for $gen\_induction\_tac$.
+=ENDDOC
+=DOC
+val Ûz_¼_induction_tacİ : TERM -> TACTIC
+=DESCRIBE
+An induction tactic for a subset of the integers.  To prove
+=INLINEFT
+j¼x ´ t
+=TEX
+, it suffices to prove $t[j/x]$ and to prove $t[x+1/x]$ on the
+assumptions $t$ and $j¼x$.  The term argument must be a variable
+of type ”ú® and must appear free in the conclusion of the goal.
+It must also appear once, and only once in the assumptions, in an
+assumption of the form $j¼x$.
+=FRULE 2 Tactic
+z_¼_induction_tac ñx®
+÷
+{ ‡, j¼x} t[x]
+÷
+{ ‡, j¼x} t[j/x] ; strip {t[x], j¼x, ‡} t[x+1]
+=TEX
+=SEEALSO
+=INLINEFT
+z_ú_cases_thm
+=TEX
+,
+=INLINEFT
+z_intro_µ_tac
+=TEX
+,
+=INLINEFT
+z_î_induction_tac
+=TEX
+,
+
+=INLINEFT
+z_ú_induction_tac
+=TEX
+,
+=INLINEFT
+z_cov_induction_tac
+=TEX
+=FAILURE
+86401	?0 is not a variable of type ”ú®
+86402	A term of the form ñj ¼ i® where i is the induction variable
+	could not be found in the assumptions
+86403	?0 appears free in more than one assumption of the goal
+86404	?0 does not appear free in the conclusions of the goal
+=ENDDOC
+=DOC
+val Ûz_cov_induction_tacİ : TERM -> TACTIC
+=DESCRIBE
+A course of values induction tactic for a subset of the integers.
+To prove
+=INLINEFT
+j¼x ´ t
+=TEX
+, it suffices to prove $t[i/x]$ on the assumptions that $j¼i$ and
+=INLINEFT
+µk · j¼k ± k<i ´ t[k/x]
+=TEX
+.
+
+(Course of values induction is sometimes called complete induction.)
+The term argument must appear free in the conclusion of the goal.
+It must also appear once, and only once, in the assumptions, in an
+assumption of the form $j¼x$.
+=FRULE 2 Tactic
+z_cov_induction_tac ñx®
+÷
+{ ‡, j¼x} t[x]
+÷
+{ ‡, j¼x} t[j/x] ;
+strip {j¼i, ñµk· j¼k ± k<x ´ t[k]®, ‡} t[x]
+=TEX
+=SEEALSO
+=INLINEFT
+z_ú_cases_thm
+=TEX
+,
+=INLINEFT
+z_intro_µ_tac
+=TEX
+,
+=INLINEFT
+z_î_induction_tac
+=TEX
+,
+
+=INLINEFT
+z_ú_induction_tac
+=TEX
+,
+=INLINEFT
+z_¼_induction_tac
+=TEX
+=FAILUREC
+\paragraph{Errors} As for $z\_¼\_induction\_tac$.
+=ENDDOC
+\section{SYNTAX FUNCTIONS}
+=DOC
+val Ûdest_z_¼İ : TERM -> TERM * TERM;
+val Ûdest_z_¾İ : TERM -> TERM * TERM;
+val Ûdest_z_absİ : TERM -> TERM;
+val Ûdest_z_divİ : TERM -> TERM * TERM;
+val Ûdest_z_greaterİ : TERM -> TERM * TERM;
+val Ûdest_z_lessİ : TERM -> TERM * TERM;
+val Ûdest_z_minusİ : TERM -> TERM;
+val Ûdest_z_modİ : TERM -> TERM * TERM;
+val Ûdest_z_plusİ : TERM -> TERM * TERM;
+val Ûdest_z_signed_intİ : TERM -> INTEGER;
+val Ûdest_z_subtractİ : TERM -> TERM * TERM;
+val Ûdest_z_timesİ : TERM -> TERM * TERM;
+=DESCRIBE
+These are derived destructor
+functions for the Z basic arithmetic operations.
+An optionally signed integer literal, $signed\_int$, is taken to be either a numeric
+literal or the result of applying
+=INLINEFT
+(~_)
+=TEX
+\ to a numeric literal. The other constructors correspond directly
+to the arithmetic operations of the theory $z\_numbers$ with alphabetic
+names assigned to give a valid ML name as needed
+($greater: >$,
+$less: <$,
+=INLINEFT
+minus: ~
+=TEX
+,
+$plus: +$,
+$subtract: -$,
+$times: *$).
+
+As usual, there are also corresponding discriminator ($is\_\ldots$) and
+constructor functions ($mk\_\ldots$).
+For programming convenience, $dest\_z\_signed\_int$ returns $0$  and
+$is\_z\_signed\_int$ returns $true$ when
+applied to
+=INLINEFT
+~0
+=TEX
+, but $mk\_z\_signed\_int$ cannot be used to construct such a term.
+=FAILURE
+86101	?0 is not of the form ñi ¼ j®
+86102	?0 is not of the form ñi ¾ j®
+86103	?0 is not of the form ñabs i®
+86104	?0 is not of the form ñi div j®
+86105	?0 is not of the form ñi > j®
+86106	?0 is not of the form ñi < j®
+86107	?0 is not of the form ñ~i®
+86108	?0 is not of the form ñi mod j®
+86109	?0 is not of the form ñi + j®
+86110	?0 is not an optionally signed integer literal
+86111	?0 is not of the form ñi - j®
+86112	?0 is not of the form ñi * j®
+=ENDDOC
+
+=DOC
+val Ûis_z_¼İ : TERM -> bool;
+val Ûis_z_¾İ : TERM -> bool;
+val Ûis_z_absİ : TERM -> bool;
+val Ûis_z_divİ : TERM -> bool;
+val Ûis_z_greaterİ : TERM -> bool;
+val Ûis_z_lessİ : TERM -> bool;
+val Ûis_z_minusİ : TERM -> bool;
+val Ûis_z_modİ : TERM -> bool;
+val Ûis_z_plusİ : TERM -> bool;
+val Ûis_z_signed_intİ : TERM -> bool;
+val Ûis_z_subtractİ : TERM -> bool;
+val Ûis_z_timesİ : TERM -> bool;
+=DESCRIBE
+These are derived discriminator
+functions for the Z basic arithmetic operations.
+See the documentation for the destructor functions ($dest\_z\_plus$ etc.)
+for more information.
+=ENDDOC
+
+=DOC
+val Ûmk_z_¼İ : TERM * TERM -> TERM;
+val Ûmk_z_¾İ : TERM * TERM -> TERM;
+val Ûmk_z_absİ : TERM -> TERM;
+val Ûmk_z_divİ : TERM * TERM -> TERM;
+val Ûmk_z_greaterİ : TERM * TERM -> TERM;
+val Ûmk_z_lessİ : TERM * TERM -> TERM;
+val Ûmk_z_minusİ : TERM -> TERM;
+val Ûmk_z_modİ : TERM * TERM -> TERM;
+val Ûmk_z_plusİ : TERM * TERM -> TERM;
+val Ûmk_z_signed_intİ : INTEGER -> TERM;
+val Ûmk_z_subtractİ : TERM * TERM -> TERM;
+val Ûmk_z_timesİ : TERM * TERM -> TERM;
+=DESCRIBE
+These are derived constructor
+functions for the Z basic arithmetic operations.
+See the documentation for the destructor functions ($dest\_z\_plus$ etc.)
+for more information.
+=FAILURE
+86201	?0 does not have type ú
+=ENDDOC
+
+\section{CONVERSIONS}
+=DOC
+val Ûz_î_plus_convİ : CONV;		val Ûz_î_times_convİ : CONV;
+
+val Ûz_subtract_minus_convİ : CONV;	val Ûz_greater_less_convİ : CONV
+val Ûz_¾_¼_convİ : CONV;			val Ûz__î_convİ : CONV;
+
+val Ûz_plus_convİ : CONV;			val Ûz_times_convİ : CONV
+val Ûz_abs_convİ : CONV;			val Ûz_div_convİ : CONV
+val Ûz_mod_convİ : CONV;			val Ûz_¼_convİ : CONV
+val Ûz_less_convİ : CONV			val Ûz_ú_eq_convİ : CONV
+=DESCRIBE
+These conversions are used to perform evaluation of arithmetic expressions involving
+numeric literal operands. The normal interface to the conversion is
+via the proof context $'z\_numbers$ and other proof contexts which contain
+it.
+
+The first block above gives conversions to evaluate
+expressions of the form $i\,op\,j$ where
+$i$ and $j$ are numeric literals and $op$ is one of $+$ or $*$.
+The second block gives conversions to transform terms of the form
+$i\,-\,j$, $i\,>\,j$, $i\,>\,j$ and $i\,\,î$ into
+=INLINEFT
+i + ~j
+=TEX
+, \ $j\,<\,i$, $j\,¼\,i$ and $0\,¼\,i$
+respectively. The third block give conversions which evaluate
+expressions of the form $i\,op\,j$ or $abs\,i$, where $op$ is
+one of $+$, $*$, $div$, $mod$, $¼$, $<$, or $=$, and where $i$
+and $j$ are signed integer literals (i.e., either numeric literals or of the form
+=INLINEFT
+~k
+=TEX
+, where $k$ is a numeric literal).
+Thus the second block of conversions transform expressions
+of the form $i\,-\,j$, $i\,>\,j$, $i\,¾\,j$ and $i\,\,î$ into a form which
+can be evaluated by the conversions in the third block if $i$ and $j$ are
+signed literals.
+
+=FAILURE
+86301	?0 is not of the form ?1 where ñi® and ñj® are numeric literals
+86302	?0 is not of the form ?1
+86303	?0 is not of the form ?1 where ñi® and ñj® are optionally signed
+	numeric literals
+=ENDDOC
+=DOC
+val Ûz_simple_dot_dot_convİ : CONV;
+val Ûz__dot_dot_convİ : CONV;
+=DESCRIBE
+The first of these two conversions simplifies certain $dots$
+terms,
+the second, given a membership of a $dodts$ expression,
+first tries the simplifications, and
+whether or not that succeeds, expands the membership.
+=FRULE 1 Conversion
+z_simple_dot_dot_conv
+ñx .. x®
+÷
+÷
+ô (x .. x) = {x}
+=TEX
+and
+=FRULE 1 Conversion
+z_simple_dot_dot_conv
+ñn1 .. n2®
+÷
+÷
+ô (n1 .. n2) = {}
+=TEX
+where $n1$ is a numeric literal less than the numeric literal $n2$.
+
+=FRULE 1 Conversion
+z__dot_dot_conv
+ñx  y .. y®
+÷
+÷
+ô x  y .. y ¤ x = y
+=TEX
+=FRULE 1 Conversion
+z__dot_dot_conv
+ñx  n1 .. n2®
+÷
+÷
+ô x  n1 .. n2 ¤ false
+=TEX
+where $n1$ is a numeric literal less than the numeric literal $n2$.
+=FRULE 1 Conversion
+z__dot_dot_conv
+ñx  low .. high®
+÷
+÷
+ô x  low .. high ¤ low ¼ x ± x ¼ high
+=SEEALSO
+=INLINEFT
+z_dot_dot_conv
+=FAILURE
+86001	?0 is not of the form: ñlow .. high® where the
+	expresion can be simplified
+86002	?0 is not of the form: ñx  low .. high®
+=ENDDOC
+\section{PROOF CONTEXTS}
+=DOC
+(* Proof Context: Û'z_numbersİ *)
+=DESCRIBE
+A component proof context for handling the basic arithmetic operations
+for Z.
+
+Expressions and predicates treated by this proof context are constructs formed from:
+=GFT
++, *, -, abs, div, mod, ú, ¼, <, ¾, >, =, î
+=TEX
+
+\paragraph{Contents}\
+
+Rewriting:
+=GFT
+z_plus_conv, z_times_conv, z_subtract_minus_conv
+z_abs_conv, z_div_conv, z_mod_conv
+z_ú_eq_conv, z_¼_conv, z_less_conv
+z_¾_¼_conv, z_greater_less_conv, z__î_conv
+z_plus_clauses, z_minus_clauses, z_¼_clauses
+z_less_clauses, z_³_¼_thm, z_³_less_thm,
+z__î‰1_thm, simple_z_dot_conv, z__dot_dot_conv,
+z_ø_minus_thm
+=TEX
+Stripping theorems:
+=GFT
+z_ú_eq_conv, z_¼_conv, z_less_conv
+z_¾_¼_conv, z_greater_less_conv, z__î_conv
+z_plus_clauses, z_minus_clauses, z_¼_clauses
+z_less_clauses, z__î‰1_thm, z__dot_dot_conv
+and all the above pushed through ³
+
+z_³_¼_thm, z_³_less_thm, z_¼_conv, z_less_conv
+=TEX
+
+Stripping conclusions: as for stripping theorems.
+
+Rewriting canonicalisation: blank.
+
+$ƒ$-simplification:
+=GFT
+ô ú = ƒ
+=TEX
+Automatic proof procedures: $z\-\_basic\-\_prove\-\_tac$,
+$z\-\_basic\-\_prove\-\_conv$.
+
+Automatic existence prover: blank.
+=SEEALSO
+Proof context $'z_numbers1$
+=ENDDOC
+Should evaluable arithmetic expressions on one or both sides of a stripped equation
+be evaluated during stripping?
+=DOC
+(* Proof Context: Û'z_numbers1İ *)
+=DESCRIBE
+A component proof context for handling the basic arithmetic operations
+for Z.
+It is distinct from $'z_numbers$ by its normalising all inequalities to $¼$.
+
+Expressions and predicates treated by this proof context are constructs formed from:
+=GFT
++, *, -, abs, div, mod, ú, ¼, <, ¾, >, =, î
+=TEX
+
+\paragraph{Contents}\
+
+Rewriting:
+=GFT
+z_plus_conv, z_times_conv, z_subtract_minus_conv
+z_abs_conv, z_div_conv, z_mod_conv
+z_ú_eq_conv, z_¼_conv, z_less_conv
+z_¾_¼_conv, z_greater_less_conv, z__î_conv
+z_plus_clauses, z_minus_clauses, z_¼_clauses
+z_less_clauses, z_³_less_thm,
+z__î‰1_thm, z_simple_dot_dot_conv, z__dot_dot_conv,
+conv_rule (ONCE_MAP_C eq_sym_conv) z_³_¼_thm
+=TEX
+The final conversion to $<$ to $¼$ will only occur if no other rewriting applies.
+
+Stripping theorems:
+=GFT
+z_ú_eq_conv, z_¼_conv, z_less_conv
+z_¾_¼_conv, z_greater_less_conv, z__î_conv
+z_plus_clauses, z_minus_clauses, z_¼_clauses
+z_less_clauses, z__î‰1_thm, z__dot_dot_conv
+and all the above pushed through ³
+
+z_³_less_thm, z_¼_conv, z_less_conv,
+conv_rule (ONCE_MAP_C eq_sym_conv) z_³_¼_thm
+=TEX
+
+Stripping conclusions: as for stripping theorems.
+
+Rewriting canonicalisation: blank.
+
+$ƒ$-simplification:
+=GFT
+ô ú = ƒ
+=TEX
+Automatic proof procedures: $z\-\_basic\-\_prove\-\_tac$,
+$z\-\_basic\-\_prove\-\_conv$.
+
+Automatic existence prover: blank.
+=ENDDOC
+\section{EPILOGUE}
+=SML
+end (* of signature ZNumbers *);
+=SML
+reset_flag "z_type_check_only";
+reset_flag "z_use_axioms";
+=TEX
+
+\section{TEST POLICY}
+The module tests for this module are to follow the guidelines
+laid down in the quality plan~\cite{DS/FMU/IED/PLN008}.
+
+\twocolumn[\section{INDEX}] \label{Index}
+
+\footnotesize
+\printindex
+
+\onecolumn
+
+\end{document}

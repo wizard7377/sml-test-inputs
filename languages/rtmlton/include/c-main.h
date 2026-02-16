@@ -1,0 +1,131 @@
+/* Copyright (C) 1999-2008 Henry Cejtin, Matthew Fluet, Suresh
+ *    Jagannathan, and Stephen Weeks.
+ * Copyright (C) 1997-2000 NEC Research Institute.
+ *
+ * MLton is released under a BSD-style license.
+ * See the file MLton-LICENSE for details.
+ */
+
+#ifndef _C_MAIN_H_
+#define _C_MAIN_H_
+
+#include "common-main.h"
+#include "c-common.h"
+
+
+#ifndef PTHREAD_NUM
+# define PTHREAD_NUM get_pthread_num()
+#endif
+
+static GC_frameIndex returnAddressToFrameIndex (GC_returnAddress ra) {
+        return (GC_frameIndex)ra;
+}
+
+#define MLtonCallFromC                                                  \
+/* Globals */                                                           \
+PRIVATE int returnToC[MAXPRI];                                          \
+static void MLton_callFromC (pointer ffiOpArgsResPtr) {                 \
+	if (DEBUG_CCODEGEN) fprintf(stderr, "%d] c-main MLton_callFromC\n", PTHREAD_NUM);   \
+        struct cont cont;                                               \
+        GC_state s;                                                     \
+                                                                        \
+        s = &gcState;                                                   \
+        if (DEBUG_CCODEGEN)                                             \
+                fprintf (stderr, "%d] MLton_callFromC() starting\n", PTHREAD_NUM);       \
+        assert (GC_getCurrentThread (s) != BOGUS_OBJPTR);                                                                \
+        GC_setSavedThread (s, GC_getCurrentThread (s));                 \
+        incAtomicBy(s, 3); /*s->atomicState += 3;*/                     \
+        s->ffiOpArgsResPtr[PTHREAD_NUM] = ffiOpArgsResPtr;              \
+        if (DEBUG_CCODEGEN) fprintf(stderr,"%d] ffiOpArgsResPtr = %x\n",PTHREAD_NUM,ffiOpArgsResPtr); \
+        if (s->signalsInfo.signalIsPending)                             \
+                s->limit = s->limitPlusSlop - GC_HEAP_LIMIT_SLOP;       \
+        /* Switch to the C Handler thread. */                           \
+        GC_switchToThread (s, GC_getCallFromCHandlerThread (s), 0);     \
+	if (DEBUG_CCODEGEN) fprintf(stderr, "%d] c-main currentFrame %08x\n", PTHREAD_NUM,(unsigned int)s->currentFrame[PTHREAD_NUM]);   \
+        struct GC_UM_Chunk *cf = (struct GC_UM_Chunk *)s->currentFrame[PTHREAD_NUM];    \
+	if (DEBUG_CCODEGEN) fprintf(stderr, "%d] c-main currentFrame after switch to cHandler %08x\n", PTHREAD_NUM,(unsigned int)cf);   \
+        if (DEBUG_CCODEGEN) um_dumpStack(s); \
+        cont.nextFun = *(uintptr_t*)(cf->ml_object + cf->ra);           \
+        cont.nextFun = *(uintptr_t*)(cf->next_chunk->ml_object + cf->next_chunk->ra);           \
+        cont.nextChunk = nextChunks[cont.nextFun];                      \
+        returnToC[PTHREAD_NUM] = FALSE;                                 \
+        if (DEBUG_CCODEGEN) fprintf(stderr, "%d] go to C->SML call %x\n", PTHREAD_NUM, s);  \
+        do {                                                            \
+                if (DEBUG_CCODEGEN) fprintf(stderr, "%d] cont.nextFun %d\n", PTHREAD_NUM, cont.nextFun); \
+                cont=(*(struct cont(*)(uintptr_t))cont.nextChunk)(cont.nextFun);         \
+        } while (not returnToC[PTHREAD_NUM]);                           \
+        returnToC[PTHREAD_NUM] = FALSE;                                 \
+        incAtomic(s); /*s->atomicState += 1; */                         \
+        if (DEBUG_CCODEGEN) fprintf(stderr, "%d] back from C->SML call\n", PTHREAD_NUM);    \
+        GC_switchToThread (s, GC_getSavedThread (s), 0);                \
+        decAtomic(s); /*s->atomicState -= 1;*/                          \
+        if (0 == s->atomicState                                         \
+            && s->signalsInfo.signalIsPending)                          \
+                s->limit = 0;                                           \
+        if (DEBUG_CCODEGEN)                                             \
+                fprintf (stderr, "%d] MLton_callFromC done\n", PTHREAD_NUM);             \
+}
+
+#define MLtonMain(al, mg, mfs, mmc, pk, ps, gc, mc, ml)                 \
+MLtonCallFromC                                                          \
+PUBLIC int MLton_main (int argc, char* argv[]) {                        \
+        struct cont cont;                                               \
+        Initialize (al, mg, mfs, mmc, pk, ps, gc);                      \
+        if (gcState.amOriginal) {                                       \
+                real_Init();                                            \
+                PrepFarJump(cont, mc, ml);                              \
+        } else {                                                        \
+                /* Return to the saved world */                         \
+                struct GC_UM_Chunk *cf = (struct GC_UM_Chunk *)gcState.currentFrame[PTHREAD_NUM];    \
+                cont.nextFun = *(uintptr_t*)(cf->ml_object + cf->ra); \
+                cont.nextChunk = nextChunks[cont.nextFun];              \
+        }                                                               \
+        setvbuf(stderr, NULL, _IONBF, 0);                               \
+	    pthread_t *GCrunner_thread = malloc(sizeof(pthread_t));         \
+        set_pthread_num(0);                                             \
+	    MYASSERT(GCrunner_thread, !=, NULL);                            \
+        MYASSERT(pthread_create(GCrunner_thread, NULL, &GCrunner, (void*)&gcState), ==, 0); \
+	    while (!gcState.GCrunnerRunning){if (DEBUG) fprintf(stderr, "spin [GC booting]\n"); ssleep(1, 0);}          \
+	    realtimeThreadInit(&gcState, pthread_self(), GCrunner_thread);  \
+	    realtimeThreadWaitForInit();                                    \
+       									                                \
+        /* Trampoline */                                                \
+		while (1) {   /* fprintf (stderr, RED("%d] F=%d\n"), PTHREAD_NUM, cont.nextFun);*/ \
+				cont=(*(struct cont(*)(uintptr_t))cont.nextChunk)(cont.nextFun);         \
+		}                                                               \
+        return 1;                                                       \
+}
+
+#define MLtonLibrary(al, mg, mfs, mmc, pk, ps, gc, mc, ml)              \
+MLtonCallFromC                                                          \
+PUBLIC void LIB_OPEN(LIBNAME) (int argc, char* argv[]) {                \
+        struct cont cont;                                               \
+        Initialize (al, mg, mfs, mmc, pk, ps, gc);                      \
+        if (gcState.amOriginal) {                                       \
+                real_Init();                                            \
+                PrepFarJump(cont, mc, ml);                              \
+        } else {                                                        \
+                /* Return to the saved world */                         \
+                struct GC_UM_Chunk *cf = (struct GC_UM_Chunk *)gcState.currentFrame[PTHREAD_NUM];    \
+                cont.nextFun = *(uintptr_t*)(cf->ml_object + cf->ra); \
+                cont.nextChunk = nextChunks[cont.nextFun];              \
+        }                                                               \
+        /* Trampoline */                                                \
+        returnToC[PTHREAD_NUM] = FALSE;                                 \
+        do {                                                            \
+                cont=(*(struct cont(*)(uintptr_t))cont.nextChunk)(cont.nextFun);         \
+        } while (not returnToC[PTHREAD_NUM]);                           \
+}                                                                       \
+PUBLIC void LIB_CLOSE(LIBNAME) () {                                     \
+        struct cont cont;                                               \
+        struct GC_UM_Chunk *cf = (struct GC_UM_Chunk *)gcState.currentFrame[PTHREAD_NUM];    \
+        cont.nextFun = *(uintptr_t*)(cf->ml_object + cf->ra); \
+        cont.nextChunk = nextChunks[cont.nextFun];                      \
+        returnToC[PTHREAD_NUM] = FALSE;                                 \
+        do {                                                            \
+                cont=(*(struct cont(*)(uintptr_t))cont.nextChunk)(cont.nextFun);         \
+        } while (not returnToC[PTHREAD_NUM]);                           \
+        GC_done(&gcState);                                              \
+}
+
+#endif /* #ifndef _C_MAIN_H */

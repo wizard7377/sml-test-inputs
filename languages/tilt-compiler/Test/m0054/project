@@ -1,0 +1,3 @@
+unit Test = "bytechar.sml" {
+	Word8 Word8Vector Word8Array Byte Int Char List String
+}

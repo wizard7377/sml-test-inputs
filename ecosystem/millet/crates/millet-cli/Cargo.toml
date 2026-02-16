@@ -1,0 +1,28 @@
+[package]
+name = "millet-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "millet-cli"
+test = false
+
+[dependencies]
+codespan-reporting.workspace = true
+diagnostic.workspace = true
+env_logger.workspace = true
+paths.workspace = true
+pico-args.workspace = true
+text-pos.workspace = true
+text-size-util.workspace = true
+
+analysis.path = "../analysis"
+config.path = "../config"
+input.path = "../input"
+panic-hook.path = "../panic-hook"
+sml-naive-fmt.path = "../sml-naive-fmt"

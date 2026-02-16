@@ -1,0 +1,39 @@
+[package]
+name = "mlb-statics"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+diagnostic.workspace = true
+fast-hash.workspace = true
+paths.workspace = true
+sml-libs.workspace = true
+str-util.workspace = true
+text-pos.workspace = true
+text-size-util.workspace = true
+
+config.path = "../config"
+cov-mark.path = "../cov-mark"
+mlb-hir.path = "../mlb-hir"
+sml-comment.path = "../sml-comment"
+sml-file-syntax.path = "../sml-file-syntax"
+sml-file.path = "../sml-file"
+sml-fixity.path = "../sml-fixity"
+sml-hir-lower.path = "../sml-hir-lower"
+sml-hir.path = "../sml-hir"
+sml-namespace.path = "../sml-namespace"
+sml-statics-types.path = "../sml-statics-types"
+sml-statics.path = "../sml-statics"
+sml-syntax.path = "../sml-syntax"
+
+[features]
+sync = ["sml-statics/sync", "sml-statics-types/sync"]

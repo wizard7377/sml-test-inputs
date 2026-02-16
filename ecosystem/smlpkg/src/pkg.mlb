@@ -1,0 +1,12 @@
+local $(SML_LIB)/basis/basis.mlb
+      semver/semver.mlb
+      manifest/manifest.mlb
+      util/util.mlb
+      pkginfo.sig
+      pkginfo.sml
+      solve/solve.sig
+      solve/solve.sml
+      version.gen.sml
+in
+      pkg.sml
+end

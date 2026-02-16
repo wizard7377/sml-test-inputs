@@ -1,0 +1,3 @@
+unit Test = "string.sml" {
+	Int String Char List CharVector
+}

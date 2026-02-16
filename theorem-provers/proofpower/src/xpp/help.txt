@@ -1,0 +1,649 @@
+.\" File: help.txt
+.\" Help texts for the X/Motif ProofPower Interface.
+.\" This file is used to construct a C header file help.h
+.\" containing definitions of C strings for use as help texts.
+.\" The makefile uses the shell script makehelp to do this.
+.\" The format of a help item is
+.\"
+.\" * <title>
+.\" <any old nroff -ms stuff containing no lines beginning with an asterisk>
+.\"
+.\"
+.\" Ideally, there would be a way of persuading nroff -ms to behave as
+.\" if there was only one very long page. However the best you can
+.\" do is 136 inches. Occasionally one will need to do .bp to avoid
+.\" an infelicitous blank line. The shell script removes duplicate blank
+.\" lines so there is not much harm in putting the .bp in.
+.\" Since removing the blank lines is slow and very long help texts
+.\" should be avoided, we use a smaller length below: this means you
+.\" should check for unwanted blank lines if you add a new long section.
+.\" The following command is useful if you just want to see the help texts
+.\" on paper.
+.\" sed -e '/^.pl/d' -e '/^*/s/* \(.*\)/=== \1 ===/' <help.txt | nroff -ms
+.\" If no trailing new-lines at all are required in a text, then end
+.\" it with \\0 (at the expense of a byte or two of memory).
+.ds LH "
+.ds CH "
+.ds RH "
+.ds LF "
+.ds CF "
+.ds RF "
+.nr HM 0
+.nr FM 0
+.nr PO 0
+.nr FL 0
+.ad l
+.pl 35in
+.hym 30
+.LP
+* About Xpp
+.LP
+Welcome to Xpp - the ProofPower X/Motif Interface.
+.LP
+Xpp provides a convenient way to prepare, check and execute ProofPower scripts.
+It combines a general purpose text editor with a command interface for operating the ProofPower system.
+.LP
+Copyright (C) Lemma 1 Ltd. 2000-YEAR.
+.bp
+.LP
+* Using Help
+.LP
+Help is available from the Help menu in the Main Window and from the
+Help push-buttons in other windows in xpp.
+.LP
+You can dismiss this Help Window when you have finished by clicking on
+the push-button labelled Dismiss. You do not need to dismiss the
+Help Window before using other parts of xpp; instead you can resize
+or move the window, if necessary, to prevent it obscuring what you want to
+work on and then carry on as normal.
+.LP
+If you are unfamiliar with using Motif or similar applications, the
+Tutorial item in the Main Window Help menu contains information which
+will help you make a start. You may also wish to consult your local
+user documentation for Motif, which will give further information on
+keyboard shortcuts etc.
+.LP
+Use the vertical scroll bar to the side of the help text to move around in the text.
+The simplest way to do this is to use the triangular arrows at the top
+and bottom of the scroll-bar.
+Click Button 1 (usually the left mouse button)
+on the bottom arrow to move down, and on the top arrow to move up.
+Many keyboards have PageUp and PageDown keys or arrow keys
+which can also be used to move around in a text area like this one.
+You may have to click button 1 on the help window first to get this to work.
+.bp
+.bp
+.LP
+* Tutorial
+.LP
+This help text introduces the more important features of xpp.
+
+The Motif look and feel which xpp supports offers many shortcuts,
+and only a few of the more useful techniques are mentioned below.
+Consult your local Motif user documentation or just experiment
+to find out more.
+.LP
+--- Starting Xpp ---
+.LP
+Use a UNIX command line like one of the following to begin a session with xpp:
+.IP "" 8
+xpp myfile.doc
+.IP "" 8
+xpp myfile.doc -d example_hol
+.IP "" 8
+xpp -display server1:0 myfile.doc -d example_hol
+.LP
+The line without the `-d' gives an xpp session
+running the editor only on file `myfile.doc'.
+The other two command lines give the command interface as well
+and use it to start an interactive ProofPower session (invoked as `pp -d example_hol').
+
+Edit-only and command interface sessions with xpp are very similar.
+The edit-only sessions have a subset of the features of the command interface.
+
+.LP
+--- Main Window ---
+.LP
+In a command interface session, the xpp Main Window has four main areas as follows:
+.IP "Menu Bar" 15
+This contains menus which you use to select the main editing and ProofPower command functions.
+There are items in the Help Menu to give more information on each of these menus.
+.IP "File Name Bar" 15
+This contains the name of the file from which the script you are editing comes.
+It also tells you when you have made changes to the script and shows the line number of the current insertion position in script.
+.IP "Script Window" 15
+This is the Motif text area in which the script is entered and edited.
+This offers a general purpose editor whose features are described
+later in this help text.
+.IP "Journal Window" 15
+This displays a journal of your transactions with ProofPower.
+The basic technique for executing a ProofPower command is to
+select some text in the Script Window and then use Execute Selection
+from the Command Menu.
+.LP
+In an edit-only session, there are only three areas in
+the Main Window: the Journal Window does not appear.
+.LP
+--- Mouse Buttons ---
+.LP
+Xpp works with a mouse or other pointing device with two or three buttons.
+.IP "Button 1" 9
+This is usually the left button and is sometimes labelled `SELECT'.
+It is often used for making selections, and for activating menus, menu items
+and push-buttons.
+.IP "Button 2" 9
+With a three-button mouse, this is usually the centre button and is sometimes labelled `ADJUST'
+or `TRANSFER'.
+With a two-button mouse, pressing this button is usually emulated by pressing
+both buttons together.
+Button 2 is often used to copy and move text.
+It is also used, e.g., in scroll bars, in a similar way to Button 1 but
+sometimes with a different effect.
+.IP "Button 3" 9
+This is usually the right button. It is used in the text windows to pop up
+the Edit Menu.
+.LP
+You may like to experiment with mouse buttons 1 and 2 in the scroll bar for
+this help text to see how they differ.
+.LP
+--- Paned Windows ---
+.LP
+Some windows which xpp provides comprise several resizable elements stacked
+vertically or horizontally.
+The elements of these `paned' windows may be separated by a line with
+a small square button, called a `sash'.
+The Search and Replace Tool is an example of a paned window.
+
+You can resize a resizable element in a paned window by holding Button 1
+down over the sash and dragging it up or down.
+.LP
+--- Text Areas ---
+.LP
+Xpp provides a number of text areas in which you can enter and edit text.
+The most important of these is the Script Window (the uppermost or rightmost large text
+area in the main window).
+There are also text areas like this Help Text and the Journal Window in
+which xpp displays information but which are read-only: you cannot enter
+text into them directly. You can usually copy text out of these
+read-only text areas using some of the techniques described under
+`Operations on Text Selections' below.
+.LP
+In conjunction with the File Menu, the Edit Menu and the tools provided by the Tools Menu, the Script Window provides a general purpose text editor.
+.LP
+Text areas also feature in other windows such as the Search and Replace Tool,
+in which you can type search and replace patterns, and the File Selection Box
+in which you can type in file names.
+Basic typing and editing operations are similar in all of the text areas.
+In most text areas, you can use Button 3 to bring up the popup
+Edit Menu.
+.LP
+--- Entering Text ---
+.LP
+To insert text, click Button 1 on the point at which you
+want the text to begin.
+A thin vertical line (called the I-beam cursor) will flash at the insertion
+point you have selected.
+You can now type at the keyboard to enter text.
+.LP
+The simplest way to correct mistakes is to use the Backspace key or the Delete key.
+The Backspace key deletes the character just before the I-beam cursor and
+the Delete key deletes the one just after it.
+.LP
+Mathematical and other symbols may also be entered,
+using the Palette Tool and the Template Tool
+very much as if you had typed them at the keyboard.
+See the help item for the Tools Menu for more information on these
+tools.
+.LP
+--- Undoing Text Changes ---
+.LP
+Undo in the Edit Menu can be used to correct errors.
+Undo will undo the effect of all the typing you did since you last
+started typing at a new insertion point.
+
+You can reverse the effect of an Undo, by selecting Redo from the Edit Menu.
+.LP
+--- Making Text Selections ---
+.LP
+You generally carry out more complex editing operations which operate on a
+block of text by first selecting the text to operate on.
+To select some text press Button 1 down at one end of the text you
+want to select, then, holding the button down, drag the pointer to the other
+end of the selection and release the button.
+The selected text will become highlighted.
+.LP
+When you have made a selection you can grow or shrink it by holding down the
+Shift key and clicking Button 1 where you want the new end-point to be.
+.LP
+You can quickly select a word or a line by double- or triple-clicking, but
+quadruple clicking does not select the entire text.
+The entire text can quickly be selected using the keyboard by pressing the `/' key
+while holding the Control key down.
+.LP
+--- Operations on Text Selections ---
+.LP
+Having made a selection there are several things you can do with
+the selected text. Some of the more common ones use the Clipboard:
+an off-screen area where text can be stored.
+Motif defines three keys that are often used to work
+with the Clipboard: the Copy, Cut and Paste keys. If your keyboard
+does not have these keys, they can usually be emulated: typically, Copy is
+<Ctrl><Insert>, Cut is <Shift><Delete>, and Paste is <Shift><Insert>.
+You can also carry out these functions in most text areas in xpp
+by using Button 3 to bring up the popup Edit Menu and in the Script Window
+using the Edit Menu in the Menu Bar.
+.LP
+You can retrieve text from the Clipboard by clicking Button 1 to select the
+point where you want the text to appear and then pressing the Paste key.
+.LP
+Some other useful operations on selections are:
+.IP "Delete" 18
+Press the Backspace key or the Delete key and the
+whole selection will be deleted.
+.IP "Overtype" 18
+Type at the keyboard and what you type will replace
+the selection.
+.IP "Copy to Clipboard" 18
+Press the Copy key and the selection will be copied
+into an off-screen area called the Clipboard.
+.IP "Cut to Clipboard" 18
+Press the Cut key to combine the effects of Copy
+and Delete: Cut deletes the text while also copying
+it to the Clipboard.
+.IP "Quick Copy" 18
+Move the pointer away from the selection then press Button 2, and the
+text will be copied to the new pointer position.
+This lets you copy the selection from one text area to another, or within
+one text area without using the Clipboard.
+.LP
+Motif text areas provide several other operations with selections.
+Consult your local Motif user documentation for further information.
+.LP
+--- Customising xpp ---
+.LP
+You can customize many aspects of the appearance and behaviour of xpp by
+adjusting settings (called `resources') held in the files app-defaults/Xpp,
+app-defaults/XppKeyboard and app-defaults/XppTemplates, either in the
+ProofPower installation directory or in your home directory. Note that these
+files are only read when xpp starts: so you need to start a new session for any
+changes you make to have effect. Please consult the Xpp User Guide for more
+information on customizing xpp.
+.bp
+.LP
+* File Menu
+.LP
+This menu is used to save the text in the Script Window into a file or to read a file in. It is also used to finish an editing session.
+.LP
+The commands in this menu ending in `...' bring up a File Selection Box which you use to choose the name of a file to work on.
+The other commands either do not need a file name or work on the file whose name appears in the File Name Bar.
+.LP
+The commands will ask for confirmation before taking any action which could lose your work.
+.IP "Save" 24
+saves all the text into the file named in the File Name Bar.
+.IP "Save As ..." 24
+saves all the text into a file that you choose and puts the name of the file in the File Name Bar for future reference.
+.IP "Save Selection As ..." 24
+saves the text you have selected (e.g. by holding down Button 1 and dragging)
+into a file that you choose.
+This does not change the file named in the File Name Bar.
+.IP "Open ..." 24
+opens a file that you choose and puts the name of the file in the File Name Bar for future reference.
+.IP "Include ..." 24
+copies text in from a file that you choose; the text is copied in just after the I-beam cursor in the Script Window;
+the file named in the File Name Bar does not change.
+.IP "Revert" 24
+is just like opening the file whose name is in the File Name Bar; this is often useful for undoing a large batch of unintended changes.
+.IP "Empty File" 24
+discards any text in the Script Window and puts a dummy name into the File Name Bar.
+.IP "Reopen" 24
+brings up a pull-right menu listing the files you have previously been editing.
+This menu item will be greyed out from when you first start xpp until you open
+a new file or save the current file under a new name.
+.IP "New Session" 24
+is a pull-right menu that can be used to start up a new xpp editor or command session.
+.IP "Quit" 24
+finishes your editing session.
+.bp
+.LP
+* Edit Menu
+.LP
+This menu is used for the following editing functions, some of which operate on the Clipboard (a means of passing text around between applications or within one application).
+
+.IP "Cut" 24
+moves the text you have selected out of your script to the Clipboard.
+.IP "Copy" 24
+copies the text you have selected to the Clipboard. This doesn't change the script.
+.IP "Paste" 24
+copies the text on the Clipboard into your document.
+.IP "Match Bracket" 24
+finds the first bracket in the selected text, if any, otherwise the
+first bracket to the right of the insertion position, and then searches
+for a matching bracket. The matching brackets and the text between them
+are selected if a matching bracket is found, otherwise the text window
+flashes.
+.IP "Undo" 24
+undoes the last editing operation you carried out.
+.IP "Redo" 24
+reverses an undo.
+.IP "Search and Replace ..." 24
+brings up a tool which lets you search for a pattern in your script, and if you wish, replace some or all instances of the pattern with some other text.
+.IP "Goto Line ..." 24
+brings up a tool which lets you navigate round the script using line numbers.
+.bp
+.LP
+* Tools Menu
+.LP
+This menu is used to start up various tools which run in windows of their own.
+.IP "Palette" 11
+brings up a tool containing a palette of mathematical and other symbols.
+The palette is an array of push-buttons;
+pressing a push-button inserts the character into the text you are currently editing.
+.IP "Templates" 11
+is used for easy entry of constructs such as Z paragraphs.
+The templates tool is an array of push-buttons;
+pressing a push-button inserts a sequence of characters into your script corresponding to the symbol drawn on it, as if you had typed the characters in at the keyboard.
+This menu item may be greyed out (see note below).
+.IP "Options" 11
+brings up a tool which lets you adjust various settings which affect the behaviour of xpp.
+For example, you can say whether or not you want the editor to take a back up of a file before overwriting it when you use the save command in the file menu.
+.LP
+Note: the Templates Tool is set up from the applications defaults
+file for xpp (e.g. see the ProofPower Reference Manual entry for xpp).
+The Templates menu item will be greyed out, and the Templates Tool will not be
+available, if the applications defaults file does not contain an appropriate
+setting for the `templates' resource.
+.bp
+.LP
+* Window Menu
+.LP
+This menu helps you work with the layout and geometry of the main window.
+.IP "Show Geometry" 19
+brings up a tool showing you the geometry of the script window.
+In a command session, the tool also shows the geometry of the journal window
+and the settings to use in the applications default file to give the current
+layout and geometry.
+.LP
+The remaining items are only available in command sessions.
+.IP "Show/hide Script" 19
+hides the script window if it is displayed or displays both the script
+and journal windows if either of them is hidden.
+.IP "Show/hide Journal" 19
+hides the journal window if it is displayed or displays both the script
+and journal windows if either of them is hidden.
+.IP "Toggle Geometry" 19
+switches between the vertical and horizontal layouts for the script
+and journal windows.
+.bp
+.LP
+* Command Menu
+.LP
+You can use this menu to pass commands to ProofPower, if you are running
+a command interface session of xpp (i.e., you have specified a `-command'
+argument on the command line).
+This menu is not provided in an edit-only session.
+
+Xpp will prompt you if the effect of a menu item is likely to lose some of your work.
+
+The menu items work as follows:
+
+.IP "Command Line" 19
+invokes a tool for running ProofPower commands which you do not want to have in your script.
+.IP "Execute Selection" 19
+sends the text you have selected to be executed as a ProofPower command.
+Depending on a setting you can adjust with the Options Tool, a carriage
+return character may be sent after the text, if it does not already end
+with one.
+.IP "Return" 19
+sends a carriage return character.
+.IP "Semicolon" 19
+sends a semicolon followed by a carriage return character.
+This is often convenient for finishing off lines of Standard ML.
+.IP "Abandon" 19
+gives a convenient way of abandoning a ProofPower computation.
+It sends an interrupt signal and then waits for a prompt from ProofPower;
+when the prompt is received it replies with a command to
+cause ProofPower to abandon what it is currently executing.
+.IP "Interrupt" 19
+sends an interrupt signal.
+.IP "Kill" 19
+sends a kill signal.
+This will cause the ProofPower session to be terminated and will lose
+any work which you have not saved.
+.IP "Restart" 19
+restarts the ProofPower session.
+This will cause the current ProofPower session to be terminated and will lose
+any work which you have not saved.
+.bp
+.LP
+* File Name Bar
+.LP
+The File Name Bar displays information about the file you
+are editing. From left to right, it provides the following information:
+
+.IP "File Name" 14
+This tells you the name of the file.
+.IP "Status Label" 14
+This indicates: whether the
+file is new (i.e., does not exist in the file system yet);
+what the file type is, if other than Unix;
+whether you have modified the file; and whether the file is read only.
+If none of these apply, then the status label is blank.
+.IP "Line Number" 14
+This gives the line number of the current insertion position, i.e.,
+the position in the file at which the next character you type would
+be inserted. Right-clicking on the line number brings up a menu
+letting you start or stop the line number indicator.
+.bp
+.LP
+* Search and Replace Tool
+.LP
+You can use this tool to search for patterns in the Script Window.
+It also lets you replace some or all occurrences of a pattern
+with replacement text .
+.LP
+The tool provides a number of push-buttons and two text areas.
+There are also two toggle buttons that you can use to control the interpretation of search patterns.
+The upper text area is where you enter the search pattern.
+The lower text area is for the replacement text for use in replace operations.
+See below for more information about the interpretation of the replacement text.
+.LP
+Clicking button 3 in either of the text areas gives you the popup Edit Menu which carries out the standard editing operations and also lets you empty the text area or replace its contents by the current selection.
+.LP
+The push-buttons work as follows:
+.IP "<= Search" 16
+starts a `backwards' search: it looks for the first occurrence of the search pattern before the I-beam cursor in the Script Window.
+If the pattern is found, it will be selected (highlighted) in the Script Window.
+.IP "Search =>" 16
+starts a `forwards' search: it looks for the first occurrence of the pattern after the cursor.
+.IP "Replace" 16
+causes the current selection in the Script Window to be replaced by
+the contents of the replacement text area.
+.IP "Replace All" 16
+causes all occurrences of the search pattern to be replaced by the replacement
+text.
+.IP "Replace & <=" 16
+like `Replace' followed by `<= Search'.
+.IP "Replace & =>" 16
+like `Replace' followed by `Search =>'.
+.IP "Dismiss" 16
+hides the Search and Replace Tool from view. You can bring it back by
+selecting the Search and Replace item in the Edit Menu again.
+.IP "Help" 16
+displays this help text.
+.LP
+Using the toggle buttons, you can choose how xpp interprets search patterns.
+The choices are whether or not searches should ignore the case of letters (treating
+`a' and `A' as equivalent etc.) and whether or not patterns should be treated as
+regular expressions containing wildcards (e.g., treating 'AB*' as matching an 'A' followed by any number of 'B's).
+.LP
+When you use wildcards the replacement text in replace operations is
+interpreted specially: the text matching the pattern is substituted for each
+unescaped occurrence of '&' in the replacement text; backslash is used as the
+escape character.
+.LP
+When you do a search, xpp stores information about the search in
+registers numbered 0, 1, ... and 9.
+Register 0 holds the entire matched text while registers 1, 2, ... and 9
+hold the text that matched the first, second, ... and ninth bracketed
+subexpression of the pattern.
+The subexpressions are numbered
+by counting the opening brackets from left to right in the pattern.
+The replacement registers can be accessed in your replacement text using an
+escaped digit.
+.LP
+The wildcards conform to the POSIX extended regular expression syntax, which
+is documented in the regex(7) manual page on most systems.
+There is a summary in the Xpp User Guide.
+.bp
+.LP
+* Line Number Tool
+.LP
+You can use this tool to navigate around the text using line numbers.
+
+The tool provides a number of push-buttons and a text area.
+The text area is used to hold a line number.
+Clicking button 3 in the text area gives you the popup Edit Menu which carries out the standard editing operations and also lets you replace the line number with the number of the current line in the script window.
+
+The push-buttons work as follows:
+
+
+.IP "Goto line" 16
+causes the Script Window to move to the line whose number is in
+the line number area.
+.IP "Dismiss" 16
+hides the Line Number Tool from view. You can bring it back by
+selecting the Line Number item in the Edit Menu again.
+.IP "Help" 16
+displays this help text.
+.bp
+.LP
+* Palette Tool
+.LP
+You can use this tool to enter mathematical symbols into the text you
+are editing very much as if you had typed the symbol using the keyboard.
+The tool contains an array of push-buttons called the palette;
+pressing a push-button inserts the character into the text you are currently editing.
+The tool keeps track of the text area that has the input focus, so for example, if you
+start typing in the text area in the Command Line Tool and then press a palette button,
+the symbol will be entered into that text area.
+.bp
+.LP
+* Options Tool
+.LP
+You can use this tool to check or alter various settings
+which control the way xpp works.
+
+The tool contains toggle buttons (small square or lozenge
+shaped push-buttons which you operate by pressing with Button 1)
+and, in a command interface session, some text fields (in which you can type textual or
+numeric values).
+
+Commentary is provided alongside each text field or toggle button
+to explain its purpose.
+
+An option controlled by a toggle button is on when the button is displayed
+as pushed in.
+
+The tool also has five push-buttons in a row at the bottom which work
+as follows:
+.IP "Apply" 16
+brings the settings you have entered into force.
+.IP "Current" 16
+puts the settings back to those which are currently in force.
+.IP "Original" 16
+puts the settings back to those which applied when your xpp session was started.
+.IP "Dismiss" 16
+hides the Options Tool from view. You can bring it back by
+selecting the Options item in the Tools Menu again.
+.IP "Help" 16
+displays this help text.
+.bp
+.LP
+* Command Line Tool
+.LP
+You can use this tool to execute command lines which you do not wish to
+save in the script you are editing.
+
+The tool comprises three parts:
+.IP "1" 4
+A list which is used to remember commands you wish to execute
+frequently.
+Since the list and the individual commands may be quite long this list has
+vertical and horizontal scroll bars.
+A sample of useful commands is provided when you first bring up the
+tool.
+.IP "2" 4
+A text area to hold a command line ready for execution.
+You can type directly into this text area or you can fetch
+one of the items in the list above by double-clicking on the item you want.
+Typing return in this text area causes the command to be executed
+(as does the Execute push-button).
+.IP "" 4
+The tool maintains a history of the commands that you have executed.
+You can use the Page Up and Page Down keys to scroll through this history.
+(If this does not work, or if your keyboard does not have Page Up and Page Down
+keys, you may need to adjust resource settings in your applications defaults file).
+.IP "3" 4
+A row of push-buttons, for use in executing commands, editing the list, etc.
+.LP
+The push-buttons work as follows:
+.IP "Execute" 16
+causes the command in the text area to be executed.
+.IP "Add" 16
+adds the command in the text area to the end of the list.
+.IP "Delete" 16
+removes the selected (highlighted) item from the list.
+.IP "Dismiss" 16
+hides the Command Line Tool from view. You can bring it back by
+selecting the Command Line item in the Command Menu again.
+.IP "Help" 16
+displays this help text.
+.bp
+.LP
+* File Selection Box
+.LP
+The File Selection Box appears when xpp needs you to tell it the name of a file.
+.LP
+The simplest way to use the File Selection Box
+is just to type a file name into Selection text area and
+then press the push-button at the bottom left (labelled with the operation
+in the File Menu which xpp is carrying out).
+Xpp will then take the name you typed as the name of the file to work with.
+
+Pressing the Cancel button dismisses the File Selection Box and
+abandons the file operation xpp was trying to
+carry out.
+
+It is often convenient to let the File Selection Box help you
+find the file name you want.
+If you click on a name in the Files list, the name will
+appear in the Selection and you can carry on as if you had just typed
+it there.
+
+The Filter text area lets you do pattern-matching searches for file names.
+If you type `/home/me/*' into the Filter text area and then press the push-button
+labelled `Filter', the names of all the files in directory `/home/me'
+will appear in the Files list, and all names of all the directories
+in the directory `/home' will appear in the Directories list.
+If you had typed `/home/me/*.doc' into the Filter text area, then only
+files with names ending in `*.doc' would be shown in the Files list.
+
+Clicking on a directory name replaces the directory part of the
+Filter text area with the directory name.
+
+Depending on the xpp command line options, the file selection box may appear
+when xpp starts with an extra text field for you to enter the command to run in
+the Journal Window. Simply type in the command you wish to run.
+.LP
+* Templates Tool
+.LP
+The buttons in the templates tool enter templates for language
+constructs into the Script Window.
+The icons and their corresponding constructs are as described below:\\0
+.LP
+* Command Line Dialogue
+.LP
+xpp has been started with the command line specified as an empty string.
+Please type the command you wish to run into the text area and then click OK.
+
+Click Quit to quit this xpp session.

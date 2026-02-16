@@ -1,0 +1,355 @@
+
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentstyle[hol1,12pt,TQ,ifthen]{article}
+\ftlinepenalty=10000
+\TPPproject{FST PROJECT}  %% Mandatory field
+%\TPPvolume{}
+%\TPPpart{}
+\TPPtitle{Test for Style file hol1.sty}  %% Mandatory field
+\TPPref{DS/FMU/IED/INT006}  %% Mandatory field
+\TPPissue{\VCVersion}
+\TPPdate{\FormatDate{\VCDate}}
+\TPPstatus{Approved}
+%\TPPstatus{Draft}
+\TPPtype{Specification}
+\TPPkeywords{HOL}
+\TPPauthor{R.D.~Arthan & }  %% Mandatory field
+%\TPPauthors{Name 1&location 1\\Name 2&location 2\\Name 3&location 3}
+%\TPPauthorisation{R.B. Jones & FMU Manager}
+\TPPabstract{
+Tests for the symbols supported by the style file hol1.sty.}
+%\TPPabstractB{}
+%\TPPabstractC{}
+%\TPPabstractD{}
+%\TPPabstractE{}
+%\TPPabstractF{}
+\TPPdistribution{\parbox[t]{4.0in}{%
+      Library}}
+
+%\TPPclass{CLASSIFICATION}
+%\def\TPPheadlhs{}
+%\def\TPPheadcentre{}
+%def\TPPheadrhs{}
+%\def\TPPfootlhs{}
+%\def\TPPfootcentre{}
+%\def\TPPfootrhs{}
+
+\begin{document}
+\TPPsetsizes
+\makeTPPfrontpage
+
+\vfill
+\begin{centering}
+
+\bf Copyright \copyright\ : Lemma 1  Ltd \number\year
+
+\end{centering}
+\newpage
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+
+\newpage
+\ftlinepenalty=9999
+\twocolumn[\section{TEST OF ALL THE GLPYHS}]
+=GFT
+	<":	<"
+	<::	î
+	=>:	∑
+	>":	>"
+	Box:	%Box%
+	Delta:	Ñ
+	Diamond:	%Diamond%
+	Gamma:	á
+	Im:	%Im%
+	Join:	%Join%
+	Lambda:	å
+	Leftarrow:	„
+	Longleftarrow:	%Longleftarrow%
+	Longleftrightarrow:	%Longleftrightarrow%
+	Longrightarrow:	%Longrightarrow%
+	Omega:	ó
+	Phi:	Ü
+	Pi:	ê
+	Psi:	ô
+	Q":	Q"
+	Re:	%Re%
+	SFT:	π
+	SML:	ë
+	SZT:	Ò
+	Sigma:	ì
+	Theta:	ä
+	Uparrow:	%Uparrow%
+	Updownarrow:	%Updownarrow%
+	Upsilon:	ï
+	Xi:	ò
+	aleph:	%aleph%
+	alpha:	¡
+	and:	±
+	approx:	%approx%
+	asymp:	%asymp%
+	bagunion:	Ç
+	bbA:	%bbA%
+	bbB:	ñ
+	bbC:	%bbC%
+	bbD:	%bbD%
+	bbE:	%bbE%
+	bbF:	Ê
+	bbG:	%bbG%
+	bbH:	%bbH%
+	bbI:	%bbI%
+	bbJ:	%bbJ%
+	bbK:	%bbK%
+	bbL:	%bbL%
+	bbM:	%bbM%
+	bbN:	Ó
+	bbO:	%bbO%
+	bbP:	
+	bbQ:	Û
+	bbR:	Ø
+	bbS:	ø
+	bbT:	%bbT%
+	bbU:	%bbU%
+	bbV:	%bbV%
+	bbW:	%bbW%
+	bbX:	%bbX%
+	bbY:	%bbY%
+	bbZ:	˙
+	beta:	¬
+	bigcirc:	%bigcirc%
+	bigcolon:	∫
+	bigodot:	%bigodot%
+	bigoplus:	%bigoplus%
+	bigotimes:	%bigotimes%
+	bigsqcup:	%bigsqcup%
+	bigtriangledown:	%bigtriangledown%
+	bigtriangleup:	%bigtriangleup%
+	biguplus:	%biguplus%
+	bigvee:	%bigvee%
+	bigwedge:	%bigwedge%
+	bij:	è
+	boolean: %boolean%
+	complex: %complex%
+	bottom:	‚
+	bowtie:	%bowtie%
+	calA:	%calA%
+	calB:	%calB%
+	calC:	%calC%
+	calD:	%calD%
+	calE:	%calE%
+	calF:	%calF%
+	calG:	%calG%
+	calH:	%calH%
+	calI:	%calI%
+	calJ:	%calJ%
+	calK:	%calK%
+	calL:	%calL%
+	calM:	%calM%
+	calN:	%calN%
+	calO:	%calO%
+	calP:	%calP%
+	calQ:	%calQ%
+	calR:	%calR%
+	calS:	%calS%
+	calT:	%calT%
+	calU:	%calU%
+	calV:	%calV%
+	calW:	%calW%
+	calX:	%calX%
+	calY:	%calY%
+	calZ:	%calZ%
+	cat:	Î
+	cdot:	%cdot%
+	chi:	—
+	circ:	%circ%
+	clubsuit:	%clubsuit%
+	cong:	%cong%
+	coprod:	%coprod%
+	dagger:	%dagger%
+	dashv:	%dashv%
+	dcat:	ã
+	ddagger:	%ddagger%
+	def:	¶
+	delta:	ƒ
+	diamond:	%diamond%
+	diamondsuit:	%diamondsuit%
+	dintersect:	•
+	div:	%div%
+	doteq:	%doteq%
+	downarrow:	%downarrow%
+	dres:	Ú
+	dsub:	·
+	dunion:	ﬁ
+	ell:	%ell%
+	emptyset:	ö
+	epsilon:	≈
+	equiv:	§
+	eta:	»
+	exists:	∂
+	extract:	Ï
+	fcomp:	Ö
+	ffun:	ü
+	filter:	˘
+	finj:	û
+	flat:	%flat%
+	fn:	Ã
+	forall:	µ
+	fset:	Ê
+	fun:	≠
+	gamma:	«
+	geq:	æ
+	gg:	%gg%
+	hbar:	%hbar%
+	heartsuit:	%heartsuit%
+	hookleftarrow:	%hookleftarrow%
+	hookrightarrow:	%hookrightarrow%
+	identical:	È
+	imath:	%imath%
+	implies:	¥
+	infty:	%infty%
+	inj:	‡
+	int:	˙
+	negate:	
+	integral:	%integral%
+	intersect:	°
+	iota:	…
+	jmath:	%jmath%
+	kappa:	À
+	lambda:	Ã
+	lbag:	˚
+	lchevron:	%lchevron%
+	leadsto:	%leadsto%
+	leftarrow:	%leftarrow%
+	leftharpoondown:	%leftharpoondown%
+	leftharpoonup:	%leftharpoonup%
+	leq:	º
+	lhd:	%lhd%
+	ll:	%ll%
+	longleftarrow:	%longleftarrow%
+	longleftrightarrow:	%longleftrightarrow%
+	longmapsto:	%longmapsto%
+	longrightarrow:	%longrightarrow%
+	lrelimg:	®
+	lseq:	ß
+	map:	Ì
+	mem:	ç
+	mho:	%mho%
+	models:	%models%
+	mp:	%mp%
+	mu:	Õ
+	nabla:	%nabla%
+	nat:	Ó
+	natural:	%natural%
+	nearrow:	%nearrow%
+	neq:	Ω
+	ni:	%ni%
+	not:	≥
+	notmem:	é
+	nu:	Œ
+	nwarrow:	%nwarrow%
+	odot:	%odot%
+	oint:	%oint%
+	omega:	◊
+	ominus:	%ominus%
+	or:	≤
+	oslash:	%oslash%
+	otimes:	%otimes%
+	overwrite:	´
+	parallel:	%parallel%
+	partial:	%partial%
+	pfun:	ﬂ
+	phi:	∆
+	pi:	–
+	pinj:	˛
+	pm:	%pm%
+	prec:	%prec%
+	preceq:	%preceq%
+	prod:	%prod%
+	propto:	%propto%
+	pset:	
+	psi:	Ÿ
+	psubset:	†
+	psupset:	‰
+	psurj:	œ
+	rbag:	˝
+	rchevron:	%rchevron%
+	rat:	%rat%
+	real:	%real%
+	rcomp:	ª
+	refinedby:	√
+	rel:	™
+	rhd:	%rhd%
+	rho:	“
+	rightharpoondown:	%rightharpoondown%
+	rightharpoonup:	%rightharpoonup%
+	rightleftharpoons:	%rightleftharpoons%
+	rrelimg:	©
+	rres:	í
+	rseq:	¢
+	rsub:	Å
+	searrow:	%searrow%
+	select:	≈
+	setminus:	%setminus%
+	sharp:	%sharp%
+	sigma:	”
+	simeq:	%simeq%
+	smile:	%smile%
+	spadesuit:	%spadesuit%
+	spot:	∑
+	sqcap:	%sqcap%
+	sqcup:	%sqcup%
+	sqsubset:	%sqsubset%
+	sqsubseteq:	√
+	star:	%star%
+	subset:	Ä
+	succ:	%succ%
+	succeq:	%succeq%
+	sum:	%sum%
+	supset:	Â
+	surd:	%surd%
+	surj:	Ô
+	symbol:	%symbol%
+	symdiff:	£
+	swarrow:	%swarrow%
+	tau:	‘
+	theta:	 
+	thm:	Ù
+	top:	%top%
+	triangleleft:	%triangleleft%
+	triangleright:	%triangleright%
+	u:	É
+	union:	¿
+	unlhd:	%unlhd%
+	unrhd:	%unrhd%
+	uparrow:	%uparrow%
+	updownarrow:	%updownarrow%
+	upsilon:	’
+	wp:	%wp%
+	wr:	%wr%
+	x":	x"
+	xi:	ÿ
+	zeta:	⁄
+=TEX
+\newpage
+=GFTSHOW
+	SX:	€
+	BH:	¸
+	BHH:	ú
+	SZG:	ù
+	SZS:	ˇ
+	BT:	˜
+	BV:	‹
+	EZ:	à
+	EFT:	∞
+	EX:	›
+	cantext:	Í
+	dntext:	Ë
+	down:	â
+	up:	õ
+	uptext:	Á
+	ulbegin:	ı
+	ulend:	ˆ
+=TEX
+\end{document}
+	

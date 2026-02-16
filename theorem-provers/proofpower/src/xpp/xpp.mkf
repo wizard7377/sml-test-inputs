@@ -1,0 +1,370 @@
+######################################################################
+# xpp.mkf $Revision: 1.86 $ $Date: 2014/04/23 13:09:43 $
+#
+# makefile for the X/Motif ProofPower Interface
+#
+# Drastically simplified by RDA for GNU make (and Linux).
+#
+# (c) ICL 1994-1999
+#
+######################################################################
+
+######################################################################
+#
+#	Makefile Definations
+#
+######################################################################
+
+.SUFFIXES: .doc .dvi
+
+# Control for RCS checking out: expand keywords to values only
+# (needed for document dates)
+COFLAGS=-kv
+
+# default make target, gives a list of more useful targets
+default:
+	@echo "The following are the generally useful targets:"
+	@echo " "
+	@echo "make -f xpp.mkf inst         - builds and installs the xpp files"
+	@echo "make -f xpp.mkf srcrel       - makes the xpp source release"
+	@echo "make -f xpp.mkf src          - makes the xpp source files"
+	@echo "make -f xpp.mkf bin          - makes binaries plus what is needed to use them"
+	@echo "make -f xpp.mkf doc          - makes xpp documentation"
+	@echo "make -f xpp.mkf packinglist  - lists the xpp source file names"
+	@echo " "
+	@echo "The following environment variable influences the behaviour:"
+	@echo " "
+	@echo "    PPMOTIFLINKING  - linking method (dynamic or static)"
+
+PRODNAME=PPXpp
+SHORTNAME=xpp
+VERSION=$(shell echo $${PPVER:-`cat version  2>/dev/null || echo XXX.YYY.ZZZ`})
+RELDIR=$(shell echo "$${PPTARGETDIR:-../../bld}")
+PRODUCT=$(PRODNAME)-$(VERSION)
+HAVERCS=$(shell (test -d RCS && echo y ) || echo n)
+CWD=$(shell pwd)
+OS=$(shell uname -s | dd conv=lcase 2>/dev/null | sed -e '/cygwin/s/.*/cygwin/')
+MOTIFLINKING=$(shell echo $${PPMOTIFLINKING:-dynamic})
+#
+# Test for presence of the pseudo-pseudo-device /dev/ptmx
+# If it's there then this platform has SVR4/Unix98/SUSV3
+# grantpt interfaces, so tell pterm.c to use them
+#
+DGRANTPT=$(shell test -c /dev/ptmx && echo -DUSE_GRANTPT)
+ifeq ($(OS), linux)
+# Linux:
+	CFLAGS = -g -DLINUX -DGETOPTDONE=-1 $(DGRANTPT) \
+		-DSLOWREGEXEC $(USERCFLAGS) -Wall -I/usr/X11R6/include
+	CLIBS = $(USERCLIBS) -L/usr/X11R6/lib \
+		-Wl,-B$(MOTIFLINKING) -lXm -Wl,-Bdynamic \
+		-lXt -lSM -lICE -lX11
+else
+ifeq ($(OS), darwin)
+# Mac OS X:
+	CFLAGS = -g -DMACOSX -DGETOPTDONE=-1 $(DGRANTPT) \
+		-DSLOWREGEXEC $(USERCFLAGS) -Wall -I/usr/X11R6/include
+	CLIBS = $(USERCLIBS) -L/usr/X11R6/lib \
+		-lXm -lXt -lSM -lICE -lX11
+else
+ifeq ($(OS), cygwin)
+	CC = gcc
+	CFLAGS = -g -DCYGWIN -DGETOPTDONE=-1 $(DGRANTPT) $(USERCFLAGS)  \
+		-DSLOWREGEXEC -Wall
+	CLIBS =  $(USERCLIBS) -lXm -lXt  -lX11
+else
+# Solaris is the only other system supported just now:
+	CC = gcc
+	CFLAGS = -g -DSOLARIS -DGETOPTDONE=EOF $(DGRANTPT) $(USERCFLAGS)  -Wall
+	CLIBS =  $(USERCLIBS) -L/usr/openwin/lib -lXm -lXt  -lX11
+endif
+endif
+endif
+# Distinctive tag for binary distribution file
+BINTAG=$(shell eval `arch-os`; echo $$ARCH-$$OS | dd conv=lcase 2>/dev/null)
+# If PPCOMPILER is set (e.g., during the open source build),
+# set command to customise the application-defaults.
+ifeq ($(PPCOMPILER), POLYML)
+	APPDEFFILTER="sed"
+	APPDEFFILTERARGS="-e /!POLYML/s/!POLYML//"
+else
+ifeq ($(PPCOMPILER), SMLNJ)
+	APPDEFFILTER="sed"
+	APPDEFFILTERARGS="-e /!SMLNJ/s/!SMLNJ//"
+else
+	APPDEFFILTER="cat"
+	APPDEFFILTERARGS=
+endif
+endif
+
+# C source files
+XPPCFILES=	cmdline.c\
+		diag.c\
+		files.c\
+		findfile.c\
+		lineno.c\
+		mainw.c\
+		menus.c\
+		msg.c\
+		options.c\
+		palette.c\
+		pixmaps.c\
+		pterm.c\
+		search.c\
+		templates.c\
+		undo.c\
+		xmisc.c\
+		xpp.c
+
+# C header file
+XPPHFILES=	pp_bitmap.h\
+		xpp.h
+
+# XPP help files
+XPPHELPFILES=	makehelp.sh\
+		help.txt
+
+# bitmap files
+XPPBMPFILES=	web.bmp\
+		zabbdef.bmp\
+		zaxbox.bmp\
+		zconject.bmp\
+		zconstr.bmp\
+		zgenbox.bmp\
+		zgivenset.bmp\
+		zschbox.bmp\
+		ztypedef.bmp\
+
+# X initialisation files
+XPPXFILES=	Mwm\
+		Xpp.ad\
+		xmodmaprc
+# Resource files:
+XPPRESOURCEFILES=\
+		Xpp.ad \
+		XppKeyboard \
+		XppZTemplates
+
+# X font files
+XPPFONTFILES=	Holdouble36.bdf\
+		Holnormal18.bdf\
+		Holsans10.bdf
+
+# Object files
+XPPOFILES=	$(XPPCFILES:.c=.o) help.o
+
+# documentation files
+
+RELEASEDOCFILES = usr031.dvi usr031a.eps usr031b.eps usr031c.eps
+
+MANFILES = xpp.1
+
+# packing list for the source release (target src).
+PACKINGLIST= \
+			Holdouble36.bdf \
+			Holnormal18.bdf \
+			Holsans10.bdf \
+			Xpp.ad \
+			XppKeyboard \
+			XppZTemplates \
+			cmdline.c \
+			diag.c \
+			files.c \
+			help.txt \
+			lineno.c \
+			mainw.c \
+			makehelp.sh \
+			menus.c \
+			msg.c \
+			options.c \
+			palette.c \
+			pixmaps.c \
+			pp_bitmap.h \
+			pterm.c \
+			search.c \
+			templates.c \
+			testpaned.c \
+			undo.c \
+			web.bmp \
+			xmisc.c \
+			xpp.c \
+			xpp.h \
+			xpp.mkf \
+			zabbdef.bmp \
+			zaxbox.bmp \
+			zconject.bmp \
+			zconstr.bmp \
+			zgenbox.bmp \
+			zgivenset.bmp \
+			zschbox.bmp \
+			ztypedef.bmp \
+			imp096.doc \
+			pptex.skw \
+			usr031.doc \
+			usr031a.eps \
+			usr031b.eps \
+			usr031c.eps \
+			usr001A.doc \
+			widgets.txt \
+			$(MANFILES)
+
+# packing list for user source release
+DISTPACKINGLIST=$(PACKINGLIST)
+
+
+######################################################################
+#
+#	Rules for making the documentation
+#
+######################################################################
+
+usr031.dvi: usr031a.eps usr031b.eps usr031c.eps usr001A.tex
+
+######################################################################
+#
+# Dependencies - determining the order of compilation
+#
+######################################################################
+
+cmdline.o:	cmdline.c xpp.h help.h
+diag.o:		diag.c xpp.h help.h
+files.o:	files.c xpp.h help.h
+lineno.o:	lineno.c xpp.h help.h
+mainw.o:	mainw.c xpp.h help.h
+menus.o:	menus.c xpp.h help.h
+msg.o:		msg.c xpp.h help.h
+options.o:	options.c xpp.h help.h
+palette.o:	palette.c xpp.h help.h
+pixmaps.o:	pixmaps.c pp_bitmap.h xpp.h
+search.o:	search.c xpp.h help.h
+templates.o:	templates.c xpp.h  help.h
+undo.o:		undo.c xpp.h help.h
+xmisc.o:	xmisc.c xpp.h help.h
+
+findfile.c: imp096.doc imp096.sieveview sieve sievekeyword
+	sieve -f imp096.sieveview -K findfile_prog < imp096.doc > findfile.c
+
+sieve: imp096.doc imp096.c
+	$(CC) -o sieve $(CFLAGS) imp096.c
+
+sievekeyword: pptex.skw
+	cat pptex.skw > $@
+
+imp096.c: imp096.doc
+	rm -f imp096.c
+	ln -s imp096.doc imp096.c
+
+
+imp096.sieveview: imp096.doc
+	sed -e '/^# imp096.sieveview/,/^# end of imp096.sieveview/!d' \
+		-e 's/^	//' imp096.doc > imp096.sieveview
+
+xpp.o: xpp.c xpp.h help.h
+	$(CC) $(CFLAGS) -c xpp.c -DBUILDTITLE='"$(PRODUCT)"'
+
+
+findfile.o: findfile.c
+	$(CC) $(CFLAGS) \
+		-DNO_FINDFILE_MAIN \
+		-Dfree=XtFree \
+		-Dmalloc=XtMalloc \
+		-Drealloc=XtRealloc \
+		-c findfile.c
+
+help.h help.c:help.txt makehelp.sh
+	sh makehelp.sh
+
+######################################################################
+#
+#	Building Xpp
+#
+######################################################################
+
+all: xpp
+
+xpp: $(XPPOFILES)
+	$(CC) $(CFLAGS) -o xpp $(XPPOFILES) $(CLIBS)
+
+#build_log: $(XPPCFILES)
+#	sccs edit build_log
+#	sccs prs -d':M: :I: :D:' -l SCCS >build_log
+#	sccs delget -y'update by makefile' build_log
+
+
+######################################################################
+#
+#	Building a release of Xpp
+#
+######################################################################
+
+reldir:
+	if [ "$${PPTARGETDIR:-}" = "" ]; \
+	then \
+		rm -rf "$(RELDIR)"; \
+	fi
+	[ -d   "$(RELDIR)" ] || mkdir "$(RELDIR)"
+
+bindir:	reldir
+	[ -d   "$(RELDIR)"/app-defaults ] || mkdir "$(RELDIR)"/app-defaults
+	[ -d   "$(RELDIR)"/bin ] || mkdir "$(RELDIR)"/bin
+	[ -d   "$(RELDIR)"/bitmaps ] || mkdir "$(RELDIR)"/bitmaps
+	[ -d   "$(RELDIR)"/fonts  ] || mkdir "$(RELDIR)"/fonts
+
+docdir: reldir
+	[ -d   "$(RELDIR)"/doc ] || mkdir "$(RELDIR)"/doc
+
+srcdir:	reldir
+	[ -d   "$(RELDIR)"/src ] || mkdir "$(RELDIR)"/src
+
+mandir:	reldir
+	[ -d   "$(RELDIR)"/man ] || mkdir "$(RELDIR)"/man
+	[ -d   "$(RELDIR)"/man/man1 ] || mkdir "$(RELDIR)"/man/man1
+
+binrel: bindir xpp $(XPPRESOURCEFILES) $(XPPFONTFILES) $(XPPBMPFILES)
+	cp xpp "$(RELDIR)"/bin
+	$(APPDEFFILTER) $(APPDEFFILTERARGS) <Xpp.ad >"$(RELDIR)"/app-defaults/Xpp
+	cp XppKeyboard XppZTemplates "$(RELDIR)"/app-defaults
+	( cd  "$(RELDIR)"/app-defaults; \
+	  rm -f XppTemplates; \
+	  ln -s XppZTemplates XppTemplates )
+	cp $(XPPFONTFILES) "$(RELDIR)"/fonts; mkfontdir "$(RELDIR)"/fonts
+	cp $(XPPBMPFILES) "$(RELDIR)"/bitmaps
+	chmod -R a-w "$(RELDIR)"
+	chmod -R g-w "$(RELDIR)"
+	chmod -R u+w "$(RELDIR)"
+
+docrel: docdir $(RELEASEDOCFILES) \
+		mandir $(MANFILES) widgets.txt
+	cp $(RELEASEDOCFILES) "$(RELDIR)"/doc
+	cp widgets.txt "$(RELDIR)"/doc
+	chmod -R a-w "$(RELDIR)"
+	chmod -R g-w "$(RELDIR)"
+	chmod -R u+w "$(RELDIR)"
+	cp $(MANFILES) "$(RELDIR)"/man/man1
+
+inst:	 binrel docrel
+
+# useful target to print out the names of all the files in the source release
+packinglist:
+	@echo $(PACKINGLIST)
+
+######################################################################
+#
+#	Tidying up
+#
+######################################################################
+clean:
+	rm -f $(XPPOFILES) help.c help.h xpp \
+	*.tex *.aux *.bbl *.blg *.dvi *.lof *.log *.sid *.tex *.toc \
+	findfile.c imp096.c imp096.sieveview sieve sievekeyword
+
+######################################################################
+#
+#	Generic rules
+#
+######################################################################
+
+%.dvi: %.doc
+	docdvi $*
+
+%.tex: %.doc
+	doctex $*

@@ -1,0 +1,2287 @@
+=IGN
+********************************************************************************
+mdt041.doc: this file is part of the PPZed system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Module Tests for Z Predicate Calculus}
+
+\def\AbstractText{This document gives the module tests for the rules and tactics for the Z predicate calculus.}
+
+\def\Reference{DS/FMU/IED/MDT041}
+
+\def\Author{K. Blackburn}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{FST PROJECT}  %% Mandatory field
+%% LaTeX2e port: \TPPtitle{Module Tests for Z Predicate Calculus}
+%% LaTeX2e port: \TPPref{DS/FMU/IED/MDT041}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Revision: 1.41 $
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2010/04/01 17:29:41 $ %
+%% LaTeX2e port: }}  %% Mandatory field
+%% LaTeX2e port: \TPPstatus{Draft}			%% Mandatory field
+%% LaTeX2e port: \TPPtype{SML Literate Script}
+%% LaTeX2e port: \TPPkeywords{}
+%% LaTeX2e port: \TPPauthor{K.~Blackburn & WIN01}  %% Mandatory field
+%% LaTeX2e port: %\TPPauthors{R.D.~Arthan & WIN01 \\ K.~Blackburn & WIN01}
+%% LaTeX2e port: \TPPauthorisation{R.D.Arthan & FST Team Leader}
+%% LaTeX2e port: \TPPabstract{This document gives the module tests for the
+%% LaTeX2e port: rules and tactics for the Z predicate calculus.}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port: 	    Project Library
+%% LaTeX2e port: }}
+%% LaTeX2e port: %\TPPclass{CLASSIFICATION}
+%% LaTeX2e port: %\def\TPPheadlhs{}
+%% LaTeX2e port: %\def\TPPheadcentre{}
+%% LaTeX2e port: %def\TPPheadrhs{}
+%% LaTeX2e port: %\def\TPPfootlhs{}
+%% LaTeX2e port: %\def\TPPfootcentre{}
+%% LaTeX2e port: %\def\TPPfootrhs{}
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+\pagebreak
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu}
+
+\subsection{Changes History}
+\begin{description}
+\item [Issue 1.1 (1992/08/12) - 1.3 (1992/08/18)]
+First versions.
+\item [Issue 1.5 (1992/08/20) (20th August 1992)]
+Bug fixing.
+\item [Issue 1.6 (1992/09/09) (9th September 1992)]
+Added $z\_∂\_intro\_conv$ tests.
+\item [Issue 1.7 (1992/09/10) (10th September 1992)]
+Typo fixed, title corrected.
+\item [Issue 1.8 (1992/09/14) (10th September 1992)]
+Changes after comments.
+\item [Issue 1.11 (1992/10/19),1.12 (1992/10/28) (29th October 1992)]
+Changes due to parser changes and theory reorganisation.
+\item [Issue 1.14 (1992/11/12) (12th November 1992)]
+Changes after comments - proof context changes,
+added $z\_µ\_tac$, etc, replaced $z\_defn\_conv$ by $z\_para\_pred\_conv$, etc, added $z\_decl\_pred\_conv$.
+\item [Issue 1.16 (1992/11/17) (17th Novemember 1992)]
+Added $z\_term\_of\_type$
+\item [Issue 1.17 (1992/11/27) (25th Novemember 1992)]
+Added $z\_term\_of\_type$.
+\item [Issue 1.18 (1992/12/01) (1st December 1992)]
+Changed treatment of ill-formed schemas as predicates in $z\-\_dec\-\_pred\-\_conv$.
+\item [Issue 1.19 (1992/12/03) (2nd December 1992)]
+Improved $É$ simplification.
+\item [Issue 1.20 (1992/12/08), 7th December 1992]
+Fixing problems from changes to generic formals.
+\item [Issue 1.21 (1992/12/09), 9th December 1992]
+Bug fixing.
+\item[Issue 1.22 (1992/12/10) (10th December 1992)]
+Global rename from wrk038.doc issue 1.9.
+\item[Issue 1.23 (1992/12/18) (18th December 1992)]
+Added $z\_pred\_decl\_conv$.
+\item[Issue 1.24 (1993/01/15) (14th January 1993)]
+Added treatment of generic predicates.
+\item[Issue 1.25 (1993/01/20) (20th January 1993)]
+Lost $z\_strip\_tac$.
+\item[Issue 1.26 (1993/02/10) (10th February 1993)]
+Reacting to changes in proof contexts, et al.
+\item[Issue 1.27 (1993/02/16) (15th February 1993)]
+Added $z\_push\_consistency\_goal$.
+\item[Issue 1.28 (1994/09/28) (28th September 1994)]
+Test requires ProofPower have z\_type\_check\_only flag set the false.  This is now set explicitly at the start, and restored at the end.
+\item[Issue 1.29 (1994/11/01)] Added new conversion.
+\item[Issue 1.30 (1995/01/04)] reverted since new conversion should go in imp043.
+\item[Issue 1.32 (1997/04/25)] Changed to address $dest\_z\_term$ increased care w.r.t.
+schemas as predicates.
+\item[Issue 1.33 (2000/07/01)] Added test for
+=INLINEFT
+z_gen_pred_elim1
+=TEX
+.
+\item[Issue 1.34 (2002/03/09)] No longer relies on aliases for HOL integer operations being undeclared.
+\item[Issue 1.35 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.36 (2002/10/17)] PPZed-specific updates for open source release
+\item[Issue 1.37 (2003/07/16)]  -terms are now checked more thoroughly by the Z term destructors.
+\item[Issue 1.38 (2004/01/19)] The Z universal set is now called É.
+\item[Issue 1.39 (2005/09/10)] Added test for {\em z\_gen\_pred\_u\_elim}.
+\item[Issue 1.40 (2005/12/16)] Allowed for change HOL error message number.
+\item[Issue 1.41 (2010/04/01)] Added tests for empty schemas.
+\item[Issue 1.42 (2010/04/05)] Added test for {\em z\_ç\_u\_conv}.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported PPZed to Lemma 1 document template.
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+\subsection{Changes Forecast}
+None known.
+\section{GENERAL}
+\subsection{Scope}
+This document contains the module tests for the material
+whose detailed design is given in \cite{DS/FMU/IED/DTD041}.
+\subsection{Introduction}
+This document contains the module tests for the material
+whose detailed design is given in \cite{DS/FMU/IED/DTD041}.
+This consists of demonstrating at least the simpler uses of the
+functions in question.
+\subsubsection{Dependencies}
+The tests depend upon \cite{DS/FMU/IED/IMP041} and \cite{DS/FMU/IED/IMP013}.
+In addition, testing by the subgoal package (section \ref{subgoalpackage})
+depends on \cite{DS/FMU/IED/IMP030}.
+\subsubsection{Deficiencies}
+The testing could be more rigorous.
+In particular, functions
+=GFT
+z_basic_prove_tac, z_basic_prove_conv,
+z_fc_prove_tac, z_fc_prove_conv
+=TEX
+and proof context
+=GFT
+'z_fc
+=TEX
+are not tested.
+Nor do we test error message 41016.
+\section{TEST CASES}
+The functions are tested in their order of presentation in the detailed design.
+\section{PREAMBLE}
+Change the {\tt z\_type\_check\_only} flag, and save the old value for later.
+=SML
+val old_flag = set_flag("z_type_check_only",false);
+=TEX
+=SML
+val use_thy = "z_sets";
+open_theory use_thy; (* to access ∫ *)
+delete_theory "temp" handle _ => ();
+new_theory "temp";
+use_file "dtd013";
+use_file "imp013";
+init_mt_results();
+(* set_flag("subgoal_package_quiet",true); *)
+repeat drop_main_goal;
+set_flag("check_is_z",true);
+=TEX
+We use the proof context
+``z$\_$predicates''.
+=SML
+push_pc "z_predicates";
+=TEX
+
+=SML
+fun €list_eq› (eq:'a * 'a -> bool) ((a :: x), (b :: y)) : bool = (
+	eq(a,b) andalso list_eq eq (x, y)
+) | list_eq eq ([], []) = true
+| list_eq _ _ = false;
+=TEX
+If two terms types are equal, break them apart until they differ.
+=SML
+fun €differ_where› itm1 itm2 = (
+let	fun aux tm1 tm2 (App(f1,x1)) (App(f2,x2)) = (
+		Value(force_value(aux f1 f2 (dest_simple_term f1) (dest_simple_term f2)))
+		handle _ =>
+		aux x1 x2 (dest_simple_term x1) (dest_simple_term x2))
+	| aux tm1 tm2 (Const(nm1,ty1)) (Const(nm2,ty2)) = (
+		if nm1 = nm2 andalso ty1 =: ty2
+		then Nil
+		else Value(tm1,tm2))
+	| aux tm1 tm2 (Var(nm1,ty1)) (Var(nm2,ty2)) = (
+		if nm1 = nm2 andalso ty1 =: ty2
+		then Nil
+		else Value(tm1,tm2))
+	| aux tm1 tm2 (SimpleÃ(x1,b1)) (SimpleÃ(x2,b2)) = (
+		if x1 =$ x2
+		then aux b1 b2 (dest_simple_term b1) (dest_simple_term b2)
+		else Value(tm1,tm2))
+	| aux tm1 tm2 _ _ = Value(tm1,tm2);
+in
+	aux itm1 itm2 (dest_simple_term itm1) (dest_simple_term itm2)
+end);
+=TEX
+\subsection{Testing Using Subgoal Package}
+\label{subgoalpackage}
+The following functions apply a tactic to a selected goal
+and returns the resulting top goal.
+This of course doesn't fully test tactics that return multiple
+goals.
+The functions differ in that $tac\_res1$ inputs and outputs
+both assumptions and conclusion, while $tac\_res$
+just assumes an empty assumption list.
+=SML
+fun €tac_res› tac goal = (push_goal([],goal);
+		a tac;
+		let val (seqasms,gl) = top_goal()
+		in
+			(drop_main_goal();
+			gl)
+		end);
+fun €tac_res› tac goal = (push_goal([],goal);
+		a tac;
+		let val (seqasms,gl) = top_goal()
+		in
+			(drop_main_goal();
+			gl)
+		end);
+fun €tac_res1› tac (seqasms, goal) = (
+		push_goal(seqasms,goal);
+		a tac;
+		let val (rasms,gl) = top_goal()
+		in
+			(drop_main_goal();
+			(rasms,gl))
+		end);
+=TEX
+Now a function that returns the multiple goals for the case when a tactic causes multiple goals:
+=SML
+fun €tac_ress› tac n (seqasms, goal) = (
+		push_goal(seqasms,goal);
+		a tac;
+		let val gll = map (top_labelled_goal o string_of_int)
+			(interval 1 n)
+		in
+			(drop_main_goal();
+			gll)
+		end);
+=TEX
+This function tests that a tactic proves a goal:
+=SML
+fun €tac_solve› tac (seqasms, goal) = (
+	dest_thm (tac_proof ((seqasms,goal),tac))
+	=#
+	(seqasms, goal)
+);
+=TEX
+This function tests that a tactic fails on a goal:
+=SML
+fun €tac_fail› tac (seqasms, goal) = (
+	push_goal(seqasms,goal);
+	a tac
+	handle complaint =>
+	(drop_main_goal();
+	reraise complaint (area_of complaint))
+);
+=TEX
+The following tests $is\_z$, $not\_z\_subterms$,
+$dest\-\_z\-\_term1$, $check\-\_is\-\_z\-\_thm$, $check\-\_is\-\_z\-\_goal$,
+$check\-\_is\-\_z\-\_term$ together, on a pair of very similar
+terms, except that one is Z and one not quite Z,
+in a manner $dest\-\_z\-\_term$ doesn't notice.
+
+The following utilities just give rise to lots of information
+messages.
+=SML
+fun €test_check_is_z_thm› tm = (
+let	val thm1 = refl_conv tm;
+in
+	(thm1 =|- check_is_z_thm "test" thm1)
+end
+handle _ => false);
+fun €test_check_is_z_goal› tm = (
+let	val gl1 = ([],mk_eq(tm, tm));
+in
+	(gl1 =# check_is_z_goal "test" gl1)
+end
+handle _ => false);
+fun €test_check_is_z_term› tm = (
+	(tm =$ check_is_z_term "test" tm)
+handle _ => false);
+
+fun €really_z› name tm1 tm2 =
+store_mt_results mt_run [(name ^ " is_z y",
+	(fn x => ((is_z x) handle _ => false)),
+	tm1,
+	true),
+	(name ^ " is_z n",
+	(fn x => ((is_z x) handle _ => false)),
+	tm2,
+	false),
+	(name ^ " not_z_subterms []",
+	(fn x => length x = 0) o not_z_subterms,
+	tm1,
+	true),
+	(name ^ " not_z_subterms [1]",
+	(fn x => length x = 1) o not_z_subterms,
+	tm2,
+	true),
+	(name ^ " dest_z_term y",
+	(fn x => ((dest_z_term x; true) handle _ => false)),
+	tm1,
+	true),
+	(name ^ " dest_z_term n",
+	(fn x => ((dest_z_term x; true) handle _ => false)),
+	tm2,
+	true),
+	(name ^ " dest_z_term1 y",
+	(fn x => ((dest_z_term1 x; true) handle _ => false)),
+	tm1,
+	true),
+	(name ^ " dest_z_term1 n",
+	(fn x => ((dest_z_term1 x; true) handle _ => false)),
+	tm2,
+	false),
+	(name ^ " test_check_is_z_thm y",
+	test_check_is_z_thm,
+	tm1,
+	true),
+	(name ^ " test_check_is_z_thm n",
+	test_check_is_z_thm,
+	tm2,
+	true),
+	(name ^ " test_check_is_z_goal y",
+	test_check_is_z_goal,
+	tm1,
+	true),
+	(name ^ " test_check_is_z_goal n",
+	test_check_is_z_goal,
+	tm2,
+	true),
+	(name ^ " test_check_is_z_term y",
+	test_check_is_z_term,
+	tm1,
+	true),
+	(name ^ " test_check_is_z_term n",
+	test_check_is_z_term,
+	tm2,
+	true)];
+=TEX
+$dest\_z\_term$s behaviour with schemas as predicates and  -terms has been made to
+check for the results not being Z during an upgrade, so in this one case
+``it cares''.
+=SML
+fun €really_z_dest_z_term_cares› name tm1 tm2 =
+store_mt_results mt_run [(name ^ " is_z y",
+	(fn x => ((is_z x) handle _ => false)),
+	tm1,
+	true),
+	(name ^ " is_z n",
+	(fn x => ((is_z x) handle _ => false)),
+	tm2,
+	false),
+	(name ^ " not_z_subterms []",
+	(fn x => length x = 0) o not_z_subterms,
+	tm1,
+	true),
+	(name ^ " not_z_subterms [1]",
+	(fn x => length x = 1) o not_z_subterms,
+	tm2,
+	true),
+	(name ^ " dest_z_term y",
+	(fn x => ((dest_z_term x; true) handle _ => false)),
+	tm1,
+	true),
+	(name ^ " dest_z_term n",
+	(fn x => ((dest_z_term x; true) handle _ => false)),
+	tm2,
+	false),
+	(name ^ " dest_z_term1 y",
+	(fn x => ((dest_z_term1 x; true) handle _ => false)),
+	tm1,
+	true),
+	(name ^ " dest_z_term1 n",
+	(fn x => ((dest_z_term1 x; true) handle _ => false)),
+	tm2,
+	false),
+	(name ^ " test_check_is_z_thm y",
+	test_check_is_z_thm,
+	tm1,
+	true),
+	(name ^ " test_check_is_z_thm n",
+	test_check_is_z_thm,
+	tm2,
+	true),
+	(name ^ " test_check_is_z_goal y",
+	test_check_is_z_goal,
+	tm1,
+	true),
+	(name ^ " test_check_is_z_goal n",
+	test_check_is_z_goal,
+	tm2,
+	true),
+	(name ^ " test_check_is_z_term y",
+	test_check_is_z_term,
+	tm1,
+	true),
+	(name ^ " test_check_is_z_term n",
+	test_check_is_z_term,
+	tm2,
+	true)];
+=TEX
+\subsection{Some Useful Examples}
+ˇTEST_SCHEMA¸
+x:É;
+y:É
+à
+=SML
+val notz = ¨∂ x ∑ x = yÆ;
+val trues = string_of_term mk_t;
+val notzs = string_of_term notz;
+val xX = mk_var("x",î'XÆ);
+
+=TEX
+\section{TESTS}
+\subsection{Checking For Z}
+This is primarily done by $really\_z$.
+=SML
+val _ = diag_string
+	"***There should now be a large number of ``In the result of...'' messages***";
+=TEX
+Note that short blocks of decoration precedes long ones in the variable sorting.
+=SML
+let
+val tm = mk_z_schema_dec(Ò[z:X;x:Y;y:Z]Æ,"'");
+val y' = nth 4 (frees tm);
+val y'' = variant [y'] y';
+val tm' = subst[(y'',y')] tm;
+in
+really_z "decsexp" tm tm'
+end;
+let
+val tm = Òµ #!, #? : X ∑ #! = zÆ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Zµ" tm tm'
+end;
+let
+val tm = Ò∂ #!, #? : X ∑ #! = zÆ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Z∂" tm tm'
+end;
+let
+val tm = Ò∂â1 #!, #? : X ∑ #! = zÆ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Z∂â1" tm tm'
+end;
+let
+val Z∂(a,b,c) = dest_z_term Ò∂ #!, #? : X | #! = z ∑ [#!,#? : X | true]Æ;
+val tm = mk_z_∂âs(a,b,Ò[#!,#? : X | true]Æ);
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Z∂âs" tm tm'
+end;
+let
+val Z∂(xa,xb,xc) = dest_z_term Ò∂ #!, #? : X | #! = z ∑ [#!,#? : X | true]Æ;
+val tm = mk_z_∂â1âs(xa,xb,Ò[#!,#? : X | true]Æ);
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Z∂â1âs" tm tm'
+end;
+let
+val Z∂(xa,xb,xc) = dest_z_term Ò∂ #!, #? : X | #! = z ∑ [#!,#? : X | true]Æ;
+val tm = mk_z_µâs(xa,xb,Ò[#!,#? : X | true]Æ);
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "µâs" tm tm'
+end;
+let
+val tm1 = Ò[#!,#?:X | #! = z] ± trueÆ;
+val tm = fst(dest_z_± tm1);
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val x_ins' = mk_var("#!'",type_of z);
+val tm' = subst [(x_ins',x_ins)] tm;
+in
+really_z_dest_z_term_cares "predsexp" tm tm'
+end;
+let
+val tm = Ò{#!, #? : X | #! = z}Æ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "seta" tm tm'
+end;
+let
+val tm = Ò [#!, #? : X | #! = z]Æ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val x_ins' = mk_var("#!'",type_of z);
+val tm' = subst [(x_ins',x_ins)] tm;
+in
+really_z_dest_z_term_cares " " tm tm'
+end;
+let
+val tm = Ò Ã #!, #? : X ∑ #! = zÆ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Ã" tm tm'
+end;
+let
+val tm = Ò Õ #!, #? : X ∑ #! = zÆ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "Õ" tm tm'
+end;
+let
+val tm = Ò [#!,#? : X | #! = z]Æ;
+val z = hd(frees tm);
+val x_ins = mk_var("#!",type_of z);
+val tm' = subst [(x_ins,z)] tm;
+in
+really_z "decsexp1" tm tm'
+end;
+
+=TEX
+=SML
+val _ = diag_string
+	"***The ``In the result of...'' messages should now cease***";
+=TEX
+But just to check the error messages:
+=SML
+val not_a_z_term = ¨Ã x ∑ TÆ;
+val not_a_z_term2 = ¨Ã x ∑ FÆ;
+val not_a_z_term_st = string_of_term not_a_z_term;
+val not_a_z_type = î'a LISTÆ;
+val not_a_z_type_st = string_of_type not_a_z_type;
+store_mt_results mt_run_fail [("dest_z_term1 41002",
+	dest_z_term1,
+	not_a_z_term,
+	gen_fail_msg "dest_z_term1" 41002 [not_a_z_term_st])];
+store_mt_results mt_run_fail [("is_z 41002",
+	is_z,
+	not_a_z_term,
+	gen_fail_msg "is_z" 41002 [not_a_z_term_st])];
+store_mt_results mt_run_fail [("is_all_z_type 41002",
+	is_all_z_type,
+	not_a_z_type,
+	gen_fail_msg "is_all_z_type" 41003 [not_a_z_type_st])];
+store_mt_results (mt_runf (list_eq(op =$)))
+	[("not_z_subterms",
+	not_z_subterms,
+	mk_eq(not_a_z_term,not_a_z_term2),
+	[not_a_z_term2, not_a_z_term])];
+=TEX
+To test the quieting effect of $check\_is\_z$
+=SML
+val _ = (diag_string "Being Noisy";
+	check_is_z_thm "test" (refl_conv not_a_z_term);
+	check_is_z_goal "test" ([],mk_eq( not_a_z_term,not_a_z_term2));
+	check_is_z_term "test" not_a_z_term;
+	diag_string "Going Quiet";
+	set_flag("check_is_z",false);
+	check_is_z_thm "test" (refl_conv not_a_z_term);
+	check_is_z_goal "test" ([],mk_eq(not_a_z_term,not_a_z_term2));
+	check_is_z_term "test" not_a_z_term;
+	diag_string "Back to Normal";
+	set_flag("check_is_z",true)
+);
+=TEX	
+\subsection{Representing HOL Types as Z Terms}
+=SML
+πZ
+[GS1, GS2]
+∞
+=SML
+val zt = z_term_of_type o type_of;
+store_mt_results (mt_runf (op =$))  [
+	("z_term_of_type 1", zt, ÒGS1Æ, Ò GS1Æ),
+	("z_term_of_type 2", zt, ÒGS1 ∏ GS2Æ, ÒGS1 ™ GS2Æ),
+	("z_term_of_type 3", zt, ÒGS1 ∏ GS2 ∏ GS1Æ, Ò (GS1 ∏ GS2 ∏ GS1)Æ),
+	("z_term_of_type 4", zt, Ò[a,b : GS1]Æ, Ò [a,b : GS1]Æ),
+	("z_term_of_type 5", zt, ¨[1;2]Æ, mk_u îÓ LIST SETÆ)];
+
+val zt = z_type_of;
+store_mt_results (mt_runf (op =$))  [
+	("z_type_of 1", zt, ÒGS1Æ, Ò GS1Æ),
+	("z_type_of 2", zt, ÒGS1 ∏ GS2Æ, ÒGS1 ™ GS2Æ),
+	("z_type_of 3", zt, ÒGS1 ∏ GS2 ∏ GS1Æ, Ò (GS1 ∏ GS2 ∏ GS1)Æ),
+	("z_type_of 4", zt, Ò[a,b : GS1]Æ, Ò [a,b : GS1]Æ),
+	("z_type_of 5", zt, ¨[1;2]Æ, mk_u îÓ LIST SETÆ)];
+
+=TEX	
+\subsection{Adjustment after ¡-conversion}
+=SML
+val _ = diag_string "¡_to_z NOT YET IMPLEMENTED";
+val _ = diag_string "¡_to_z_conv NOT YET IMPLEMENTED";
+=TEX
+\subsection{Concerning The Universe}
+=SML
+fun €test_z_ç_u_conv› tm = (
+let	val thm = z_ç_u_conv tm;
+	val (l,r) = dest_eq (concl thm);
+in
+	(l =$ tm) andalso (r =$ mk_t)
+end);
+=TEX
+=SML
+store_mt_results mt_run [
+	("z_ç_u_conv 1",
+	test_z_ç_u_conv,
+	Òx ç ÉÆ,
+	true),
+	("z_ç_u_conv 2",
+	test_z_ç_u_conv,
+	Òx Ä ÉÆ,
+	true),
+	("z_ç_u_conv 3",
+	test_z_ç_u_conv,
+	snd(dest_± Òtrue ± [a: É]Æ),
+	true),
+	("z_ç_u_conv 4",
+	test_z_ç_u_conv,
+	Òx ç  ÉÆ,
+	true),
+	("z_ç_u_conv 5",
+	test_z_ç_u_conv,
+	Òx ç  (É ∏ É)Æ,
+	true),
+	("z_ç_u_conv 6",
+	test_z_ç_u_conv,
+	Òx ç {x:É; y: É}Æ,
+	true),
+	("z_ç_u_conv 7",
+	test_z_ç_u_conv,
+	Òx ç {y:É; x: É}Æ,
+	true),
+	("z_ç_u_conv 8",
+	test_z_ç_u_conv,
+	Òx ç  {x:É; y: É ∏ É}Æ,
+	true),
+	("z_ç_u_conv 9",
+	test_z_ç_u_conv,
+	Òx ç [a ,b : É; c : É]Æ,
+	true),
+	("z_ç_u_conv 10",
+	test_z_ç_u_conv,
+	Òx ç  (É ∏ É) ∏ [a ,b : É; c : É]Æ,
+	true),
+	("z_ç_u_conv 11",
+	test_z_ç_u_conv,
+	Ò{x,y} Ä  (É ∏ É) ∏ [a ,b : É; c : É]Æ,
+	true),
+	("z_ç_u_conv 12",
+	test_z_ç_u_conv,
+	snd(dest_±(Òtrue ± [a ,b : É ∏ [a ,b : É; c : É]; c :  É]Æ)),
+	true),
+	("z_ç_u_conv 13",
+	test_z_ç_u_conv,
+	Òx ç {y: É | true}Æ,
+	true),
+	("z_ç_u_conv 14",
+	test_z_ç_u_conv,
+	Òx ç {x: É | true}Æ,
+	true),
+	("z_ç_u_conv 15",
+	test_z_ç_u_conv,
+	Òx ç [x: É]Æ,
+	true),
+	("z_ç_u_conv 16",
+	test_z_ç_u_conv,
+	Òx ç []Æ,
+	true),
+	("z_ç_u_conv 17",
+	test_z_ç_u_conv,
+	Òx ç [[]; []]Æ,
+	true),
+	("z_ç_u_conv 18",
+	test_z_ç_u_conv,
+	Òx ç {x :  ([] ∏ [])}Æ,
+	true)
+	];
+=TEX
+=SML
+store_mt_results mt_run_fail [("z_ç_u_conv 41062",
+	z_ç_u_conv,
+	not_a_z_term,
+	gen_fail_msg "z_ç_u_conv" 41062 [not_a_z_term_st]),
+	("z_ç_u_conv 41061",
+	z_ç_u_conv,
+	Òy ç XÆ,
+	gen_fail_msg "z_ç_u_conv" 41061 [string_of_term Òy ç XÆ])];
+=TEX
+Test out proof context fields:
+=SML
+delete_pc "temp" handle (Fail _) => ();
+new_pc "temp";
+set_u_simp_eqn_cxt (theory_u_simp_eqn_cxt "-") "temp";
+store_mt_results mt_run_fail [
+	("z_ç_u_conv 41061 a",
+	z_ç_u_conv,
+	Òy ç GS1 ∏  GS2Æ,
+	gen_fail_msg "z_ç_u_conv" 41061 [string_of_term Òy ç GS1 ∏  GS2Æ])];
+push_pc "temp";
+store_mt_results mt_run [
+	("z_ç_u_conv pc 1",
+	test_z_ç_u_conv,
+	Òy ç GS1 ∏  GS2Æ,
+	true)];
+pop_pc();
+store_mt_results mt_run [
+	("get_u_simp_eqn_cxt 1",
+	length o fst o hd o get_u_simp_eqn_cxt,
+	"temp",
+	2)];
+delete_pc "temp";
+new_pc "temp";
+set_u_simp_eqn_cxt (u_simp_eqn_cxt [z_get_spec ÒGS1Æ, z_get_spec ÒGS2Æ]) "temp";
+push_pc "temp";
+store_mt_results mt_run [
+	("z_ç_u_conv pc 2",
+	test_z_ç_u_conv,
+	Òy ç GS1 ∏  GS2Æ,
+	true)];
+store_mt_results mt_run [
+	("get_u_simp_eqn_cxt 2",
+	length o fst o hd o get_u_simp_eqn_cxt,
+	"temp",
+	2)];
+pop_pc();
+=TEX
+Just to prove errors are being passed on:
+=SML
+store_mt_results mt_run_fail [
+	("set_u_simp_eqn_cxt 51016",
+	set_u_simp_eqn_cxt [],
+	"initial",
+	gen_fail_msg "set_u_simp_eqn_cxt" 51016 ["initial"])];
+store_mt_results mt_run_fail [
+	("get_u_simp_eqn_cxt 51010",
+	get_u_simp_eqn_cxt,
+	"rubbish",
+	gen_fail_msg "get_u_simp_eqn_cxt" 51010 ["rubbish"])
+	];
+store_mt_results mt_run_fail [
+	("theory_u_simp_eqn_cxt 12035",
+	theory_u_simp_eqn_cxt,
+	"rubbish",
+	gen_fail_msg "theory_u_simp_eqn_cxt" 12035 ["rubbish"])
+	];
+=TEX
+\subsection{Concerning Z Universal Quantification}
+=SML
+let
+	val   = Ò  TEST_SCHEMAÆ;
+in
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_elim 1",
+	concl o z_µ_elim Ò(x ¶ (q ∫ a), y ¶ (r ∫ b), z ¶ (p ∫ a))Æ,
+	(asm_ruleÒµ x:X; y:Y; z:X | f x ∑ g y zÆ),
+	Ò(((q ç X) ± (r ç Y) ± (p ç X)) ± f q) ¥ (g r) pÆ),
+	("z_µ_elim 2",
+	concl o z_µ_elim Ò(x ¶ (q ∫ a), y ¶ (r ∫ b), z ¶ (p ∫ a))Æ,
+	(asm_ruleÒµ x:X; y:Y; z:X | f x ∑ g  ¨a + (b:Ó)Æ zÆ),
+	Ò(((q ç X) ± (r ç Y) ± (p ç X)) ± f q) ¥ (g ¨a + (b:Ó)Æ) pÆ),
+	("z_µ_elim 3",
+	concl o z_µ_elim ÒSS ∫ [x:a;y:b;z:a]Æ,
+	(asm_ruleÒµ x:X; y:Y; z:X | f x ∑ g  y zÆ),
+	Ò((((SS ∫ [x:a;y:b;z:a]).x ç X) ± (SS.y ç Y) ± (SS.z ç X)) ± f SS.x)
+	¥ (g SS.y) SS.zÆ),
+	("z_µ_elim 4",
+	concl o z_µ_elim mk_t,
+	(asm_ruleÒµ x:BOOL ∑ xÆ),
+	Ò(true ç BOOL ± true) ¥ trueÆ),
+	("z_µ_elim 5",
+	concl o z_µ_elim Ò  (TEST_SCHEMA ∫ [x:X;y:Y])Æ,
+	(asm_ruleÒµ x:É;y: É∑ f x yÆ),
+	Ò((((  (TEST_SCHEMA ∫ [x:X;y:Y])).x ç É) ±
+		(  (TEST_SCHEMA ∫ [x:X;y:Y])).y ç É) ±
+		 true) ¥ f (  (TEST_SCHEMA ∫ [x:X;y:Y])).x
+		(  (TEST_SCHEMA ∫ [x:X;y:Y])).yÆ),
+	("z_µ_elim 6",
+	concl o z_µ_elim Ò()Æ,
+	(asm_ruleÒµ | P ∑ BÆ),
+	Òtrue ± P ¥ BÆ)
+	]
+end;
+=TEX
+Ignore the single ``not in the Z language'' message from the above.
+=SML
+val mk_t_st = string_of_term mk_t;
+val mk_f_st = string_of_term mk_f;
+val (xyz_decl,_,_) = dest_z_µ Òµ x:X; y:Y; z:X ∑ trueÆ;
+store_mt_results mt_run_fail [
+	("z_µ_elim 47310",
+	z_µ_elim mk_t,
+	t_thm,
+	gen_fail_msg  "z_µ_elim" 47310 [mk_t_st]),
+	("z_µ_elim 41021 a",
+	z_µ_elim Ò(x ¶ (q ∫ a), y ¶ (r ∫ b))Æ,
+	(asm_ruleÒµ x:X; y:Y; z:X | f x ∑ g  ¨a + (b:Ó)Æ zÆ),
+	gen_fail_msg  "z_µ_elim" 41021 [
+		string_of_term Ò(x ¶ (q ∫  a), y ¶ (r ∫  b))Æ,
+		string_of_term xyz_decl]),
+	("z_µ_elim 41021 b",
+	z_µ_elim mk_t,
+	(asm_ruleÒµ x:X; y:Y; z:X | f x ∑ g  ¨a + (b:Ó)Æ zÆ),
+	gen_fail_msg  "z_µ_elim" 41021 [mk_t_st,
+		string_of_term xyz_decl])
+	];
+=TEX
+Notice how second test tests whether $z\_µ\_intro1$ leaks
+declaration processing into predicate part.
+=SML
+let
+	val tm1 = Ò((x ç W ± y ç X) ± ({p,q} Ä Y) ± (z ç Z)) ± f x ¥ g w y zÆ;
+	val tm2 = Ò((x ç W ± y ç X) ± ({p,q} Ä Y) ± (z ç Z))  ¥ g w y zÆ;
+	val tm3 = Ò(true ± P) ¥ BÆ;
+in
+store_mt_results (mt_runf(op =$)) [
+	("z_µ_intro1 1",
+	concl o z_µ_intro1,
+	(all_µ_elim (asm_rule(list_mk_µ(frees tm1, tm1)))),
+	Òµ x:W; y:X; p,q:Y; z:Z | f x ∑ g w y zÆ),
+	("z_µ_intro1 2",
+	concl o z_µ_intro1,
+	(all_µ_elim (asm_rule(list_mk_µ(frees tm2, tm2)))),
+	Òµ x : W; y : X | {p, q} Ä Y ± z ç Z ∑ g w y zÆ),
+	("z_µ_intro1 3",
+	concl o z_µ_intro1,
+	(all_µ_elim (asm_rule(list_mk_µ(frees tm3, tm3)))),
+	Òµ | P ∑ BÆ)
+	]
+end;
+=TEX
+=SML
+store_mt_results mt_run_fail [
+	("z_µ_intro1 41026",
+	z_µ_intro1,
+	t_thm,
+	gen_fail_msg "z_µ_intro1" 41026 [string_of_thm t_thm]),
+	("z_µ_intro1 41027",
+	z_µ_intro1,
+	asm_rule Òfalse ± true ¥ trueÆ,
+	gen_fail_msg "z_µ_intro1" 41027 [mk_f_st]),
+	("z_µ_intro1 6005",
+	z_µ_intro1,
+	asm_rule Òx ç X ± true ¥ trueÆ,
+	gen_fail_msg "z_µ_intro1" 6005 [string_of_term ÒxÆ])
+	];
+=TEX
+=SML
+let
+	val tm1 = Ò((x ç W ± y ç X) ± ({p,q} Ä Y) ± (z ç Z)) ± f x ¥ g w y zÆ;
+	val tm2 = Ò((x ç W ± y ç X) ± ({p,q} Ä Y) ± (z ç Z))  ¥ g w y zÆ;
+in
+store_mt_results (mt_runf(op =$)) [
+	("z_µ_intro 2",
+	concl o z_µ_intro [¨x:'aÆ,¨y:'bÆ],
+	prove_rule[] Ò(x = x) ¥ (y = y)Æ,
+	Òµ x:É; y:É | x = x ∑ y = yÆ),
+	("z_µ_intro 3",
+	concl o z_µ_intro [¨x:'aÆ,¨y:'bÆ],
+	prove_rule[] Ò(x = x) ± (y = y)Æ,
+	Òµ x:É; y:É ∑ (x = x) ± (y = y)Æ),
+	("z_µ_intro 4",
+	concl o z_µ_intro [],
+	prove_rule[] Ò(x = x) ¥ (y = y)Æ,
+	Òµ | x = x ∑ y = yÆ)
+	]
+end;
+=TEX
+=SML
+store_mt_results mt_run_fail [
+	("z_µ_intro 3007",
+	z_µ_intro [mk_t],
+	t_thm,
+	gen_fail_msg "z_µ_intro" 3007 [mk_t_st]),
+	("z_µ_intro 6005",
+	z_µ_intro [xX],
+	asm_rule (snd(strip_µ Ò[X] x ç X ± true ¥ trueÆ)),
+	gen_fail_msg "z_µ_intro" 6005 [string_of_term ÒxÆ])
+	];
+=TEX
+=SML
+let
+	val tm1 = Òµ x : X; y,z : Y | false ∑ y = zÆ;
+	val tm2 = Òµ | P ∑ BÆ;
+in
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_elim_conv2/z_µ_intro_conv1 1",
+	snd o dest_eq o concl o conv_rule(RIGHT_C z_µ_intro_conv1) o z_µ_elim_conv2,
+	tm1,
+	tm1),
+	("z_µ_elim_conv2/z_µ_intro_conv1 2",
+	snd o dest_eq o concl o conv_rule(RIGHT_C z_µ_intro_conv1) o z_µ_elim_conv2,
+	tm2,
+	tm2)
+	]
+end;
+=TEX
+=SML
+let
+	val (adecl,_,_) = dest_z_µ Òµ x, y:X | false ∑ trueÆ;
+in
+store_mt_results mt_run_fail [
+	("z_µ_elim_conv2 41022",
+	z_µ_elim_conv2,
+	mk_t,
+	gen_fail_msg "z_µ_elim_conv2" 41022 [mk_t_st]),
+	("z_µ_intro_conv1 41023",
+	z_µ_intro_conv1,
+	mk_t,
+	gen_fail_msg "z_µ_intro_conv1" 41023 [mk_t_st]),
+	("z_µ_intro_conv1 41024",
+	z_µ_intro_conv1,
+	¨µ x ∑ ëadeclÆ ± T ¥ FÆ,
+	gen_fail_msg "z_µ_intro_conv1" 41024 [string_of_term ¨µ x ∑ ëadeclÆ ± T ¥ FÆ])
+	]
+end;
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_elim_conv 1",
+	snd o dest_eq o concl o z_µ_elim_conv,
+	Òµ x, y : X ∑ x= yÆ,	
+	¨µ x y:'a ∑ Ò{x,y} Ä X ± true ¥ x = yÆÆ),
+	("z_µ_elim_conv 2",
+	snd o dest_eq o concl o z_µ_elim_conv,
+	Òµ | P ∑ BÆ,	
+	Òtrue ± P ¥ BÆ)
+	];
+store_mt_results mt_run_fail [
+	("z_µ_elim_conv 41022",
+	z_µ_elim_conv,
+	mk_t,
+	gen_fail_msg "z_µ_elim_conv" 41022 [mk_t_st])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_elim_conv 1",
+	snd o dest_eq o concl o z_∂_elim_conv,
+	Ò∂ x, y : X ∑ x= yÆ,	
+	¨∂ x y:'a ∑ Ò{x,y} Ä X ± true ± x = yÆÆ),
+	("z_∂_elim_conv 2",
+	snd o dest_eq o concl o z_∂_elim_conv,
+	Ò∂ | P ∑ BÆ,	
+	Òtrue ± P ± BÆ),
+	("z_∂_elim_conv 3",
+	snd o dest_eq o concl o z_∂_elim_conv,
+	Ò∂ [] | P ∑ BÆ,	
+	Ò[] ± P ± BÆ)
+	];
+store_mt_results mt_run_fail [
+	("z_∂_elim_conv 41022",
+	z_∂_elim_conv,
+	mk_t,
+	gen_fail_msg "z_∂_elim_conv" 41044 [mk_t_st])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("all_z_µ_intro 1",
+	concl o all_z_µ_intro,
+	refl_conv Ò{x,y}Æ,
+	Òµ x : É; y:É | true ∑ {x,y} = {x,y}Æ),
+	("all_z_µ_intro 2",
+	concl o all_z_µ_intro,
+	asm_rule Òx ± yÆ,
+	Òx ± yÆ),
+	("all_z_µ_intro 3",
+	concl o all_z_µ_intro,
+	refl_convÒxÆ,
+	Òµ x:É ∑ x = xÆ)
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_elim_conv1 1",
+	snd o dest_eq o concl o z_µ_elim_conv1,
+	Òµ x:É; y,z : É; [a,b:É ∏ É] | f ∑ gÆ,
+	¨µ a b :('c, 'd) $"Z'T[2]" ∑ µ x:'a∑ µ y z :'b ∑ f ¥ gÆ),
+	("z_µ_elim_conv1 2",
+	snd o dest_eq o concl o z_µ_elim_conv1,
+	Òµ | P ∑ BÆ,
+	¨P ¥ BÆ)
+	];
+store_mt_results mt_run_fail [
+	("z_µ_elim_conv1 41022",
+	z_µ_elim_conv1,
+	mk_t,
+	gen_fail_msg "z_µ_elim_conv1" 41022 [mk_t_st]),
+	("z_µ_elim_conv1 41071",
+	z_µ_elim_conv1,
+	Òµ x : X ∑ falseÆ,
+	gen_fail_msg "z_µ_elim_conv1" 41071 [string_of_term Òµ x : X ∑ falseÆ])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_inv_conv 1",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ x, y : X | f ∑ gÆ,
+	Òf ¥ (µ x, y : X | true ∑ false) ≤ gÆ),
+	("z_µ_inv_conv 1b",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ x : X | f ∑ gÆ,
+	Òf ¥ (µ x : X | true ∑ false) ≤ gÆ),
+	("z_µ_inv_conv 2",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ x, y : X | x > 0 ∑ zÆ,
+	Ò(µ x, y : X | x > 0 ∑ false) ≤ zÆ),
+	("z_µ_inv_conv 3",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ x,y : X | f ∑ x = yÆ,
+	Òf ¥ (µ x,y : X | true ∑ x = y)Æ),
+	("z_µ_inv_conv 4",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ x,y : X ∑ gÆ,
+	Ò(µ x,y : X ∑ false) ≤ gÆ),
+	("z_µ_inv_conv 5",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ x,y : X | f∑ falseÆ,
+	Òf ¥ (µ x,y : X | true ∑ false)Æ),
+	("z_µ_inv_conv 6",
+	snd o dest_eq o concl o z_µ_inv_conv,
+	Òµ | P ∑ BÆ,
+	ÒP ¥ (µ | true ∑ false) ≤ BÆ)
+	];
+store_mt_results mt_run_fail [
+	("z_µ_inv_conv 47310",
+	z_µ_inv_conv,
+	mk_t,
+	gen_fail_msg "z_µ_inv_conv" 47310 [mk_t_st]),
+	("z_µ_inv_conv 41025",
+	z_µ_inv_conv,
+	Òµ x :X | f x ∑ g xÆ,
+	gen_fail_msg "z_µ_inv_conv" 41025 [
+		string_of_term Òµ x : X | f x ∑ g xÆ])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_intro_µ_tac 1",
+	tac_res (z_intro_µ_tac Ò(x ¶ 1, y ¶ 2)Æ),
+	Ò(1,2) = (3,4)Æ,
+	Òµ x:É;y:É ∑ (x,y) = (3,4)Æ),
+	("z_intro_µ_tac 2",
+	tac_res (z_intro_µ_tac Ò()Æ),
+	Ò(1,2) = (3,4)Æ,
+	Òµ ∑ (1,2) = (3,4)Æ)
+	];
+store_mt_results mt_run_fail [("z_intro_µ_tac 41029",
+	tac_fail (z_intro_µ_tac mk_t),
+	([],mk_t),
+	gen_fail_msg "z_intro_µ_tac" 41029 [mk_t_st])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_tac 1",
+	tac_res z_µ_tac,
+	(snd(strip_µ Ò[X,Y] (µ x:X; y,z:Y | p x ∑ y = z)Æ)),
+	(snd(strip_µ Ò[X,Y] (x ç X ± {y,z} Ä Y) ± p x ¥ y = zÆ))),
+	("z_µ_tac 2",
+	tac_res z_µ_tac,
+	Òµ | P ∑ BÆ,
+	Òtrue ± P ¥ BÆ)
+	];
+store_mt_results mt_run_fail [("z_µ_tac 41030",
+	z_µ_tac,
+	([],mk_t),
+	gen_fail_msg "z_µ_tac" 41030 [mk_t_st])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =#)) [
+	("z_spec_asm_tac 1",
+	tac_res1 (z_spec_asm_tac Òµ x :É ∑ x ± yÆ ÒtrueÆ),
+	([Òµ x :É ∑ x ± yÆ],ÒfalseÆ),
+	([¨y:BOOLÆ, Òµ x : É ∑ x ± yÆ],ÒfalseÆ)
+	),
+	("z_spec_asm_tac 2",
+	tac_res1 (z_spec_asm_tac Òµ ∑ x ± yÆ Ò()Æ),
+	([Òµ ∑ x ± yÆ],ÒfalseÆ),
+	([¨y:BOOLÆ, ¨x:BOOLÆ, Òµ ∑ x ± yÆ],ÒfalseÆ)
+	)
+];
+store_mt_results (mt_runf (op =#)) [
+	("z_spec_nth_asm_tac 1",
+	tac_res1 (z_spec_nth_asm_tac 1 ÒtrueÆ),
+	([Òµ x :É ∑ x ± yÆ],ÒfalseÆ),
+	([¨y:BOOLÆ, Òµ x : É ∑ x ± yÆ],ÒfalseÆ)
+	),
+	("z_spec_nth_asm_tac 2",
+	tac_res1 (z_spec_nth_asm_tac 1 Ò()Æ),
+	([Òµ ∑ x ± yÆ],ÒfalseÆ),
+	([¨y:BOOLÆ, ¨x:BOOLÆ, Òµ ∑ x ± yÆ],ÒfalseÆ)
+	)
+];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_intro_conv",
+	snd o dest_eq o concl o z_µ_intro_conv,
+	¨µ x y ∑ x = yÆ,
+	Òµ x : É; y : É | true ∑ x = yÆ)];
+store_mt_results mt_run_fail [
+	("z_µ_intro_conv 41047",
+	z_µ_intro_conv,
+	mk_t,
+	gen_fail_msg "z_µ_intro_conv" 41047 [mk_t_st])];
+=TEX
+\subsection{Concerning Z Existential Quantification}
+=SML
+let
+	val tm1 = Ò∂ x : X; y,z : Y | false ∑ y = zÆ;
+	val tm2 = Ò∂ | P ∑ BÆ;
+	val tm3 = Ò∂ (D ∫  []) | P ∑ BÆ;
+in
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_elim_conv2/z_∂_intro_conv1 1",
+	snd o dest_eq o concl o conv_rule(RIGHT_C z_∂_intro_conv1) o z_∂_elim_conv2,
+	tm1,
+	tm1),
+	("z_∂_elim_conv2/z_∂_intro_conv1 2",
+	snd o dest_eq o concl o conv_rule(RIGHT_C z_∂_intro_conv1) o z_∂_elim_conv2,
+	tm2,
+	tm2),
+	("z_∂_elim_conv2/z_∂_intro_conv1 3",
+	snd o dest_eq o concl o conv_rule(RIGHT_C z_∂_intro_conv1) o z_∂_elim_conv2,
+	tm3,
+	tm3)
+	]
+end;
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_intro_conv",
+	snd o dest_eq o concl o z_∂_intro_conv,
+	¨∂ x y ∑ x = yÆ,
+	Ò∂ x : É; y : É | true ∑ x = yÆ)];
+store_mt_results mt_run_fail [
+	("z_∂_intro_conv 41046",
+	z_∂_intro_conv,
+	mk_t,
+	gen_fail_msg "z_∂_intro_conv" 41046 [mk_t_st])];
+=TEX
+=SML
+let
+	val (adecl,_,_) = dest_z_∂ Ò∂ x, y:X | false ∑ trueÆ;
+in
+store_mt_results mt_run_fail [
+	("z_∂_elim_conv2 41044",
+	z_∂_elim_conv2,
+	mk_t,
+	gen_fail_msg "z_∂_elim_conv2" 41044 [mk_t_st]),
+	("z_∂_intro_conv1 41045",
+	z_∂_intro_conv1,
+	mk_t,
+	gen_fail_msg "z_∂_intro_conv1" 41045 [mk_t_st]),
+	("z_∂_intro_conv1 41041",
+	z_∂_intro_conv1,
+	¨∂ x ∑ ëadeclÆ ± T ± FÆ,
+	gen_fail_msg "z_∂_intro_conv1" 41041 [string_of_term ¨∂ x ∑ ëadeclÆ ± T ± FÆ])
+	]
+end;
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_elim_conv1 1",
+	snd o dest_eq o concl o z_∂_elim_conv1,
+	Ò∂ x:É; y,z : É; [a,b:É ∏ É] | f ∑ gÆ,
+	¨ ∂ a b :('c, 'd) $"Z'T[2]" ∑ ∂ x:'a∑ ∂ y z :'b ∑f ± gÆ),
+	("z_∂_elim_conv1 2",
+	snd o dest_eq o concl o z_∂_elim_conv1,
+	Ò∂ | P ∑ BÆ,
+	ÒP ± BÆ),
+	("z_∂_elim_conv1 3",
+	snd o dest_eq o concl o z_∂_elim_conv1,
+	Ò∂ []; [[]] | P ∑ BÆ,
+	ÒP ± BÆ)
+	];
+store_mt_results mt_run_fail [
+	("z_∂_elim_conv1 41042",
+	z_∂_elim_conv1,
+	mk_t,
+	gen_fail_msg "z_∂_elim_conv1" 41042 [mk_t_st]),
+	("z_∂_elim_conv1 41043",
+	z_∂_elim_conv1,
+	Ò∂ x : X ∑ falseÆ,
+	gen_fail_msg "z_∂_elim_conv1" 41043 [string_of_term Ò∂ x : X ∑ falseÆ])];
+=TEX
+\subsection{Concerning Z Unique Existential Quantification}
+
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂â1_conv 1",
+	snd o dest_eq o concl o z_∂â1_conv,
+	Ò∂â1 x : X | x = y ∑ f xÆ,
+	Ò∂ x : X | x = y ± f x ∑ µ x' : X | x' = y ± f x' ∑ x' = xÆ),
+	("z_∂â1_conv 2",
+	snd o dest_eq o concl o z_∂â1_conv,
+	Ò∂â1 x,y : X; z:Y | x = y ∑ z = f xÆ,
+	Ò(∂ x, y : X; z : Y
+	 | (x = y)
+	 ± (z = f x)
+	 ∑ µ x', y' : X; z' : Y
+	| (x' = y') ± (z' = f x')
+      ∑ (x' = x) ± (y' = y) ± (z' = z))Æ),
+	("z_∂â1_conv 3",
+	concl o z_∂â1_conv,
+	Ò∂â1 [x,y : X; z:Y] | x = x' y y'' ∑ z = f xÆ,
+	(snd(strip_µ Ò[a,b,c](∂â1 [x, y : (X ∫ a); z : (Y ∫  b)] | x = x' y (y''∫c) ∑ z = f x)
+    § (∂ [x, y : (X ∫ a); z : (Y ∫  b)]
+      | x = x' y (y''∫c) ± z = f x
+      ∑ ëmk_z_µ(
+		mk_z_decl[mk_z_schema_dec (Ò[x, y : (X ∫ a); z : (Y ∫  b)]Æ,"'''")],
+		(snd(strip_µ Ò[a,b,c](x'''∫ a) = x' (y'''∫a) (y''∫c) ± (z'''∫b) = f x'''Æ)),
+		(snd(strip_µ Ò[a,b,c](x'''∫ a) = x ± (y'''∫a) = y ± (z'''∫b) = zÆ)))Æ)Æ))),
+	("z_∂â1_conv 4",
+	snd o dest_eq o concl o z_∂â1_conv,
+	Ò∂â1 ∑ z = f xÆ,
+	Ò∂ | true ± (z = f x) ∑ µ | true ± (z = f x) ∑ trueÆ),
+	("z_∂â1_conv 5",
+	snd o dest_eq o concl o z_∂â1_conv,
+	Ò∂â1 | x = y ∑ z = f xÆ,
+	Ò∂ | (x = y) ± (z = f x) ∑ µ | (x = y) ± (z = f x) ∑ trueÆ),
+	("z_∂â1_conv 6",
+	snd o dest_eq o concl o z_∂â1_conv,
+	Ò∂â1 (D ∫  []) | x = y ∑ z = f xÆ,
+	Ò∂ (D ∫  []) | (x = y) ± (z = f x) ∑ µ D | (x = y) ± (z = f x) ∑ trueÆ)
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂â1_tac 1",
+	tac_res (z_∂â1_tac Ò(x ¶ p, y ¶ q)∫[x,y:X]Æ),
+	(snd(strip_µ Ò[X] (∂â1 x,y:X | r x ∑ y = x)Æ)),
+	(snd(strip_µ Ò[X] {p,q} Ä X ± (r p ± q = p) ±
+		(µ x', y':X | r x' ± y' = x' ∑ (x' = p ± y' = q))Æ))),
+	("z_∂â1_tac 2",
+	tac_res (z_∂â1_tac Ò()Æ),
+	Ò∂â1 | r x ∑ y = xÆ,
+	Òtrue ± (r x ± y = x) ± (µ | r x ± y = x ∑ true)Æ),
+	("z_∂â1_tac 3",
+	tac_res (z_∂â1_tac Ò()Æ),
+	Ò∂â1 [] | r x ∑ y = xÆ,
+	Ò[] ± (r x ± y = x) ± (µ [] | r x ± y = x ∑ true)Æ)
+	];
+store_mt_results mt_run_fail [
+	("z_∂â1_tac 41123",
+	tac_fail (z_∂â1_tac mk_t),
+	([],ÒtrueÆ),
+	gen_fail_msg "z_∂â1_tac" 41123 []),
+	("z_∂â1_tac 41021",
+	tac_fail (z_∂â1_tac mk_t),
+	([],Ò∂â1 x:X | x = 1 ∑ trueÆ),
+	gen_fail_msg "z_∂â1_tac" 41021 [mk_t_st,string_of_term (#1(dest_z_∂â1 Ò∂â1 x:X | x = 1 ∑ trueÆ))])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂â1_intro_conv",
+	snd o dest_eq o concl o z_∂â1_intro_conv,
+	¨∂â1 x ∑ x = yÆ,
+	Ò∂â1 x : É | true ∑ x = yÆ)];
+store_mt_results mt_run_fail [
+	("z_∂â1_intro_conv 41048",
+	z_∂â1_intro_conv,
+	mk_t,
+	gen_fail_msg "z_∂â1_intro_conv" 41048 [mk_t_st])];
+=TEX
+
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_tac 1",
+	tac_res (z_∂_tac mk_t),
+	Ò∂ x : É∑ x ± yÆ,
+	Òtrue ç É ± true ± true ± yÆ),
+	("z_∂_tac 2",
+	tac_res (z_∂_tac Ò(x ¶ 1, y ¶ 2)Æ),
+	Ò∂ x : É; y : É∑ (x,y) = (1,2)Æ,
+	Ò(1 ç É ± 2 ç É) ± true ± (1,2) = (1,2)Æ)
+	];
+
+let
+	val t = (mk_var("t", type_of Ò(x ¶ 1, y ¶ 2)Æ));
+	val   = inst[] [(î˙Æ,î'aÆ), (î˙Æ,î'bÆ)] Ò  TEST_SCHEMAÆ;
+in
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_tac 3",
+	tac_res (z_∂_tac t),
+	Ò∂ x : É; y : É∑ (x,y) = (1,2)Æ,
+	Ò(ëtÆ.x ç É ± ëtÆ.y ç É) ± true ± (ëtÆ.x, ëtÆ.y) = (1,2)Æ),
+	("z_∂_tac 4",
+	tac_res (z_∂_tac Ò  TEST_SCHEMAÆ),
+	Ò∂ x : É; y : É∑ (x,y) = (1,2)Æ,
+	Ò(ë Æ.x ç É ± ë Æ.y ç É) ± true ± (ë Æ.x, ë Æ.y) = (1,2)Æ)
+	]
+end;
+
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_tac 5",
+	tac_res (z_∂_tac Ò()Æ),
+	Ò∂ ∑ (x,y) = (1,2)Æ,
+	Òtrue ± true ± (x,y) = (1,2)Æ),
+	("z_∂_tac 6",
+	tac_res (z_∂_tac Ò()Æ),
+	Ò∂ [] ∑ (x,y) = (1,2)Æ,
+	Ò[] ± true ± (x,y) = (1,2)Æ)
+	];
+=TEX
+=SML
+store_mt_results mt_run_fail [
+	("z_∂_tac 47290",
+	tac_fail (z_∂_tac mk_t),
+	([],ÒtrueÆ),
+	gen_fail_msg "z_∂_tac" 47290 [mk_t_st]),
+	("z_∂_tac 41021 a",
+	tac_fail (z_∂_tac Ò(x ¶ (q ∫  a), y ¶ (r ∫  b))Æ),
+	([],Ò∂ x:X; y:Y; z:X | f x ∑ g  ¨a + (b:Ó)Æ zÆ),
+	gen_fail_msg "z_∂_tac" 41021 [
+		string_of_term Ò(x ¶ (q ∫  a), y ¶ (r ∫  b))Æ,
+		string_of_term xyz_decl]),
+	("z_∂_tac 41021 b",
+	tac_fail (z_∂_tac mk_t),
+	([],Ò∂ x:X; y:Y; z:X | f x ∑ g  ¨a + (b:Ó)Æ zÆ),
+	gen_fail_msg "z_∂_tac" 41021 [mk_t_st,
+		string_of_term xyz_decl])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_∂_inv_conv 1",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ x, y : X | f ∑ gÆ,
+	Òf ± (∂ x, y : X | true ∑ true) ± gÆ),
+	("z_∂_inv_conv 1b",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ x: X | f ∑ gÆ,
+	Òf ± (∂ x : X | true ∑ true) ± gÆ),
+	("z_∂_inv_conv 2",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ x, y : X | x > 0 ∑ zÆ,
+	Ò(∂ x, y : X | x > 0 ∑ true) ± zÆ),
+	("z_∂_inv_conv 3",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ x,y : X | f ∑ x = yÆ,
+	Òf ± (∂ x,y : X | true ∑ x = y)Æ),
+	("z_∂_inv_conv 4",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ x,y : X ∑ gÆ,
+	Ò(∂ x,y : X ∑ true) ± gÆ),
+	("z_∂_inv_conv 5",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ x,y : X | f∑ trueÆ,
+	Òf ± (∂ x,y : X | true ∑ true)Æ),
+	("z_∂_inv_conv 6",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ | f∑ gÆ,
+	Òf ± (∂ ∑ true) ± gÆ),
+	("z_∂_inv_conv 7",
+	snd o dest_eq o concl o z_∂_inv_conv,
+	Ò∂ [] | f∑ gÆ,
+	Òf ± (∂ [] ∑ true) ± gÆ)
+	];
+store_mt_results mt_run_fail [
+	("z_∂_inv_conv 47290",
+	z_∂_inv_conv,
+	mk_t,
+	gen_fail_msg "z_∂_inv_conv" 47290 [mk_t_st]),
+	("z_∂_inv_conv 41040",
+	z_∂_inv_conv,
+	Ò∂ x : X | f x ∑ g xÆ,
+	gen_fail_msg "z_∂_inv_conv" 41040 [
+		string_of_term Ò∂ x : X | f x ∑ g xÆ])];
+=TEX
+\subsection{Conversions between Z Universal and Existential Quantifications}
+The first of the following will fail with HOL version 1.97, but should not fail with later ones.
+=SML
+store_mt_results (mt_runf (op =$)) [(
+	"z_≥_µ_conv 1",
+	snd o dest_eq o concl o z_≥_µ_conv,
+	Ò≥(µ x:X; y,z:Y; [a,b:É] | y = z ∑ a = b)Æ,
+	Ò∂ x:X; y,z:Y; [a,b:É] | y = z ∑ ≥ a = bÆ),
+	("z_≥_µ_conv 2",
+	snd o dest_eq o concl o z_≥_µ_conv,
+	Ò≥(µ xx:X; y,z:Y; [a,b:É] | y = z ∑ a = b)Æ,
+	Ò∂ xx:X; y,z:Y; [a,b:É] | y = z ∑ ≥ a = bÆ),
+	("z_≥_µ_conv 3",
+	snd o dest_eq o concl o z_≥_µ_conv,
+	Ò≥(µ | y = z ∑ a = b)Æ,
+	Ò∂ | y = z ∑ ≥ a = bÆ),
+	("z_≥_µ_conv 4",
+	snd o dest_eq o concl o z_≥_µ_conv,
+	Ò≥(µ [] | y = z ∑ a = b)Æ,
+	Ò∂ [] | y = z ∑ ≥ a = bÆ)
+	];
+=TEX
+The first of the following will fail with HOL version 1.97, but should not fail with later ones.
+=SML
+store_mt_results (mt_runf (op =$)) [(
+	"z_≥_∂_conv 1",
+	snd o dest_eq o concl o z_≥_∂_conv,
+	Ò≥(∂ x:X; y,z:Y; [a,b:É] | y = z ∑ a = b)Æ,
+	Òµ x:X; y,z:Y; [a,b:É] | y = z ∑ ≥ a = bÆ),
+	("z_≥_∂_conv 2",
+	snd o dest_eq o concl o z_≥_∂_conv,
+	Ò≥(∂ xx:X; y,z:Y; [a,b:É] | y = z ∑ a = b)Æ,
+	Òµ xx:X; y,z:Y; [a,b:É] | y = z ∑ ≥ a = bÆ),
+	("z_≥_∂_conv 3",
+	snd o dest_eq o concl o z_≥_∂_conv,
+	Ò≥(∂ | y = z ∑ a = b)Æ,
+	Òµ | y = z ∑ ≥ a = bÆ),
+	("z_≥_∂_conv 4",
+	snd o dest_eq o concl o z_≥_∂_conv,
+	Ò≥(∂ [] | y = z ∑ a = b)Æ,
+	Òµ [] | y = z ∑ ≥ a = bÆ)
+	];
+store_mt_results mt_run_fail [("z_≥_µ_conv 41050",
+	z_≥_µ_conv,
+	mk_t,
+	gen_fail_msg "z_≥_µ_conv" 41050 [mk_t_st]),
+	("z_≥_∂_conv 41051",
+	z_≥_∂_conv,
+	mk_t,
+	gen_fail_msg "z_≥_∂_conv" 41051 [mk_t_st])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_≥_in_conv 1",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(≥ (x ± y))Æ,
+	Ò(x ± y)Æ),
+	("z_≥_in_conv 2",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(t1 ± t2)Æ,
+	Ò≥t1 ≤ ≥t2Æ),
+	("z_≥_in_conv 3",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(t1 ≤ t2)Æ,
+	Ò≥t1 ± ≥t2Æ),
+	("z_≥_in_conv 4",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(t1 ¥ t2)Æ,
+	Òt1 ± ≥t2Æ),
+	("z_≥_in_conv 5",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥((x ± y) § t2)Æ,
+	Ò((x ± y) ± ≥t2) ≤ (t2 ± ≥(x ± y))Æ),
+	("z_≥_in_conv 6",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(t1 = t1)Æ,
+	ÒfalseÆ),
+	("z_≥_in_conv 7.1",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(µ x:X | P∑ V)Æ,
+	Ò∂ x:X | P∑ ≥ VÆ),
+	("z_≥_in_conv 7.2",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(µ | P∑ V)Æ,
+	Ò∂ | P∑ ≥ VÆ),
+	("z_≥_in_conv 7.3",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥(µ [] | P∑ V)Æ,
+	Ò∂ [] | P∑ ≥ VÆ),
+	("z_≥_in_conv 8.1",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥( ∂ x:X | P∑ V)Æ,
+	Òµ x:X | P∑ ≥ VÆ),
+	("z_≥_in_conv 8.2",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥( ∂ | P∑ V)Æ,
+	Òµ | P∑ ≥ VÆ),
+	("z_≥_in_conv 8.3",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥( ∂ [] | P∑ V)Æ,
+	Òµ [] | P∑ ≥ VÆ),
+	("z_≥_in_conv 9.1",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥ (∂â1 x:X|P∑ V x)Æ,
+	Òµx:X |P ± V x ∑≥ (µx':X |P ± V x' ∑ x' = x)Æ),
+	("z_≥_in_conv 9.2",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥ (∂â1 |P∑ V x)Æ,
+	Òµ |P ± V x ∑≥ (µ |P ± V x ∑ true)Æ),
+	("z_≥_in_conv 9.3",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥ (∂â1 [] |P∑ V x)Æ,
+	Òµ [] |P ± V x ∑≥ (µ [] |P ± V x ∑ true)Æ),
+	("z_≥_in_conv 10",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥ trueÆ,
+	ÒfalseÆ),
+	("z_≥_in_conv 11",
+	snd o dest_eq o concl o z_≥_in_conv,
+	Ò≥ falseÆ,
+	ÒtrueÆ)
+	];
+=TEX
+=SML
+store_mt_results mt_run_fail [(
+	"z_≥_in_conv 28131",
+	z_≥_in_conv,
+	Ò≥ xÆ,
+	gen_fail_msg "z_≥_in_conv" 28131 [string_of_term Ò≥ xÆ]),
+	("z_≥_in_conv 47240",
+	z_≥_in_conv,
+	mk_t,
+	gen_fail_msg "z_≥_in_conv" 47240 [mk_t_st])
+	];
+=TEX
+\subsection{Conversions betweens Declarations and Predicates}
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_dec_pred_conv 1",
+	snd o dest_eq o concl o z_dec_pred_conv,
+	mk_z_dec([ÒxÆ],¨X : 'a SETÆ),
+	Òx ç XÆ),
+	("z_dec_pred_conv 2",
+	snd o dest_eq o concl o z_dec_pred_conv,
+	mk_z_dec([ÒxÆ,ÒyÆ],¨X : 'a SETÆ),
+	Ò{x,y} Ä XÆ),
+	("z_dec_pred_conv 3",
+	snd o dest_eq o concl o z_dec_pred_conv,
+	mk_z_schema_dec(Ò[x,y:X]Æ,""),
+	mk_z_schema_pred(Ò[x,y:X]Æ,"")),
+	("z_dec_pred_conv 4",
+	snd o dest_eq o concl o z_dec_pred_conv,
+	subst [(¨x1:'XÆ,¨x:'XÆ)]
+	(mk_z_schema_dec((inst[][(î'XÆ,î'aÆ)] Ò[x,y:X]Æ),"")),
+	(snd(strip_µ Ò[X] (x ¶ x1, y ¶ y) ç [x,y:X]Æ)))
+	];
+store_mt_results mt_run_fail [(
+	"z_dec_pred_conv 41010",
+	z_dec_pred_conv,
+	mk_t,
+	gen_fail_msg "z_dec_pred_conv" 41010 [mk_t_st])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_decl_pred_conv 1",
+	snd o dest_eq o concl o z_decl_pred_conv,
+	mk_z_decl[mk_z_dec([ÒxÆ],¨X : 'a SETÆ),
+		mk_z_dec([ÒxÆ,ÒyÆ],¨X : 'a SETÆ),
+		mk_z_schema_dec(Ò[x,y:X]Æ,"")],	
+	list_mk_±[Òx ç XÆ, Ò{x,y} Ä XÆ, mk_z_schema_pred(Ò[x,y:X]Æ,"")]),
+	("z_decl_pred_conv 2",
+	snd o dest_eq o concl o z_decl_pred_conv,
+	mk_z_decl[],	
+	mk_z_true)
+	];
+store_mt_results mt_run_fail [(
+	"z_decl_pred_conv 47912",
+	z_decl_pred_conv,
+	mk_t,
+	gen_fail_msg "z_decl_pred_conv" 47912 [mk_t_st])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_pred_decl_conv 1",
+	snd o dest_eq o concl o z_pred_decl_conv,
+	list_mk_±[Òx ç XÆ, Ò{x,y} Ä XÆ, mk_z_schema_pred(Ò[x,y:X]Æ,"")],	
+	mk_z_decl[mk_z_dec([ÒxÆ],¨X : 'a SETÆ),
+		mk_z_dec([ÒxÆ,ÒyÆ],¨X : 'a SETÆ),
+		mk_z_schema_dec(Ò[x,y:X]Æ,"")]),
+	("z_pred_decl_conv 2",
+	snd o dest_eq o concl o z_pred_decl_conv,
+	mk_z_true,	
+	mk_z_decl[])
+	];
+store_mt_results mt_run_fail [(
+	"z_pred_decl_conv 41011",
+	z_pred_decl_conv,
+	mk_f,
+	gen_fail_msg "z_pred_decl_conv" 41011 [mk_f_st])
+	];
+
+=TEX
+=SML
+let
+val (d1,_,_) = dest_z_µÒµ x:X; y,z:Y; [a,b:Z] ∑ trueÆ;
+val (d2,_,_) = dest_z_µÒµ ∑ trueÆ;
+in
+	store_mt_results (mt_runf (op =$)) [
+	("Z_DECL_C 1",
+	snd o dest_eq o concl o Z_DECL_C z_dec_pred_conv,
+	d1,
+	Òx ç X ± {y,z} Ä Y ± [a,b:Z]Æ),
+	("Z_DECL_C 2",
+	snd o dest_eq o concl o Z_DECL_C z_dec_pred_conv,
+	d2,
+	ÒtrueÆ)
+	]
+end;
+store_mt_results mt_run_fail [(
+	"Z_DECL_C 47912",
+	Z_DECL_C z_dec_pred_conv,
+	mk_t,
+	gen_fail_msg "Z_DECL_C" 47912 [mk_t_st]),
+	("Z_DECL_C 41012",
+	Z_DECL_C z_dec_pred_conv,
+	mk_z_decl[mk_t],
+	gen_fail_msg "Z_DECL_C" 41012 [string_of_term (mk_z_decl[mk_t])])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_pred_dec_conv 1",
+	snd o dest_eq o concl o z_pred_dec_conv,
+	Òx ç XÆ,
+	mk_z_dec([ÒxÆ],¨X : 'a SETÆ)),
+	("z_pred_dec_conv 2",
+	snd o dest_eq o concl o z_pred_dec_conv,
+	Ò{x,y} Ä XÆ,
+	mk_z_dec([ÒxÆ,ÒyÆ],¨X : 'a SETÆ)),
+	("z_pred_dec_conv 3",
+	snd o dest_eq o concl o z_pred_dec_conv,
+	mk_z_schema_pred(Ò[x,y:X]Æ,""),
+	mk_z_schema_dec(Ò[x,y:X]Æ,"")),
+	("z_pred_dec_conv 4",
+	snd o dest_eq o concl o z_pred_dec_conv,
+	Ò [x, ### : X | x = z] ç [x, ### : X | x = z]Æ,
+	mk_z_schema_dec(Ò[x, ### : X | x = z]Æ,""))];
+store_mt_results mt_run_fail [(
+	"z_pred_dec_conv 41010",
+	z_pred_dec_conv,
+	mk_t,
+	gen_fail_msg "z_pred_dec_conv" 41011 [mk_t_st]),
+	("z_pred_dec_conv 41010 a",
+	z_pred_dec_conv,
+	Ò(x,y) ç zÆ,
+	gen_fail_msg "z_pred_dec_conv" 41011 [string_of_term Ò(x,y) ç zÆ]),
+	("z_pred_dec_conv 41010 b",
+	z_pred_dec_conv,
+	Ò{a} Ä zÆ,
+	gen_fail_msg "z_pred_dec_conv" 41011 [string_of_term Ò{a} Ä zÆ]),
+	("z_pred_dec_conv 41010 c",
+	z_pred_dec_conv,
+	Ò{a,1} Ä zÆ,
+	gen_fail_msg "z_pred_dec_conv" 41011 [string_of_term Ò{a,1} Ä zÆ])
+	];
+=TEX
+=SML
+let
+val (d1,_,_) = dest_z_µÒµ x:X; y,z:Y; [a,b:Z] ∑ trueÆ;
+val (d2,_,_) = dest_z_µÒµ ∑ trueÆ;
+in
+	store_mt_results (mt_runf (op =$)) [
+	("Z_DECL_INTRO_C 1",
+	snd o dest_eq o concl o Z_DECL_INTRO_C z_pred_dec_conv,
+	Òx ç X ± {y,z} Ä Y ± [a,b:Z]Æ,
+	d1),
+	("Z_DECL_INTRO_C 2",
+	snd o dest_eq o concl o Z_DECL_INTRO_C z_pred_dec_conv,
+	ÒtrueÆ,
+	d2)
+	]
+end;
+store_mt_results mt_run_fail [(
+	"Z_DECL_INTRO_C 41013",
+	Z_DECL_INTRO_C z_dec_pred_conv,
+	mk_f,
+	gen_fail_msg "Z_DECL_INTRO_C" 41013 [mk_f_st]),
+	("Z_DECL_INTRO_C 41014",
+	Z_DECL_INTRO_C id_conv,
+	mk_f,
+	gen_fail_msg "Z_DECL_INTRO_C" 41014 [mk_f_st,mk_f_st])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [("z_ç_setd_conv",
+	snd o dest_eq o concl o z_ç_setd_conv,
+	mk_z_ç(Ò2Æ, Ò{1,2,3}Æ),
+	Ò2 = 1 ≤ 2 = 2 ≤ 2 = 3Æ)];
+store_mt_results mt_run_fail [("z_ç_setd_conv 41015 a",
+	z_ç_setd_conv,
+	mk_t,
+	gen_fail_msg "z_ç_setd_conv" 41015 [trues]),
+	("z_ç_setd_conv 41015 b",
+	z_ç_setd_conv,
+	notz,
+	gen_fail_msg "z_ç_setd_conv" 41015 [notzs]),
+	("z_ç_setd_conv 41015 c",
+	z_ç_setd_conv,
+	Òx ç  ¨Z'Setd (Cons h t)ÆÆ,
+	gen_fail_msg "z_ç_setd_conv" 41015
+	   [string_of_term Òx ç  ¨Z'Setd (Cons h t)ÆÆ])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_setd_Ä_conv 1",
+	snd o dest_eq o concl o z_setd_Ä_conv,
+	Ò{} Ä  XÆ,
+	ÒtrueÆ),
+	("z_setd_Ä_conv 2",
+	snd o dest_eq o concl o z_setd_Ä_conv,
+	Ò{x,y,z} Ä  XÆ,
+	Òx ç  X ± y ç  X ± z ç  XÆ),
+	("z_setd_Ä_conv 3",
+	snd o dest_eq o concl o z_setd_Ä_conv,
+	Ò{f(Òx = x ¥ yÆ),y} Ä (h(Òp = p ¥ qÆ))Æ,
+	Òf ¨y:BOOLÆ ç h ¨q:BOOLÆ ± ¨y:BOOLÆ ç h ¨q:BOOLÆÆ)
+	];
+store_mt_results mt_run_fail [("z_setd_Ä_conv 41017",
+	z_setd_Ä_conv,
+	mk_t,
+	gen_fail_msg "z_setd_Ä_conv" 41017 [trues])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_schema_pred_conv1",
+	snd o dest_eq o concl o z_schema_pred_conv1,
+	¨Z'SchemaPred Ò(x ¶ 1, y ¶ 2)Æ Ò[x,y:X| x =1]ÆÆ,
+	Ò(x ¶ 1, y ¶ 2) ç [x,y:X| x = 1]Æ)
+	];
+let
+	val ok = snd(dest_±(Òtrue ± [x,y:X| x =1]Æ));
+in
+store_mt_results mt_run_fail [("z_schema_pred_conv1 41018 a",
+	z_schema_pred_conv1,
+	mk_t,
+	gen_fail_msg "z_schema_pred_conv1" 41018 [trues]),
+	("z_schema_pred_conv1 41018 b",
+	z_schema_pred_conv1,
+	ok,
+	gen_fail_msg "z_schema_pred_conv1" 41018 [string_of_term ok])
+	]
+end;
+=TEX
+\subsection{Generic Predicates}
+=SML
+store_mt_results (mt_runf (op =$)) [("z_≥_gen_pred_conv",
+	snd o dest_eq o concl o z_≥_gen_pred_conv,
+	mk_≥ Ò[X,Y,Z] (µ a:X;b:Y;c:Z ∑ f a b c)Æ,
+	inst [] [(î'XÆ,î'aÆ),(î'YÆ,î'bÆ),(î'ZÆ,î'cÆ)]
+	Ò(∂ X:É[¨Totality:'X SETÆ];Y:É[¨Totality:'Y SETÆ];Z:É[¨Totality:'Z SETÆ] ∑ ≥(µ a:X;b:Y;c:Z ∑ f a b c))Æ)
+	];
+store_mt_results mt_run_fail [("z_≥_gen_pred_conv 41031",
+	z_≥_gen_pred_conv,
+	mk_t,
+	gen_fail_msg "z_≥_gen_pred_conv" 41031 [trues])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [("z_gen_pred_intro",
+	concl o z_gen_pred_intro [ÒXÆ,ÒYÆ],
+	(refl_conv (snd(strip_µÒ[X,Y] (µ x:X; y:Y ∑ f x y)Æ))),
+	Ò[X,Y] (µ x:X; y:Y ∑ f x y) § (µ x:X; y:Y ∑ f x y)Æ)
+	];
+store_mt_results mt_run_fail [("z_gen_pred_intro 3007",
+	z_gen_pred_intro [mk_t],
+	t_thm,
+	gen_fail_msg "z_gen_pred_intro" 3007 [trues]),
+	("z_gen_pred_intro 6005",
+	z_gen_pred_intro [ÒXÆ],
+	asm_rule (snd(strip_µÒ[X] X = XÆ)),
+	gen_fail_msg "z_gen_pred_intro" 6005 [string_of_term ÒXÆ])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [("z_gen_pred_elim",
+	concl o z_gen_pred_elim [Ò{1}Æ,Ò{{1}}Æ],
+	pc_rule1 "z_predicates" prove_rule []
+		Ò[X,Y] (µ x:X; y:Y ∑ f x y = f x y)Æ,
+	Òµ x:{1};y:{{1}} ∑ f x y = f x yÆ)
+	];
+=TEX
+=SML
+fun cmp_inst (tm1, tm2) = (
+	(term_match tm1 tm2;
+	term_match tm2 tm1;
+	true) handle Fail _ => false
+);
+=TEX
+=SML
+store_mt_results (mt_runf cmp_inst) [("z_gen_pred_u_elim",
+	concl o z_gen_pred_u_elim,
+	pc_rule1 "z_predicates" prove_rule []
+		Ò[X,Y] (µ x:X; y:Y ∑ f x y = f x y)Æ,
+	Òµ x:É;y:É ∑ f x y = f x yÆ)
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [("z_gen_pred_elim1",
+	concl o z_gen_pred_elim1 Ò({1}, {{1}})Æ,
+	pc_rule1 "z_predicates" prove_rule []
+		Ò[X,Y] (µ x:X; y:Y ∑ f x y = f x y)Æ,
+	Òµ x:{1};y:{{1}} ∑ f x y = f x yÆ)
+	];
+=TEX
+=SML
+store_mt_results mt_run_fail [("z_gen_pred_elim 41033",
+	z_gen_pred_elim [mk_t],
+	asm_rule Ò[X] x = 1Æ,
+	gen_fail_msg "z_gen_pred_elim" 41033 [string_of_thm (asm_rule Ò[X] x = 1Æ)]),
+	("z_gen_pred_elim 41034",
+	z_gen_pred_elim [mk_t],
+	t_thm,
+	gen_fail_msg "z_gen_pred_elim" 41034 [string_of_thm t_thm]),
+	("z_gen_pred_elim1 41033",
+	z_gen_pred_elim1 mk_t,
+	asm_rule Ò[X] x = 1Æ,
+	gen_fail_msg "z_gen_pred_elim1" 41033 [string_of_thm (asm_rule Ò[X] x = 1Æ)]),
+	("z_gen_pred_elim1 41034",
+	z_gen_pred_elim1 mk_t,
+	t_thm,
+	gen_fail_msg "z_gen_pred_elim1" 41034 [string_of_thm t_thm])
+
+];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_gen_pred_tac",
+	tac_res z_gen_pred_tac,
+	Ò[X,Y] (µ x:X; y,z:Y | p x ∑ y = z)Æ,
+	(snd(strip_µ Ò[X,Y] (µ x:X; y,z:Y | p x ∑ y = z)Æ)))
+	];
+store_mt_results mt_run_fail [
+	("z_gen_pred_tac 41035",
+	z_gen_pred_tac,
+	([],mk_f),
+	gen_fail_msg "z_gen_pred_tac" 41035 [])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_intro_gen_pred_tac",
+	tac_res (z_intro_gen_pred_tac (map (fn x => (x,x))
+		(fst(strip_µ Ò[X,Y] (µ x:X; y,z:Y | p x ∑ y = z)Æ)))),
+	(snd(strip_µ Ò[X,Y] (µ x:X; y,z:Y | p x ∑ y = z)Æ)),
+	Ò[X,Y] (µ x:X; y,z:Y | p x ∑ y = z)Æ)	
+	];
+store_mt_results mt_run_fail [
+	("z_intro_gen_pred_tac 41032",
+	z_intro_gen_pred_tac[(¨pÆ,¨qÆ)],
+	([],mk_f),
+	gen_fail_msg "z_intro_gen_pred_tac" 41032 [string_of_term ¨qÆ]),
+	("z_intro_gen_pred_tac 41036",
+	z_intro_gen_pred_tac[(¨TÆ,¨X:'X SETÆ)],
+	([],mk_f),
+	gen_fail_msg "z_intro_gen_pred_tac" 41036 [string_of_term ¨X:'X SETÆ,string_of_term ¨TÆ]),
+	("z_intro_gen_pred_tac 28082",
+	z_intro_gen_pred_tac[(¨X:'X SETÆ,¨X:'X SETÆ)],
+	([],mk_f),
+	gen_fail_msg "z_intro_gen_pred_tac" 28082 [string_of_term ¨X:'X SETÆ]),
+	("z_intro_gen_pred_tac 28083",
+	z_intro_gen_pred_tac[(¨Y:'X SETÆ,¨X:'X SETÆ)],
+	([],Ò[X] f X ¨Y:'X SETÆÆ),
+	gen_fail_msg "z_intro_gen_pred_tac" 28082 [string_of_term ¨Y:'X SETÆ,string_of_term ¨X:'X SETÆ])
+	];
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("strip_tac-gf",
+	tac_res (PC_T "z_predicates" strip_tac),
+	mk_≥ Ò[X,Y,Z] (µ a:X;b:Y;c:Z ∑ f a b c)Æ,
+	inst [] [(î'XÆ,î'aÆ),(î'YÆ,î'bÆ),(î'ZÆ,î'cÆ)]
+	Ò(∂ X:É[¨Totality:'X SETÆ];Y:É[¨Totality:'Y SETÆ];Z:É[¨Totality:'Z SETÆ] ∑ ≥(µ a:X;b:Y;c:Z ∑ f a b c))Æ)
+	];
+=TEX
+\section{Z REWRITING}
+\subsection{Canonicalisation}
+=SML
+store_mt_results (mt_runf (op =$)) [("z_para_pred_canon",
+	concl o hd o z_para_pred_canon,
+	asm_rule ¨Z'AbbDef(µ X:'X SET; Y:'Y SET ∑ ëmk_±(
+	mk_z_decl[mk_z_dec([¨x:'XÆ],¨X : 'X SETÆ),
+		mk_z_dec([¨z:'XÆ,¨y:'XÆ],¨X : 'X SETÆ),
+		mk_z_schema_dec((inst[][(î'YÆ,î'aÆ)] Ò[p,q:Y]Æ),"")],
+	(snd(strip_µ Ò[X,Y] (z∫X) = y ± (p ∫ Y) = qÆ)))Æ)Æ,
+	Ò[X,Y] (x ç X ± {z,y} Ä X ± [p,q:Y]) ± (z = y ± p = q)Æ)
+];
+
+store_mt_results mt_run_fail [(
+	"z_para_pred_canon 41080",
+	z_para_pred_canon,
+	t_thm,
+	gen_fail_msg "z_para_pred_canon" 41080 [string_of_thm t_thm])];
+store_mt_results (mt_runf (op =$)) [("z_para_pred_conv",
+	snd o dest_eq o concl o z_para_pred_conv,
+	¨Z'AbbDef(µ X:'X SET; Y:'Y SET ∑ ëmk_±(
+	mk_z_decl[mk_z_dec([¨x:'XÆ],¨X : 'X SETÆ),
+		mk_z_dec([¨z:'XÆ,¨y:'XÆ],¨X : 'X SETÆ),
+		mk_z_schema_dec((inst[][(î'YÆ,î'aÆ)] Ò[p,q:Y]Æ),"")],
+	(snd(strip_µ Ò[X,Y] (z∫X) = y ± (p ∫ Y) = qÆ)))Æ)Æ,
+	Ò[X,Y] (x ç X ± {z,y} Ä X ± [p,q:Y]) ± (z = y ± p = q)Æ)
+];
+store_mt_results mt_run_fail [(
+	"z_para_pred_conv 41082",
+	z_para_pred_conv,
+	mk_t,
+	gen_fail_msg "z_para_pred_conv" 41082 [mk_t_st])];
+
+store_mt_results (mt_runf (op =$)) [
+	("z_µ_rewrite_canon 1",
+	concl o hd o z_µ_rewrite_canon,
+	asm_rule (snd(strip_µ Ò[X] (µ x,y : É; z:X| f ∑ x = y)Æ)),
+	¨µ x y:'a ∑ µ z:'X ∑ ë(snd(strip_µ Ò[X]({x,y} Ä É ± z ç X) ± f ¥ x = yÆ))ÆÆ),
+	("z_µ_rewrite_canon 2",
+	concl o hd o z_µ_rewrite_canon,
+	asm_rule (snd(strip_µ Ò[X] (µ | f ∑ x = y)Æ)),
+	¨ë(snd(strip_µ Ò[X](true ± f ¥ x = y)Æ))ÆÆ),
+	("z_µ_rewrite_canon 3",
+	concl o hd o z_µ_rewrite_canon,
+	asm_rule (snd(strip_µ Ò[X] (µ [] | f ∑ x = y)Æ)),
+	¨ë(snd(strip_µ Ò[X]([] ± f ¥ x = y)Æ))ÆÆ)
+	];
+store_mt_results mt_run_fail [(
+	"z_µ_rewrite_canon 41081",
+	z_µ_rewrite_canon,
+	t_thm,
+	gen_fail_msg "z_µ_rewrite_canon" 41081 [string_of_thm t_thm])];
+=TEX
+=SML
+let val combo = (z_µ_rewrite_canon THEN_CAN
+	(REPEAT_CAN µ_rewrite_canon) THEN_CAN
+	z_¥_rewrite_canon);
+in
+store_mt_results (mt_runf (op =$)) [("z_¥_rewrite_canon 1",
+	concl o hd o combo,
+	asm_rule (snd(strip_µ Ò[X] (µ x,y : É; z:X| f ∑ x = y)Æ)),
+	(snd(strip_µ Ò[X] z ç X ± f ¥ x = yÆ))),
+	("z_¥_rewrite_canon 2",
+	concl o hd o combo,
+	asm_rule Òµ x,y :É;z:É | true ∑ x = yÆ,
+	Òx = yÆ),
+	("z_¥_rewrite_canon 3",
+	concl o hd o combo,
+	asm_rule (snd(strip_µ Ò[X,Y] (µ x,y :X;z:Y | true ∑ x = y)Æ)),
+	(snd(strip_µ Ò[X,Y] ({x,y} Ä X ± z ç Y) ¥ x = yÆ))),
+	("z_¥_rewrite_canon 4",
+	concl o hd o combo,
+	asm_rule (snd(strip_µ Ò[X] (µ | true ∑ (x ∫ X) = y)Æ)),
+	(snd(strip_µ Ò[X] ((x ∫ X) = y)Æ))),
+	("z_¥_rewrite_canon 5",
+	concl o hd o combo,
+	asm_rule (snd(strip_µ Ò[X] (µ []; [] | true ∑ (x ∫ X) = y)Æ)),
+	(snd(strip_µ Ò[X] ((x ∫ X) = y)Æ)))
+	]
+end;
+store_mt_results mt_run_fail [(
+	"z_¥_rewrite_canon 41081",
+	z_¥_rewrite_canon,
+	t_thm,
+	gen_fail_msg "z_¥_rewrite_canon" 41083 [string_of_thm t_thm]),
+	(
+	"z_¥_rewrite_canon 41084",
+	z_¥_rewrite_canon,
+	asm_rule ¨F ¥ FÆ,
+	gen_fail_msg "z_¥_rewrite_canon" 41084 [string_of_thm (asm_rule ¨F ¥ FÆ)])];
+=TEX
+=SML
+store_mt_results (mt_runf (op =|-)) [
+	("z_≥_rewrite_canon 1",
+	hd o z_≥_rewrite_canon,
+	asm_rule Ò≥(t1 ≤ t2)Æ,
+	conv_rule z_≥_in_conv
+		 (asm_rule Ò≥(t1 ≤ t2)Æ)),
+	("z_≥_rewrite_canon 2",
+	hd o z_≥_rewrite_canon,
+	asm_rule Ò≥(∂ x : X | f ∑ g)Æ,
+	conv_rule z_≥_in_conv
+		 (asm_rule Ò≥(∂ x : X | f ∑ g)Æ)),
+	("z_≥_rewrite_canon 3",
+	hd o z_≥_rewrite_canon,
+	asm_rule Ò≥ (≥ t)Æ,
+	conv_rule z_≥_in_conv
+		 (asm_rule Ò≥ (≥ t)Æ)),
+	("z_≥_rewrite_canon 4",
+	hd o z_≥_rewrite_canon,
+	asm_rule Ò≥ tÆ,
+	pure_rewrite_rule [taut_rule ¨µ x ∑ ≥ x § x § FÆ]
+		 (asm_rule Ò≥ tÆ))
+	];
+
+=SML
+set_flag ("z_type_check_only", false);
+set_flag ("z_use_axioms", true);
+=TEX
+=TEX
+ù[X,Y]ú
+‹Ex : (X ∏ Y)
+˜¸¸¸¸
+‹Ex = {}
+à¸¸¸¸
+=SML
+store_mt_results (mt_runf (op =$)) [("z_get_spec 1",
+	concl o z_get_spec,
+	ÒExÆ,
+	concl (conv_rule z_para_pred_conv (get_axiom "-" "Ex"))),
+	("z_get_spec 2",
+	concl o z_get_spec,
+	¨AppendÆ,
+	concl (get_spec ¨AppendÆ))];
+=TEX
+=SML
+store_mt_results mt_run_fail [
+	("z_get_spec 46009",
+	z_get_spec,
+	¨rubbishÆ,
+	gen_fail_msg "z_get_spec" 46009 [string_of_term ¨rubbishÆ]),
+	("z_get_spec 46005",
+	z_get_spec,
+	(mk_const ("rubbish",BOOL)),
+	gen_fail_msg "z_get_spec" 46005 ["rubbish"]),
+	("z_get_spec 46006",
+	z_get_spec,
+	¨$¥Æ,
+	gen_fail_msg "z_get_spec" 46006 ["¥"])
+	];
+=TEX
+\subsection{Consistency Proofs}
+=SML
+val was_z_type_check_only = set_flag ("z_type_check_only", false);
+val was_z_use_axioms = set_flag ("z_use_axioms", false);
+push_pc "initial";
+ù[X]ú
+f1: (X ≠ X) ≠ X ≠ X
+˜
+µ x:X; g:X ≠ X ∑ f1 g x =  g(g x)
+à
+ù[X,Y]ú
+f2: (X ™ Y);
+f3: (X ™ Y)
+˜
+µ x:X; y:Y ∑ (x,y) ç f2 § ≥ (x,y) ç f3
+à
+
+πZAX
+ff: (É ≠ É) ≠ É ≠ É
+˜
+µ x:É; g:É ≠ É ∑ ff g x =  g(g x)
+∞
+
+πZAX
+ff2: (É ™ É);
+ff3: (É ™ É)
+˜
+µ x:É; y:É ∑ (x,y) ç ff2 § ≥ (x,y) ç ff3
+∞
+
+πHOLCONST
+h : 'a ≠ BOOL
+˜
+µ x :'a ∑ h x = T
+∞
+=SML
+pop_pc ();
+=TEX
+=SML
+val was_z_type_check_only = set_flag ("z_type_check_only", was_z_type_check_only);
+val was_z_use_axioms = set_flag ("z_use_axioms", was_z_use_axioms);
+=TEX
+=SML
+push_pc "hol";
+πHOLCONST
+there : Ó
+˜
+there = 0
+∞
+=SML
+pop_pc();
+=SML
+fun test_pcg tm = (
+let val s1 = z_push_consistency_goal tm;
+	val (asms,cnc) = (top_goal());
+	val tidy = drop_main_goal();
+in
+	if is_nil asms
+	then cnc
+	else fail "test_pcg-has asms" 0 []
+end);
+=TEX
+=SML
+store_mt_results (mt_runf (op =$)) [
+	("z_push_consistency_goal-no gf,1 const",
+	test_pcg,
+	ÒffÆ,
+	Ò∂ ff' : (É ≠ É) ≠ É ≠ É
+             ∑ µ x : É; g : É ≠ É ∑ ff' g x = g (g x)Æ),
+	("z_push_consistency_goal-no gf,2 consts",
+	test_pcg,
+	Òff2Æ,
+	Ò∂ ff2' : É ™ É; ff3' : É ™ É
+             ∑ µ x : É; y : É
+               ∑ (x, y) ç ff2' § ≥ (x, y) ç ff3'Æ),
+	("z_push_consistency_goal-1 gf,1 const",
+	test_pcg,
+	Òf1Æ,
+	inst [] [(î'XÆ,î'cÆ)]
+	Ò∂ f1' : É
+             ∑ µ X : É
+               ∑ ¨f1' ($"Z'Mk_T[1]" X)Æ ç (X ≠ X) ≠ X ≠ X
+                 ± (µ x : X; g : X ≠ X
+                   ∑ ¨f1' ($"Z'Mk_T[1]" X)Æ g x = g (g x))Æ),
+	("z_push_consistency_goal-2 gf,2 consts",
+	test_pcg,
+	Òf3Æ,
+	(inst [] [(î'YÆ, î'eÆ), (î'XÆ, î'dÆ)]
+	Ò∂ f3' : É; f2' : É
+  	∑ µ X : É; Y : É
+ 	   ∑ (¨f2' Ò(X, Y)ÆÆ ç X ™ Y
+	      ± ¨f3' Ò(X, Y)ÆÆ ç X ™ Y)
+	      ± (µ x : X; y : Y ∑ (x, y) ç ¨f2' Ò(X, Y)ÆÆ § ≥ (x, y) ç ¨f3' Ò(X, Y)ÆÆ)Æ)),
+	("z_push_consistency_goal-hol",
+	test_pcg,
+	¨hÆ,
+	¨∂ h''∑ µ x∑ h'' x § TÆ)
+	];
+=TEX
+=SML
+store_mt_results mt_run_fail [
+	("z_push_consistency_goal 46009",
+	z_push_consistency_goal,
+	¨rubbishÆ,
+	gen_fail_msg "z_push_consistency_goal" 46009 ["ÒrubbishÆ"]),
+	("z_push_consistency_goal 46005",
+	z_push_consistency_goal,
+	mk_const("rubbish",BOOL),
+	gen_fail_msg "z_push_consistency_goal" 46005 ["rubbish"]),
+	("z_push_consistency_goal 46006",
+	z_push_consistency_goal,
+	¨$¥Æ,
+	gen_fail_msg "z_push_consistency_goal" 46006 ["¥"]),
+	("z_push_consistency_goal 46007",
+	z_push_consistency_goal,
+	¨thereÆ,
+	gen_fail_msg "z_push_consistency_goal" 46007 ["there"])
+	];
+=TEX
+
+
+\section{Z STRIPPING AND PROOF CONTEXTS}
+Incomplete tests, but certainly strongly hint at
+some Z specific stuff:
+=SML
+repeat drop_main_goal;
+push_pc "z_predicates";
+store_mt_results (mt_runf (op =$)) [("z_predicates pc 1",
+	tac_res (rewrite_tac[]),
+	Ò(t = true) ± ≥ (≥ t1) ± (t2 = t2) ± true ± (false ¥ t3) ±
+		(x ç (É ∏ É)) ± (µ x : X ∑ true) ± ≥(∂ y : X ∑ false) ≤ falseÆ,
+	Òt ± t1Æ)];
+store_mt_results (mt_runf (op =#)) [("z_predicates pc 2",
+	tac_res1 strip_tac,
+	([],Ò(≥(≥ t) ± (µ x : É ∑ x = x) ± (∂ x : É ∑ f x) ± z ç  É ±
+		(µ p:P | p ∑ true)) ¥ falseÆ),
+	([Òµ p : P | p ∑ falseÆ,
+	  (snd(strip_µ Ò[b](f ∫ (b ∏ {true,false})) xÆ)),
+	  Òµ x:É∑ x = xÆ, ¨t:BOOLÆ],ÒfalseÆ))];
+store_mt_results (mt_runf (op =#)) [("z_predicates pc 3",
+	tac_res1 (REPEAT strip_tac),
+	([],Òµ y : X ∑ (≥(≥ t) ± (µ x : É ∑ x = x) ± x ç É)Æ),
+	([Òy ç XÆ],¨t:BOOLÆ))];
+store_mt_results (mt_runf (op =#)) [("'z_decl pc 1",
+	tac_res1 (REPEAT strip_tac),
+	([],Ò(∂ x,y : X ∑ x = y) ¥ falseÆ),
+	([Òx = yÆ,Òy ç XÆ,Òx ç XÆ],ÒfalseÆ))];
+=TEX
+Check everything is at least present:
+=SML
+push_pc "'z_predicates";
+set_pc "'z_decl";
+set_pc "'z_fc";
+set_pc "z_predicates";
+pop_pc();
+=TEX
+\section{BIT O'NONSENSE}
+πZ
+rel	px _,py _, pz _
+∞
+ù[X]
+px _ :  X;
+py _ :  X;
+pz _ :  X
+à
+
+ˇS[X]¸
+x:X
+˜
+px x
+à
+ˇI[X]¸
+y:X
+˜
+py y
+à
+ˇO[X]¸
+z:X
+˜
+pz z
+à
+ˇP[X]¸
+z:X
+˜
+pz z
+à
+=SML
+push_goal([],Ò(∂[[S;S']; I;O] | p x x' y z∑ true) §
+	(∂ S;S'; I;O | p x x' y z∑ true)Æ);
+a(REPEAT strip_tac);
+a(z_∂_tac Ò [[S;S']; I;O]Æ);
+a(REPEAT strip_tac);
+repeat drop_main_goal;
+=TEX
+\section{END OF TESTS}
+=SML
+(* set_flag("subgoal_package_quiet",false); *)
+diag_string(summarize_mt_results ());
+=TEX
+Restore the {\tt z\_type\_check\_only} flag.
+=SML
+set_flag("z_type_check_only", old_flag);
+=TEX
+\end{document}
+=IGN

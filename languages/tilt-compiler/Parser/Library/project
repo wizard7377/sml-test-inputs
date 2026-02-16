@@ -1,0 +1,48 @@
+interface STREAM = "stream.sig.sml" {}
+unit STREAM : STREAM = "stream.sig.sml" {}
+
+interface LR_TABLE = "lr-table.sig.sml" {}
+unit LR_TABLE : LR_TABLE = "lr-table.sig.sml" {}
+
+interface TOKEN = "token.sig.sml" {LR_TABLE}
+unit TOKEN : TOKEN = "token.sig.sml" {LR_TABLE}
+
+interface LR_PARSER = "lr-parser.sig.sml" {STREAM LR_TABLE TOKEN}
+unit LR_PARSER : LR_PARSER = "lr-parser.sig.sml" {STREAM LR_TABLE TOKEN}
+
+interface LEXER = "lexer.sig.sml" {}
+unit LEXER : LEXER = "lexer.sig.sml" {}
+
+interface ARG_LEXER = "arg-lexer.sig.sml" {}
+unit ARG_LEXER : ARG_LEXER = "arg-lexer.sig.sml" {}
+
+interface PARSER_DATA = "parser-data.sig.sml" {LR_TABLE TOKEN}
+unit PARSER_DATA : PARSER_DATA = "parser-data.sig.sml" {LR_TABLE TOKEN}
+
+interface PARSER = "parser.sig.sml" {STREAM TOKEN}
+unit PARSER : PARSER = "parser.sig.sml" {STREAM TOKEN}
+
+interface ARG_PARSER = "arg-parser.sig.sml" {STREAM TOKEN}
+unit ARG_PARSER : ARG_PARSER = "arg-parser.sig.sml" {STREAM TOKEN}
+
+interface Join = "join.int" {LR_PARSER LEXER PARSER_DATA PARSER}
+unit Join : Join = "join.sml" {LR_PARSER LEXER PARSER_DATA PARSER}
+
+interface JoinWithArg = "joinwitharg.int" {
+	LR_PARSER ARG_LEXER PARSER_DATA ARG_PARSER
+}
+unit JoinWithArg : JoinWithArg = "joinwitharg.sml" {
+	LR_PARSER ARG_LEXER PARSER_DATA ARG_PARSER
+}
+
+interface LrTable = "lrtable.int" {LR_TABLE}
+unit LrTable : LrTable = "lrtable.sml" {LR_TABLE Array List}
+
+interface Stream = "stream.int" {STREAM}
+unit Stream : Stream = "stream.sml" {STREAM}
+
+interface LrParser = "parser.int" {LR_PARSER}
+unit LrParser : LrParser = "parser2.sml" {
+	STREAM LR_TABLE TOKEN LR_PARSER List Stream LrTable TextIO Int
+}
+

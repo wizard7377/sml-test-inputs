@@ -1,0 +1,17 @@
+(* cm-lib.cm
+ *
+ * COPYRIGHT (c) 2022 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *
+ * Toplevel description file for new implementation of CM
+ *
+ * Author: Matthias Blume (blume@kurims.kyoto-u.ac.jp)
+ *)
+
+Library
+
+  group($cm/cm-lib.cm)
+
+is
+
+  $cm/cm-lib.cm

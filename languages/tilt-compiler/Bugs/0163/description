@@ -1,0 +1,38 @@
+Number: 0163
+Title:       Pattern compiler causing elaborator to bomb.
+Keywords:    Pattern compiler, records and tuples
+Submitter:   swasey
+Date:        04/15/03
+Version:     CVS
+System:      any
+Severity:    critical
+Problem:
+	The elaborator bombs on the following code.
+Code:        
+	    fun seal (i : {main : unit * unit}) : unit =
+		let val {main=(v,sig_target),...} = i
+		in  ()
+		end
+Transcript:  
+Comments:
+	The pattern compiler's reduce_let was returning a variable
+	expression where the variable was not bound.
+
+	For example, an expression like
+
+		let a = bindarg#main
+		    b = a#1
+		    c = a#2
+		in  (b,c)
+		end
+
+	was being reduced, incorrectly, to
+
+		a
+
+	This is fixed in my working directory.
+	The fix is not yet in CVS.
+Fix:
+Test: ../../Test/bug163
+Owner: swasey
+Status: closed

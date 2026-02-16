@@ -1,0 +1,28 @@
+Number: 0156
+Title:       datatypes and scope
+Keywords:    elaborator, datatypes, let
+Submitter:   swasey
+Date:        10/08/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:
+
+	TILT bombs in reduce_to_remove while compiling ``let datatype
+	t = A in A end''
+
+Code:        
+Transcript:  
+Comments:
+	[Supporting files in CVS prior to 1/6/04.]
+
+	This code does not typecheck under the Definition, HS, or TILT.
+
+	The bug is merely that TILT bombs rather than reject this
+	code.
+
+Fix:
+	TILT now reports the user error.
+Test: n16
+Owner: swasey
+Status: closed

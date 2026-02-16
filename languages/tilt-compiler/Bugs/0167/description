@@ -1,0 +1,41 @@
+Number: 0167
+Title:       Elaborator bombs on toplevel raise/handle/raise
+Keywords:    value restriction, exceptions, elaborator
+Submitter:   leaf
+Date:        07/19/03
+Version:     CVS
+System:      ALL
+Severity:    minor
+Problem:     The elaborator bombs on the following code fragment:
+Code:        
+
+   val x = (raise Div) handle _ => raise Div
+
+Transcript:  The exact error messages are as follows:
+
+ tilt: internal error: ilblast.sml: cannot simplify unresolved CON_TYVAR
+ tilt: internal error: ilblast.sml: cannot simplify unresolved CON_TYVAR
+
+ uncaught exception BUG
+   raised at: Util/util-error.sml:6.8-6.31
+              Top/file.sml:50.44
+              Util/util.sml:108.13
+              Top/slave.sml:87.45
+              Top/manager.sml:93.35
+
+Comments:    This code should be accepted, but subject to the value restriction 
+   it should be made non-polymorphic.
+
+Fix:         
+
+	Toil recorded tyvars as they were created so it could
+	instantiate any left-over unset ones after elaboration.  The
+	problem is that other parts of the elaborator created tyvars
+	behind Toil's back; these were not instantiated.
+
+	I fixed this by eliminating Toil's tyvar table in favor of
+	walking over the elaboration result to hunt for unset tyvars.
+
+Test: bug167
+Owner: swasey
+Status: closed

@@ -1,0 +1,2 @@
+structure Math : MATH
+	where type real = real

@@ -1,0 +1,1 @@
+unit Test = "word.sub.sml" {Int Word32 Word8}

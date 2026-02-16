@@ -1,0 +1,3 @@
+unit Test = "word8vector.sml" {
+	Int Word8 Word8Vector List
+}

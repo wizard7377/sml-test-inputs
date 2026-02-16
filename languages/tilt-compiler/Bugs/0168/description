@@ -1,0 +1,30 @@
+Number: 0168
+Title:       Real.fromString does not handle nan and inf correctly
+Keywords:    reals, basis, nan
+Submitter:   leaf
+Date:        07/21/03
+Version:     CVS
+System:      all
+Severity:    minor
+Problem:     See title
+Code: Test/bug168
+
+val _ = print (case Real.fromString "nan"
+		  of SOME r => "SOME("^(Real.toString r)^")\n"
+		   | NONE => "NONE\n");
+
+val _ = print (case Real.fromString "inf"
+		  of SOME r => "SOME("^(Real.toString r)^")\n"
+		   | NONE => "NONE\n");
+
+
+Transcript:  
+ cuff ml96/Test >bug168/Test.sparc.exe
+ NONE
+ NONE
+
+Comments:    
+Fix:         I rewrote NumScan.scanReal to catch the nan and inf cases.
+Test: Test/bug168
+Owner: leaf
+Status: open

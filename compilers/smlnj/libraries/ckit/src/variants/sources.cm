@@ -1,0 +1,22 @@
+(* sources.cm
+ *
+ * COPYRIGHT (c) 2022 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *)
+
+Group is
+
+  (* standard basis *)
+  $/basis.cm
+
+  parse-control-sig.sml
+  type-check-control-sig.sml
+  config-sig.sml
+
+#if (defined(d))
+  d/config.sml
+#elif (defined(fiveessc))
+  5essc/config.sml
+#else
+  ansic/config.sml
+#endif

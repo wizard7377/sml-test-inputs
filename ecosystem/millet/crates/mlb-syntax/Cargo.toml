@@ -1,0 +1,23 @@
+[package]
+name = "mlb-syntax"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+paths.workspace = true
+str-util.workspace = true
+text-size-util.workspace = true
+
+lex-util.path = "../lex-util"
+slash-var-path.path = "../slash-var-path"
+sml-file.path = "../sml-file"
+sml-namespace.path = "../sml-namespace"

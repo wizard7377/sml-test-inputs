@@ -1,0 +1,291 @@
+Root = Dec*
+
+Dec = DecWithTail ';'?
+DecWithTail = DecInSeq* SharingTail*
+DecInSeq = DecOne ';'?
+
+DecOne =
+  HoleDec
+| ValDec
+| FunDec
+| TyDec
+| DatDec
+| DatCopyDec
+| AbstypeDec
+| ExDec
+| OpenDec
+| InfixDec
+| InfixrDec
+| NonfixDec
+| DoDec
+// this covers both the regular one and the structure-level one.
+| LocalDec
+// these are structure-level/top-level decs but we put them here so we can emit better errors.
+| StructureDec
+| SignatureDec
+| FunctorDec
+// expressions are not actually decs, but we can parse them, accept them at only the top level, and
+// reject them everywhere else with a good error message.
+| ExpDec
+// not actually a dec.
+| IncludeDec
+// used in LunarML
+| EsImportDec
+
+HoleDec = '...'
+ValDec = 'val' TyVarSeq ValBind*
+FunDec = 'fun' TyVarSeq FunBind*
+TyDec = TyHead TyBind*
+DatDec = 'datatype' DatBind* WithType?
+DatCopyDec = lhs_kw:'datatype' 'Name' '=' rhs_kw:'datatype' Path
+AbstypeDec = 'abstype' DatBind* WithType? 'with' Dec* 'end'
+ExDec = 'exception' ExBind*
+OpenDec = 'open' Path*
+InfixDec = 'infix' 'IntLit'? NameStarEq*
+InfixrDec = 'infixr' 'IntLit'? NameStarEq*
+NonfixDec = 'nonfix' NameStarEq*
+DoDec = 'do' Exp
+LocalDec = LocalDecHd LocalDecTl 'end'
+StructureDec = 'structure' StrBind*
+SignatureDec = 'signature' SigBind*
+FunctorDec = 'functor' FunctorBind*
+ExpDec = Exp
+IncludeDec = 'include' SigExp*
+// we don't want the 'from' keyword to be an actual keyword at the lexical level.
+EsImportDec = '_esImport' attrs:EsImportAttrs? default_import:'Name'? ','? specs:EsImportSpecs? from_kw:'Name'? module_name:'StringLit'
+
+LocalDecHd = 'local' Dec*
+LocalDecTl = 'in' Dec*
+TyHead = 'type' | 'eqtype'
+ValBind = 'rec'? Pat EqExp? 'and'?
+TyBind = TyVarSeq 'Name' EqTy? 'and'?
+
+FunBind = '|'? FunBindCase* 'and'?
+FunBindCase = FunBindCaseHead Pat* TyAnnotation? EqExp? '|'?
+
+DatBind = TyVarSeq 'Name' EqConBinds? 'and'?
+EqConBinds = '=' '|'? ConBind*
+ConBind = 'op'? NameStarEq OfTy? '|'?
+
+ExBind = 'op'? NameStarEq ExBindInner? 'and'?
+StrBind = 'Name' AscriptionTail? EqStrExp? 'and'?
+SigBind = 'Name' '=' SigExp 'and'?
+// use * to allow empty
+FunctorBind =
+  functor_name:'Name'
+  '(' FunctorArg* ')' AscriptionTail?
+  '=' body:StrExp 'and'?
+
+EsImportAttrs = '[' 'Name'* ']'
+EsImportSpecs = '{' EsImportSpecArg* '}'
+EsImportSpecArg = EsImportSpec ','?
+EsImportSpec = EsImportSpecSource AsPatTail? TyAnnotation?
+EsImportSpecSource =
+  'Name'
+| 'StringLit'
+
+EqExp = '=' Exp
+EqStrExp = '=' StrExp
+
+FunBindCaseHead = PrefixFunBindCaseHead | InfixFunBindCaseHead
+PrefixFunBindCaseHead = 'op'? NameStarEq
+InfixFunBindCaseHead = '('? lhs:Pat NameStarEq rhs:Pat ')'?
+
+ExBindInner = OfTy | EqExp
+WithType = 'withtype' TyBind*
+
+// a bit weird
+FunctorArg = FunctorArgNameSigExp | Dec
+FunctorArgNameSigExp = 'Name' Ascription SigExp
+
+StrExp =
+  StructStrExp
+| PathStrExp
+| AscriptionStrExp
+| AppStrExp
+| LetStrExp
+
+StructStrExp = 'struct' Dec* 'end'
+PathStrExp = Path
+AscriptionStrExp = StrExp AscriptionTail
+// use * to allow empty
+AppStrExp = 'Name' '(' AppStrExpArg* ')'
+LetStrExp = 'let' Dec* 'in' StrExp 'end'
+
+// a bit weird
+AppStrExpArg = AppStrExpArgStrExp | Dec
+AppStrExpArgStrExp = StrExp
+
+AscriptionTail = Ascription SigExp
+Ascription = ':' | ':>'
+
+SigExp =
+  SigSigExp
+| NameSigExp
+| WhereTypeSigExp
+| WhereSigExp
+
+SigSigExp = 'sig' Dec* 'end'
+NameSigExp = 'Name'
+WhereTypeSigExp = SigExp WhereOrAnd 'type' TyVarSeq Path '=' Ty
+WhereSigExp = SigExp WhereOrAnd lhs:Path '=' rhs:Path
+WhereOrAnd = 'where' | 'and'
+
+SharingTail = 'sharing' 'type'? PathEq*
+EqTy = '=' Ty
+PathEq = Path '='?
+
+Exp =
+  HoleExp
+| WildcardExp
+| OpAndalsoExp
+| OpOrelseExp
+| SConExp
+| PathExp
+| RecordExp
+| SelectorExp
+| ParenExp
+| TupleExp
+| ListExp
+| VectorExp
+| SeqExp
+| LetExp
+| AppExp
+| InfixExp
+| TypedExp
+| AndalsoExp
+| OrelseExp
+| HandleExp
+| RaiseExp
+| IfExp
+| WhileExp
+| CaseExp
+| FnExp
+
+HoleExp = '...'
+WildcardExp = '_'
+OpAndalsoExp = 'op' 'andalso'
+OpOrelseExp = 'op' 'orelse'
+SConExp = SCon
+PathExp = 'op'? Path
+RecordExp = '{' ExpRow* '}'
+SelectorExp = '#' Lab
+ParenExp = '(' Exp ')'
+TupleExp = '(' ExpArg* ')'
+ListExp = '[' ExpArg* ']'
+VectorExp = '#' ListExp
+SeqExp = '(' exps_in_seq:ExpInSeq* ')'
+LetExp = 'let' Dec* 'in' exps_in_seq:ExpInSeq* 'end'
+AppExp = func:Exp arg:Exp
+InfixExp = lhs:Exp NameStarEq rhs:Exp
+TypedExp = Exp Ascription Ty
+AndalsoExp = lhs:Exp 'andalso' rhs:Exp
+OrelseExp = lhs:Exp 'orelse' rhs:Exp
+HandleExp = Exp 'handle' Matcher
+RaiseExp = 'raise' Exp
+IfExp = 'if' cond:Exp 'then' yes:Exp 'else' no:Exp
+WhileExp = 'while' cond:Exp 'do' body:Exp
+CaseExp = 'case' Exp 'of' Matcher
+FnExp = 'fn' Matcher
+
+ExpRow = Lab EqExp? ','?
+ExpArg = Exp ','?
+ExpInSeq = Exp ';'?
+
+// call it this instead of Match to avoid clash with rust kw
+Matcher = '|'? Arm*
+Arm = Pat '=>' Exp '|'?
+
+Pat =
+  WildcardPat
+| SConPat
+| ConPat
+| RecordPat
+| ParenPat
+| TuplePat
+| ListPat
+| VectorPat
+| InfixPat
+| TypedPat
+| AsPat
+| OrPat
+
+WildcardPat = '_'
+SConPat = SCon
+ConPat = 'op'? Path Pat?
+RecordPat = '{' PatRow* '}'
+ParenPat = '(' Pat ')'
+TuplePat = '(' PatArg* ')'
+ListPat = '[' PatArg* ']'
+VectorPat = '#' ListPat
+InfixPat = lhs:Pat NameStarEq rhs:Pat
+TypedPat = Pat Ascription Ty
+AsPat = Pat AsPatTail
+OrPat = lhs:Pat '|' rhs:Pat
+
+PatRow = PatRowInner ','?
+PatRowInner =
+  RestPatRow
+| LabAndPatPatRow
+| LabPatRow
+
+RestPatRow = '...'
+LabAndPatPatRow = Lab '=' Pat
+LabPatRow = NameStarEq TyAnnotation? AsPatTail?
+
+AsPatTail = 'as' Pat
+PatArg = Pat ','?
+
+Ty =
+  HoleTy
+| WildcardTy
+| TyVarTy
+| RecordTy
+| ConTy
+| OneArgConTy
+| TupleTy
+| FnTy
+| ParenTy
+
+HoleTy = '...'
+WildcardTy = '_'
+TyVarTy = 'TyVar'
+RecordTy = '{' TyRow* '}'
+ConTy = TySeq? Path
+// rather annoying, but this makes the parser a bit easier to write.
+OneArgConTy = Ty Path
+TupleTy = Ty StarTy*
+FnTy = param:Ty '->' res:Ty
+ParenTy = '(' Ty ')'
+
+StarTy = '*' Ty
+TyRow = Lab Ascription Ty ','?
+
+OfTy = 'of' Ty
+TyAnnotation = Ascription Ty
+
+Path = NameStarEqDot*
+NameStarEqDot = NameStarEq '.'?
+
+TySeq = '(' TyArg* ')'
+TyArg = Ty ','?
+
+TyVarSeq = '('? TyVarArg* ')'?
+TyVarArg = 'TyVar' ','?
+
+Lab = 'Name' | '*' | 'IntLit'
+
+// NameStarEq can be a Name, *, or =, maybe. though, depending on the circumstance, only * and not =
+// may be additionally allowed (like for patterns).
+//
+// note that Name encompasses both alphanumeric and symbolic names, so they cannot be easily
+// distinguished later. this may technically be a violation of the Definition, since I think the
+// Definition doesn't like structure etc. names to be symbolic.
+NameStarEq = 'Name' | '*' | '='
+
+SCon =
+  'IntLit'
+| 'RealLit'
+| 'WordLit'
+| 'CharLit'
+| 'StringLit'

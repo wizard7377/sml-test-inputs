@@ -1,0 +1,1294 @@
+=IGN
+********************************************************************************
+int003.doc: this file is part of the PPZed system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Integration Tests for the ProofPower-Z System}
+
+\def\AbstractText{This document provides a description of the {\ProductZ} system integration tests.}
+
+\def\Reference{DS/FMU/IED/INT003}
+
+\def\Author{K.Blackburn}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{FST Project}  %% Mandatory field
+%% LaTeX2e port: %\TPPvolume{}
+%% LaTeX2e port: %\TPPpart{}
+%% LaTeX2e port: \TPPtitle{Integration Tests for the ProofPower-Z System}  %% Mandatory field
+%% LaTeX2e port: \TPPref{DS/FMU/IED/INT003}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Revision: 1.17 $%
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2004/01/19 12:44:00 $%
+%% LaTeX2e port: }}
+%% LaTeX2e port: \TPPstatus{Draft}			%% Mandatory field
+%% LaTeX2e port: \TPPtype{Specification}
+%% LaTeX2e port: \TPPkeywords{}
+%% LaTeX2e port: \TPPauthor{K.Blackburn & WIN01}  %% Mandatory field
+%% LaTeX2e port: %\TPPauthors{Name 1&location 1\\Name 2&location 2\\Name 3&location 3}
+%% LaTeX2e port: \TPPauthorisation{R.D.Arthan & Project Manager}
+%% LaTeX2e port: \TPPabstract{This document provides a description of the \ProductZ{} system integration tests.}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port: 	    Library
+%% LaTeX2e port: }}
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: 
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: 
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+\pagebreak
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu}
+
+\subsection{Changes History}
+\begin{description}
+\item[Issue 1.1 (1992/10/20),1.2 (1992/10/20),1.3 (1992/10/21)]
+First drafts.
+\item[Issue 1.4 (1992/10/22) (13th November 1992)]
+Updated for Z build 1.32.
+\item[Issue 1.9 (1992/12/11) (11th December 1992)]
+Global rename from wrk038.doc issue 1.9.
+\item[Issue 1.10 (1992/12/11) (11th December 1992)]
+Fixing theory usage.
+\item[Issue 1.11 (1993/02/10),1.12 (1993/02/11) (10th-11th February 1993)]
+Reacting to changes in proof contexts, etc.
+\item[Issue 1.13 (1993/02/23) (23rd February 1993)]
+Highlighting errors, changing parent theory.
+\item[Issue 1.14 (1996/01/22) (22nd January 1996)]
+Corrected use of fake test harness.
+\item[Issue 1.15 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.16 (2002/10/17)] PPZed-specific updates for open source release
+\item[Issue 1.17 (2004/01/19)] The Z universal set is now called É.
+\item[Issue 1.18 (2006/02/02)] Functional composition is now called ``Ö''.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported PPZed to Lemma 1 document template.
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+%\subsection{Changes Forecast}
+\section{GENERAL}
+\subsection{Scope}\label{Scope}
+This document provides either a description of, or reference for, the \ProductZ{} system integration tests,
+called for in
+\cite{DS/FMU/IED/HLD015},
+and the high level designs it introduces.
+This is a supplement to the integration tests for \ProductHOL{}
+of \cite{DS/FMU/IED/INT001}.
+\subsection{Introduction}
+\subsubsection{Purpose and Background}
+This document concerns the integration tests for the \ProductZ{} system, excluding the generic HOL support tools.
+It either describes the tests to be made, or gives a reference
+to the test documents.
+
+\subsubsection{Dependencies}
+This document must satisfy the requirements of all the high level designs covered in the scope of this document (section \ref{Scope}).
+To be tested, material claimed to satisfy the high level designs must also exist, as must the build and test tools of
+\cite{DS/FMU/IED/HLD013}.
+\subsubsection{Deficiencies}
+Only the proof support area is initially addressed,
+and that only for preidctaes and library set theory.
+T.B.A.'s are given for other areas that require testing,
+or they are just omitted.
+\subsubsection{Changes Forecast}
+Addressing the deficiences.
+\section{REQUIREMENTS}
+T.B.A.
+\section{PROOF SUPPORT}
+The integration test for this section is passed if the following
+can be successfully run:
+=GFT
+docsml int003
+hol -d zed
+:> use_file "int003";
+:> quit();
+y
+=TEX
+without failures.
+The following allows the script to be used as an integration test in \cite{DS/FMU/IED/IMP021}.
+=SML
+fun  €summarize_mt_results› () =
+	"++++ Compilation of int003.sml halted unexpectedly ++++";
+=TEX
+
+The following tests also provide some parsing/type checking/printing tests, as a side-effect.
+\subsection{Utilities}
+The following functions are intended for application to a list
+of goal terms, printing each as the prof succeeds, so that
+it can be determined where in the list, if anywhere,
+the proof failed.
+
+The following uses just the current proof context's stripping rules, embedded in the contradiction tactic:
+=SML
+fun €contr_prove› (lst:TERM list) : unit = (
+	map (diag_string o string_of_thm o
+	(fn tm => tac_proof(([],tm), contr_tac))) lst;
+	()
+);
+=TEX
+There is no point trying the two-tactic approach on goals
+that are proven by the above.
+
+The following uses the current proof context's automated proof rules:
+=SML
+fun €full_prove› (lst:TERM list) : unit = (
+	map (diag_string o string_of_thm o prove_rule[]) lst;
+	()
+);
+=TEX
+The following uses the current proof context's stripping,
+supplimented by three uses of $all\-\_asm\-\_fc\-\_tac$:
+=SML
+fun €fc_prove› (lst:TERM list) : unit = (
+	map (diag_string o string_of_thm o
+		(fn tm => tac_proof(([],tm),
+			z_fc_prove_tac[]))) lst;
+	()
+);
+=TEX
+In this document goals that cannot be processed by $contr\_prove$ will also be proven by the two-tactic method.
+
+\subsection{Predicate Calculus}
+=SML
+open_theory "z_language_ps";
+new_theory "int003_thy";
+set_pc "z_predicates";
+=TEX
+Two tactic approach:
+=SML
+set_goal([],Ò(µx, y:X∑ P x ¥ R y)
+	§ (µv, w:X∑ ≥ P w ≤ R v)Æ);
+a(contr_tac);
+(* *** Goal "1" *** *)
+a (z_spec_nth_asm_tac 5 Ò(x ¶ w, y ¶ v)Æ);
+(* *** Goal "2" *** *)
+a (z_spec_nth_asm_tac 5 Ò(v ¶ y, w ¶ x)Æ);
+pop_thm();
+=TEX
+
+=SML
+(* Results from Principia Mathematica *2 *)
+val PM2 =[
+Ò(* *2.02 *) q ¥ ( p ¥ q)Æ,
+Ò(* *2.03 *) (p ¥ ≥ q) ¥ (q ¥ ≥ p)Æ,
+Ò(* *2.15 *) (≥ p ¥ q) ¥ (≥ q ¥ p)Æ,
+Ò(* *2.16 *) (p ¥ q) ¥ (≥ q ¥ ≥ p)Æ,
+Ò(* *2.17 *) (≥ q ¥ ≥ p) ¥ (p ¥ q)Æ,
+Ò(* *2.04 *) (p ¥ q ¥ r) ¥ (q ¥ p ¥ r)Æ,
+Ò(* *2.05 *) (q ¥ r) ¥ (p ¥ q) ¥ (p ¥ r)Æ,
+Ò(* *2.06 *) (p ¥ q) ¥ (q ¥ r) ¥ (p ¥ r)Æ,
+Ò(* *2.08 *) p ¥ pÆ,
+Ò(* *2.21 *) ≥ p ¥ (p ¥ q)Æ];
+=TEX
+=SML
+contr_prove PM2;
+=TEX
+=SML
+(* Results from Principia Mathematica *3 *)
+val PM3 =[
+(* *3.01 *) Òp ± q § ≥(≥ p ≤ ≥ q)Æ,
+(* *3.2  *) Òp ¥ q ¥ p ± qÆ,
+(* *3.26 *) Òp ± q ¥ pÆ,
+(* *3.27 *) Òp ± q ¥ qÆ,
+(* *3.3  *) Ò(p ± q ¥ r) ¥ (p ¥ q ¥ r)Æ,
+(* *3.31 *) Ò(p ¥ q ¥ r) ¥ (p ± q ¥ r)Æ,
+(* *3.35 *) Ò(p ± (p ¥ q)) ¥ qÆ,
+(* *3.43 *) Ò(p ¥ q) ± (p ¥ r) ¥ (p ¥ q ± r)Æ,
+(* *3.45 *) Ò(p ¥ q) ¥ (p ± r ¥ q ± r)Æ,
+(* *3.47 *) Ò(p ¥ r) ± (q ¥ s) ¥ (p ± q ¥ r ± s)Æ];
+=TEX
+=SML
+contr_prove PM3;
+=TEX
+=SML
+(* Results from Principia Mathematica *4 *)
+val PM4 =[
+(* *4.1  *) Òp ¥ q § ≥ q ¥ ≥ pÆ,
+(* *4.11 *) Ò(p § q) § (≥ p § ≥ q)Æ,
+(* *4.13 *) Òp § ≥ ≥ pÆ,
+(* *4.2  *) Òp § pÆ,
+(* *4.21 *) Ò(p § q) § (q § p)Æ,
+(* *4.22 *) Ò(p § q) ± (q § r) ¥ (p § r)Æ,
+(* *4.24 *) Òp § p ± pÆ,
+(* *4.25 *) Òp § p ≤ pÆ,
+(* *4.3  *) Òp ± q § q ± pÆ,
+(* *4.31 *) Òp ≤ q § q ≤ pÆ,
+(* *4.33 *) Ò(p ± q) ± r § p ± (q ± r)Æ,
+(* *4.4  *) Òp ± (q ≤ r) § (p ± q) ≤ (p ± r)Æ,
+(* *4.41 *) Òp ≤ (q ± r) § (p ≤ q) ± (p ≤ r)Æ,
+(* *4.71 *) Ò(p ¥ q) § (p § (p ± q))Æ,
+(* *4.73 *) Òq ¥ (p § (p ± q))Æ];
+=TEX
+=SML
+contr_prove PM4;
+=TEX
+=SML
+(* Results from Principia Mathematica *5 *)
+val PM5 =[
+(* *5.1  *) Òp ± q ¥ (p § q)Æ,
+(* *5.32 *) Ò(p ¥ (q § r)) ¥ ((p ± q) § (p ± r))Æ,
+(* *5.6  *) Ò(p ± ≥ q ¥ r) ¥ (p ¥ (q ≤ r))Æ];
+=TEX
+=SML
+contr_prove PM5;
+=TEX
+=SML
+(* Definitions from Principia Mathematica *9 *)
+val PM9 =[
+(* *9.01 *) Ò(≥ (µx:X∑ ∆x)) § (∂x: X∑ ≥ ∆x)Æ,
+(* *9.02 *) Ò(≥ (∂x:X∑ ∆x) § (µx:X∑ ≥ ∆x))Æ,
+(* *9.03 *) Ò(µx:X∑ ∆x ≤ p) § (µx:X∑ ∆x) ≤ pÆ,
+(* *9.04 *) Òp ≤ (µx:X∑ ∆x) § (µx:X∑ p ≤ ∆x)Æ,
+(* *9.05 *) Ò(∂ x:X∑true) ¥ ((∂x:X∑ ∆x ≤ p) § (∂x:X∑ ∆x) ≤ p)Æ,
+(* *9.06 *) Òp ≤ (∂x:X∑ ∆x) § p ≤ (∂x:X∑ ∆x)Æ];
+=TEX
+=SML
+full_prove PM9;
+fc_prove PM9;
+=TEX
+=SML
+set_goal([],nth 0 PM9);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 PM9);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x ¶ x)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 2 PM9);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ x)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ x)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 3 PM9);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ x)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ x)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 4 PM9);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 2 Ò(x ¶ x')Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x')Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 5 PM9);
+a contr_tac;
+pop_thm();
+=TEX
+=SML
+val PM9b =[
+(* *9.07 *) Ò(∂y:Y∑true) ¥ ((µx:X∑ ∆x) ≤ (∂y:Y∑ Ÿy) § (µx:X∑∂y:Y∑ ∆x ≤ Ÿy))Æ,
+(* *9.08 *) Ò(∂y:Y∑true) ¥ ((∂y:Y∑ Ÿy) ≤ (µx:X∑ ∆x) § (µx:X∑∂y:Y∑ Ÿy ≤ ∆x))Æ];
+=TEX
+=SML
+full_prove PM9b;
+fc_prove PM9b;
+=TEX
+=SML
+set_goal([],nth 0 PM9b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x ¶ x)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y')Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ x)Æ);
+a(z_spec_nth_asm_tac 3 Ò(y ¶ y')Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 PM9b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y')Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x ¶ x)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ x)Æ);
+a(z_spec_nth_asm_tac 5 Ò(y ¶ y')Æ);
+pop_thm();
+=TEX
+
+=SML
+(* Results from Principia Mathematica *10 *)
+val PM10 =[
+(* *10.01  *) Ò(∂x:X∑ ∆x) § ≥ (µy:X∑ ≥ ∆y)Æ,
+(* *10.1   *) Ò(µx:É∑ ∆x) ¥ ∆yÆ,
+(* *10.21  *) Ò(µx:X∑ p ¥ ∆x) § p ¥ (µy:X∑ ∆y)Æ,
+(* *10.22  *) Ò(µx:X∑ ∆x ± Ÿx) § (µy:X∑ ∆y) ± (µz:X∑ Ÿz)Æ,
+(* *10.24  *) Ò(µx:X∑ ∆x ¥ p) § (∂y:X∑ ∆y) ¥ pÆ,
+(* *10.27  *) Ò(µx:X∑ ∆x ¥ Ÿx) ¥ ((µy:X∑ ∆y) ¥ (µz:X∑ Ÿz))Æ,
+(* *10.28  *) Ò(µx:X∑ ∆x ¥ Ÿx) ¥ ((∂y:X∑ ∆y) ¥ (∂z:X∑ Ÿz))Æ,
+(* *10.35  *) Ò(∂x:X∑ p ± ∆x) § p ± (∂y:X∑ ∆y)Æ,
+(* *10.42  *) Ò(∂x:X∑ ∆x) ≤ (∂y:X∑ Ÿy) § (∂z:X∑ ∆z ≤ Ÿz)Æ,
+(* *10.5   *) Ò(∂x:X∑ ∆x ± Ÿx) ¥ (∂y:X∑ ∆y) ± (∂z:X∑ Ÿz)Æ,
+(* *10.51  *) Ò (≥ (∂x:X∑ ∆x ± Ÿx) ¥ (µy:X∑ ∆y ¥ ≥ Ÿy))Æ];
+=TEX
+=SML
+full_prove PM10;
+fc_prove PM10;
+=TEX
+Ones that cannot be done with $fc\_prove$
+(because of asymmetry about $§$).
+=SML
+val PM10b =[
+(* *10.271 *) Ò(µx:X∑ ∆x § Ÿx) ¥ ((µy:X∑ ∆y) § (µz:X∑ Ÿz))Æ,
+(* *10.281 *) Ò(µx:X∑ ∆x § Ÿx) ¥ ((∂y:X∑ ∆y) § (∂z:X∑ Ÿz))Æ];
+=SML
+full_prove PM10b;
+=TEX
+=SML
+set_goal([],nth 0 PM10b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 3 Ò(y ¶ z)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x ¶ z)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 3 Ò(z ¶ y)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x ¶ y)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 PM10b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ y)Æ);
+a(z_spec_nth_asm_tac 2 Ò(z ¶ y)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x ¶ z)Æ);
+a(z_spec_nth_asm_tac 2 Ò(y ¶ z)Æ);
+pop_thm();
+=TEX
+=SML
+(* Results from Principia Mathematica *11 *)
+val PM11 =[
+(* *11.1  *) Ò(µx, y:É∑ ∆(x,y)) ¥ ∆(z,w)Æ,
+(* *11.2  *) Ò(µx, y:X∑ ∆(x,y)) § (µy, x:X∑ ∆(x,y))Æ,
+(* *11.3  *) Ò(p ¥ (µx, y:Y∑ ∆(x,y)))
+		§ (µx, y:Y∑ p ¥ ∆(x,y))Æ,
+(* *11.35 *) Ò(µx, y:Y∑ ∆(x,y) ¥ p) § (∂x, y:Y∑ ∆(x,y)) ¥ pÆ
+];
+=TEX
+=SML
+full_prove PM11;
+fc_prove PM11;
+=TEX
+=SML
+(* Got to be done by two tactic method - prove_rule can't cope *)
+val PM11b =[
+(* *11.32 *) Ò(µx, y:Y∑ ∆(x,y) ¥ Ÿ(x,y))
+		¥ (µx, y:Y∑ ∆(x,y)) ¥ (µx, y:Y∑ Ÿ(x,y))Æ,
+(* *11.45 *) Ò(∂x, y:Y∑ true) ¥ ((∂x, y:Y∑ p ¥ ∆(x,y))
+		§ (p ¥ (∂x, y:Y∑ ∆(x,y))))Æ,
+(* *11.54 *) Ò(∂x, y:Y∑ ∆x ± Ÿy) § (∂x:Y∑ ∆x) ± (∂y:Y∑ Ÿy)Æ,
+(* *11.55 *) Ò(∂x, y:Y∑ ∆x ± Ÿ(x,y))
+		§ (∂x:Y∑ ∆x ± (∂y:Y∑ Ÿ(x,y)))Æ,
+(* *11.6  *) Ò(∂x:X∑ (∂y:Y∑ ∆(x,y) ± Ÿy) ± —x)
+		§ (∂y:Y∑ (∂x:X∑ ∆(x,y) ± —x) ± Ÿy)Æ,
+(* *11.62 *) Ò(µx:X; y:Y∑ ∆x ± Ÿ(x,y) ¥ —(x,y))
+  		§ (µx:X∑ ∆x ¥ (µy:Y∑ Ÿ(x,y) ¥ —(x,y)))Æ
+];
+=TEX
+=SML
+set_goal([],nth 0 PM11b);
+a contr_tac;
+a(z_spec_nth_asm_tac 5 Ò(x ¶ x, y ¶ y)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x ¶ x, y ¶ y)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 PM11b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x', y ¶ y')Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x, y ¶ y)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x', y ¶ y')Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 2 PM11b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x, y ¶ y)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 3 PM11b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x, y ¶ y)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 4 PM11b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x ¶ x)Æ);
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 5 PM11b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 6 Ò(x ¶ x, y ¶ y)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 6 Ò(x ¶ x)Æ);
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+pop_thm();
+=TEX
+\subsection{Z Library Set Theory}
+The following are selected results from the Z Notation reference manual
+\cite{spivey92}.
+=SML
+new_parent "z_relations";
+set_pc "z_sets_ext";
+=TEX
+=SML
+(* results from ZRM provable by stripping *)
+val ZRM1 = [
+Òa ¿ a = a ¿ {}Æ,
+Òa ¿ {} = a ° aÆ,
+Òa ° a = a \ {}Æ,
+Òa \ {} = aÆ,
+Òa ° {} = a \ aÆ,
+Òa \ a = {} \ aÆ,
+Ò{} \ a = {}Æ,
+Òa ¿ b = b ¿ aÆ,
+Òa ° b = b ° aÆ,
+Òa ¿ (b ¿ c) = (a ¿ b) ¿ cÆ,
+Òa ° (b ° c) = (a ° b) ° cÆ,
+Òa ¿ (b ° c) = (a ¿ b) ° (a ¿ c)Æ,
+Òa ° (b ¿ c) = (a ° b) ¿ (a ° c)Æ,
+Ò(a ° b) ¿ (a \ b) = aÆ,
+Ò((a \ b) ° b) = {}Æ,
+Òa \ (b \ c) = (a \ b) ¿ (a ° c)Æ,
+Ò(a \ b) \ c = a \ (b ¿ c)Æ,
+Òa ¿ (b \ c) = (a ¿ b) \ (c \ a)Æ,
+Òa ° (b \ c) = (a ° b) \ cÆ,
+Ò(a ¿ b) \ c = (a \ c) ¿ (b \ c)Æ];
+=TEX
+=SML
+contr_prove ZRM1;
+=TEX
+=SML
+val ZRM2 = [
+Òa \ (b ° c) = (a \ b) ¿ (a \ c)Æ,
+Ò≥ x ç {}Æ,
+Òa Ä aÆ,
+Ò≥ a † aÆ,
+Ò{} Ä aÆ,
+Òﬁ {} = {}Æ,
+Ò• {} = ÉÆ];
+=TEX
+=SML
+contr_prove ZRM2;
+=TEX
+=SML
+(* results from ZRM that can be proven automatically *)
+val ZRM3 = [
+Òa Ä b § a ç  bÆ,
+Ò≥ (a † b ± b † a)Æ,
+Òa Ä b ± b Ä c ¥ a Ä cÆ,
+Òﬁ (a ¿ b) = (ﬁ a) ¿ (ﬁ b)Æ,
+Ò• (a ¿ b) = (• a) ° (• b)Æ,
+Ò a Ä b ¥ ﬁ a Ä ﬁ b Æ,
+Ò a Ä b ¥ • b Ä • a Æ];
+=TEX
+=SML
+(* results from ZRM that can be proven automatically,
+	but not by fc_rule *)
+val ZRM3b = [
+Òa Ä b ± b Ä a § a = bÆ,
+Òa † b ± b † c ¥ a † cÆ,
+Ò{} † a § ≥ a = {}Æ
+];
+=TEX
+=SML
+full_prove ZRM3;
+fc_prove ZRM3;
+full_prove ZRM3b;
+=TEX
+Now to do them by the two tactic method:
+=SML
+set_goal([],nth 0 ZRM3);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 ZRM3);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1')Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x1)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1)Æ);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 2 ZRM3);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ x1)Æ);
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ x1)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 3 ZRM3);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 2 Ò(S ¶ S)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(S ¶ S)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 1 Ò(S ¶ S)Æ);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 1 Ò(S ¶ S)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 4 ZRM3);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 3 Ò(S ¶ S)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 3 Ò(S ¶ S)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 4 Ò(S ¶ S)Æ);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 3 Ò(S ¶ S)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 5 ZRM3);
+a contr_tac;
+a(z_spec_nth_asm_tac 1 Ò(S ¶ S)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ S)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 6 ZRM3);
+a contr_tac;
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ S)Æ);
+a(z_spec_nth_asm_tac 4 Ò(S ¶ S)Æ);
+pop_thm();
+=TEX
+Now the ones $fc\_rule$ cannot do
+(because of asymmetry about $§$).
+=SML
+set_goal([],nth 0 ZRM3b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ x1)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1)Æ);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 3 Ò(x1 ¶ x1)Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 ZRM3b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 8 Ò(x1 ¶ x1)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 7 Ò(x1 ¶ x1)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 8 Ò(x1 ¶ x1)Æ);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 7 Ò(x1 ¶ x1)Æ);
+(* *** Goal "5" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x1')Æ);
+(* *** Goal "6" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ x1')Æ);
+(* *** Goal "7" *** *)
+a(z_spec_nth_asm_tac 8 Ò(x1 ¶ x1'')Æ);
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x1'')Æ);
+(* *** Goal "8" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x1 ¶ x1')Æ);
+a(z_spec_nth_asm_tac 8 Ò(x1 ¶ x1')Æ);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 2 ZRM3b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x1 ¶ x1)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(x1 ¶ x1)Æ);
+pop_thm();
+=TEX
+
+\subsection{Z Relations}
+In the following proofs we ``allow'' ourselves
+$swap\-\_nth\-\_asm\-\_concl\-\_tac$,
+$nth\-\_asm\-\_sym\-\_tac$, and
+$asm\-\_rewrite\-\_tac$.
+These substitute for automated equational reasoning.
+=SML
+new_parent "z_library";
+set_pc "z_library_ext";
+=TEX
+Page 96:
+=SML
+val ZRM4 = [
+Ò (R ç X ™ Y) ¥ (µ x : X ∑ x ç dom R § (∂ y : Y ∑ (x,y) ç R))Æ,
+Ò (R ç X ™ Y) ¥ (µ y : Y ∑ y ç ran R § (∂ x : X ∑ (x,y) ç R))Æ,
+Òdom {x1 Ì y1, x2 Ì y2} = {x1, x2}Æ,
+Òran {x1 Ì y1, x2 Ì y2} = {y1, y2}Æ,
+Òdom (Q ¿ R) = dom Q ¿ dom RÆ,
+Òran (Q ¿ R) = ran Q ¿ ran RÆ,
+Òdom (Q ° R) Ä dom Q ° dom RÆ,
+Òran (Q ° R) Ä ran Q ° ran RÆ,
+Òdom {} = {}Æ,
+Òran {} = {}Æ
+];
+=TEX
+=SML
+full_prove ZRM4;
+=TEX
+Page 97:
+=SML
+val ZRM5 = [
+Ò P ç X ™ Y ± Q ç Y ™ Z ¥
+	((x Ì z) ç P ª Q § (∂ y : Y ∑ (x,y) ç P ± (y,z) ç Q))Æ,
+ÒP ª (Q ª R) = (P ª Q) ª RÆ
+];
+val ZRM5a = [Ò (x Ì x') ç id X § x = x' ç XÆ,
+Ò (x Ì x') ç id X § x = x' ç XÆ,
+Ò(id X) ª P = X Ú PÆ,
+Ò(id V) ª id W = id (V ° W)Æ,
+ÒP ª id Y = P í YÆ
+];
+val ZRM5b = [
+Ò x ç dom g ± g x ç dom f ± g ç X ﬂ Y ± f ç Y ﬂ Z ¥ (f Ö g)(x) = f(g(x))Æ
+];
+
+=TEX
+=SML
+full_prove ZRM5;
+full_prove ZRM5a;
+fc_prove ZRM5;
+=TEX
+=SML
+set_goal([], nth 0 ZRM5b);
+push_pc "z_library_ext";
+a(contr_tac);
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x, x2 ¶ y)Æ);
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ g x, x2 ¶ y')Æ);
+a(swap_nth_asm_concl_tac 5);
+a(z_app_eq_tac);
+a(rewrite_tac[]);
+a(contr_tac);
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 11 Ò(x1 ¶ x, x2 ¶ y'')Æ);
+a(z_spec_nth_asm_tac 10 Ò(x1 ¶ y'', x2 ¶ f_a)Æ);
+a(swap_nth_asm_concl_tac 3);
+a(z_app_eq_tac);
+a(contr_tac);
+(* *** Goal "1.1" *** *)
+a(z_spec_nth_asm_tac 12 Ò(x1 ¶ g x, x2 ¶ f_a')Æ);
+a(lemma_tac Òg x = y''Æ);
+(* *** Goal "1.1.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 17 Ò(x1 ¶ x, x2 ¶ f_a'')Æ);
+a(z_spec_nth_asm_tac 17 Ò(x ¶ x, y1 ¶ f_a'', y2 ¶ y'')Æ);
+(* *** Goal "1.1.2" *** *)
+a(swap_nth_asm_concl_tac 4);
+a(asm_rewrite_tac[]);
+a(swap_nth_asm_concl_tac 3);
+a(z_spec_nth_asm_tac 12 Ò(x ¶ y'', y1 ¶ f_a', y2 ¶ f_a)Æ);
+(* *** Goal "1.2" *** *)
+a(lemma_tac Òg x = y''Æ);
+(* *** Goal "1.2.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 14 Ò(x ¶ x, y1 ¶ f_a', y2 ¶ y'')Æ);
+a(z_spec_nth_asm_tac 16 Ò(x1 ¶ x, x2 ¶ f_a')Æ);
+(* *** Goal "1.2.2" *** *)
+a(swap_nth_asm_concl_tac 2);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+a(lemma_tac Òy = g xÆ);
+(* *** Goal "2.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 12 Ò(x1 ¶ x, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 12 Ò(x ¶ x, y1 ¶ f_a, y2 ¶ y)Æ);
+(* *** Goal "2.2" *** *)
+a(swap_nth_asm_concl_tac 2);
+a(asm_rewrite_tac[]);
+a(lemma_tac Òf(g x) = y'Æ);
+(* *** Goal "2.2.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 10 Ò(x1 ¶ g x, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 10 Ò(x ¶ g x, y1 ¶ f_a, y2 ¶ y')Æ);
+(* *** Goal "2.2.2" *** *)
+a(asm_rewrite_tac[]);
+pop_thm();
+=TEX
+
+From now on we allow ourselves $prove\-\_tac$ as a pre-processor.
+
+Page 98:
+=SML
+val ZRM6 = [
+Òdom (S Ú R) = S ° dom RÆ,
+Òran (R í T) = ran R ° TÆ,
+ÒS Ú R Ä RÆ,
+ÒR í T Ä RÆ,
+Ò(S Ú R) í T = S Ú (R í T)Æ,
+ÒS Ú (V Ú R) = (S ° V) Ú RÆ,
+Ò(R í T) í W = R í (T ° W)Æ
+];
+val ZRM6b = [
+Òran R Ä Y ¥ (S Ú R = (id S) ª R = (S ∏ Y) ° R)Æ,
+Òdom R Ä X ¥ (R í T = R ª (id T) = R ° (X ∏ T))Æ
+];
+=TEX
+=SML
+full_prove ZRM6;
+fc_prove ZRM6;
+full_prove ZRM6b;
+=TEX
+Page 99:
+=SML
+val ZRM7 = [
+Òdom R Ä X ¥ S · R = (X \ S) Ú RÆ,
+Òran R Ä Y ¥ R Å T = R í (Y \ T)Æ,
+Ò(S Ú R) ¿ (S · R) = RÆ,
+Ò(R í T) ¿ (R Å T) = RÆ
+];
+=TEX
+=SML
+full_prove ZRM7;
+fc_prove ZRM7;
+=TEX
+Page 100:
+=SML
+=SML
+fun €full_prove1› (lst:TERM list) : unit = (
+	map (diag_string o string_of_thm o prove_rule[z_Ì_thm]) lst;
+	()
+);
+=TEX
+=SML
+fun €fc_prove1› (lst:TERM list) : unit = (
+	map (diag_string o string_of_thm o
+		(fn tm => tac_proof(([],tm),
+			z_fc_prove_tac[z_Ì_thm]))) lst;
+	()
+);
+=TEX
+=SML
+val ZRM8 = [
+Ò(y Ì x) ç R Á~Í § (x Ì y) ç RÆ,
+Ò(R Á~Í) Á~Í = RÆ,
+Ò(Q ª R) Á~Í = R Á~Í ª Q Á~ÍÆ,
+Òdom(R Á~Í) = ran RÆ,
+Òran(R Á~Í) = dom RÆ
+];
+val ZRM8b = [
+Òid(dom R) Ä R ª (R Á~Í)Æ,
+Òid(ran R) Ä (R Á~Í) ª RÆ,
+Ò(id V) Á~Í = id VÆ
+];
+=TEX
+=SML
+full_prove1 ZRM8;
+full_prove1 ZRM8b;
+fc_prove1 ZRM8;
+=TEX
+
+Page 101:
+=SML
+val ZRM9 = [
+ÒS Ä X ¥ (y ç R ® S © § (∂ x : X ∑ x ç S ± (x,y) ç R))Æ,
+ÒR ® S © = ran(S Ú R)Æ,
+Òdom(Q ª R) = (Q Á~Í) ® dom R ©Æ,
+Òran(Q ª R) = R ® ran Q ©Æ,
+ÒR ® S ¿ T © = R ® S © ¿ R ® T ©Æ,
+ÒR ® S ° T © Ä R ® S © ° R ® T ©Æ,
+ÒR ® dom R © = ran RÆ
+];
+=TEX
+=SML
+full_prove1 ZRM9;
+fc_prove1 ZRM9;
+=TEX
+=SML
+val ZRM9b = [
+Òdom R = first ® R ©Æ,
+Òran R = second ® R ©Æ
+];
+=TEX
+Messing around with dropping assumptions indicates something's
+unhealthy.
+=SML
+set_goal([],nth 0 ZRM9b);
+a(prove_tac[z_ç_first_thm]);
+(* *** Goal "1" *** *)
+a(contr_tac);
+a(z_spec_nth_asm_tac 1 Ò(x ¶ (x1, y))Æ);
+a(swap_nth_asm_concl_tac 1);
+a(rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(contr_tac);
+a(z_spec_nth_asm_tac 1 Ò(y ¶ (x.2))Æ);
+a(all_var_elim_asm_tac1);
+a(swap_nth_asm_concl_tac 1);
+a(conv_tac(ONCE_MAP_C z_tuple_intro_conv));
+a(asm_rewrite_tac[]);
+pop_thm();
+=TEX
+=SML
+set_goal([],nth 1 ZRM9b);
+a(prove_tac[z_ç_second_thm]);
+(* *** Goal "1" *** *)
+a(contr_tac);
+a(z_spec_nth_asm_tac 1 Ò(x ¶ (x, x1))Æ);
+a(swap_nth_asm_concl_tac 1);
+a(rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(contr_tac);
+a(z_spec_nth_asm_tac 1 Ò(x ¶ (x.1))Æ);
+a(all_var_elim_asm_tac1);
+a(swap_nth_asm_concl_tac 1);
+a(conv_tac(ONCE_MAP_C z_tuple_intro_conv));
+a (asm_rewrite_tac[]);
+pop_thm();
+=TEX
+=SML
+push_pc "z_library_ext";
+=TEX
+Page 102:
+=SML
+val ZRM10 = [
+ÒR ´ R = RÆ,
+ÒP ´ (Q ´ R) = (P ´ Q) ´ RÆ,
+Òö ´ R = R ´ ö = RÆ,
+Òdom Q ° dom R = ö ¥ Q ´ R = Q ¿ RÆ,
+ÒV Ú (Q ´ R) = (V Ú Q) ´ (V Ú R)Æ,
+Ò(Q ´ R) í W Ä (Q í W) ´ (R í W)Æ
+];
+=TEX
+=SML
+full_prove ZRM10;
+fc_prove ZRM10;
+=TEX
+=SML
+val ZRM10b = [
+Òdom(Q ´ R) = (dom Q) ¿ (dom R)Æ,
+Òf ç X ﬂ Y ± g ç X ﬂ Y ¥
+	x ç (dom f) \ (dom g) ¥ (f ´ g) x = f xÆ,
+Òg ç X ﬂ Y ± x ç dom g ¥ (f ´ g) x = g xÆ
+];
+=TEX
+Embedded quantifiers:
+=SML
+set_goal([],nth 0 ZRM10b);
+a(contr_tac);
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+a(z_spec_nth_asm_tac 3 Ò(y ¶ y')Æ);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y)Æ);
+pop_thm();
+=TEX
+Application problems:
+=SML
+set_goal([],nth 1 ZRM10b);
+a(contr_tac);
+a(swap_nth_asm_concl_tac 1);
+a(z_app_eq_tac);
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x,x2 ¶ y)Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 9 Ò(x1 ¶ x,x2 ¶ f_a)Æ);
+a(z_app_eq_tac);
+a(REPEAT strip_tac);
+a(z_spec_nth_asm_tac 11 Ò(x1 ¶ x,x2 ¶ f_a')Æ);
+a(z_spec_nth_asm_tac 11 Ò(x ¶ x, y1 ¶ f_a', y2 ¶ f_a)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 4 Ò(y ¶ f_a)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 4 Ò(y ¶ y')Æ);
+(* *** Goal "4" *** *)
+a(lemma_tac Òf x = yÆ);
+(* *** Goal "4.1" *** *)
+a(z_app_eq_tac);
+a(REPEAT strip_tac);
+a(z_spec_nth_asm_tac 9 Ò(x ¶ x, y1 ¶ f_a, y2 ¶ y)Æ);
+a(z_spec_nth_asm_tac 11 Ò(x1 ¶ x,x2 ¶ f_a)Æ);
+(* *** Goal "4.2" *** *)
+a(swap_nth_asm_concl_tac 2);
+a(asm_rewrite_tac[]);
+pop_thm();
+=TEX
+Application problems:
+=SML
+set_goal([],nth 2 ZRM10b);
+a(contr_tac);
+a(swap_nth_asm_concl_tac 1);
+a(z_app_eq_tac);
+a(contr_tac);
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 3 Ò(y ¶ y)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x,x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 8 Ò(x1 ¶ x,x2 ¶ f_a')Æ);
+a(z_spec_nth_asm_tac 8 Ò(x ¶ x, y1 ¶ f_a', y2 ¶ f_a)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x,x2 ¶ y)Æ);
+a(lemma_tac Òg x = yÆ);
+(* *** Goal "3.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 9 Ò(x1 ¶ x,x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 9 Ò(x ¶ x, y1 ¶ f_a, y2 ¶ y)Æ);
+(* *** Goal "3.2" *** *)
+a(swap_nth_asm_concl_tac 4);
+a(asm_rewrite_tac[]);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x,x2 ¶ y)Æ);
+a(lemma_tac Òg x = yÆ);
+(* *** Goal "4.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 9 Ò(x1 ¶ x,x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 9 Ò(x ¶ x, y1 ¶ f_a, y2 ¶ y)Æ);
+(* *** Goal "4.2" *** *)
+a(swap_nth_asm_concl_tac 4);
+a(asm_rewrite_tac[]);
+pop_thm();
+=TEX
+
+Page 103:
+=SML
+val ZRM11 = [
+ÒR Ä R Á+ÍÆ,
+Òid X Ä R Á*ÍÆ,
+ÒR Ä RÁ*ÍÆ
+];
+=TEX
+=SML
+full_prove ZRM11;
+fc_prove ZRM11;
+=TEX
+=SML
+val ZRM11b = [
+ÒR Á+Í ª (R Á+Í) Ä R Á+ÍÆ,
+Ò(R Á+Í) Á+Í = R Á+ÍÆ,
+Ò(R Á*Í) Á*Í = R Á*ÍÆ,
+ÒR Ä Q ± Q ª Q Ä Q ¥ R Á+Í Ä QÆ,
+ÒRÁ*Í ª RÁ*Í = RÁ*ÍÆ,
+Òid X Ä Q ± R Ä Q ± Q ª Q Ä Q ¥ RÁ*Í Ä QÆ,
+ÒRÁ*Í = R Á+Í ¿ id X = (R ¿ id X)Á+ÍÆ,
+ÒRÁ+Í = R ª R Á*Í = R Á*Í ª RÆ,
+ÒS Ä R Á*Í ® S ©Æ,
+ÒS Ä T ± R ® T © Ä T ¥ R Á*Í ®S© Ä TÆ,
+ÒR ®R Á*Í ® S © © Ä R Á*Í ®S©Æ
+];
+=TEX
+Number of resolution steps, caused by reasoning about membership,
+rather than sets:
+=SML
+set_goal([],nth 0 ZRM11b);
+a contr_tac;
+a(z_spec_nth_asm_tac 2 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+a(z_spec_nth_asm_tac 6 Ò(S ¶ S)Æ);
+(* *** Goal "1" *** *)
+a(asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x1', x2 ¶ x2')Æ);
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y')Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 6 Ò(S ¶ S)Æ);
+(* *** Goal "3.1" *** *)
+a(asm_fc_tac[]);
+(* *** Goal "3.2" *** *)
+a(z_spec_nth_asm_tac 7 Ò(x1 ¶ x1', x2 ¶ x2')Æ);
+a(z_spec_nth_asm_tac 1 Ò(y ¶ y')Æ);
+(* *** Goal "3.3" *** *)
+a(z_spec_nth_asm_tac 3 Ò(y ¶ y)Æ);
+pop_thm();
+=TEX
+Given the above, the other theorems in ZRM11b are
+likely to be too nasty to prove in a manner
+that demonstrates any good properties -
+they require reasoning about sets.
+=TEX
+Page 106:
+=SML
+val ZRM12 = [
+];
+=TEX
+=SML
+full_prove ZRM12;
+=TEX
+=SML
+val ZRM12b = [
+Òf ç X ™ Y ¥ (f ç X ﬂ Y § f Ö fÁ~Í = id(ran f))Æ,
+Òf ç X ˛ Y § (f ç X ﬂ Y ± f Á~Í ç Y ﬂ X)Æ,
+Òf ç X ˛ Y § (f ç X ﬂ Y ± f Á~Í ç Y ﬂ X)Æ,
+Òf ç X ‡ Y § (f ç X ≠ Y ± f Á~Í ç Y ﬂ X)Æ,
+Òf ç X ˛ Y ¥ f ®S ° T© = f ®S© ° f ®T©Æ,
+Òf ç X è Y § (f ç X ≠ Y ± f Á~Í ç Y ≠ X)Æ,
+Òf ç X œ Y ¥ f Ö f Á~Í = id YÆ
+];
+=TEX
+Too many resolution steps, some equational reasoning:
+=SML
+set_goal([],nth 0 ZRM12b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ y, x2 ¶ x1)Æ);
+a(z_spec_nth_asm_tac 7 Ò(x1 ¶ y, x2 ¶ x2)Æ);
+a(z_spec_nth_asm_tac 7 Ò(x ¶ y, y1 ¶ x1, y2 ¶ x2)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x, x2 ¶ x1)Æ);
+a(z_spec_nth_asm_tac 3 Ò(y ¶ x)Æ);
+a(swap_nth_asm_concl_tac 6);
+a(asm_rewrite_tac[]);
+(* *** Goal "4" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+(* *** Goal "5" *** *)
+a(z_spec_nth_asm_tac 4 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+(* *** Goal "6" *** *)
+a(z_spec_nth_asm_tac 7 Ò(x1 ¶ y1, x2 ¶ y2)Æ);
+(* *** Goal "6.1" *** *)
+a(asm_fc_tac[]);
+(* *** Goal "6.2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ x)Æ);
+(* *** Goal "6.3" *** *)
+a(z_spec_nth_asm_tac 3 Ò(y ¶ y)Æ);
+pop_thm();
+=TEX
+Too many resolution steps:
+=SML
+set_goal([],nth 1 ZRM12b);
+a contr_tac;
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 5 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+(* *** Goal "3" *** *)
+a(z_spec_nth_asm_tac 8 Ò(x ¶ x, y1 ¶ y1, y2 ¶ y2)Æ);
+(* *** Goal "6" *** *)
+a(z_spec_nth_asm_tac 7 Ò(x1 ¶ y1, x2 ¶ y2)Æ);
+(* *** Goal "6.1" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ x)Æ);
+(* *** Goal "6.2" *** *)
+a(z_spec_nth_asm_tac 1 Ò(y ¶ x)Æ);
+(* *** Goal "6.3" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(z_app_eq_tac);
+a(contr_tac);
+(* *** Goal "6.3.1" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(z_app_eq_tac);
+a(contr_tac);
+(* *** Goal "6.3.1.1" *** *)
+a(z_spec_nth_asm_tac 12 Ò(x1 ¶ y1, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 13 Ò(x1 ¶ y2, x2 ¶ f_a')Æ);
+a(z_spec_nth_asm_tac 13 Ò(x ¶ y1, y1 ¶ f_a, y2 ¶ x)Æ);
+a(z_spec_nth_asm_tac 14 Ò(x ¶ y2, y1 ¶ f_a', y2 ¶ x)Æ);
+a(swap_nth_asm_concl_tac 5);
+a(asm_rewrite_tac[]);
+(* *** Goal "6.3.1.2" *** *)
+a(z_spec_nth_asm_tac 11 Ò(x1 ¶ y1, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 11 Ò(x ¶ y1, y1 ¶ f_a, y2 ¶ x)Æ);
+a(swap_nth_asm_concl_tac 3);
+a(asm_rewrite_tac[]);
+(* *** Goal "6.3.2" *** *)
+a(lemma_tac Ò(f y1 = x) ± (f y2 = x)Æ);
+(* *** Goal "6.3.2.1" *** *)
+a(strip_tac THEN z_app_eq_tac THEN contr_tac);
+(* *** Goal "6.3.2.1.1" *** *)
+a(z_spec_nth_asm_tac 12 Ò(x1 ¶ y1, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 12 Ò(x ¶ y1, y1 ¶ f_a, y2 ¶ x)Æ);
+(* *** Goal "6.3.2.1.2" *** *)
+a(z_spec_nth_asm_tac 12 Ò(x1 ¶ y2, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 12 Ò(x ¶ y2, y1 ¶ f_a, y2 ¶ x)Æ);
+(* *** Goal "6.3.2.2" *** *)
+a(swap_nth_asm_concl_tac 3);
+a(asm_rewrite_tac[]);
+(* *** Goal "7" *** *)
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+(* *** Goal "8" *** *)
+a(z_spec_nth_asm_tac 6 Ò(x1 ¶ x1, x2 ¶ x2)Æ);
+(* *** Goal "9" *** *)
+a(z_spec_nth_asm_tac 9 Ò(x ¶ x, y1 ¶ y1, y2 ¶ y2)Æ);
+(* *** Goal "10" *** *)
+a(z_spec_nth_asm_tac 8 Ò(x1 ¶ x1, x2 ¶ y)Æ);
+a(z_spec_nth_asm_tac 10 Ò(x1 ¶ x2, x2 ¶ y')Æ);
+a(lemma_tac Òy = f x1Æ);
+(* *** Goal "10.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 14 Ò(x1 ¶ x1, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 14 Ò(x ¶ x1, y1 ¶ f_a, y2 ¶ y)Æ);
+(* *** Goal "10.2" *** *)
+a(swap_nth_asm_concl_tac 9);
+a(asm_rewrite_tac[]);
+a(contr_tac);
+a(z_spec_nth_asm_tac 13 Ò(x1 ¶ x1, x2 ¶ f x2)Æ);
+a(z_spec_nth_asm_tac 11 Ò(x ¶ Òf x2Æ, y1 ¶ x1, y2 ¶ x2)Æ);
+a(lemma_tac Òy' = f x2Æ);
+(* *** Goal "10.2.1" *** *)
+a(z_app_eq_tac);
+a(contr_tac);
+a(z_spec_nth_asm_tac 17 Ò(x1 ¶ x2, x2 ¶ f_a)Æ);
+a(z_spec_nth_asm_tac 17 Ò(x ¶ x2, y1 ¶ f_a, y2 ¶ y')Æ);
+(* *** Goal "10.2.2" *** *)
+a(swap_nth_asm_concl_tac 12);
+a(asm_rewrite_tac[]);
+pop_thm();
+=TEX
+Presumably the rest of these goals are similarly horribly to do at a set membership level.
+
+\section{DOCUMENT PROCESSING AND PRINTING}
+The Z document preparation system, and the ability to strip material from sources files for various kinds of processing is heavily exercised
+by the build and documentation of the system itself.
+If the build is successful starting from an empty directory,
+and the \ProductZ{} documentation can be printed in an acceptable form,
+then this area can be considered tested.
+
+To save reviewing the entire system documentation,
+the evaluator is advised to check the following the printing of the following:
+
+\begin{tabular}{| p{1.8in} | p{4.3in} |} \hline
+Document & Checking for: \\ \hline
+T.B.A. & whatever \\ \hline
+\end{tabular}
+
+=TEX
+\section{FURTHER FORMATTING CHECKS}
+Some module test documents indicate that their results file
+be checked for correct formatting of user messages.
+This is not currently automatically tested.
+These are module test documents:
+T.B.A.
+=SML
+fun  €summarize_mt_results› () = "Compiled OK: int003.sml";
+=TEX
+\section{END OF TESTS}
+=SML
+diag_string "Successfully reached end of DS/FMU/IED/INT003";
+val _ = diag_line "All module tests passed (by dint of reaching this output statement).";
+=TEX
+\end{document}

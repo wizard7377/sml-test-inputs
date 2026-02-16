@@ -1,0 +1,1430 @@
+=IGN
+********************************************************************************
+imp117.doc: this file is part of the PPZed system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+=TEX
+\documentclass[a4paper,12pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{epsf}
+\makeindex
+
+\def\Title{ Implementation of the Z Library Real Numbers }
+
+\def\Abstract{\begin{center}
+{\bf Abstract}\par\parbox{0.7\hsize}
+{\small This document gives the implementation for the theory
+of real numbers in \ProductZ.}
+\end{center}}
+
+\def\Reference{LEMMA1/HOL/IMP117}
+
+\def\Author{R.D. Arthan}
+
+\def\EMail{{\tt rda@lemma-one.com}}
+
+\def\Phone{+44 118 958 4409}
+
+\def\Fax{+44 118 956 1920}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+\begin{centering}
+
+
+
+\end{centering}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+
+\def\Date{\FormatDate{\VCDate}}
+
+%%%%% NOW BEGIN THE DOCUMENT AND MAKE THE FRONT PAGE
+
+\begin{document}
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+%%%%% STANDARD RED-TAPE SECTIONS (MAY WANT TO INTERLEAVE SOME \newpage COMMANDS IN THESE)
+
+%%%%% CONTENTS:
+
+\subsection{Contents}
+
+\tableofcontents
+
+%%%%% REFERENCES:
+
+\newpage
+\subsection{References}
+
+\bibliographystyle{fmu}
+
+%%%%% CHANGE THE FOLLOWING AS NECESSARY (E.G., TO PICK UP daz.bib):
+{\raggedright
+\bibliography{fmu}
+}
+%%%%% CHANGES HISTORY:
+\subsection{Changes History}
+\begin{description}
+\item[Issues 1.1 (2000/12/10)-1.4 (2000/12/13)] Initial development drafts.
+\item[Issues 1.5 (2001/05/28)-1.8 (2001/07/05)] Corrected errors in theorems about associativity and multiplication and
+some improvements to the treatment of unary negation in the proof contexts.
+\item[Issue 1.9 (2001/08/29)] Corrections to conversion for exponentiation; tidy-up of
+error-handling.
+\item[Issue 1.10 (2001/11/12), 1.11 (2002/01/23)] Fixed botched bindings for theorems relating to division.
+\item[Issue 1.12 (2002/10/17)] More on the ML bindings for the two theorems about division.
+\item[Issue 1.12 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.13 (2002/10/17)] PPZed-specific updates for open source release
+\item[Issue 1.14 (2004/01/19)] The Z universal set is now called ƒ.
+\item[Issue 1.15 (2005/02/26)] Precedences and associativity of toolkit operators now follow \cite{ISO02}.
+\item[Issue 1.16 (2005/08/01)] Allowed for new associativity of division in statement of
+=INLINEFT
+z_¯_over_clauses
+=TEX
+.
+\item[Issue 1.17 (2006/04/20)] Added support for floating point literals
+\item[Issue 1.18 (2006/05/08)] The proof context now normalises literal fractions.
+\item[Issue 1.19 (2007/11/22)] Added lower bounds, greatest lower, upper bounds and least upper bounds.
+\item[Issue 1.20 (2008/02/10)] Allowed for changes to lexical rules for underscores.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+
+%%%%%  CHANGES FORECAST:
+
+\subsection{Changes Forecast}
+
+None.
+
+%%%%% DISTRIBUTION LIST
+
+\subsection{Distribution}
+
+Lemma 1 build system.
+
+\newpage
+
+\section{Introduction}
+\subsection{Scope}
+This document contains the implementation
+of the Z Library theory of real numbers and their proof support.
+The high level design for this material is given in \cite{DS/FMU/IED/HLD017}.
+
+
+\subsection{Purpose and Background}
+See \cite{DS/FMU/IED/HLD011}.
+
+
+\section{PREAMBLE}
+
+=SML
+structure ÛZRealsİ : ZReals = struct
+=SML
+val _ = open_theory"z_reals";
+=TEX
+\section{DEFINITIONS}
+=SML
+val Ûz_¯_defİ = z_get_specñ¯®;
+val Ûz_¯_less_defİ = z_get_specñ(_ <‰R _)®;
+val Ûz_¯_¼_defİ = z_¯_less_def;
+val Ûz_¯_minus_defİ = z_¯_less_def;
+val Ûz_¯_plus_defİ = z_¯_less_def;
+val Ûz_¯_times_defİ = z_¯_less_def;
+val Ûz_¯_over_defİ = z_¯_less_def;
+val Ûz_¯_abs_defİ = z_¯_less_def;
+
+val Ûz_¯_greater_defİ = z_get_specñ(_ >‰R _)®;
+val Ûz_¯_¾_defİ = z_¯_greater_def;
+val Ûz_¯_subtract_defİ = z_¯_greater_def;
+
+val Ûz_¯_real_defİ = z_get_specñreal®;
+val Ûz_¯_frac_defİ = z_get_specñ(_ /‰Z _)®;
+val Ûz_¯_ú_exp_defİ = z_get_specñ(_ ^‰Z _)®;
+val Ûz_¯_dot_dot_defİ = z_get_specñ(_ ..‰R _)®;
+
+val Ûz_¯_lb_defİ = z_get_specñ(_ lb‰R _)®;
+val Ûz_¯_glb_defİ = z_get_specñglb‰R®;
+val Ûz_¯_ub_defİ = z_get_specñ(_ lb‰R _)®;
+val Ûz_¯_lub_defİ = z_get_specñlub‰R®;
+=TEX
+\section{THEOREMS}
+\subsection{Preamble}
+=SML
+val _ = set_merge_pcs["z_predicates", "'z_numbers", "'¯"];
+val  Ûmain_defsİ = list_±_intro[
+	z_¯_def,
+	rewrite_rule[z_get_specñ¯®] z_¯_less_def,
+	rewrite_rule[z_get_specñ¯®] z_¯_minus_def,
+	rewrite_rule[z_get_specñú®] z_¯_real_def,
+	rewrite_rule[z_get_specñú®] z_¯_frac_def,
+	rewrite_rule[z_get_specñú®, z_get_specñ¯®] z_¯_ú_exp_def,
+	rewrite_rule[z_get_specñ¯®] z_¯_dot_dot_def
+];
+=TEX
+\subsection{Order Structure}
+In this section we prove basic facts about the less-than relation on the reals:
+=SML
+val Ûz_¯_unbounded_below_thmİ = (
+set_goal([], ñµx: ¯· ¶y:¯· y <‰R x®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(strip_asm_tac (µ_elim¬x®¯_unbounded_below_thm));
+a(contr_tac THEN all_asm_fc_tac[]);
+save_pop_thm "z_¯_unbounded_below_thm"
+);
+=TEX
+=SML
+val Ûz_¯_unbounded_above_thmİ = (
+set_goal([], ñµx: ¯· ¶y : ¯· x <‰R y®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(strip_asm_tac (µ_elim¬x®¯_unbounded_above_thm));
+a(contr_tac THEN all_asm_fc_tac[]);
+save_pop_thm "z_¯_unbounded_above_thm"
+);
+=TEX
+=SML
+val Ûz_¯_less_irrefl_thmİ = (
+set_goal([], ñµx: ¯· ³x <‰R x®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+save_pop_thm "z_¯_less_irrefl_thm"
+);
+=TEX
+=SML
+val Ûz_¯_less_antisym_thmİ = (
+set_goal([], ñµx, y: ¯· ³(x <‰R y ± y <‰R x)®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(all_fc_tac[¯_less_antisym_thm]);
+save_pop_thm "z_¯_less_antisym_thm"
+);
+=TEX
+=SML
+val Ûz_¯_less_trans_thmİ = (
+set_goal([], ñµx, y, z: ¯· x <‰R y ± y <‰R z ´ x <‰R z®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(all_fc_tac[¯_less_trans_thm]);
+save_pop_thm "z_¯_less_trans_thm"
+);
+=TEX
+=SML
+val Ûz_¯_less_cases_thmİ = (
+set_goal([], ñµx, y: ¯· x <‰R y ² x = y ² y <‰R x®);
+a(rewrite_tac[main_defs, ¯_less_cases_thm]);
+save_pop_thm "z_¯_less_cases_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_cases_thmİ = (
+set_goal([], ñµx, y: ¯· x ¼‰R y ² y ¼‰R x®);
+a(rewrite_tac[main_defs, ¯_¼_cases_thm]);
+save_pop_thm "z_¯_¼_cases_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_less_cases_thmİ = (
+set_goal([], ñµx, y: ¯· x ¼‰R y ² y <‰R x®);
+a(rewrite_tac[main_defs, ¯_¼_less_cases_thm]);
+save_pop_thm "z_¯_¼_less_cases_thm"
+);
+=TEX
+=SML
+val Ûz_¯_eq_¼_thmİ = (
+set_goal([], ñµx, y: ¯· x = y ¤ x ¼‰R y ± y ¼‰R x®);
+a(rewrite_tac[main_defs, ¯_eq_¼_thm]);
+save_pop_thm "z_¯_eq_¼_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_antisym_thmİ = (
+set_goal([], ñµx, y: ¯· x ¼‰R y ± y ¼‰R x  ´ x = y®);
+a(rewrite_tac[main_defs, ¯_eq_¼_thm]);
+save_pop_thm "z_¯_¼_antisym_thm"
+);
+=TEX
+=SML
+val Ûz_¯_less_¼_trans_thmİ = (
+set_goal([], ñµx, y, z: ¯· x <‰R y ± y ¼‰R z ´ x <‰R z®);
+a(rewrite_tac[main_defs, ¯_less_¼_trans_thm]);
+save_pop_thm "z_¯_less_¼_trans_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_less_trans_thmİ = (
+set_goal([], ñµx, y, z: ¯· x ¼‰R y ± y <‰R z ´ x <‰R z®);
+a(rewrite_tac[main_defs, ¯_¼_less_trans_thm]);
+save_pop_thm "z_¯_¼_less_trans_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_refl_thmİ = (
+set_goal([], ñµx: ¯· x ¼‰R x®);
+a(rewrite_tac[main_defs, ¯_¼_refl_thm]);
+save_pop_thm "z_¯_¼_refl_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_trans_thmİ = (
+set_goal([], ñµx, y, z: ¯· x ¼‰R y ± y ¼‰R z ´ x ¼‰R z®);
+a(rewrite_tac[main_defs, ¯_¼_trans_thm]);
+save_pop_thm "z_¯_¼_trans_thm"
+);
+=TEX
+=SML
+val Ûz_¯_¼_³_less_thmİ = (
+set_goal([], ñµx, y: ¯· x ¼‰R y ¤ ³y <‰R x®);
+a(rewrite_tac[main_defs, ¯_¼_³_less_thm]);
+save_pop_thm "z_¯_¼_³_less_thm"
+);
+=TEX
+=SML
+val Ûz_¯_³_¼_less_thmİ = (
+set_goal([], ñµx, y: ¯· ³x ¼‰R y ¤ y <‰R x®);
+a(rewrite_tac[main_defs, ¯_³_¼_less_thm]);
+save_pop_thm "z_¯_³_¼_less_thm"
+);
+=TEX
+=SML
+val Ûz_¯_less_³_eq_thmİ = (
+set_goal([], ñµx, y: ¯· x <‰R y ´ ³x = y®);
+a(rewrite_tac[main_defs, ¯_less_³_eq_thm]);
+save_pop_thm "z_¯_less_³_eq_thm"
+);
+=TEX
+=SML
+val Ûz_¯_³_less_¼_thmİ = conv_rule (ONCE_MAP_C eq_sym_conv) z_¯_¼_³_less_thm;
+=TEX
+=SML
+val Ûz_¯_less_dense_thmİ = (
+set_goal([], ñµx, y: ¯· x <‰R y ´ (¶z:¯· x <‰R z ± z <‰R y)®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(all_fc_tac[¯_less_dense_thm]);
+a(z_¶_tacñz® THEN REPEAT strip_tac);
+save_pop_thm "z_¯_less_dense_thm"
+);
+=TEX
+=SML
+val Ûz_¯_complete_thmİ = (
+set_goal([], ñµA : ğ ¯·
+	³A = {} ± (¶b:¯·µ x:¯· x  A ´ x ¼‰R b) ´
+	(¶s:¯·  (µ x:¯· x  A ´ x ¼‰R s)
+±	(µ b:¯· (µ x:¯· x  A ´ x ¼‰R b) ´ s ¼‰R b))
+®);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(strip_asm_tac(µ_elim¬A®¯_complete_thm));
+(* *** Goal "1" *** *)
+a(i_contr_tac THEN swap_nth_asm_concl_tac 3 THEN asm_rewrite_tac[get_specñ{}®]);
+(* *** Goal "2" *** *)
+a(i_contr_tac THEN swap_nth_asm_concl_tac 1);
+a(¶_tac¬b® THEN asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(z_¶_tac¬s® THEN asm_rewrite_tac[] THEN REPEAT strip_tac);
+a(GET_NTH_ASM_T 2 bc_thm_tac THEN asm_rewrite_tac[]);
+save_pop_thm"z_¯_complete_thm"
+);
+=TEX
+\subsection{Additive Structure}
+=SML
+val Ûz_¯_plus_assoc_thmİ = (
+set_goal([], ñ µx, y, z: ¯· (x +‰R y) +‰R z = x +‰R (y +‰R z)®);
+a(REPEAT strip_tac THEN rewrite_tac[main_defs, ¯_plus_assoc_thm]);
+save_pop_thm"z_¯_plus_assoc_thm"
+);
+=TEX
+=SML
+val Ûz_¯_plus_assoc_thm1İ = (
+set_goal([], ñ µx, y, z: ¯· x +‰R (y +‰R z) = (x +‰R y) +‰R z®);
+a(rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_assoc_thm]);
+save_pop_thm"z_¯_plus_assoc_thm1"
+);
+=TEX
+=SML
+val Ûz_¯_plus_comm_thmİ = (
+set_goal([], ñ µx, y: ¯· x +‰R y = y +‰R x ®);
+a(REPEAT strip_tac THEN rewrite_tac[main_defs, µ_elim¬x:¯®¯_plus_order_thm]);
+save_pop_thm"z_¯_plus_comm_thm"
+);
+=TEX
+=SML
+val Ûz_¯_real_0_thmİ = (
+set_goal([], ñ real 0 = ¬î¯ 0® ®);
+a(LEMMA_T ñreal 0 = real (0 + ~0)® pure_rewrite_thm_tac THEN1 rewrite_tac[]);
+a(pure_rewrite_tac[main_defs]);
+a(rewrite_tac[¯_minus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_real_î¯_thmİ = (
+set_goal([], ¬ µm:î· ñreal ¬(Z'Int m)®® = î¯ m ®);
+a(REPEAT strip_tac THEN induction_tac ¬m:î®);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_¯_real_0_thm]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[z_int_homomorphism_thm, î¯_plus_homomorphism_thm]);
+a(asm_rewrite_tac[main_defs]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_plus_unit_thmİ = (
+set_goal([], ñ µx: ¯· x +‰R real 0 = x ®);
+a(rewrite_tac[main_defs, z_¯_real_0_thm, ¯_plus_clauses]);
+save_pop_thm "z_¯_plus_unit_thm"
+);
+=TEX
+=SML
+val Ûz_¯_plus_mono_thmİ = (
+set_goal([], ñ µx, y, z: ¯· y <‰R z ´ x +‰R y <‰R x +‰R z ®);
+a(rewrite_tac [main_defs] THEN REPEAT strip_tac);
+save_pop_thm "z_¯_plus_mono_thm"
+);
+=TEX
+=SML
+val Ûz_¯_plus_mono_thm1İ = (
+set_goal([], ñ µx, y, z: ¯· y <‰R z ´ y +‰R x <‰R z +‰R x®);
+a(once_rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_comm_thm]);
+a(rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_mono_thm]);
+save_pop_thm"z_¯_plus_mono_thm1"
+);
+=TEX
+=SML
+val Ûz_¯_plus_mono_thm2İ = (
+set_goal([], ñ µx, y, s, t: ¯· x <‰R y ± s <‰R t ´ x +‰R s <‰R y +‰R t®);
+a(rewrite_tac [main_defs] THEN REPEAT strip_tac);
+a(bc_thm_tac ¯_less_trans_thm THEN ¶_tac¬y +‰R s® THEN asm_rewrite_tac[]);
+save_pop_thm"z_¯_plus_mono_thm2"
+);
+=TEX
+=SML
+val Ûz_¯_plus_0_thmİ = (
+set_goal([], ñ µx: ¯· x +‰R real 0 = x ± real 0 +‰R x = x ®);
+a(rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_unit_thm]);
+a(once_rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_comm_thm]);
+a(rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_unit_thm]);
+save_pop_thm"z_¯_plus_0_thm"
+);
+=TEX
+=SML
+val Ûz_¯_plus_order_thmİ = (
+set_goal([], ñ µx, y, z: ¯· y +‰R x = x +‰R y
+		      ± (x +‰R y) +‰R z = x +‰R (y +‰R z)
+		      ± y +‰R (x +‰R z) = x +‰R (y +‰R z)®);
+a(rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_assoc_thm]);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(conv_tac (LEFT_C (once_rewrite_conv
+	[rewrite_rule[z_get_specñ¯®]z_¯_plus_comm_thm]))
+	THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(rewrite_tac[rewrite_rule[z_get_specñ¯®]z_¯_plus_assoc_thm1]);
+a(conv_tac (RAND_C (ONCE_MAP_C(LEFT_C(once_rewrite_conv
+	[rewrite_rule[z_get_specñ¯®]z_¯_plus_comm_thm]))))
+	THEN REPEAT strip_tac);
+save_pop_thm"z_¯_plus_order_thm"
+);
+=TEX
+=SML
+val Ûz_¯_plus_minus_thmİ = (
+set_goal([], ñ µx: ¯· x +‰R ~‰R x = real 0 ± ~‰R x +‰R x = real 0®);
+a(z_µ_tac THEN strip_tac);
+a(conv_tac (RIGHT_C
+	(once_rewrite_conv[rewrite_rule[z_get_specñ¯®]z_¯_plus_comm_thm])));
+a(rewrite_tac[main_defs, ¯_minus_clauses, z_¯_real_0_thm]);
+save_pop_thm"z_¯_plus_minus_thm"
+);
+=TEX
+=SML
+val Ûz_¯_eq_thmİ = (
+set_goal([], ñ µx, y: ¯· x = y ¤ x +‰R ~‰R y = real 0 ®);
+a(z_µ_tac THEN strip_tac);
+a(rewrite_tac[main_defs, z_¯_real_0_thm]);
+a(conv_tac (LEFT_C (once_rewrite_conv[¯_eq_thm])));
+a(rewrite_tac[]);
+save_pop_thm"z_¯_eq_thm"
+);
+=TEX
+=SML
+val Ûz_¯_minus_clausesİ = (
+set_goal([], ñ µx, y : ¯·
+	~‰R (~‰R x) = x
+±	x +‰R ~‰R x = real 0
+±	~‰R x +‰R x = real 0
+±	 ~‰R (x +‰R y) = ~‰R x +‰R ~‰R y
+±	~‰R (real 0) = real 0®);
+a(z_µ_tac THEN strip_tac);
+a(rewrite_tac[main_defs, z_¯_real_0_thm]);
+save_pop_thm"z_¯_minus_clauses"
+);
+=TEX
+=SML
+val Ûz_¯_minus_eq_thmİ = (
+set_goal([], ñ µx, y: ¯· ~‰R x = ~‰R y ¤ x = y ®);
+a(z_µ_tac THEN strip_tac);
+a(rewrite_tac[main_defs, ¯_minus_eq_thm]);
+save_pop_thm"z_¯_minus_eq_thm"
+);
+=TEX
+=SML
+val Ûz_¯_plus_clausesİ = (
+set_goal([], ñ µ x, y, z : ¯·
+		         (x +‰R z = y +‰R z ¤ x = y)
+		      ± (z +‰R x = y +‰R z ¤ x = y)
+		      ± (x +‰R z = z +‰R y ¤ x = y)
+		      ± (z +‰R x = z +‰R y ¤ x = y)
+		      ± (x +‰R z = z ¤ x = real 0)
+		      ± (z +‰R x = z ¤ x = real 0)
+		      ± (z = z +‰R y ¤ y = real 0)
+		      ± (z = y +‰R z ¤ y = real 0)
+		      ± x +‰R real 0 = x
+		      ± real 0 +‰R x = x
+		      ± ³ real 1 = real 0
+		      ± ³ real 0 = real 1®);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm, ¯_plus_clauses]);
+save_pop_thm"z_¯_plus_clauses"
+);
+=TEX
+=SML
+val Ûz_¯_less_clausesİ = (
+set_goal([], ñ µ x, y, z : ¯·
+		         (x +‰R z <‰R y +‰R z ¤ x <‰R y)
+		      ± (z +‰R x <‰R y +‰R z ¤ x <‰R y)
+		      ± (x +‰R z <‰R z +‰R y ¤ x <‰R y)
+		      ± (z +‰R x <‰R z +‰R y ¤ x <‰R y)
+		      ± (x +‰R z <‰R z ¤ x <‰R real 0)
+		      ± (z +‰R x <‰R z ¤ x <‰R real 0)
+		      ± (x <‰R z +‰R x ¤ real 0 <‰R z)
+		      ± (x <‰R x +‰R z ¤ real 0 <‰R z)
+		      ± ³x <‰R x
+		      ± real 0 <‰R real 1
+		      ± ³ real 1 <‰R real 0
+®);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm, ¯_less_clauses]);
+save_pop_thm"z_¯_less_clauses"
+);
+=TEX
+=SML
+val Ûz_¯_¼_clausesİ = (
+set_goal([], ñ µ x, y, z : ¯·
+		         (x +‰R z ¼‰R y +‰R z ¤ x ¼‰R y)
+		      ± (z +‰R x ¼‰R y +‰R z ¤ x ¼‰R y)
+		      ± (x +‰R z ¼‰R z +‰R y ¤ x ¼‰R y)
+		      ± (z +‰R x ¼‰R z +‰R y ¤ x ¼‰R y)
+		      ± (x +‰R z ¼‰R z ¤ x ¼‰R real 0)
+		      ± (z +‰R x ¼‰R z ¤ x ¼‰R real 0)
+		      ± (x ¼‰R z +‰R x ¤ real 0 ¼‰R z)
+		      ± (x ¼‰R x +‰R z ¤ real 0 ¼‰R z)
+		      ± x ¼‰R x
+		      ± real 0 ¼‰R real 1
+		      ± ³ real 1 ¼‰R real 0
+®);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm, ¯_¼_clauses]);
+save_pop_thm"z_¯_¼_clauses"
+);
+=TEX
+\subsection{Multipicative Structure}
+=SML
+val Ûz_¯_times_assoc_thmİ = (
+set_goal([], ñ µ x, y, z: ¯· (x *‰R y) *‰R z = x *‰R (y *‰R z)®);
+a(rewrite_tac[main_defs, ¯_times_assoc_thm]);
+save_pop_thm"z_¯_times_assoc_thm"
+);
+=TEX
+=SML
+val Ûz_¯_times_comm_thmİ = (
+set_goal([], ñ µ x, y: ¯· x *‰R y = y *‰R x®);
+a(REPEAT strip_tac THEN rewrite_tac[main_defs, µ_elim¬x:¯® ¯_times_order_thm]);
+save_pop_thm"z_¯_times_comm_thm"
+);
+=TEX
+=SML
+val Ûz_¯_times_unit_thmİ = (
+set_goal([], ñ µ x:¯· x *‰R real 1 = x®);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm]);
+save_pop_thm"z_¯_times_unit_thm"
+);
+=TEX
+=SML
+val Ûz_¯_0_less_0_less_times_thmİ = (
+set_goal([], ñ µ x, y:¯· real 0 <‰R x ± real 0 <‰R y ´ real 0 <‰R x *‰R y®);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm, ¯_0_less_0_less_times_thm]);
+save_pop_thm"z_¯_0_less_0_less_times_thm"
+);
+=TEX
+=SML
+val Ûz_¯_times_assoc_thm1İ = save_thm("z_¯_times_assoc_thm1",
+	conv_rule (ONCE_MAP_C eq_sym_conv) z_¯_times_assoc_thm);
+=TEX
+=SML
+val Ûz_¯_times_plus_distrib_thmİ = (
+set_goal([], ñ µ x, y, z: ¯·
+	x *‰R (y +‰R z) = x *‰R y +‰R x *‰R z ± (x +‰R y) *‰R z = x *‰R z +‰R y *‰R z®);
+a(rewrite_tac[main_defs, ¯_times_plus_distrib_thm]);
+save_pop_thm"z_¯_times_plus_distrib_thm"
+);
+=TEX
+=SML
+val Ûz_¯_times_order_thmİ = (
+set_goal([], ñ µ x, y, z: ¯· y *‰R x = x *‰R y
+		      ± (x *‰R y) *‰R z = x *‰R (y *‰R z)
+		      ± y *‰R (x *‰R z) = x *‰R (y *‰R z)®);
+a(z_µ_tac THEN strip_tac THEN rewrite_tac[main_defs]);
+a(rewrite_tac[µ_elim¬y®¯_times_order_thm]);
+save_pop_thm"z_¯_times_order_thm"
+);
+=TEX
+=SML
+val Ûz_¯_times_clausesİ = (
+set_goal([], ñ µ x :¯ ·
+	real 0 *‰R x = real 0
+±	x *‰R real 0 = real 0
+±	x *‰R real 1 = x
+±	real 1 *‰R x = x®);
+a(z_µ_tac THEN strip_tac THEN rewrite_tac[main_defs]);
+a(rewrite_tac[¯_times_clauses, z_¯_real_0_thm]);
+save_pop_thm"z_¯_times_clauses"
+);
+=TEX
+=SML
+val Ûz_¯_over_clausesİ = (
+set_goal([], ñ
+	(µ y, z : ¯· ³ z = real 0 ´ (y *‰R z) /‰R z = y)
+±	(µ x, y, z:¯· ³ z = real 0 ´ (x *‰R y) /‰R z = x *‰R (y /‰R z))®);
+a(rewrite_tac[main_defs, z_¯_real_0_thm, get_spec¬$/‰R®]);
+save_pop_thm "z_¯_over_clauses"
+);
+=TEX
+\subsection{Floating Point Literals}
+=SML
+val Ûz_float_thmİ = (
+set_goal([], ñ µ m, p, e : ú· ¬Z'Float m p e® = real m *‰R (real 10 ^‰Z (e + ~p))®);
+a(rewrite_tac[get_spec¬Z'Float®]);
+save_pop_thm "z_float_thm"
+);
+=TEX
+\section{SYNTAX FUNCTIONS}
+=SML
+val Û¯İ = ”¯®;
+val Ûúİ = ”ú®;
+val Ûminusİ = (fst o dest_z_app) ñ~‰R x®;
+val Ûminusnİ = (fst o dest_const) minus;
+val Ûzabsİ = (fst o dest_z_app) ñabs‰R x®;
+val Ûzabsnİ = (fst o dest_const) zabs;
+val Ûzrealİ = (fst o dest_z_app) ñreal x®;
+val Ûzrealnİ = (fst o dest_const) zreal;
+=TEX
+=SML
+fun Ûdest_z_¯_minusİ (tm : TERM) : TERM = (
+	let	val (sgn, a) = dest_z_app tm;
+		val (s, _) = dest_const sgn;
+	in	if s = minusn
+		then a
+		else term_fail "dest_z_¯_minus" 117107 [tm]
+	end	handle Fail _ => term_fail "dest_z_¯_minus" 117107 [tm]
+);
+=TEX
+=SML
+fun Ûis_z_¯_minusİ (tm : TERM) : bool = (
+	(dest_z_¯_minus tm; true) handle Fail _ => false
+);
+=TEX
+=SML
+fun Ûmk_z_¯_minusİ (tm : TERM) : TERM = (
+	if	type_of tm =: ¯
+	then	mk_z_app (minus, tm)
+	else	term_fail "mk_z_¯_minus"  117201 [tm]
+);
+=TEX
+=SML
+fun Ûdest_z_¯_absİ (tm : TERM) : TERM = (
+	let	val (sgn, a) = dest_z_app tm;
+		val (s, _) = dest_const sgn;
+	in	if s = zabsn
+		then a
+		else term_fail "dest_z_¯_abs" 117103 [tm]
+	end	handle Fail _ => term_fail "dest_z_¯_abs" 117103 [tm]
+);
+=TEX
+=SML
+fun Ûis_z_¯_absİ (tm : TERM) : bool = (
+	(dest_z_¯_abs tm; true) handle Fail _ => false
+);
+=TEX
+=SML
+fun Ûmk_z_¯_absİ (tm : TERM) : TERM = (
+	if	type_of tm =: ¯
+	then	mk_z_app (zabs, tm)
+	else	term_fail "mk_z_¯_abs"  117201 [tm]
+);
+=TEX
+=SML
+fun Ûdest_z_realİ (tm : TERM) : TERM = (
+	let	val (sgn, a) = dest_z_app tm;
+		val (s, _) = dest_const sgn;
+	in	if s = zrealn
+		then a
+		else term_fail "dest_z_real" 117113 [tm]
+	end	handle Fail _ => term_fail "dest_z_real" 117113 [tm]
+);
+=TEX
+=SML
+fun Ûis_z_realİ (tm : TERM) : bool = (
+	(dest_z_real tm; true) handle Fail _ => false
+);
+=TEX
+=SML
+fun Ûmk_z_realİ (tm : TERM) : TERM = (
+	if	type_of tm =: ú
+	then	mk_z_app (zreal, tm)
+	else	term_fail "mk_z_real"  86201 [tm]
+);
+=TEX
+=SML
+fun Ûdest_z_bin_opİ (area : string) (msg : int)
+	(n : string) : TERM -> TERM * TERM = (fn tm =>
+	let	val (f, args) = (dest_z_app tm);
+		val (cn, _) = dest_const f;
+		val ops = dest_z_tuple args;
+	in	if n = cn
+		then (hd ops, hd(tl ops))
+		else term_fail area msg [tm]
+	end	handle Fail _ => term_fail area msg [tm]
+);
+=TEX
+=SML
+fun is_z_bin_op (n : string) : TERM -> bool = (
+	let	val dest = dest_z_bin_op "is_z_bin_op" 0 n
+	in	(fn tm =>
+			(dest tm; true) handle Fail _ => false
+		)
+	end
+);
+=TEX
+=SML
+fun mk_z_simple_bin_op (tm : TERM) : TERM * TERM -> TERM = (fn (a1, a2) =>
+	mk_z_app(tm, mk_z_tuple [a1, a2])
+);
+=TEX
+=SML
+fun Ûdest_z_bin_relİ (area : string) (msg : int)
+	(n : string) : TERM -> TERM * TERM = (fn tm =>
+	let	val (args, r) = (dest_z_ tm);
+		val (cn, _) = dest_const r;
+		val ops = dest_z_tuple args;
+	in	if n = cn
+		then (hd ops, hd(tl ops))
+		else term_fail area msg [tm]
+	end	handle Fail _ => term_fail area msg [tm]
+);
+=TEX
+=SML
+fun is_z_bin_rel (n : string) : TERM -> bool = (
+	let	val dest = dest_z_bin_rel "is_z_bin_rel" 0 n
+	in	(fn tm =>
+			(dest tm; true) handle Fail _ => false
+		)
+	end
+);
+=TEX
+=SML
+fun mk_z_simple_bin_rel (tm : TERM) : TERM * TERM -> TERM = (fn (a1, a2) =>
+	mk_z_(mk_z_tuple [a1, a2], tm)
+);
+=TEX
+=SML
+val Ûdest_z_¯_plusİ = dest_z_bin_op "dest_¯_plus" 117109 (fst(dest_constñ(_ +‰R _)®));
+val Ûdest_z_¯_subtractİ = dest_z_bin_op "dest_¯_subtract" 117111 (fst(dest_constñ(_ -‰R _)®));
+val Ûdest_z_¯_timesİ = dest_z_bin_op "dest_z_¯_times" 117112 (fst(dest_constñ(_ *‰R _)®));
+val Ûdest_z_¯_overİ = dest_z_bin_op "dest_z_¯_over" 117108 (fst(dest_constñ(_ /‰R _)®));
+val Ûdest_z_¯_fracİ = dest_z_bin_op "dest_z_¯_frac" 117104 (fst(dest_constñ(_ /‰Z _)®));
+val Ûdest_z_¯_ú_expİ = dest_z_bin_op "dest_z_¯_ú_exp" 117104 (fst(dest_constñ(_ ^‰Z _)®));
+
+val Ûdest_z_¯_lessİ = dest_z_bin_rel "dest_z_¯_less" 117106 (fst(dest_constñ(_ <‰R _)®));
+val Ûdest_z_¯_¼İ = dest_z_bin_rel "dest_z_¯_¼" 117101 (fst(dest_constñ(_ ¼‰R _)®));
+val Ûdest_z_¯_greaterİ = dest_z_bin_rel "dest_z_¯_greater" 117105
+	(fst(dest_constñ(_ >‰R _)®));
+val Ûdest_z_¯_¾İ = dest_z_bin_rel "dest_z_¯_¾" 117102 (fst(dest_constñ(_ ¾‰R _)®));
+
+val Ûis_z_¯_plusİ = is_z_bin_op (fst(dest_constñ(_ +‰R _)®));
+val Ûis_z_¯_subtractİ = is_z_bin_op (fst(dest_constñ(_ -‰R _)®));
+val Ûis_z_¯_timesİ = is_z_bin_op (fst(dest_constñ(_ *‰R _)®));
+val Ûis_z_¯_fracİ = is_z_bin_op (fst(dest_constñ(_ /‰Z _)®));
+val Ûis_z_¯_overİ = is_z_bin_op (fst(dest_constñ(_ /‰R _)®));
+val Ûis_z_¯_ú_expİ = is_z_bin_op (fst(dest_constñ(_ ^‰Z _)®));
+
+val Ûis_z_¯_lessİ = is_z_bin_rel (fst(dest_constñ(_ <‰R _)®));
+val Ûis_z_¯_¼İ = is_z_bin_rel (fst(dest_constñ(_ ¼‰R _)®));
+val Ûis_z_¯_greaterİ = is_z_bin_rel (fst(dest_constñ(_ >‰R _)®));
+val Ûis_z_¯_¾İ = is_z_bin_rel (fst(dest_constñ(_ ¾‰R _)®));
+=TEX
+=SML
+fun Ûmk_¯_bin_opİ (area : string) (tm : TERM) : (TERM * TERM) -> TERM = (
+	let	val f = mk_z_simple_bin_op tm;
+	in	(fn tt as (t1, t2) => (
+			if	type_of t1 =: ¯
+			then	if	type_of t2 =: ¯
+				then	f tt
+				else	term_fail area 117201 [t2]
+			else	term_fail area 117201 [t1]
+		))
+	end
+);
+=TEX
+=SML
+val Ûmk_z_¯_plusİ = mk_¯_bin_op "mk_z_¯_plus" ñ(_ +‰R _)®;
+val Ûmk_z_¯_subtractİ = mk_¯_bin_op "mk_z_¯_subtract" ñ(_ -‰R _)®;
+val Ûmk_z_¯_timesİ = mk_¯_bin_op	"mk_z_¯_times" ñ(_ *‰R _)®;
+val Ûmk_z_¯_fracİ = (fn tt as (t1, t2) =>
+	if	type_of t1 =: ú
+	then	if	type_of t2 =: ú
+		then	mk_z_simple_bin_op ñ(_ /‰Z _)® tt
+		else	term_fail "mk_z_¯_frac"  86201 [t2]
+	else	term_fail "mk_z_¯_frac" 86201 [t1]
+);
+val Ûmk_z_¯_overİ = mk_¯_bin_op "mk_z_¯_over" ñ(_ /‰R _)®;
+val Ûmk_z_¯_ú_expİ = (fn tt as (t1, t2) =>
+	if	type_of t1 =: ¯
+	then	if	type_of t2 =: ú
+		then	mk_z_simple_bin_op ñ(_ ^‰Z _)® tt
+		else	term_fail "mk_z_¯_ú_exp"  86201 [t2]
+	else	term_fail "mk_z_¯_ú_exp" 117201 [t1]
+);
+=TEX
+=SML
+fun Ûmk_ú_bin_relİ (area : string) (tm : TERM) : (TERM * TERM) -> TERM = (
+	let	val f = mk_z_simple_bin_rel tm;
+	in	(fn tt as (t1, t2) => (
+			if	type_of t1 =: ¯
+			then	if	type_of t2 =: ¯
+				then	f tt
+				else	term_fail area 117201 [t2]
+			else	term_fail area 117201 [t1]
+		))
+	end
+);
+=TEX
+=SML
+val Ûmk_z_¯_lessİ = mk_ú_bin_rel "mk_z_¯_less" ñ(_ <‰R _)®;
+val Ûmk_z_¯_¼İ = mk_ú_bin_rel "mk_z_¯_¼" ñ(_ ¼‰R _)®;
+val Ûmk_z_¯_greaterİ = mk_ú_bin_rel "mk_z_¯_greater" ñ(_ >‰R _)®;
+val Ûmk_z_¯_¾İ = mk_ú_bin_rel "mk_z_¯_¾" ñ(_ ¾‰R _)®;
+=TEX
+
+\section{COMPUTATIONAL CONVERSIONS}
+=TEX
+=SML
+val Ûz_¯_lit_lemma1İ = (
+set_goal([], ¬µm n· ñ¬Z'Int m® /‰Z ¬Z'Int n®® = m/n®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, z_¯_real_î¯_thm, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_lit_lemma2İ = (
+set_goal([], ¬µm n· ñ¬Z'Int m® /‰Z ~ ¬Z'Int (n + 1)®® = ~‰R(m/(n+1))®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, z_¯_real_î¯_thm, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm] THEN REPEAT strip_tac);
+a(lemma_tac¬³ î¯ (n + 1) = î¯ 0® THEN1
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]);
+a(lemma_tac¬³ (~‰R(î¯ (n + 1)) = î¯ 0)® THEN1
+	(conv_tac (RAND_C eq_sym_conv) THEN once_rewrite_tac[¯_eq_thm]
+	THEN rewrite_tac[¯_minus_clauses] THEN
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]));
+a(LEMMA_T ¬~‰R(î¯ m / î¯ (n + 1)) = ~‰R(î¯ m) / î¯ (n+1)® rewrite_thm_tac);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[¯_over_times_recip_thm]);
+a(rewrite_tac[¯_times_minus_thm]);
+(* *** Goal "2" *** *)
+a(ante_tac (list_µ_elim[ ¬~‰R(î¯ (n + 1))®, ¬î¯ (n + 1)®]¯_cross_mult_eq_thm));
+a(asm_rewrite_tac[] THEN REPEAT strip_tac);
+a(asm_rewrite_tac[]);
+a(rewrite_tac[¯_times_minus_thm, µ_elim¬î¯ m®¯_times_order_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_lit_lemma3İ = (
+set_goal([], ¬µm n· ñ(~ ¬Z'Int m®) /‰Z ¬Z'Int (n + 1)®® = ~‰R(m/(n+1))®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, z_¯_real_î¯_thm, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm] THEN REPEAT strip_tac);
+a(lemma_tac¬³ î¯ (n + 1) = î¯ 0® THEN1
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]);
+a(ALL_FC_T rewrite_tac[¯_over_times_recip_thm]);
+a(rewrite_tac[¯_times_minus_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_lit_lemma4İ = (
+set_goal([], ¬µm n· ñ(~¬Z'Int m®) /‰Z ~ ¬Z'Int (n + 1)®® = m/(n+1)®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, z_¯_real_î¯_thm, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm] THEN REPEAT strip_tac);
+a(lemma_tac¬³ î¯ (n + 1) = î¯ 0® THEN1
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]);
+a(lemma_tac¬³ (~‰R(î¯ (n + 1)) = î¯ 0)® THEN1
+	(conv_tac (RAND_C eq_sym_conv) THEN once_rewrite_tac[¯_eq_thm]
+	THEN rewrite_tac[¯_minus_clauses] THEN
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]));
+a(ante_tac (list_µ_elim[ ¬~‰R(î¯ (n + 1))®, ¬î¯ (n + 1)®]¯_cross_mult_eq_thm));
+a(asm_rewrite_tac[] THEN REPEAT strip_tac);
+a(asm_rewrite_tac[]);
+a(rewrite_tac[¯_times_minus_thm, µ_elim¬î¯ m®¯_times_order_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_lit_lemma5İ = z_¯_real_î¯_thm;
+val Ûz_¯_minus_thmİ = tac_proof(
+	([], ¬µx·ñ~‰R x® = ~‰R x®),
+	rewrite_tac[main_defs]);
+val Û¯_minus_minus_thmİ = tac_proof(
+	([], ¬µx·¬~‰R (~‰R x)® = x®),
+	rewrite_tac[¯_minus_clauses]);
+=TEX
+=SML
+val Ûz_real_minus_thmİ = tac_proof(
+	([], ¬µi·ñreal (~i) = ~‰R (real i)®®),
+	rewrite_tac[main_defs]);
+=SML
+fun ÛZ_LEFT_Cİ (c : CONV) : CONV = RAND_C (LEFT_C c);
+fun ÛZ_RIGHT_Cİ (c : CONV) : CONV = RAND_C (RIGHT_C c);
+fun ÛZ_RANDS_Cİ (c : CONV) : CONV = RAND_C (RANDS_C c);
+val ÛZ_RAND_Cİ : CONV -> CONV = RAND_C;
+=IGN
+Z_RIGHT_C z_plus_conv ñ1 /‰Z (1+2)®;
+Z_LEFT_C z_plus_conv ñ (2+3) /‰Z (1+2)®;
+Z_RANDS_C z_plus_conv ñ (2+3) /‰Z (1+2)®;
+Z_RAND_C z_plus_conv ñ f x (1+2)®;
+=TEX
+=SML
+val Ûî_oneİ = ¬1®;
+val Ûpos_convİ : CONV = (fn tm =>
+	let	val n = dest_î tm;
+	in	eq_sym_rule (plus_conv(mk_plus(mk_î(n @- one), î_one)))
+	end
+);
+=TEX
+=SML
+val rec  Ûz_¯_lit_convİ : CONV = (fn tm =>
+	(FIRST_C [
+		simple_eq_match_conv z_¯_lit_lemma1,
+		Z_RIGHT_C (Z_RAND_C(RAND_C pos_conv)) THEN_C
+			simple_eq_match_conv z_¯_lit_lemma2 THEN_C
+			RAND_C (RIGHT_C plus_conv),
+		Z_RIGHT_C (RAND_C pos_conv) THEN_C
+			simple_eq_match_conv z_¯_lit_lemma3 THEN_C
+			RAND_C (RIGHT_C plus_conv),
+		Z_RIGHT_C (Z_RAND_C(RAND_C pos_conv)) THEN_C
+			simple_eq_match_conv z_¯_lit_lemma4 THEN_C
+			RIGHT_C plus_conv,
+		simple_eq_match_conv z_¯_lit_lemma5,
+		simple_eq_match_conv z_¯_minus_thm THEN_TRY_C
+			RAND_C z_¯_lit_conv THEN_TRY_C
+			simple_eq_match_conv ¯_minus_minus_thm,
+		simple_eq_match_conv z_real_minus_thm THEN_TRY_C z_¯_lit_conv
+	] THEN_TRY_C ¯_eval_conv) tm
+	handle Fail _ => term_fail "z_¯_lit_conv" 117001 [tm]
+);
+=IGN
+z_¯_lit_convñ 1/‰Z 2®;
+z_¯_lit_convñ 1/‰Z ~2®;
+z_¯_lit_convñ ~ 1/‰Z 2®;
+z_¯_lit_convñ ~ 1/‰Z ~2®;
+z_¯_lit_convñ real 42®;
+z_¯_lit_convñ ~‰R real 42®;
+z_¯_lit_convñ 0 /‰Z 42®;
+z_¯_lit_convñ~‰R (1 /‰Z 6)®;
+=TEX
+=SML
+val Ûz_¯_lit_lemma6İ = conv_rule (ONCE_MAP_C eq_sym_conv) z_¯_lit_lemma1;
+val Ûz_¯_lit_lemma7İ = conv_rule (ONCE_MAP_C eq_sym_conv) z_¯_lit_lemma5;
+val Ûz_¯_lit_lemma8İ = conv_rule (ONCE_MAP_C eq_sym_conv) z_¯_minus_thm;
+val Ûz_¯_lit_lemma9İ = tac_proof(([], ñ~‰R (real 0) = real 0®),
+	rewrite_tac[rewrite_rule[z_get_specñ¯®] z_¯_minus_clauses]);
+
+val Ûz_¯_lit_conv1İ : CONV = (fn tm =>
+	(TRY_C ¯_eval_conv
+	THEN_C FIRST_C [
+		simple_eq_match_conv z_¯_lit_lemma6,
+		simple_eq_match_conv z_¯_lit_lemma7,
+		RAND_C (simple_eq_match_conv z_¯_lit_lemma6) THEN_C
+			simple_eq_match_conv z_¯_lit_lemma8,
+		RAND_C (simple_eq_match_conv z_¯_lit_lemma7) THEN_C
+			simple_eq_match_conv z_¯_lit_lemma8
+	] THEN_TRY_C simple_eq_match_conv z_¯_lit_lemma9) tm
+	handle Fail _ => term_fail "z_¯_lit_conv1" 117002 [tm]
+);
+=SML
+val Ûz_¯_lit_norm_convİ = (fn tm =>
+	(CHANGED_C (z_¯_lit_conv THEN_TRY_C
+	(¯_frac_norm_conv ORELSE_C RAND_C ¯_frac_norm_conv)	THEN_C
+	z_¯_lit_conv1)) tm
+	handle Fail _ => term_fail "z_¯_lit_norm_conv" 117001 [tm]
+);
+=IGN
+z_¯_lit_norm_convñ1 /‰Z 9®;
+=IGN
+z_¯_lit_conv1 ¬1/2®;
+z_¯_lit_conv1 ¬~‰R(1/2)®;
+z_¯_lit_conv1 ¬î¯ 87®;
+z_¯_lit_conv1 ¬~‰R(î¯ 87)®;
+z_¯_lit_norm_conv ñ~87 /‰Z 3®;
+z_¯_lit_norm_conv ñ~88 /‰Z 3®;
+z_¯_lit_norm_conv ñ88 /‰Z ~4®;
+z_¯_lit_norm_conv ñ88 /‰Z 4®;
+z_¯_lit_norm_conv ñ0 /‰Z 4®;
+z_¯_lit_norm_conv ñ~0 /‰Z 4®;
+z_¯_lit_norm_conv ñ0 /‰Z ~4®;
+z_¯_lit_norm_conv ñ~0 /‰Z 4®;
+z_¯_lit_norm_conv ñ~‰R(~0 /‰Z ~2)®;
+=TEX
+
+=SML
+val z_¯_plus_thm = tac_proof(
+	([], ¬µx y·ñx +‰R y® = x +‰R y®),
+	rewrite_tac[main_defs]);
+val z_¯_times_thm = tac_proof(
+	([], ¬µx y·ñx *‰R y® = x *‰R y®),
+	rewrite_tac[main_defs]);
+val z_¯_less_thm = tac_proof(
+	([], ¬µx y·ñx <‰R y® ¤ x <‰R y®),
+	rewrite_tac[main_defs]);
+val z_¯_¼_thm = tac_proof(
+	([], ¬µx y:¯·ñx ¼‰R y® ¤ x ¼‰R y®),
+	rewrite_tac[main_defs]);
+val z_¯_over_thm = tac_proof(
+	([], ¬µx y·ñx /‰R y® = x /‰R y®),
+	rewrite_tac[main_defs]);
+val z_¯_abs_thm = tac_proof(
+	([], ¬µx·ñabs‰R x® = Abs‰R x®),
+	rewrite_tac[main_defs]);
+=TEX
+=SML
+fun Ûmk_bin_rel_convİ (nm : string) (pat : TERM) (th : THM) (c : CONV) : CONV = (fn tm =>
+	(LEFT_C (RANDS_C z_¯_lit_conv) THEN_C simple_eq_match_conv th THEN_C c) tm
+	handle Fail _ => term_fail nm 117003 [tm, pat]
+);
+=TEX
+=SML
+fun Ûmk_bin_comp_convİ (nm : string) (pat : TERM) (th : THM) (c : CONV) : CONV = (fn tm =>
+	(Z_RANDS_C z_¯_lit_conv THEN_C simple_eq_match_conv th THEN_C c THEN_C z_¯_lit_conv1) tm
+	handle Fail _ => term_fail nm 117003 [tm, pat]
+);
+=TEX
+=SML
+val Ûz_¯_plus_convİ : CONV = mk_bin_comp_conv "z_¯_plus_conv" ñx +‰R y® z_¯_plus_thm ¯_plus_conv;
+val Ûz_¯_times_convİ : CONV = mk_bin_comp_conv "z_¯_times_conv"ñx *‰R y®  z_¯_times_thm ¯_times_conv;
+
+val Ûz_¯_over_convİ : CONV = mk_bin_comp_conv "z_¯_over_conv" ñx /‰R y®  z_¯_over_thm ¯_over_conv;
+val Ûz_¯_less_convİ : CONV = mk_bin_rel_conv "z_¯_less_conv" ñx <‰R y®  z_¯_less_thm ¯_less_conv;
+val Ûz_¯_¼_convİ : CONV = mk_bin_rel_conv "z_¯_¼_conv" ñx ¼‰R y® z_¯_¼_thm ¯_¼_conv;
+val Ûz_¯_eq_convİ : CONV = (fn tm =>
+	(RANDS_C z_¯_lit_conv THEN_C ¯_eq_conv) tm
+	handle Fail _ => term_fail "z_¯_eq_conv" 117003 [tm, ñx = y®]
+);
+=IGN
+z_¯_plus_convñ1 /‰Z 2 +‰R 1 /‰Z 2®;
+z_¯_times_convñ(1 /‰Z 2) *‰R (1 /‰Z 2)®;
+z_¯_over_convñ(1 /‰Z 2) /‰R (1 /‰Z 2)®;
+=TEX
+=SML
+val Ûz_¯_abs_convİ : CONV = (fn tm =>
+	(Z_RAND_C z_¯_lit_conv THEN_C simple_eq_match_conv z_¯_abs_thm
+	THEN_C ¯_abs_conv THEN_C z_¯_lit_conv1) tm
+	handle Fail _ => term_fail "z_¯_abs_conv" 117004 [tm, ñabs‰R x®]
+);
+=IGN
+z_¯_abs_convñabs‰R (real 42)®;
+z_¯_abs_convñabs‰R ~‰R (real 42)®;
+=TEX
+=SML
+val Ûz_¯_minus_conv_thm1İ = (
+set_goal([], ¬µm n· ñ ~ x /‰Z  ¬Z'Int (n + 1)® = ~‰R ( x /‰Z ¬Z'Int (n + 1)® ) ® ®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs] THEN REPEAT strip_tac);
+a(rewrite_tac[z_¯_real_î¯_thm]);
+a(lemma_tac¬³ î¯ (n + 1) = î¯ 0® THEN1
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]);
+a(ALL_FC_T rewrite_tac[¯_over_times_recip_thm]);
+a(rewrite_tac[¯_times_minus_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_minus_conv_thm2İ = (
+set_goal([], ¬µx n· ñ x /‰Z  ~ ¬Z'Int (n + 1)® = ~‰R ( x /‰Z ¬Z'Int (n + 1)® ) ®®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm] THEN REPEAT strip_tac);
+a(lemma_tac¬³ î¯ (n + 1) = î¯ 0® THEN1
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]);
+a(lemma_tac¬³ ~‰R(î¯ (n + 1)) = î¯ 0® THEN1
+	(conv_tac (RAND_C eq_sym_conv) THEN once_rewrite_tac[¯_eq_thm]
+	THEN rewrite_tac[¯_minus_clauses] THEN
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]));
+a(ALL_FC_T rewrite_tac[¯_over_times_recip_thm, ¯_minus_recip_thm]);
+a(rewrite_tac[¯_times_minus_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_minus_conv_thm3İ = (
+set_goal([], ¬µx n· ñ~x /‰Z ~ ¬Z'Int (n + 1)® = x /‰Z ¬Z'Int (n + 1)®®®);
+a(rewrite_tac[get_specñ(_ /‰Z _)®, z_¯_real_î¯_thm, get_spec¬$/‰N®]);
+a(rewrite_tac[main_defs, z_¯_real_î¯_thm] THEN REPEAT strip_tac);
+a(lemma_tac¬³ î¯ (n + 1) = î¯ 0® THEN1
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]);
+a(lemma_tac¬³ (~‰R(î¯ (n + 1)) = î¯ 0)® THEN1
+	(conv_tac (RAND_C eq_sym_conv) THEN once_rewrite_tac[¯_eq_thm]
+	THEN rewrite_tac[¯_minus_clauses] THEN
+	PC_T1 "basic_hol" rewrite_tac[î¯_one_one_thm]));
+a(ALL_FC_T rewrite_tac[¯_over_times_recip_thm, ¯_minus_recip_thm]);
+a(rewrite_tac[¯_times_minus_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_minus_conv_thm3İ = tac_proof(
+	([], ¬µx·ñ~‰R (~‰R x) = x®®),
+	rewrite_tac[main_defs, ¯_minus_clauses]);
+=TEX
+=SML
+val Ûz_¯_minus_convİ : CONV = (fn tm =>
+	REPEAT_C1 (FIRST_C [
+		simple_eq_match_conv z_real_minus_thm,
+		Z_RIGHT_C(RAND_C pos_conv) THEN_C
+			simple_eq_match_conv z_¯_minus_conv_thm1 THEN_C
+			RAND_C(Z_RIGHT_C (RAND_C plus_conv)),
+		Z_RIGHT_C (RAND_C (RAND_C pos_conv)) THEN_C
+			(
+			(simple_eq_match_conv z_¯_minus_conv_thm3 THEN_C
+				Z_RIGHT_C (RAND_C plus_conv))  ORELSE_C
+			(simple_eq_match_conv z_¯_minus_conv_thm2 THEN_C
+				RAND_C(Z_RIGHT_C (RAND_C plus_conv)))),
+		simple_eq_match_conv z_¯_minus_conv_thm3
+	] THEN_TRY_C z_¯_lit_norm_conv) tm
+	handle Fail _ => term_fail "z_¯_minus_conv" 117107 [tm]
+);
+=IGN
+z_¯_minus_convñreal (~(42))®;
+z_¯_minus_convñ(~3 /‰Z 7)®;
+z_¯_minus_convñ(3 /‰Z ~7)®;
+z_¯_minus_convñ(~3 /‰Z ~7)®;
+=TEX
+=SML
+val Ûz_ú_exp_lemma1İ = (
+set_goal([], ¬µx m·ñx ^‰Z ¬(Z'Int m)®® = x ^‰N m®);
+a(rewrite_tac[main_defs]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_ú_exp_lemma2İ = (
+set_goal([], ¬µx m·ñx ^‰Z ~¬(Z'Int (m+1))®® = î¯ 1 /‰R (x ^‰N (m+1))®);
+a(REPEAT strip_tac THEN rewrite_tac[main_defs]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_ú_exp_lemma3İ = (
+set_goal([], ¬µx m·ñx ^‰Z ¬(Z'Int 0)®® = ñreal 1®®);
+a(REPEAT strip_tac THEN rewrite_tac[main_defs]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_ú_exp_lemma4İ = (
+set_goal([], ¬µx m·ñx ^‰Z ~¬(Z'Int 0)®® = ñreal 1®®);
+a(REPEAT strip_tac THEN rewrite_tac[main_defs]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûz_¯_ú_exp_convİ : CONV = (fn tm =>
+	(FIRST_C [
+	(simple_eq_match_conv z_ú_exp_lemma3),
+	(simple_eq_match_conv z_ú_exp_lemma4),
+	(simple_eq_match_conv z_ú_exp_lemma1 THEN_C
+		LEFT_C z_¯_lit_conv THEN_C ¯_î_exp_conv THEN_C z_¯_lit_conv1),
+	(RIGHT_C(RIGHT_C(RIGHT_C(RAND_C(pos_conv)))) THEN_C
+	simple_eq_match_conv z_ú_exp_lemma2 THEN_C
+		RIGHT_C (RIGHT_C plus_conv THEN_C LEFT_C z_¯_lit_conv THEN_C ¯_î_exp_conv) THEN_C
+		¯_over_conv THEN_TRY_C
+		RIGHT_C (TRY_C(¯_recip_conv THEN_C ¯_times_conv)) THEN_C z_¯_lit_conv1)
+]	THEN_TRY_C z_¯_lit_norm_conv) tm
+	handle Fail _ => term_fail "z_¯_ú_exp_conv" 117005 [tm]
+);
+=IGN
+z_¯_ú_exp_convñreal 5 ^‰Z 2®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z 2®;
+z_¯_ú_exp_convñreal 10 ^‰Z 3®;
+z_¯_ú_exp_convñreal 10 ^‰Z ~3®;
+z_¯_ú_exp_convñ(real 7) ^‰Z ~2®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z ~2®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z ~1®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z ~0®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z 0®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z 1®;
+z_¯_ú_exp_convñ(3/‰Z 7) ^‰Z 2®;
+z_¯_ú_exp_convñ(1/‰Z 7) ^‰Z ~2®;
+z_¯_ú_exp_convñ(1/‰Z 7) ^‰Z ~1®;
+z_¯_ú_exp_convñ(1/‰Z 7) ^‰Z ~0®;
+z_¯_ú_exp_convñ(1/‰Z 7) ^‰Z 0®;
+z_¯_ú_exp_convñ(1/‰Z 7) ^‰Z 1®;
+z_¯_ú_exp_convñ(1/‰Z 7) ^‰Z 2®;
+=TEX
+=SML
+val z_¯_¾_thm = tac_proof(
+	([], ¬µx y:¯·ñx ¾‰R y ¤ y ¼‰R x®®),
+	rewrite_tac[rewrite_rule[main_defs]z_¯_¾_def, main_defs]);
+val z_¯_greater_thm = tac_proof(
+	([], ¬µx y:¯·ñx >‰R y ¤ y <‰R x®®),
+	rewrite_tac[rewrite_rule[main_defs]z_¯_greater_def, main_defs]);
+val z_¯_subtract_thm = tac_proof(
+	([], ¬µx y:¯·ñx -‰R y  = x +‰R ~‰R y®®),
+	rewrite_tac[rewrite_rule[main_defs]z_¯_subtract_def, main_defs]);
+=TEX
+=SML
+val Ûz_¯_¾_convİ = (fn tm =>
+	simple_eq_match_conv z_¯_¾_thm tm
+	handle Fail _ => term_fail "z_¯_¾_conv" 117102 [tm]
+);
+val Ûz_¯_greater_convİ = (fn tm =>
+	simple_eq_match_conv z_¯_greater_thm tm
+	handle Fail _ => term_fail "z_¯_greater_conv" 117105 [tm]
+);
+val Ûz_¯_subtract_convİ = (fn tm =>
+	simple_eq_match_conv z_¯_subtract_thm tm
+	handle Fail _ => term_fail "z_¯_subtract_conv" 117111 [tm]
+);
+=IGN
+z_¯_¾_convñx ¾‰R y®;
+z_¯_greater_convñx >‰R y®;
+z_¯_subtract_convñx -‰R y®;
+=TEX
+\subsection{General Evaluation Conversion}
+The following are also used in the linear arithmetic proof context.
+=SML
+val Ûto_hol_plus_convİ = simple_eq_match_conv z_¯_plus_thm;
+val Ûto_hol_minus_convİ = simple_eq_match_conv z_¯_minus_thm;
+val Ûto_hol_times_convİ = simple_eq_match_conv z_¯_times_thm;
+val Ûto_hol_over_convİ = simple_eq_match_conv z_¯_over_thm;
+val Ûto_hol_less_convİ = simple_eq_match_conv z_¯_less_thm;
+val Ûto_hol_¼_convİ = simple_eq_match_conv z_¯_¼_thm;
+val Ûto_hol_abs_convİ = simple_eq_match_conv z_¯_abs_thm;
+val Ûto_hol_lit_convİ = z_¯_lit_conv;
+val Ûto_hol_ú_exp_convİ =
+	simple_eq_match_conv z_ú_exp_lemma1 ORELSE_C simple_eq_match_conv z_ú_exp_lemma2;
+=IGN
+to_hol_plus_convñx +‰R y®;
+to_hol_minus_convñ~‰R y®;
+to_hol_times_convñx *‰R y®;
+to_hol_over_convñx /‰R y®;
+to_hol_less_convñx <‰R y®;
+to_hol_¼_convñreal 9 ¼‰R y®;
+to_hol_lit_convñreal 99®;
+to_hol_lit_convñ~ 4/‰Z 5®;
+to_hol_ú_exp_convñreal 1 ^‰Z 9®;
+to_hol_ú_exp_convñreal 1 ^‰Z ~9®;
+=TEX
+=SML
+val Ûz_eval_netİ = switch list_net_enter empty_net
+[
+	(ñx +‰R y®, (Z_RANDS_C, z_¯_plus_conv)),
+	(ñx -‰R y®, (Z_RANDS_C, z_¯_subtract_conv THEN_C z_¯_plus_conv)),
+	(ñx *‰R y®, (Z_RANDS_C, z_¯_times_conv)),
+	(ñx /‰R y®, (Z_RANDS_C, z_¯_over_conv)),
+	(ñabs‰R x®, (Z_RANDS_C, z_¯_abs_conv)),
+	(ñ~‰R x®, (Z_RAND_C, z_¯_minus_conv))
+];
+=TEX
+=SML
+val rec ÛZ_¯_EVAL_Cİ : CONV -> CONV = (fn user_conv => fn tm =>
+	let	fun chk tm = (
+			let	val tm2 = dest_¯_minus tm	handle Fail _=> tm;
+			in	let	val (a, b) = dest_z_¯_frac tm2;
+					val (_, bi) = (dest_z_signed_int a, dest_z_signed_int b);
+				in	bi <> zero
+				end	handle Fail _ =>
+				let	val m = dest_z_real tm2;
+				in	is_z_signed_int m
+				end	handle Fail _ => false
+			end
+		);
+	in	case net_lookup z_eval_net tm of
+			[(C, conv)] => C (TRY_C(Z_¯_EVAL_C user_conv)) THEN_C conv
+		|	_ => TRY_C (user_conv ORELSE_C z_¯_minus_conv)
+				THEN_C COND_C chk id_conv fail_conv
+	end	tm
+	handle	Fail _ => term_fail "Z_¯_EVAL_C" 117020 [tm]
+);
+val Ûz_¯_eval_convİ : CONV = Z_¯_EVAL_C fail_conv;
+=TEX
+=SML
+val Ûz_minus_minus_convİ = simple_eq_match_conv
+	(prove_rule[]¬µx : ú ·ñ~(~x) = x®®);
+=TEX
+=SML
+val Ûz'float_defİ = get_spec ¬Z'Float®;
+val Ûz_float_convİ : CONV = (fn tm =>
+	(simple_eq_match_conv z'float_def THEN_C
+	Z_RIGHT_C(Z_RIGHT_C(
+		Z_RIGHT_C (TRY_C z_minus_minus_conv)
+			THEN_C z_plus_conv)) THEN_C
+	Z_RIGHT_C z_¯_ú_exp_conv THEN_C
+	z_¯_times_conv) tm
+	handle Fail _ => term_fail "z_float_conv" 117006 [tm]
+);
+=TEX
+\section{PROOF CONTEXTS}
+=SML
+fun Ûthms_to_eqn_cxtİ (thms:THM list) : EQN_CXT = (
+	flat(map (cthm_eqn_cxt(current_ad_rw_canon())) thms)
+);
+=TEX	
+=SML
+val _ = delete_pc "'z_reals" handle Fail _ => ();
+val _ = new_pc "'z_reals";
+val _ = set_rw_eqn_cxt	
+		[	(ñi +‰R j®, z_¯_plus_conv),
+			(ñi *‰R j®, z_¯_times_conv),
+			(ñi /‰R j®, z_¯_over_conv),
+			(ñi *‰R j®, z_¯_times_conv),
+			(ñi ^‰Z j®, z_¯_ú_exp_conv),
+			(ñi -‰R j®, z_¯_subtract_conv),
+			(ñ(iºR) = j®, z_¯_eq_conv),
+			(ñ~‰R i®, z_¯_minus_conv),
+			(ñreal(~ i)®, z_¯_minus_conv),
+			(ñabs‰R i®, z_¯_abs_conv),
+			(ñi ¼‰R j®, z_¯_¼_conv),
+			(ñi <‰R j®, z_¯_less_conv),
+			(ñi ¾‰R j®, z_¯_¾_conv),
+			(ñi >‰R j®, z_¯_greater_conv),
+			(ñ¬Z'Int m® /‰Z ¬Z'Int n®®, z_¯_lit_norm_conv)
+		] "'z_reals";
+fun Ûu_simpİ (thm : THM) : THM = rewrite_rule[z_¯_def] thm;
+
+val _ = add_rw_thms (map u_simp[z_¯_plus_clauses, z_¯_minus_clauses, z_¯_¼_clauses,
+	 z_¯_less_clauses, z_¯_times_clauses])
+	"'z_reals";
+val pos = (thms_to_eqn_cxt(map u_simp[z_¯_minus_clauses,
+		z_¯_¼_clauses,
+		z_¯_less_clauses])) @
+	[(ñ(iº¯) = j®, z_¯_eq_conv),
+	(ñi ¾‰R j®, z_¯_¾_conv),
+	(ñi >‰R j®, z_¯_greater_conv)];
+val neg = mapfilter (mk_³ ** RAND_C) pos;
+val neutral = [(ñi ¼‰R j®, z_¼_conv),
+	(ñi <‰R j®, z_less_conv)];
+
+val Ûstrip_eqn_cxtİ = neutral @ pos @ neg;
+
+val _ = set_st_eqn_cxt strip_eqn_cxt "'z_reals";
+val _ = set_sc_eqn_cxt strip_eqn_cxt "'z_reals";
+val _ = set_u_simp_eqn_cxt (theory_u_simp_eqn_cxt"z_reals") "'z_reals";
+val _ = set_pr_tac z_basic_prove_tac "'z_reals";
+val _ = set_pr_conv z_basic_prove_conv "'z_reals";
+val _ = commit_pc "'z_reals";
+=TEX
+=IGN
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñx  ¯®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) +‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) <‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) *‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) /‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) ^‰Z 3®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) -‰Z real 3®;
+
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) >‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) <‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) ¼‰R (1 /‰Z 2)®;
+MERGE_PCS_C1 ["'z_reals", "z_sets_alg"] rewrite_conv[]ñ(1 /‰Z 2) ¾‰R (1 /‰Z 2)®;
+=TEX
+=TEX	
+=SML
+val _ = delete_pc "z_¯_lin_arith" handle Fail _ => ();
+val _ = new_pc "z_¯_lin_arith";
+val _ = set_rw_eqn_cxt	
+		[	(ñi +‰R j®, to_hol_plus_conv),
+			(ñi *‰R j®, to_hol_times_conv),
+			(ñi /‰R j®, to_hol_over_conv),
+			(ñi *‰R j®, to_hol_times_conv),
+			(ñi ^‰Z j®, to_hol_ú_exp_conv),
+			(ñi *‰R j®, to_hol_times_conv),
+			(ñi -‰R j®, z_¯_subtract_conv),
+			(ñ~‰R i®, to_hol_minus_conv),
+			(ñi ¼‰R j®, to_hol_¼_conv),
+			(ñi <‰R j®, to_hol_less_conv),
+			(ñi ¾‰R j®, z_¯_¾_conv),
+			(ñi >‰R j®, z_¯_greater_conv),
+			(ñreal m®, to_hol_lit_conv),
+			(ñabs‰R m®, to_hol_abs_conv),
+			(ñ¬Z'Int m® /‰Z ¬Z'Int n®®, to_hol_lit_conv),
+			(¬Z'Float x p e®, z_float_conv)
+		] "z_¯_lin_arith";
+=TEX
+Now the tactic which is the automatic proof tactic.
+=SML
+val Ûz_¯_lin_arith_prove_tacİ : THM list -> TACTIC = (fn thl => fn gl =>
+	((	DROP_ASMS_T (MAP_EVERY ante_tac)
+	THEN_TRY	rewrite_tac thl
+	THEN	PC_T1 "¯_lin_arith" prove_tac[]) gl)
+	handle ex => reraise ex "z_¯_lin_arith_prove_conv"
+);
+=TEX
+and the associated conversion:
+=SML
+val Ûz_¯_lin_arith_prove_convİ : THM list -> CONV = (fn thl => fn tm =>
+	let	val th = tac_proof(([], tm), z_¯_lin_arith_prove_tac thl);
+	in	¤_t_intro  th
+	end	handle ex => reraise ex "z_¯_lin_arith_prove_conv"
+);
+=TEX
+=SML
+val _ = set_u_simp_eqn_cxt (theory_u_simp_eqn_cxt"z_reals") "z_¯_lin_arith";
+val _ = set_pr_tac z_¯_lin_arith_prove_tac "z_¯_lin_arith";
+val _ = set_pr_conv z_¯_lin_arith_prove_conv "z_¯_lin_arith";
+val _ = commit_pc "z_¯_lin_arith";
+=IGN
+PC_C1 "z_¯_lin_arith" rewrite_conv[]ñx +‰R y *‰R real 42 +‰R 9 /‰Z 10®;
+PC_C1 "z_¯_lin_arith" prove_conv[]	ñx <‰R y <‰R z ´ x <‰R z®;
+PC_C1 "z_¯_lin_arith" rewrite_conv[]	ñ
+	(real 2 ^‰Z 5) *‰R x <‰R y <‰R z ´ x <‰R z /‰R real 31®;
+
+val gl : GOAL = ([], ñx <‰R y <‰R z ´ x <‰R z®);
+tac_proof(gl, PC_T1 "z_¯_lin_arith" prove_tac[]);
+
+=TEX
+\section{EPILOGUE}
+=SML
+end (* of structure ZReals *);
+open ZReals;
+=TEX
+\twocolumn[\section{INDEX}]
+\small
+\printindex
+
+\end{document}
+
+
+
+
+
+
+

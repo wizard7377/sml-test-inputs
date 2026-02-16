@@ -1,0 +1,2 @@
+structure LargeWord : WORD
+	where type word = word

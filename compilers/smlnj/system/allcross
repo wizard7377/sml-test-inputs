@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# COPYRIGHT (c) 2025 The Fellowship of SML/NJ (https://smlnj.org)
+# All rights reserved.
+#
+# cross compile to all supported targets
+#
+
+TARGETS="amd64-unix arm64-unix"
+
+for target in $TARGETS ; do
+  ./cmb-cross -z $target || exit 1
+done

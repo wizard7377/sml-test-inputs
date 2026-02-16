@@ -1,0 +1,4 @@
+unit SIGS = "bug.sig" {}
+interface F = "bug.int" {SIGS}
+unit F : F = "bug.sml" {SIGS}
+

@@ -1,0 +1,2036 @@
+=IGN
+********************************************************************************
+imp038.doc: this file is part of the PPHol system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+%  %Z% $Date: 2005/12/16 10:34:27 $ $Revision: 1.37 $ $RCSfile: imp038.doc,v $
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Elementary Theory of Arithmetic}
+
+\def\AbstractText{}
+
+\def\Reference{DS/FMU/IED/IMP038}
+
+\def\Author{R.D. Arthan}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{FST PROJECT}  %% Mandatory field
+%% LaTeX2e port: %\TPPvolume{}
+%% LaTeX2e port: %\TPPpart{}
+%% LaTeX2e port: \TPPtitle{Elementary Theory of Arithmetic}  %% Mandatory field
+%% LaTeX2e port: \TPPref{DS/FMU/IED/IMP038}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Date: 2005/12/16 10:34:27 $%
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2005/12/16 10:34:27 $
+%% LaTeX2e port: }}
+%% LaTeX2e port: \TPPstatus{Draft}			%% Mandatory field
+%% LaTeX2e port: \TPPtype{SML Literate Script}
+%% LaTeX2e port: \TPPkeywords{}
+%% LaTeX2e port: \TPPauthor{R.D.~Arthan & WIN01}  %% Mandatory field
+%% LaTeX2e port: \TPPauthorisation{R.B.~Jones & FMU Manager}
+%% LaTeX2e port: \TPPabstract{}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port: 	    R.D.~Arthan \\ K.~Blackburn
+%% LaTeX2e port: }}
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+\pagebreak
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu}
+
+\subsection{Changes History}
+\begin{description}
+\item[Issue 1.5 (1991/08/25) (25 August 1991)] First draft
+\item[Issue 1.9 (1991/10/09) (25 August 1991)] First version with design and test
+\item[Issue 1.10 (1991/10/16) (16th October 1991)] Brought in line with issue 1.3 design.
+\item[Issue 1.11 (1991/10/17) (17th October 1991)]
+Lost $fun\_rel\_thm$ to \cite{DS/FMU/IED/IMP037}.
+\item[Issue 1.13 (1991/11/15) (15 November 1991)] Corrected definition of $>$. Corrected $lt\-\_trans\-\_thm$.
+\item[Issue 1.14 (1991/11/21) (\FormatDate{91/11/21%
+})] Change names of complete induction material (now called
+course\--of\--values induction). Added theorem about uniqueness of
+division and modulus.
+\item [Issue 1.16 (1991/12/10) (10 December 1991)]
+Added a further structure split, to enable SUN 3 builds.
+
+\item[Issue 1.18 (1992/01/20), \FormatDate{92/01/20} ] Updated to use new fonts.
+\item[Issue 1.19 (1992/01/27) (23rd January 1992)]
+$new\_axiom$, $simple\_new\_type\_defn$, $new\_type\_defn$
+all changed to take lists of keys, rather than single ones.
+\item[Issue 1.20 (1992/01/27) (27th January 1992)]
+Corrected arithmetic theorem names.
+\item [Issue 1.21 (1992/03/18) (18th  March 1992)]
+Used $simple\_taut\_tac$ rather than $taut\_tac$.
+\item [Issue 1.22 (1992/03/20)(26th March 1992)]
+changed to use new proof context material.
+\item [Issue 1.23 (1992/03/26) (2nd April 1992)]
+Changes required by CR0016.
+\item [Issue 1.25 (1992/04/14) (13th April 1992)]
+Changes due to CR0017.
+\item[Issue 1.26 (1992/05/15) (15 May 1992)] Use correct quotation symbols.
+\item [Issue 1.27 (1992/05/21),1.28 (1992/05/21) (21st May 1992)]
+Rearranging proof contexts.
+\item[Issue 1.30 (1992/06/24) (24th June 1992)]
+Renamings from issue 1.6 of \cite{DS/FMU/IED/WRK038},
+mostly proof context name changes.
+\item[Issue 1.31 (1993/07/12) (12th July 1993)]
+Added theorem about least upper bounds.
+\item[Issue 1.32 (2000/12/04) (3rd December 2000)]
+Added minimum principle.
+\item[Issue 1.33 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.34 (2002/10/17)] PPHol-specific updates for open source release
+\item[Issue 1.35 (2005/04/18)] {\em prim\_suc\_conv} can now be used in preference to calling the kernel inference rule directly.
+\item[Issue 1.36 (2005/05/07)] HOL now supports left-associative operators.
+\item[Issue 1.37 (2005/12/16)] The prefix for private interfaces is now $pp'$ rather than $icl'$.
+\item[Issue 1.38 (2014/04/14)] Now uses $new\_spec1$ rather than $new\_spec$.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported to Lemma 1 document template.
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+\subsection{Changes Forecast}
+
+Under development.
+\pagebreak
+\section{GENERAL}
+\subsection{Scope}
+This document contains the implementation of the elementary
+theory of arithmetic for the ICL HOL proof development system.
+\subsection{Introduction}
+\subsection{Purpose and Background}
+This document will be called for in the yet-to-be-written
+\cite{DS/FMU/IED/DTD038}.
+\subsection{Dependencis}
+The document depends on the theory of pairs given in
+\cite{DS/FMU/IED/DTD037}.
+\subsection{Deficiencies}
+Operator precedences and names need reviewing against requirements.
+\subsection{Possible Enhancements}
+It might be better to give a loose definition of subtraction.
+\section{PROLOGUE}
+In this section we create the new theory and begin the structure which
+contains the theory.
+We actually use three structures, all called $î$
+(so the second overwrites the first, and the third the second),
+and where the third includes the second includes the first.
+This is to ease processing.
+
+=SML
+structure ÛîÝ = struct
+=TEX
+First of all we make sure we are in the right theory
+and have the right proof context:
+=SML
+val _ = open_theory"pair";
+val _ = new_theory"î";
+val _ = push_merge_pcs ["'propositions",
+		"'simple_abstractions"];
+=TEX
+\section{INTRODUCING THE TYPE î}
+In this section we define the type î.
+The following lemma asserts the existence of what will be the representations
+of the $Suc$ and $0$. The characterising property it uses
+is the first step on the way from the axiom of infinity to the Peano
+postulates and brings out the fact that the successor function is not onto.
+=SML
+val Ûlemma1Ý : THM = (
+push_goal([], ¬
+¶suc:IND­IND; zero:IND· OneOne suc ± (µx·³suc x = zero)
+®);
+=TEX
+=SML
+a(strip_asm_tac infinity_axiom THEN simple_¶_tac¬f:IND­IND®
+	THEN asm_rewrite_tac[]);
+a(asm_ante_tac¬³ Onto (f:IND­IND)® THEN rewrite_tac[onto_def]
+	THEN REPEAT strip_tac);
+a(simple_¶_tac¬y:IND® THEN strip_tac THEN conv_tac(ONCE_MAP_C eq_sym_conv)
+	THEN asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+The next lemma is for use in loosely specifying the defining predicate
+for the new type. It asserts that for some
+subset of $IND$, analogues of the Peano postulates hold for
+appropriate representatives of $Suc$ and $0$. The lemma is formulated
+for use with $new\_spec$ to define $Is\_î\_Rep$.
+
+Note that the lemma is slightly stronger than what is strictly necessary, in
+that the last two conjuncts are not relativised to the subset determined
+by $Is\_î\_Rep$. This makes later proofs a little easier.
+=SML
+val Ûis_î_rep_thmÝ : THM = (
+push_goal([], ¬
+¶Is_î_Rep:IND ­ BOOL·
+	¶ zero suc·
+		(Is_î_Rep zero ± µn·Is_î_Rep n ´ Is_î_Rep(suc n))
+	±	(µn·Is_î_Rep n ´ ³ suc n = zero)
+	±	OneOne suc
+	±	(µp·	p zero ± (µm·p m ´ p (suc m))
+		 ´	(µn·Is_î_Rep n ´ p n))
+®);
+=TEX
+=SML
+(* First bring in the lemma: *)
+a(strip_asm_tac(rewrite_rule[one_one_def] lemma1));
+(* Now exhibit the witnesses: *)
+a(simple_¶_tac¬Ìi:IND·µq· q zero ± (µn· q n ´ q (suc n)) ´ q i®);
+a(simple_¶_tac¬zero:IND®);
+a(simple_¶_tac¬suc:IND­IND®);
+(* Get rid of beta-redexes and strip the goal: *)
+a(rewrite_tac[one_one_def] THEN REPEAT strip_tac);
+(* 4 subgoals. 1: *)
+a(DROP_NTH_ASM_T 3 (ante_tac o all_simple_µ_elim) THEN asm_rewrite_tac[]);
+(* 2: *)
+a(asm_rewrite_tac[]);
+(* 3: *)
+a(POP_ASM_T ante_tac THEN asm_rewrite_tac[]);
+(* 4: *)
+a(POP_ASM_T (ante_tac o simple_µ_elim¬p:IND­BOOL®) THEN asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+We now define $Is\_î\_Rep$:
+=SML
+val Ûis_î_rep_defÝ : THM = new_spec1(["Is_î_Rep","is_î_rep_def"], ["Is_î_Rep"], is_î_rep_thm);
+=TEX
+In order to use $Is\_î\_Rep$, to define the new type, we need to show
+that the subset of $IND$ which it determines is non-empty:
+=SML
+val Ûî_exist_thmÝ : THM = (
+push_goal([], ¬¶x:IND· Is_î_Rep x®);
+=TEX
+=SML
+a(strip_asm_tac is_î_rep_def);
+a(simple_¶_tac ¬zero:IND® THEN asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+Now we can introduce the new type:
+=SML
+val Ûî_defÝ : THM = new_type_defn(["î","î_def"], "î", [], î_exist_thm);
+=TEX
+\section{THE PEANO POSTULATES}
+We now prove the existence of a zero-element and a successor
+function for the new type satisfying the Peano postulates.
+This is just a simple matter of lifting already-proved properties of the
+representations of these objects up to the new type, and like most such
+simple activities it is rather more difficult than one would hope.
+
+The theorem is formulated for use to define $Zero$ and $Suc$ with
+$new\_spec$. Note that the names $Zero$ and $Suc$ used here,
+do, and must, agree with those used by $pp'suc\_conv$ as defined
+in \cite{DS/FMU/IED/DTD006}.
+
+=SML
+val Ûzero_suc_thmÝ : THM = (
+push_goal([], ¬
+	¶ Zero:î; Suc:î ­ î·
+		(µn· ³ Suc n = Zero)
+	±	OneOne Suc
+	±	(µp· p Zero ± (µm·p m ´ p (Suc m)) ´ (µn·p n))
+®);
+=TEX
+=SML
+(* We use the type lemmas to bring abstraction and representation functions *)
+(* for the new type into the assumptions: *)
+a (strip_asm_tac (simple_´_match_mp_rule type_lemmas_thm î_def));
+a (strip_asm_tac (rewrite_rule[one_one_def] is_î_rep_def));
+(* Now we can introduce the witnesses: *)
+a (simple_¶_tac ¬(abs:IND ­ î)zero®);
+a (simple_¶_tac ¬Ìa:î·(abs:IND ­ î)(suc((rep:î ­ IND) a))®);
+a (asm_rewrite_tac[one_one_def] THEN REPEAT strip_tac);
+(* 3 subgoals: 1: *)
+a (lemma_tac ¬Is_î_Rep((rep:î ­ IND) n)® THEN_LIST [asm_rewrite_tac[], id_tac]);
+(* asm_rewrite_tac proves the lemma so ony 1 subgoal *)
+a (lemma_tac ¬Is_î_Rep(suc((rep:î ­ IND)n))®);
+(* 1.1: *)
+a (DROP_NTH_ASM_T 5 (ante_tac o simple_µ_elim¬(rep:î ­ IND)n®) THEN
+	REPEAT strip_tac);
+(* 1.2: *)
+a contr_tac;
+a (lemma_tac¬(rep:î ­ IND)((abs:IND ­ î)(suc(rep n)))= rep(abs zero)®
+	THEN_LIST [asm_rewrite_tac[], id_tac]);
+(* asm_rewrite_tac proves the lemma so ony 1 subgoal *)
+a (GET_NTH_ASM_T 10 (ante_tac o simple_µ_elim¬suc((rep:î ­ IND)n):IND®) THEN
+	REPEAT strip_tac);
+a (GET_NTH_ASM_T 11 (ante_tac o simple_µ_elim¬zero:IND®) THEN
+	REPEAT strip_tac);
+a (GET_NTH_ASM_T 9 (ante_tac o simple_µ_elim¬((rep:î ­ IND)n)®) THEN
+	REPEAT strip_tac);
+a (GET_NTH_ASM_T 4 ante_tac THEN asm_rewrite_tac[]);
+(* Completes 1.2 and 1. 2: *)
+a (lemma_tac¬(rep:î ­ IND)x1 = rep x2®);
+(* 2.1: *)
+a (lemma_tac¬(suc:IND­IND)((rep:î ­ IND)x1) = suc(rep x2)®);
+(* 2.1.1: *)
+a (DROP_NTH_ASM_T 5 ante_tac THEN asm_rewrite_tac[] THEN REPEAT strip_tac);
+(* only 1 subgoal. *)
+a (lemma_tac ¬(rep:î ­ IND)((abs:IND ­ î)(rep x2)) = rep x2
+		± rep(abs(rep x1)) = rep x1®
+	THEN_LIST [asm_rewrite_tac[], id_tac]);
+a (GET_NTH_ASM_T 3 (ante_tac o simple_µ_elim¬(rep:î ­ IND)x2®) THEN
+	REPEAT strip_tac);
+a (GET_NTH_ASM_T 4 (ante_tac o simple_µ_elim¬(rep:î ­ IND)x1®) THEN
+	REPEAT strip_tac);
+a (GET_NTH_ASM_T 6 (ante_tac o app_fun_rule ¬rep:î ­ IND®)
+	THEN asm_rewrite_tac[]);
+(* Completes 2.1.1. 2.1.2: *)
+a (GET_NTH_ASM_T 4 (ante_tac o list_simple_µ_elim[¬(rep:î ­ IND)x1®,
+	¬(rep:î ­ IND)x2®]) THEN
+	REPEAT strip_tac);
+(* Completes 2.1.2. 2.2: *)
+a (POP_ASM_T (ante_tac o app_fun_rule ¬abs:IND ­ î®)
+	THEN asm_rewrite_tac[]);
+(* Completes 2. 3: *)
+a (lemma_tac¬µa:IND·Is_î_Rep a ´ Is_î_Rep a ± p ((abs:IND ­ î) a)®);
+(* 2 subgoals. 3.1: *)
+a (lemma_tac¬µa:IND·Is_î_Rep a ± p ((abs:IND ­ î) a) ´
+		Is_î_Rep (suc a) ± p (abs (suc a))®);
+(* 2 subgoals. 3.1.1: *)
+a (REPEAT strip_tac);
+(* 2 subgoals. 3.1.1.1: *)
+a (GET_NTH_ASM_T 2 (asm_ante_tac o concl) THEN asm_rewrite_tac[]);
+(* Completes 3.1.1.1. 3.1.1.2: *)
+a (GET_NTH_ASM_T 3 (ante_tac o simple_µ_elim¬(abs:IND ­ î)m®));
+a (GET_NTH_ASM_T 2 (asm_ante_tac o concl)
+	THEN GET_NTH_ASM_T 9 rewrite_thm_tac);
+a (strip_tac THEN asm_rewrite_tac[]);
+a (GET_NTH_ASM_T 3 (ante_tac o simple_µ_elim¬(abs:IND ­ î)a®) THEN
+	POP_ASM_T rewrite_thm_tac THEN REPEAT strip_tac);
+(* Completes 3.1.1. 3.1.2: *)
+a (GET_NTH_ASM_T 4 (ante_tac o simple_µ_elim¬
+	Ìa· Is_î_Rep a ± p ((abs:IND ­ î) a)®) THEN
+	conv_tac all_simple_Â_conv THEN simple_taut_tac);
+(* Completes 3.1. 3.2: *)
+a (lemma_tac ¬Is_î_Rep ((rep:î ­ IND) n)® THEN_LIST
+	[asm_rewrite_tac[], id_tac]);
+(* asm_rewrite_tac proves the lemma so only one subgoal *)
+a (GET_NTH_ASM_T 2 (ante_tac o simple_µ_elim¬(rep:î ­ IND) n®)
+	THEN GET_NTH_ASM_T 11 rewrite_thm_tac THEN REPEAT strip_tac);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+$new\_spec$ may now be used to introduce the basic operations
+on the natural numbers.
+=SML
+val Ûzero_suc_defÝ : THM =
+	new_spec1(["ÛZeroÝ", "ÛSucÝ","zero_suc_def"],
+		["Zero", "Suc"], zero_suc_thm);
+=TEX
+=SML
+val Ûzero_convÝ : CONV = ONCE_MAP_C
+	(simple_eq_match_conv (eq_sym_rule
+	(prim_suc_conv ¬0®)));
+=TEX
+The individual Peano postulates are trivial to extract from the
+definition of $Suc$ and $Zero$:
+=SML
+val Û³_suc_thmÝ = (conv_rule zero_conv)(±_left_elim zero_suc_def);
+=TEX
+=SML
+val Ûone_one_suc_thmÝ = rewrite_rule[one_one_def] (±_left_elim (±_right_elim zero_suc_def));
+=TEX
+=SML
+val Ûsuc_induction_thmÝ = (conv_rule zero_conv)(±_right_elim (±_right_elim zero_suc_def));
+=TEX
+\section{INDUCTION TACTIC}
+The following tactic implements ordinary mathematical induction.
+It takes as its argument the variable on which induction is to be performed.
+
+It is unsatisfactory for two reasons at the moment. Firstly, its error
+messages aren't defined. Secondly, and deeper, it assumes that the variable
+on which induction is being performed is free in the goal. Requirements here
+need investigation.
+=SML
+fun Ûsuc_induction_tacÝ (tm : TERM) : TACTIC = (
+	if not(is_var tm andalso type_of tm =: î)
+	then term_fail "suc_induction_tac" 99999 [tm]
+	else let fun aux_tac (gl as (seqasms, conc)) = (
+			let	val abs = mk_simple_Ì(tm, conc);
+				val thm0 = (conv_rule
+						(ONCE_MAP_C (simple_Â_conv))
+						(simple_µ_elim abs suc_induction_thm));
+				val thm1 = undisch_rule(conv_rule
+	((RATOR_C o RAND_C o RAND_C o RAND_C)(simple_Á_conv (fst(dest_var tm))))
+						thm0);
+				val thm2 = simple_µ_elim tm thm1;
+				val conc' = (hd (asms thm2));
+			in	([(seqasms, conc')],
+				 (fn [th] => prove_asm_rule th thm2
+				  | _ => bad_proof "suc_induction_tac"))
+			end
+		);
+	in	aux_tac THEN ±_tac THEN_LIST [id_tac, simple_µ_tac THEN ´_tac]
+	end
+);
+=TEX
+\section{PRIMITIVE RECURSION THEOREM}
+Our approach to the primitive recursion theorem is a straightforward
+adaptation of the approach one might take in set theory.
+
+It is usual in set theory to prove a ``principle of definition by
+induction''. E.g. in \cite{Halmos74}, Halmos proves what he calls
+the ``recursion theorem'', which (modulo names and a uniqueness assertion)
+is the following:
+
+\paragraph{Principle of Definition by Induction (PDI):} Let $X$ be a set, let $z \in X$,
+and let $s$ be a function from $X$ to itself, then there exists a unique
+function $f$ from $î$ to $X$ such that $f(0) = z$ and
+for any $n$, $f(n+1)=s(f n)$.
+
+We wish to prove the slightly stronger ``principle of definition by
+primitive recursion'', and the informal statement of which is:
+
+\paragraph{Principle of Definition by Primitive Recursion(PDPR):}
+Let $X$ be a set, let $z \in X$,
+and let $s$ be a function of two arguments with domain and first codomain
+$X$ and with the second codomain $î$, then there exists a unique
+function $f$ from $î$ to $X$ such that $f(0) = z$ and
+for any $n$, $f(n+1)=s(f n)n$.
+
+Now, $PDPR$, is decidedly more useful than $PDI$, as is clear
+when one examines almost any real-life recursive definition, e.g that
+of the factorial function. However,
+a mathematician would probably not bother to state $PDPR$ result separately,
+since it is a fairly trivial consequence of $PDI$: given the problem
+data of $PDPR$, one uncurries $s$ and combines it with the identity function
+to give a function from $X¸î$ to itself to which $PDI$ may be applied
+to give a function from $î$ to $X¸î$ which composes with the projection
+onto the first factor to give the desired function for $PDPR$.
+(In both $PDI$ and $PDPR$ the uniqueness part is an easy induction. Halmos
+does not even bother to mention it.)
+
+Our plan for proving $PDPR$ therefore is to prove $PDI$ by adapting the
+standard proof from set-theory and to derive $PDPR$ from it by formalising
+the remarks of the previous paragraph.
+
+\subsection{Definition by Induction}
+As we have mentioned we will
+prove the principle of definition by induction following the usual
+set-theoretic proof, which may be found, for example, in \cite{Halmos74}.
+The informal statement and a sketch of the proof is as follows:
+
+\paragraph{Principle of Definition by Induction:} Let $X$ be a set, let $z \in X$,
+and let $s$ be a function from $X$ to itself, then there exists a unique
+function $f$ from $î$ to $X$ such that $f(0) = z$ and
+for any $n$, $f(n+1)=s(f n)$.
+
+\paragraph{Sketch Proof} The uniqueness part is a straight forward proof by
+induction; for the existence, let $\cal C$ be the collection of all subsets, $R$,  of
+$î \times X$ such that $(0, z)\in R$ and for any $n\in î$ and $x\in X$,
+$(n+1, s x)\in X$ if $(n, x)\in X$. Let $Q = \bigcap \cal C$. We then
+prove the following:
+
+\begin{enumerate}
+\item $Q \in \cal C$;
+\item $Q$ is the graph of a function;
+\item the function whose graph is $Q$ is the desired function $f$.
+\end{enumerate}
+
+This completes the proof.
+
+This proof translates into HOL reasonably straightforwardly. To avoid
+a dependency on the theory of sets, we work with two-place relations instead
+of subsets of $î \times X$.
+
+Much of the work of the proof is in exhibiting elements from the collection
+$\cal C$ satisfying certain requirements. This is done in the following
+lemmas, the first of which is fairly easy. In terms of the informal proof,
+it says that exists an $R\in \cal C$ such that $(0, x)\in R$ iff. $x = z$.
+Note that the first two conjuncts in the HOL statement below stand for
+the assertion that $R\in \cal C$.
+=SML
+val Ûrec_lemma1Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­'a· ¶r:î­'a­BOOL·
+		r 0 z
+	±	(µn x·r n x ´ r(Suc n)(s x))
+	±	µx:'a·r 0 x ´ x = z®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN simple_¶_tac¬Ì(k:î) (y:'a)·³(k = 0) ² (k = 0 ± y = z)®);
+a(rewrite_tac[³_suc_thm]);
+pop_thm()
+);
+=TEX
+The second lemma exhibiting an element of $\cal C$ is rather harder, and
+requires the following arithmetic result:
+=SML
+val Ûrec_lemma2Ý = (
+push_goal([], ¬µn:î·³(Suc n = n)®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN suc_induction_tac ¬n:î®);
+(* 2 subgoals: 1: *)
+a(rewrite_tac[³_suc_thm]);
+(* 2: *)
+a(contr_tac THEN strip_asm_tac (list_simple_µ_elim[¬Suc n®, ¬n:î®]
+	one_one_suc_thm));
+pop_thm()
+);
+=TEX
+The second lemma exhibiting an element of $\cal C$ asserts that for
+any $k\in î$, there exists $R\in \cal C$ and $t\in X$ such that
+$(k, x)\in R$ iff. $x = t$. Note that this implies
+that $\bigcap \cal C$ is the graph of a (possibly partial) function on $î$.
+=SML
+val Ûrec_lemma3Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­'a· µk:î·¶r:î­'a­BOOL·
+		r 0 z
+	±	(µn x·r n x ´ r(Suc n)(s x))
+	±	¶t·r k t ± µx:'a·r k x ´ x = t®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN suc_induction_tac¬k:î®);
+(* 2 subgoals: 1 (base case): *)
+a(strip_asm_tac (all_simple_µ_elim rec_lemma1)
+	THEN simple_¶_tac¬r:î­'a­BOOL®);
+a(asm_rewrite_tac[] THEN simple_¶_tac¬z:'a® THEN asm_rewrite_tac[]);
+(* 2 *)
+a(simple_¶_tac¬Ì(i:î) (y:'a)·if Suc k = i then y = s (t:'a) else r i y®
+	THEN rewrite_tac[³_suc_thm] THEN REPEAT strip_tac);
+(* 7 subgoals: 2.1: *)
+a(strip_asm_tac (list_simple_µ_elim[¬k:î®, ¬n:î®]one_one_suc_thm));
+a(asm_ante_tac ¬(r:î­'a­BOOL) n x® THEN
+	POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(lemma_tac ¬(r:î­'a­BOOL) k x ´ x = t® THEN asm_rewrite_tac[]);
+(* 2.2: *)
+a(asm_ante_tac ¬(r:î­'a­BOOL) n x® THEN asm_rewrite_tac[]);
+(* 2.3: *)
+a(asm_ante_tac ¬Suc k = n® THEN asm_rewrite_tac[rec_lemma2]);
+(* 2.4 *)
+a(LEMMA_T ¬(r:î­'a­BOOL) n x® ante_tac);
+(* 2 subgoals. 2.4.1: *)
+a(DROP_ASM_T¬Suc k = n® (asm_rewrite_thm_tac o eq_sym_rule));
+a(asm_ante_tac ¬(r:î­'a­BOOL) k t® THEN asm_rewrite_tac[]);
+(* 2.4.2: *)
+a(asm_rewrite_tac[]);
+(* 2.5: *)
+a(strip_asm_tac (list_simple_µ_elim[¬k:î®, ¬n:î®]one_one_suc_thm));
+a(asm_ante_tac ¬(r:î­'a­BOOL) n x® THEN POP_ASM_T
+	(rewrite_thm_tac o eq_sym_rule));
+a(lemma_tac ¬(r:î­'a­BOOL) k x ´ x = t® THEN asm_rewrite_tac[]);
+(* 2.6: *)
+a(asm_ante_tac ¬(r:î­'a­BOOL) n x® THEN asm_rewrite_tac[]);
+(* 2.7: *)
+a(simple_¶_tac¬(s:'a­'a)t® THEN REPEAT strip_tac THEN asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+We can now prove the existence part of the principle of definition of
+induction (in terms of two-place relations):
+=SML
+val Ûrec_lemma4Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­'a· ¶r:î­'a­BOOL·
+		r 0 z
+	±	(µn x·r n x ´ r(Suc n)(s x))
+	±	(µm·¶y·r m y ± µx·r m x ´ x = y)®);
+
+a(REPEAT strip_tac THEN
+  simple_¶_tac¬(Ì(k:î) (y:'a)·(µq·(q 0 z ± (µn x·q n x ´ q(Suc n)(s x))) ´ q k y))®);
+a(rewrite_tac[] THEN REPEAT strip_tac);
+(* 2 subgoals: 1: *)
+a(DROP_NTH_ASM_T 3 (ante_tac o simple_µ_elim¬q:î­'a­BOOL®)
+	THEN asm_rewrite_tac[]);
+(* 1.2: *)
+a(suc_induction_tac ¬m:î®);
+(* 2 subgoals: 2.1: *)
+a(simple_¶_tac¬z:'a® THEN REPEAT strip_tac);
+a(strip_asm_tac(all_simple_µ_elim rec_lemma1));
+a(DROP_NTH_ASM_T 4 (ante_tac o simple_µ_elim¬r:î­'a­BOOL®)
+	THEN asm_rewrite_tac[]);
+(* 2.2: *)
+a(simple_¶_tac ¬(s:'a­'a)y® THEN REPEAT strip_tac);
+(* 2 subgoals: 2.2.1: *)
+a(DROP_NTH_ASM_T 4 (ante_tac o simple_µ_elim¬q:î­'a­BOOL®)
+	THEN asm_rewrite_tac[]);
+(* 2.2.2: *)
+a(strip_asm_tac(list_simple_µ_elim[¬z:'a®, ¬s:'a­'a®, ¬Suc m®]rec_lemma3));
+a(lemma_tac ¬(r:î­'a­BOOL)m y®);
+(* 2.2.2.1: *)
+a(DROP_NTH_ASM_T 7 (ante_tac o simple_µ_elim¬r:î­'a­BOOL®)
+	THEN asm_rewrite_tac[]);
+(* 2.2.2.2: *)
+a(lemma_tac ¬(r:î­'a­BOOL)(Suc m) (s:'a­'a y)®);
+(* 2.2.2.2.1: *)
+a(DROP_NTH_ASM_T 4 (ante_tac o list_simple_µ_elim[¬m:î®, ¬y:'a®])
+	THEN asm_rewrite_tac[]);
+(* 2.2.2.2.2: *)
+a(lemma_tac ¬(r:î­'a­BOOL)(Suc m) x®);
+(* 2.2.2.2.2.1: *)
+a(DROP_NTH_ASM_T 7 (ante_tac o simple_µ_elim¬r:î­'a­BOOL®)
+	THEN asm_rewrite_tac[]);
+(* 2.2.2.2.2.2: *)
+a(GET_NTH_ASM_T 4 (ante_tac o simple_µ_elim¬x:'a®));
+a(DROP_NTH_ASM_T 4 (ante_tac o simple_µ_elim¬s:'a­'a y®));
+a(strip_tac THEN asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+It turns out to be slightly more convenient to have available
+the following trivial consequence of $fun\_rel\_thm$:
+=SML
+val Ûrec_lemma5Ý = (
+push_goal([], ¬µr:'a­'b­BOOL·
+	(µx·¶y·r x y ± µz·r x z ´ z = y) ´ (¶f·µx y·(f x = y) = r x y)
+®);
+=TEX
+=SML
+a(rewrite_tac[fun_rel_thm]);
+pop_thm()
+);
+=TEX
+The following result gives the uniqueness part of the principle
+of definition by induction:
+=SML
+val Ûrec_lemma6Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­'a· µf g:î­'a·
+	(	(	f 0 = z
+		±	µn:î·f(Suc n) = s(f n))
+		± (	g 0 = z
+		±	µn:î·g(Suc n) = s(g n)))
+	´	f = g®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN pure_once_rewrite_tac[ext_thm]);
+a(strip_tac THEN suc_induction_tac ¬x:î® THEN asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+Using $rec_lemma5$, we now prove the existence part of the principle
+of definition by induction in terms of HOL functions:
+=SML
+val Ûrec_lemma7Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­'a· ¶f:î­'a·
+		f 0 = z
+	±	µn:î·f(Suc n) = s(f n)®);
+=TEX
+=SML
+a(REPEAT strip_tac);
+a((strip_asm_tac o all_simple_µ_elim) rec_lemma4);
+a( (ante_tac o simple_µ_elim¬r:î­'a­BOOL® o
+	inst_type_rule[(î, ”'a®), (”'a®, ”'b®)]) rec_lemma5);
+a(asm_rewrite_tac [] THEN REPEAT strip_tac);
+a(simple_¶_tac¬f:î­'a®);
+a(REPEAT strip_tac THEN asm_rewrite_tac[]);
+(* Only 1 subgoal *)
+a(suc_induction_tac¬n:î®);
+(* 2 subgoals: 1 (base case): *)
+a(LEMMA_T ¬(f 0):'a=z® rewrite_thm_tac);
+(* 1.1: *)
+a(asm_rewrite_tac[]);
+(* 1.2: *)
+a(asm_ante_tac¬(r:î­'a­BOOL) 0 z® THEN asm_rewrite_tac[]);
+(* 2 (step): *)
+a(LEMMA_T¬(f(Suc n)):'a=s(f n)® rewrite_thm_tac);
+(* 2.1: *)
+a(asm_rewrite_tac[]);
+(* 2.2: *)
+a(TOP_ASM_T (asm_ante_tac o concl) THEN asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+We can now assemble the existence and uniqueness parts of the
+theorem to give the desired principle of definition by induction:
+=SML
+val Ûinduct_def_thmÝ = (
+push_goal([],
+	¬µz:'a·µs:'a­'a· ¶‰1f:î­'a·
+		f 0 = z
+	±	µn:î·f(Suc n) = s(f n)®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN conv_tac simple_¶‰1_conv);
+a(strip_asm_tac(all_simple_µ_elim rec_lemma7) THEN simple_¶_tac¬f:î­'a®);
+a(asm_rewrite_tac[]);
+a(REPEAT strip_tac THEN
+	ante_tac (list_simple_µ_elim[¬z:'a®, ¬s:'a­'a®, ¬f:î­'a®, ¬x:î­'a®]rec_lemma6));
+a(asm_rewrite_tac[] THEN ´_T (accept_tac o eq_sym_rule));
+pop_thm()
+);
+=TEX
+\subsection{Primitive Recursion Theorem}
+As we have already mentioned, the existence part
+of the primitive recursion theorem is a straightforward consequence of
+the principle of definition by induction: given a set $X$, an element $z\in X$
+and a two-place function, $s$, from $X ¸ î$ to X, we use the principle of
+definition by induction to define a function from $î$ to $X ¸ î$
+which sends $0$ to $(0, z) an,d for any $n$, sends $n+1$ to
+$(n+1, s(f n))$. The composite of this function with projection onto
+the first factor of $X ¸ î gives the desired function, $f$ say, from
+$î$ to $X$ satisfying $f(0)=z$ and $f(n+1)=s(f(n), n)$.
+
+The HOL translation of the above argument is the following:
+
+=SML
+val Ûrec_lemma8Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­î­'a· ¶f:î­'a·
+		f 0 = z
+	±	µn:î·f(Suc n) = s(f n)n®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN strip_asm_tac
+	(list_simple_µ_elim[¬((z:'a), 0)®, ¬Ì ix:'a ¸ î·((s (Fst ix) (Snd ix):'a), Suc(Snd ix))®]
+	(inst_type_rule[(”'a ¸ î®, ”'a®)] rec_lemma7)));
+a(simple_¶_tac ¬Ìi·Fst((f:î­('a ¸ î)) i)®);
+a(GET_ASM_T ¬(f 0:'a ¸ î) = (z, 0)® (fn th=> rewrite_tac[pair_clauses, th]));
+a(strip_tac THEN suc_induction_tac¬n:î®);
+(* 2 subgoals: 1 (base case) *)
+a(asm_rewrite_tac[pair_clauses]);
+(* 1/2: (step) *)
+a(asm_rewrite_tac[pair_clauses]);
+a(LEMMA_T ¬µk·Snd((f:î­('a ¸ î))k) = k® rewrite_thm_tac);
+a(strip_tac THEN suc_induction_tac¬k:î® THEN asm_rewrite_tac[pair_clauses]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+The uniqueness part of the primitive recursion theorem is
+straightforward:
+=SML
+val Ûrec_lemma9Ý = (
+push_goal([],
+	¬µz:'a·µs:'a­î­'a· µf g:î­'a·
+	(	(	f 0 = z
+		±	µn:î·f(Suc n) = s(f n)n)
+		± (	g 0 = z
+		±	µn:î·g(Suc n) = s(g n)n))
+	´	f = g®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN pure_once_rewrite_tac[ext_thm]);
+a(strip_tac THEN suc_induction_tac¬x:î® THEN asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+);
+=TEX
+Assembling $rec_lemma8$ and $rec_lemma9$ to give the primitive recursion theorem
+in its usual form, is just like the corresponding step in the
+proof of the principle of definition by induction:
+=SML
+val Ûsuc_prim_rec_thmÝ = (
+push_goal([],
+	¬µz:'a·µs:'a­î­'a· ¶‰1f:î­'a·
+		f 0 = z
+	±	µn:î·f(Suc n) = s(f n)n®);
+=TEX
+=SML
+a(REPEAT strip_tac THEN conv_tac simple_¶‰1_conv);
+a(strip_asm_tac(all_simple_µ_elim rec_lemma8) THEN simple_¶_tac¬f:î­'a®);
+a(asm_rewrite_tac[]);
+a(REPEAT strip_tac THEN
+	ante_tac (list_simple_µ_elim[¬z:'a®, ¬s:'a­î­'a®, ¬f:î­'a®, ¬x:î­'a®]rec_lemma9));
+a(asm_rewrite_tac[] THEN ´_T (accept_tac o eq_sym_rule));
+pop_thm()
+);
+
+=TEX
+\section{THE ARITHMETIC OPERATORS}
+\subsection{Interlude}
+The following is required to circumvent a compiler problem which would
+be caused if we attempted to include all the material in this document
+in one Standard ML structure:
+=SML
+end; (* of structure î (part 1) *)
+structure î = struct
+open î;
+=TEX
+\subsection{Fixity Declarations}
+We choose fixities for the arithmetic operations as follows:
+=SML
+val side_effect = (
+declare_infix(210, "<");
+declare_infix(210, ">");
+declare_infix(210, "¼");
+declare_infix(210, "¾");
+declare_infix(300, "+");
+declare_left_infix(305, "-");
+declare_infix(310, "*");
+declare_left_infix(315, "Div");
+declare_left_infix(315, "Mod")
+);
+=TEX
+Thus, the relational operations are lower precedence than the operations
+which return numbers. Addition and subtraction are lower precedence than
+multiplication, division and modulus.
+
+These precedences may need to be altered in the light of comparison with
+other theories.
+\subsection{Addition}
+The defining property for $+$ includes a clause about the relation
+of $+$ with $Suc$, with a view to freeing the world from $Suc$ as soon
+as possible. Indeed, it would, in principle, be possible to build
+the theory without ever defining $Suc$, however this would effectively
+involve proving all of the results we have proved to date relativised to
+the representation type for $î$ followed by a mammoth task of lifting them
+to $î$. Since some people seem to like $Suc$, and it will have its uses from the
+efficiency point of view in coding some proof procedures, we have taken it
+as primitive.
+=SML
+val Ûplus_defÝ = new_spec1(["+","plus_def"], ["+"], (
+push_goal([], ¬
+	¶$+:î­î­î· µm n·
+		0 + n = n
+	±	(m + 1) + n = (m + n) + 1
+	±	Suc m = m + 1
+®);
+=TEX
+=SML
+a(lemma_tac ¬
+	¶$+:î­î­î· µm n·
+		0 + n = n
+	±	(Suc m) + n = Suc (m + n)
+®);
+(* 1: *)
+a(strip_asm_tac	(conv_rule all_simple_Â_conv
+	(list_simple_µ_elim
+	[¬Ìn:î·n®, ¬Ìf:î­î·Ìm:î·Ìn·Suc(f n)®]
+	(inst_type_rule[(”î­î®, ”'a®)]suc_prim_rec_thm))));
+a(simple_¶_tac ¬f:î­î­î®);
+a(REPEAT strip_tac THEN asm_rewrite_tac[]);
+(* 2: *)
+a(simple_¶_tac ¬$+:î­î­î® THEN asm_rewrite_tac[]);
+a(LEMMA_T ¬µm·m + 1 = Suc m® asm_rewrite_thm_tac);
+(* The rewriting proves the goal, so only the lemma to do *)
+a(strip_tac THEN suc_induction_tac ¬m:î®);
+(* 2.1: *)
+a (conv_tac (ONCE_MAP_C suc_conv) THEN asm_rewrite_tac[]);
+(* 2.2 *)
+a (asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+\subsection{Some Earlier Work Revisited}
+We use $+1$ in preference to $Suc$ from now on and so we must carry
+the induction and primitive recursion theorems etc. over to use
+this notation.
+=SML
+val Ûinduction_thmÝ = save_thm("induction_thm",
+	rewrite_rule[plus_def] suc_induction_thm);
+val Û³_plus1_thmÝ = save_thm("³_plus1_thm",
+		rewrite_rule[plus_def] ³_suc_thm);
+val Ûone_one_plus1_thmÝ = save_thm("one_one_plus1_thm",
+		rewrite_rule[plus_def] one_one_suc_thm);
+val Ûprim_rec_thmÝ = save_thm("prim_rec_thm",
+	rewrite_rule[plus_def] suc_prim_rec_thm);
+=TEX
+=SML
+fun ÛINDUCTION_TÝ (tm : TERM) : (THM -> TACTIC) -> TACTIC = (
+	if not(is_var tm andalso type_of tm =: î)
+	then term_fail "INDUCTION_T" 38001 [tm]
+	else (fn thmtac =>
+		let fun aux_tac (gl as (seqasms, conc)) = (
+			if not (is_free_in tm conc)
+			then term_fail "INDUCTION_T" 38002 [tm]
+			else if any seqasms (is_free_in tm)
+			then term_fail "INDUCTION_T" 38003 [tm]
+			else let
+				val abs = mk_simple_Ì(tm, conc);
+				val thm0 = (conv_rule
+						(ONCE_MAP_C (simple_Â_conv))
+						(simple_µ_elim abs induction_thm));
+				val thm1 = undisch_rule(conv_rule
+	((RATOR_C o RAND_C o RAND_C o RAND_C)
+	 (simple_Á_conv (fst(dest_var tm))))
+						thm0);
+				val thm2 = simple_µ_elim tm thm1;
+				val conc' = (hd (asms thm2));
+			in	([(seqasms, conc')],
+				 (fn [th] => prove_asm_rule th thm2
+				  | _ => bad_proof "INDUCTION_T"))
+			end
+		);
+		in	aux_tac THEN ±_tac THEN_LIST
+			[id_tac, simple_µ_tac THEN ´_T thmtac]
+		end)
+);
+=TEX
+=SML
+fun Ûinduction_tacÝ (tm : TERM) : TACTIC = (
+	let	val tac = (INDUCTION_T tm strip_asm_tac);
+	in	fn gl => (tac gl
+			handle ex => pass_on ex "INDUCTION_T" "induction_tac")
+	end handle ex => pass_on ex "INDUCTION_T" "induction_tac"
+);
+=TEX
+=SML
+val Ûplus1_lemmaÝ = tac_proof(([], ¬µm·Suc m = m + 1®), rewrite_tac[plus_def]);
+val Ûplus1_convÝ : CONV = (fn tm =>
+	((suc_conv THEN_C simple_eq_match_conv plus1_lemma) tm)
+	handle ex => pass_on ex "suc_conv" "plus1_conv");	
+=TEX
+\subsection{Arithmetic Relations}
+We first define $¼$ using an obvious definition as
+characterising theorem. Then we define $¾$, $<$ and $>$
+in terms of it.
+
+=SML
+val Û¼_defÝ = new_spec1(["¼","¼_def"], ["¼"], (
+push_goal([], ¬
+	¶$¼:î­î­BOOL· µm n· m ¼ n ¤ ¶ i:î · m + i = n
+®);
+=TEX
+=SML
+a(simple_¶_tac¬Ìm n · ¶ i:î · m + i = n® THEN rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+=SML
+val Û¾_defÝ = new_spec1(["¾","¾_def"], ["¾"], (
+push_goal([], ¬
+	¶$¾:î­î­BOOL· µm n· m ¾ n ¤ n ¼ m
+®);
+=TEX
+=SML
+a(simple_¶_tac ¬Ìm n· n ¼ m® THEN rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+=SML
+val Ûless_defÝ = new_spec1(["<","less_def"], ["<"], (
+push_goal([], ¬
+	¶$<:î­î­BOOL· µm n· m < n ¤ m + 1 ¼ n
+®);
+=TEX
+=SML
+a(simple_¶_tac ¬Ìm n· m + 1 ¼ n® THEN rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+=SML
+val Ûgreater_defÝ = new_spec1([">","greater_def"], [">"], (
+push_goal([], ¬
+	¶$>:î­î­BOOL· µm n· m > n ¤ n < m
+®);
+=TEX
+=SML
+a(simple_¶_tac ¬Ìm n· n < m® THEN rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+\subsection{Multiplication}
+=SML
+val Ûtimes_defÝ = new_spec1(["*","times_def"], ["*"], (
+push_goal([], ¬
+	¶$*:î­î­î· µm n·
+		0 * n = 0
+	±	(m + 1) * n = m * n + n
+®);
+=TEX
+=SML
+a(strip_asm_tac	(conv_rule all_simple_Â_conv
+	(list_simple_µ_elim
+	[¬Ìn:î·0®, ¬Ìf:î­î·Ìm:î·Ìn·f n + n
+®]
+	(inst_type_rule[(”î­î®, ”'a®)]prim_rec_thm))));
+a(simple_¶_tac ¬f:î­î­î®);
+a(asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+\subsection{Modulus}
+We characterise $Mod$ by an odometer-style definition. This seems to be the
+most straightforward way.
+=SML
+val Ûmod_defÝ = new_spec1(["Mod","mod_def"], ["Mod"], (
+push_goal([], ¬
+	¶$Mod:î­î­î· µm n·
+		0 < n ´
+		0 Mod n = 0
+	±	(m + 1) Mod n = if m Mod n + 1 < n then m Mod n + 1 else 0
+®);
+=TEX
+=SML
+a(strip_asm_tac	(conv_rule all_simple_Â_conv
+	(list_simple_µ_elim
+	[¬Ìn:î·0®, ¬Ìf:î­î·Ìm:î·Ìn·if f n + 1 < n then f n + 1 else 0
+®]
+	(inst_type_rule[(”î­î®, ”'a®)]prim_rec_thm))));
+a(simple_¶_tac ¬f:î­î­î®);
+a(asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+\subsection{Division}
+We characterise $Div$ using $Mod$.
+=SML
+val Ûdiv_defÝ = new_spec1(["Div","div_def"], ["Div"], (
+push_goal([], ¬
+	¶$Div:î­î­î· µm n·
+		0 < n ´
+		0 Div n = 0
+	±	(m + 1) Div n = if m Mod n + 1 < n then m Div n else m Div n + 1
+®);
+=TEX
+=SML
+a(strip_asm_tac	(conv_rule all_simple_Â_conv
+	(list_simple_µ_elim
+	[¬Ìn:î·0®, ¬Ìf:î­î·Ìm:î·Ìn·if m Mod n + 1 < n then f n else f n + 1
+®]
+	(inst_type_rule[(”î­î®, ”'a®)]prim_rec_thm))));
+a(simple_¶_tac ¬f:î­î­î®);
+a(asm_rewrite_tac[]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+\subsection{Associativity of $+$}
+
+We wish to prove the associativity of $+$.
+
+=SML
+val Ûplus_assoc_thmÝ = (
+push_goal([],¬µ i m n · (i + m) + n  =  i + m + n®);
+=TEX
+=SML
+a(strip_tac THEN induction_tac ¬i:î® THEN
+	asm_rewrite_tac[plus_def]);
+save_pop_thm"plus_assoc_thm"
+);
+=TEX
+=SML
+val Ûplus_assoc_thm1Ý = (
+push_goal([],¬µ i m n · i + m + n  =  (i + m) + n®);
+=TEX
+=SML
+a(rewrite_tac[plus_assoc_thm]);
+save_pop_thm"plus_assoc_thm1"
+);
+=TEX
+
+\subsection{Commutativity of $+$}
+
+We wish to prove the commutativity of $+$.
+=SML
+val Ûplus_comm_thmÝ = (
+push_goal([],¬µ m n · m + n  =  n + m®);
+=TEX
+=SML
+a(MAP_EVERY (fn x => strip_tac THEN induction_tac x)[¬m:î®,¬n:î®]);
+(* *** Goal "1" *** *)
+a(rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[plus_def]);
+a(TOP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(rewrite_tac[plus_def]);
+(* *** Goal "3" *** *)
+a(rewrite_tac[plus_def]);
+a(TOP_ASM_T (rewrite_thm_tac o simple_µ_elim¬0®));
+a(rewrite_tac[plus_def]);
+(* *** Goal "4" *** *)
+a(rewrite_tac[plus_def]);
+a(TOP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(once_rewrite_tac[plus_def]);
+a(rewrite_tac[plus_assoc_thm]);
+save_pop_thm"plus_comm_thm"
+);
+=TEX
+=SML
+val Ûplus_def1Ý = (
+push_goal ([],¬
+µ m n· m + 0 = m ± m + (n + 1) = (m + n) + 1
+®);
+a(rewrite_tac[plus_assoc_thm]);
+a(once_rewrite_tac[plus_comm_thm] THEN rewrite_tac[plus_def]);
+pop_thm()
+);
+=TEX
+\subsection{Reordering Sums}
+If we specialise $i$ in the following theorem to $t$ say, repeated rewriting
+with the resulting theorem will change any term of the form
+$a + b + \ldots + t + \ldots$ into a term of the form $t + \ldots$.
+=SML
+val Ûplus_order_thmÝ = (
+push_goal([], ¬µi m n·
+		m + i = i + m
+	±	(i + m) + n = i + m + n
+	±	m + i + n = i + m + n
+®);
+a(rewrite_tac[plus_assoc_thm, simple_µ_elim¬m:î®plus_comm_thm]);
+save_pop_thm"plus_order_thm"
+);
+=IGN
+rewrite_conv[simple_µ_elim¬1®plus_order_thm] ¬
+	(101 + 102) + 2 + 3 + (1 + 2 + 99) + (55 + 10) +
+	(101 + 102) + 2 + 3 + (3 + 1 + 99) + (55 + 10)
+	®;
+=TEX
+\subsection{Cancellation Rules for $+$}
+=SML
+val Ûplus_lemma1Ý = (
+push_goal([], ¬µm·
+		m + 0 = m
+	±	0 + m = m
+®);
+a(rewrite_tac[plus_def, plus_def1]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûplus_lemma2Ý = (
+push_goal([], ¬µm n·
+		m + 1 = n + 1 ¤ m = n
+®);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(strip_asm_tac (list_simple_µ_elim[¬m:î®, ¬n:î®]one_one_plus1_thm));
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûplus_lemma3Ý = (
+push_goal([], ¬³1 = 0®);
+a(conv_tac (ONCE_MAP_C suc_conv) THEN rewrite_tac[³_suc_thm]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûplus_lemma4Ý = (
+push_goal([], ¬µm n·m + n = 0 ¤ m = 0 ± n = 0®);
+a(strip_tac THEN strip_tac THEN induction_tac¬n:î®
+	THEN asm_rewrite_tac[plus_assoc_thm1, ³_plus1_thm, plus_lemma1, plus_lemma3]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûplus_lemma5Ý = (
+push_goal([], ¬µm n i·
+		(m + i = n + i ¤ m = n)
+	±	(m + i = i ¤ m = 0)
+®);
+a(REPEAT strip_tac THEN TRY_T (asm_rewrite_tac[plus_lemma1])
+	THEN POP_ASM_T ante_tac THEN induction_tac¬i:î®
+	THEN asm_rewrite_tac[plus_lemma1, plus_assoc_thm1, plus_lemma2]);
+pop_thm()
+);
+val Ûplus_clausesÝ = (
+push_goal([], ¬µm n i·
+		(m + i = n + i ¤ m = n)
+	±	(i + m = n + i ¤ m = n)
+	±	(m + i = i + n ¤ m = n)
+	±	(i + m = i + n ¤ m = n)
+	±	(m + i = i ¤ m = 0)
+	±	(i + m = i ¤ m = 0)
+	±	(i = i + n ¤ n = 0)
+	±	(i = n + i ¤ n = 0)
+	±	(m + i = 0 ¤ m = 0 ± i = 0)
+	±	(0 = m + i ¤ m = 0 ± i = 0)
+	±	(m + 0 = m ± 0 + m = m)
+	±	³1 = 0
+	±	³0 = 1
+®);
+a(rewrite_tac[eq_sym_conv¬0 = 1®, eq_sym_conv¬i = n + i®,
+	eq_sym_conv ¬0 = m + i®,
+	simple_µ_elim¬i:î® plus_comm_thm,
+	plus_lemma1, plus_lemma2, plus_lemma3, plus_lemma4, plus_lemma5]);
+save_pop_thm"plus_clauses"
+);
+=TEX
+\subsection{Transitivity for $\leq $ and $<$}
+=SML
+val Û¼_trans_thmÝ = (
+push_goal([], ¬µm i n·m ¼ i ±  i ¼ n ´ m ¼ n®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+a(simple_¶_tac¬i' + i''® THEN asm_rewrite_tac[plus_assoc_thm1]);
+save_pop_thm"¼_trans_thm"
+);
+=TEX
+=SML
+val Ûless_trans_thmÝ = (
+push_goal([], ¬µm i n·m < i ±  i < n ´ m < n®);
+a(rewrite_tac[¼_def, less_def] THEN REPEAT strip_tac);
+a(simple_¶_tac¬i' + 1 + i''® THEN asm_rewrite_tac[plus_assoc_thm1]);
+save_pop_thm"less_trans_thm"
+);
+=TEX
+\subsection{Cancellation Rules for $\leq $}
+=SML
+val Û¼_lemma1Ý = (
+push_goal([], ¬µm n i·m + i ¼  n + i ¤ m ¼ n®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(simple_¶_tac¬i':î® THEN POP_ASM_T ante_tac
+	THEN rewrite_tac[plus_assoc_thm, simple_µ_elim¬i:î® plus_comm_thm]);
+a(rewrite_tac[plus_assoc_thm1, plus_clauses]);
+(* *** Goal "2" *** *)
+a(simple_¶_tac¬i':î® THEN rewrite_tac[plus_assoc_thm, simple_µ_elim¬i:î® plus_comm_thm]);
+a(asm_rewrite_tac[plus_assoc_thm1]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_lemma2Ý = (
+push_goal([], ¬µm·0 ¼ m ± ³1 ¼ 0®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+a(simple_¶_tac¬m:î® THEN rewrite_tac[plus_clauses]);
+a(rewrite_tac[plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_lemma3Ý = (
+push_goal([], ¬µm i· m + i ¼ i ¤ m = 0®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(POP_ASM_T ante_tac THEN
+	rewrite_tac[simple_µ_elim¬m:î® plus_comm_thm,
+		plus_assoc_thm, plus_clauses] THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(simple_¶_tac¬0® THEN asm_rewrite_tac[plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_lemma4Ý = (
+push_goal([], ¬µm i· m ¼ m + i®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac THEN simple_¶_tac¬i:î®
+	THEN rewrite_tac[plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_lemma5Ý = (
+push_goal([], ¬µm i·m + i ¼ 0 ¤ m = 0 ± i = 0®);
+a(rewrite_tac[¼_def, plus_clauses] THEN REPEAT strip_tac);
+a(simple_¶_tac¬0® THEN asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_lemma6Ý = (
+push_goal([], ¬µm·m ¼ m®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac THEN simple_¶_tac¬0®
+	THEN rewrite_tac[plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_lemma7Ý = (
+push_goal([], ¬µm·m ¼ 0 ¤ m = 0®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+a(all_asm_ante_tac THEN rewrite_tac[plus_clauses] THEN REPEAT strip_tac);
+a(simple_¶_tac¬0® THEN asm_rewrite_tac[plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Û¼_clausesÝ = (
+push_goal([], ¬µm n i·
+		(m + i ¼ n + i ¤ m ¼ n)
+	±	(i + m ¼ n + i ¤ m ¼ n)
+	±	(m + i ¼ i + n ¤ m ¼ n)
+	±	(i + m ¼ i + n ¤ m ¼ n)
+	±	(m + i ¼ i ¤ m = 0)
+	±	(i + m ¼ i ¤ m = 0)
+	±	(m + i ¼ 0 ¤ m = 0 ± i = 0)
+	±	(m ¼ 0 ¤ m = 0)
+	±	m ¼ m + i
+	±	m ¼ i + m
+	±	m ¼ m
+	±	0 ¼ m
+	±	³1 ¼ 0
+®);
+a(rewrite_tac[simple_µ_elim¬i:î® plus_comm_thm,
+	¼_lemma1, ¼_lemma2, ¼_lemma3, ¼_lemma4, ¼_lemma5, ¼_lemma6, ¼_lemma7]);
+save_pop_thm"¼_clauses"
+);
+=TEX
+\subsection{Cancellation Rules for $<$}
+=SML
+val Ûless_clausesÝ = (
+push_goal([], ¬µm n i·
+		(m + i < n + i ¤ m < n)
+	±	(i + m < n + i ¤ m < n)
+	±	(m + i < i + n ¤ m < n)
+	±	(i + m < i + n ¤ m < n)
+	±	(m < m + i ¤ 0 < i)
+	±	(m < i + m ¤ 0 < i)
+	±	³m + i < m
+	±	³m + i < i
+	±	³m < 0
+	±	³m < m
+	±	0 < m + 1
+	±	0 < 1 + m
+	±	0 < 1
+®);
+a(rewrite_tac[less_def, simple_µ_elim¬i:î® plus_order_thm, ¼_clauses, plus_clauses]);
+a(rewrite_tac[simple_µ_elim¬m:î® plus_order_thm, ¼_clauses, plus_clauses]);
+save_pop_thm"less_clauses"
+);
+=TEX
+\subsection{Case Analysis Etc.}
+=SML
+val Ûî_cases_thmÝ = (
+push_goal([], ¬µm· m = 0 ² ¶i· m = i + 1®);
+a(strip_tac THEN induction_tac¬m:î® THEN asm_rewrite_tac[plus_clauses]);
+a(simple_¶_tac¬0® THEN rewrite_tac[]);
+a(simple_¶_tac¬m:î® THEN rewrite_tac[]);
+save_pop_thm"î_cases_thm"
+);
+=TEX
+=SML
+val Û¼_cases_thmÝ = (
+push_goal([], ¬µm n·m ¼ n ² n ¼ m®);
+a(rewrite_tac[¼_def] THEN REPEAT_N 2 strip_tac THEN induction_tac¬m:î®
+	THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(POP_ASM_T (ante_tac o simple_µ_elim¬n:î®) THEN rewrite_tac[plus_clauses]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac(simple_µ_elim¬i:î® î_cases_thm));
+(* *** Goal "2.1" *** *)
+a(simple_¶_tac¬1® THEN asm_ante_tac¬m + i = n® THEN asm_rewrite_tac[plus_clauses]);
+a(´_T rewrite_thm_tac);
+(* *** Goal "2.2" *** *)
+a(asm_ante_tac¬m + i = n® THEN
+	POP_ASM_T (rewrite_thm_tac o once_rewrite_rule[plus_comm_thm])
+	THEN asm_rewrite_tac[plus_assoc_thm1]);
+(* *** Goal "3" *** *)
+a(simple_¶_tac¬i+1® THEN asm_rewrite_tac[plus_assoc_thm1]);
+save_pop_thm"¼_cases_thm"
+);
+=TEX
+=SML
+val Û¼_plus1_thmÝ = (
+push_goal([], ¬µm n·m ¼ n + 1 ¤ m = n + 1 ² m ¼ n®);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_ante_tac THEN rewrite_tac[¼_def] THEN REPEAT strip_tac);
+a(strip_asm_tac(simple_µ_elim¬i:î® î_cases_thm));
+(* *** Goal "1.1" *** *)
+a(asm_ante_tac¬m + i = n + 1® THEN asm_rewrite_tac[plus_clauses]);
+(* *** Goal "1.2" *** *)
+a(simple_¶_tac¬i':î®);
+a(asm_ante_tac¬m + i = n + 1® THEN asm_rewrite_tac[plus_clauses, plus_assoc_thm1]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[¼_clauses]);
+(* *** Goal "3" *** *)
+a(lemma_tac¬n ¼ n + 1®);
+a(asm_rewrite_tac[¼_clauses]);
+a(strip_asm_tac(list_simple_µ_elim[¬m:î®, ¬n:î®, ¬n+1®] ¼_trans_thm));
+save_pop_thm"¼_plus1_thm"
+);
+=TEX
+=SML
+val Ûplus1_¼_thmÝ = (
+push_goal([], ¬µm n·m + 1 ¼ n ¤ m ¼ n ± ³m = n®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(simple_¶_tac¬1+i® THEN asm_rewrite_tac[plus_assoc_thm1]);
+(* *** Goal "2" *** *)
+a(contr_tac THEN asm_ante_tac¬(m + 1) + i = n® THEN
+	asm_rewrite_tac[plus_assoc_thm, plus_clauses]);
+(* *** Goal "3" *** *)
+a(strip_asm_tac(simple_µ_elim¬i®î_cases_thm));
+(* *** Goal "3.1" *** *)
+a(asm_ante_tac¬m + i = n® THEN asm_rewrite_tac[plus_clauses]);
+(* *** Goal "3.2" *** *)
+a(simple_¶_tac¬i'® THEN asm_ante_tac¬m + i = n®);
+a(asm_rewrite_tac[plus_assoc_thm, simple_µ_elim¬1® plus_comm_thm]);
+save_pop_thm"plus1_¼_thm"
+);
+=TEX
+=SML
+val Û³_plus1_¼_thmÝ = (
+push_goal([], ¬µm n·³m + 1 ¼ n ¤ n ¼ m®);
+a(rewrite_tac[¼_def] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_ante_tac THEN induction_tac¬n:î®);
+(* *** Goal "1.1" *** *)
+a(rewrite_tac[plus_clauses] THEN simple_¶_tac¬m:î® THEN rewrite_tac[]);
+(* *** Goal "1.2" *** *)
+a(REPEAT strip_tac);
+a(LEMMA_T ¬(m+1)+i+1 = n+1® ante_tac);
+(* *** Goal "1.2.1" *** *)
+a(GET_NTH_ASM_T 2 (fn th=>rewrite_tac[plus_assoc_thm1, th]));
+(* *** Goal "1.2.2" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "1.3" *** *)
+a(REPEAT strip_tac);
+a(strip_asm_tac(simple_µ_elim¬i®î_cases_thm));
+(* *** Goal "1.3.1" *** *)
+a(asm_ante_tac ¬n + i = m® THEN asm_rewrite_tac[plus_clauses] THEN strip_tac);
+a(LEMMA_T¬(m+1)+0 = n+1® ante_tac);
+a(DROP_NTH_ASM_T 3 (fn _ => id_tac) THEN asm_rewrite_tac[plus_clauses]);
+a(asm_rewrite_tac[]);
+(* *** Goal "1.3.2" *** *)
+a(simple_¶_tac¬i'® THEN asm_ante_tac ¬n + i = m® THEN
+	asm_rewrite_tac[plus_assoc_thm, simple_µ_elim¬1® plus_comm_thm]);
+(* *** Goal "2" *** *)
+a(CONTR_T (asm_tac o eq_sym_rule o rewrite_rule[]));
+a(asm_ante_tac ¬n + i = m® THEN asm_rewrite_tac[plus_clauses, plus_assoc_thm]);
+save_pop_thm"³_plus1_¼_thm"
+);
+=TEX
+=SML
+val Ûless_cases_thmÝ = (
+push_goal([], ¬µm n·m < n ² m = n ² n < m®);
+a(rewrite_tac[less_def] THEN REPEAT strip_tac);
+a(rewrite_tac[plus1_¼_thm] THEN conv_tac(ONCE_MAP_C eq_sym_conv));
+a(asm_ante_tac ¬³ m + 1 ¼ n® THEN asm_rewrite_tac[³_plus1_¼_thm]);
+save_pop_thm"less_cases_thm"
+);
+=TEX
+=SML
+val Û³_less_plus1_thmÝ = (
+push_goal([], ¬µm n·³m < n + 1 ¤ n < m®);
+a(rewrite_tac[less_def, ³_plus1_¼_thm]);
+save_pop_thm"³_less_plus1_thm"
+);
+=TEX
+=SML
+val Ûless_plus1_thmÝ = (
+push_goal([], ¬µm n·m < n + 1 ¤ m = n ² m < n®);
+a(rewrite_tac[less_def, ¼_plus1_thm, plus_clauses]);
+save_pop_thm"less_plus1_thm"
+);
+=TEX
+=SML
+val Ûplus1_less_thmÝ = (
+push_goal([], ¬µm n·m + 1 < n ¤ m < n ± ³m + 1 = n®);
+a(rewrite_tac[less_def, plus1_¼_thm, plus_clauses] THEN REPEAT strip_tac);
+save_pop_thm"plus1_less_thm"
+);
+=TEX
+=SML
+val Û¼_antisym_thmÝ = (
+push_goal([], ¬µm n·m ¼ n ± n ¼ m ¤ m = n®);
+a(REPEAT strip_tac THEN TRY_T(asm_rewrite_tac[¼_clauses]));
+a(all_asm_ante_tac THEN asm_rewrite_tac[¼_def] THEN REPEAT strip_tac);
+a(POP_ASM_T (fn th => all_asm_ante_tac THEN
+		rewrite_tac[eq_sym_rule th, plus_assoc_thm, plus_clauses] THEN
+		REPEAT strip_tac));
+save_pop_thm"¼_antisym_thm"
+);
+=TEX
+=SML
+val Ûless_irrefl_thmÝ = (
+push_goal([], ¬µm n·³(m < n ± n < m)®);
+a(rewrite_tac[less_def, ¼_def] THEN REPEAT strip_tac);
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule) THEN
+	rewrite_tac[plus_assoc_thm, plus_clauses]);
+save_pop_thm"less_irrefl_thm"
+);
+=TEX
+\subsection{Complete Induction}
+=SML
+val Ûcov_induction_thmÝ = (
+push_goal([], ¬µp·(µn·(µm·m < n ´ p m) ´ p n) ´ (µn·p n)®);
+a(REPEAT strip_tac);
+a(lemma_tac¬µm·m < n ´ p m®);
+(* *** Goal "1" *** *)
+a(induction_tac¬n:î®);
+(* *** Goal "1.1" *** *)
+a(rewrite_tac[less_clauses]);
+(* *** Goal "1.2" *** *)
+a(rewrite_tac[less_plus1_thm] THEN REPEAT strip_tac);
+(* *** Goal "1.2.1" *** *)
+a(POP_ASM_T rewrite_thm_tac THEN POP_ASM_T ante_tac THEN asm_rewrite_tac[]);
+(* *** Goal "1.2.2" *** *)
+a(POP_ASM_T ante_tac THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(POP_ASM_T ante_tac THEN asm_rewrite_tac[]);
+save_pop_thm"cov_induction_thm"
+);
+=TEX
+=SML
+fun ÛCOV_INDUCTION_TÝ (tm : TERM) : (THM -> TACTIC) -> TACTIC = (
+	if not(is_var tm andalso type_of tm =: î)
+	then term_fail "COV_INDUCTION_T" 38001 [tm]
+	else (fn thmtac =>
+		 let fun aux_tac (gl as (seqasms, conc)) = (
+			if not (is_free_in tm conc)
+			then term_fail "COV_INDUCTION_T" 38002 [tm]
+			else if any seqasms (is_free_in tm)
+			then	term_fail "COV_INDUCTION_T" 38003 [tm]
+			else let
+				val abs = mk_simple_Ì(tm, conc);
+				val thm0 = (conv_rule
+						(ONCE_MAP_C (simple_Â_conv))
+						(simple_µ_elim abs cov_induction_thm));
+				val thm1 = undisch_rule(conv_rule
+	((RATOR_C o RAND_C o RAND_C)(simple_Á_conv (fst(dest_var tm))))
+						thm0);
+				val thm2 = simple_µ_elim tm thm1;
+				val conc' = (hd (asms thm2));
+			in	([(seqasms, conc')],
+				 (fn [th] => prove_asm_rule th thm2
+				  | _ => bad_proof "COV_INDUCTION_T"))
+			end
+		);
+		in	aux_tac THEN simple_µ_tac THEN ´_T thmtac
+		end)
+);
+=TEX
+=SML
+fun Ûcov_induction_tacÝ (tm : TERM) : TACTIC = (
+	let	val tac = (COV_INDUCTION_T tm strip_asm_tac);
+	in	fn gl => (tac gl
+			handle ex => pass_on ex
+				"COV_INDUCTION_T" "cov_induction_tac")
+	end handle ex => pass_on ex "COV_INDUCTION_T" "cov_induction_tac"
+);
+=TEX
+=SML
+val Ûless_well_order_thmÝ = (
+push_goal([], ¬µp·(¶i·p i) ¤ ¶m· p m ± µi· p i ´ ³i < m®);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(asm_ante_tac¬p i® THEN cov_induction_tac¬i®);
+a(strip_tac THEN cases_tac¬¶n·n < i ± p n®);
+(* *** Goal "1.1" *** *)
+a(GET_NTH_ASM_T 4 (strip_asm_tac o simple_µ_elim ¬n®));
+a(simple_¶_tac¬m® THEN asm_rewrite_tac[]);
+(* *** Goal "1.2" *** *)
+a(simple_¶_tac¬i® THEN REPEAT strip_tac);
+a(GET_NTH_ASM_T 2 (strip_asm_tac o simple_µ_elim ¬i'®));
+(* *** Goal "2" *** *)
+a(simple_¶_tac¬m® THEN asm_rewrite_tac[]);
+save_pop_thm"less_well_order_thm"
+);
+=TEX
+=SML
+val Û³_less_thmÝ = (
+push_goal([], ¬µm n· ³m < n ¤ n ¼ m®);
+a(rewrite_tac[less_def, ³_plus1_¼_thm]);
+save_pop_thm"³_less_thm"
+);
+=TEX
+=SML
+val Û³_¼_thmÝ = (
+push_goal([], ¬µm n· ³m ¼ n ¤ n < m®);
+a(REPEAT strip_tac THEN strip_asm_tac(list_simple_µ_elim[¬n:î®, ¬m:î®]³_less_thm));
+save_pop_thm"³_¼_thm"
+);
+=TEX
+=SML
+val Û¼_well_order_thmÝ = (
+push_goal([], ¬µp·(¶i·p i) ¤ ¶m· p m ± µi· p i ´ m ¼ i®);
+a(accept_tac (rewrite_rule[³_less_thm]less_well_order_thm));
+save_pop_thm"¼_well_order_thm"
+);
+=TEX
+=SML
+val Û¼_least_upper_bound_thmÝ = (
+push_goal([], ¬µp·(¶i·p i) ± (¶n·µj· p j ´ j ¼ n) ¤ ¶m·p m ± µj· p j ´ j ¼ m®);
+a(REPEAT strip_tac THEN_TRY (simple_¶_tac¬m:î® THEN asm_rewrite_tac[]));
+a(strip_asm_tac(fst(¤_elim(rewrite_rule[]
+	(simple_µ_elim¬Ìk·µj· p j ´ j ¼ k®¼_well_order_thm)))));
+(* *** Goal "1" *** *)
+a(swap_nth_asm_concl_tac 2 THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(simple_¶_tac¬m® THEN asm_rewrite_tac[]);
+a(strip_asm_tac(simple_µ_elim¬m®î_cases_thm));
+(* *** Goal "2.1" *** *)
+a(DROP_NTH_ASM_T 3 (ante_tac o simple_µ_elim¬i®)
+	THEN asm_rewrite_tac[¼_clauses]);
+a(REPEAT strip_tac THEN asm_ante_tac¬p i® THEN asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(LIST_DROP_NTH_ASM_T[2,3] (MAP_EVERY ante_tac)
+	THEN POP_ASM_T rewrite_thm_tac THEN contr_tac);
+a(lemma_tac¬µ j· p j ´ j ¼ i'® THEN REPEAT strip_tac);
+(* *** Goal "2.2.1" *** *)
+a(DROP_NTH_ASM_T 4 (strip_asm_tac o simple_µ_elim¬j®));
+a(strip_asm_tac(list_simple_µ_elim[¬j®, ¬i'®]¼_plus1_thm));
+a(asm_ante_tac ¬p j® THEN asm_rewrite_tac[]);
+(* *** Goal "2.2.2" *** *)
+a(DROP_NTH_ASM_T 3 (ante_tac o simple_µ_elim¬i'®)
+	THEN asm_rewrite_tac[¼_clauses, plus_clauses]);
+save_pop_thm"¼_least_upper_bound_thm"
+);
+=TEX
+=SML
+val Ûminimum_³_thmÝ = (
+set_goal([], ¬µp b· p 0 ± ³p b ´ ¶m·(µn· n ¼ m ´ p n) ± ³p(m+1)®);
+a(REPEAT strip_tac);
+a(ante_tac (simple_µ_elim¬Ìx·³p x®less_well_order_thm)
+	THEN conv_tac (ONCE_MAP_C simple_Â_conv));
+a(LEMMA_T ¬¶j·³p j® rewrite_thm_tac THEN_LIST
+	[simple_¶_tac¬b® THEN REPEAT strip_tac,
+	 rewrite_tac[³_less_thm] THEN REPEAT strip_tac]);
+a(strip_asm_tac (simple_µ_elim¬m® î_cases_thm));
+(* *** Goal "1" *** *)
+a(swap_nth_asm_concl_tac 3 THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(LIST_DROP_NTH_ASM_T [2, 3] (MAP_EVERY ante_tac));
+a(TOP_ASM_T rewrite_thm_tac THEN REPEAT strip_tac);
+a(simple_¶_tac¬i® THEN REPEAT strip_tac);
+a(contr_tac THEN GET_NTH_ASM_T 3 (strip_asm_tac o simple_µ_elim¬n®));
+a(LEMMA_T¬m ¼ i® ante_tac THEN_LIST
+	[strip_asm_tac (list_simple_µ_elim[¬m®, ¬n®, ¬i®] ¼_trans_thm),
+	asm_rewrite_tac[¼_clauses, plus_clauses]]);
+save_pop_thm"minimum_³_thm"
+);
+=TEX
+\subsection{Theorems on Multiplication}
+=SML
+val Ûtimes_lemma1Ý = (
+push_goal([], ¬µm· m * 0 = 0®);
+a(strip_tac THEN induction_tac¬m:î® THEN asm_rewrite_tac[times_def, plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûtimes_lemma2Ý = (
+push_goal([], ¬µm n· m * (n + 1) = m * n + m®);
+a(strip_tac THEN induction_tac¬m:î® THEN asm_rewrite_tac[times_def, plus_clauses]);
+a(rewrite_tac[plus_assoc_thm1, plus_clauses]);
+a(rewrite_tac[plus_assoc_thm, plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûtimes_comm_thmÝ = (
+push_goal([], ¬µm n· m * n = n * m®);
+a(strip_tac THEN induction_tac¬m:î® THEN rewrite_tac[times_def, times_lemma1]);
+a(asm_rewrite_tac[times_lemma2]);
+save_pop_thm"times_comm_thm"
+);
+=TEX
+=SML
+val Ûtimes_lemma3Ý = (
+push_goal([], ¬µi m n· (i + m) * n = i * n + m * n®);
+a(strip_tac THEN induction_tac¬i:î® THEN rewrite_tac[times_def, plus_clauses]);
+a(LEMMA_T¬µi m'·(i + 1) + m' = (i + m') + 1® rewrite_thm_tac);
+(* *** Goal "1" *** *)
+a(rewrite_tac[plus_assoc_thm, plus_clauses]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[times_def, plus_assoc_thm, plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûtimes_assoc_thmÝ = (
+push_goal([], ¬µi m n· (i * m) * n = i * (m * n)®);
+a(strip_tac THEN induction_tac¬i:î® THEN rewrite_tac[times_def]);
+a(asm_rewrite_tac[times_lemma3, plus_clauses]);
+save_pop_thm"times_assoc_thm"
+);
+=TEX
+=SML
+val Ûtimes_plus_distrib_thmÝ = (
+push_goal([], ¬µi m n·
+		(i + m) * n = i * n + m * n
+	±	i * (m + n) = i * m + i * n®);
+a(rewrite_tac[times_lemma3]);
+a(rewrite_tac[simple_µ_elim¬i:î® times_comm_thm, times_lemma3]);
+save_pop_thm"times_plus_distrib_thm"
+);
+=TEX
+=SML
+val Ûtimes_lemma4Ý = (
+push_goal([], ¬µm· 1 * m  = m®);
+a(conv_tac (ONCE_MAP_C plus1_conv) THEN rewrite_tac[times_def, plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûtimes_clausesÝ = (
+push_goal([], ¬µm·
+		m * 0 = 0
+	±	0 * m = 0
+	±	m * 1 = m
+	±	1 * m = m®);
+a(rewrite_tac[
+	simple_µ_elim¬m:î® times_comm_thm,
+	times_def, times_lemma4]);
+save_pop_thm"times_clauses"
+);
+=TEX
+\subsection{Interlude}
+The following is required to circumvent a compiler problem which would
+be caused if we attempted to include all the material in this document
+in one Standard ML structure:
+=SML
+end; (* of structure î (part 2) *)
+structure î : î = struct
+open î;
+=TEX
+\subsection{Theorems on Division and Modulus}
+=SML
+val Ûmod_less_thmÝ = (
+push_goal([], ¬µm n· 0 < n ´ m Mod n < n®);
+a(strip_tac THEN strip_tac THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(strip_tac THEN strip_asm_tac (all_simple_µ_elim mod_def)
+	THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(strip_tac);
+(* *** Goal "3" *** *)
+a(strip_tac THEN strip_asm_tac (all_simple_µ_elim mod_def)
+	THEN asm_rewrite_tac[]);
+a(CASES_T ¬m Mod n + 1 < n® asm_rewrite_thm_tac);
+save_pop_thm"mod_less_thm"
+);
+=TEX
+=SML
+val Ûdiv_mod_thmÝ = (
+push_goal([], ¬µm n· 0 < n ´ m = (m Div n) * n + m Mod n®);
+a(strip_tac THEN strip_tac THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(strip_tac THEN strip_asm_tac (all_simple_µ_elim mod_def)
+	THEN strip_asm_tac (all_simple_µ_elim div_def)
+	THEN asm_rewrite_tac[times_def, plus_clauses]);
+(* *** Goal "2" *** *)
+a(strip_tac);
+(* *** Goal "3" *** *)
+a(strip_tac THEN strip_asm_tac (all_simple_µ_elim mod_def)
+	THEN strip_asm_tac (all_simple_µ_elim div_def));
+a(REPEAT_N 4 (POP_ASM_T (TRY_T o rewrite_thm_tac)));
+a(CASES_T¬m Mod n + 1 < n® (fn th => rewrite_tac[th] THEN asm_tac th));
+(* *** Goal "3.1" *** *)
+a(rewrite_tac[plus_assoc_thm1, plus_clauses] THEN strip_tac);
+(* *** Goal "3.2" *** *)
+a(strip_asm_tac (list_simple_µ_elim[¬m®, ¬n®] mod_less_thm));
+a(DROP_ASM_T ¬³m Mod n + 1 < n® (strip_asm_tac o rewrite_rule[plus1_less_thm]));
+a(rewrite_tac[times_def, plus_clauses]);
+a(LEMMA_T ¬m + 1 = (m Div n) * n + m Mod n + 1®
+	(fn th => rewrite_tac[th, plus_clauses] THEN strip_tac));
+a(rewrite_tac[plus_assoc_thm1, plus_clauses] THEN strip_tac);
+save_pop_thm"div_mod_thm"
+);
+val Ûless_lemma1Ý = (
+push_goal([], ¬µm n· m < n ´ 0 < n®);
+a(rewrite_tac[less_def, ¼_def] THEN REPEAT strip_tac);
+a(simple_¶_tac¬m+i® THEN
+	LEMMA_T¬(0 + 1) + (m + i) = (m + 1) + i® asm_rewrite_thm_tac);
+a(rewrite_tac[plus_clauses, plus_assoc_thm1]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûmod_lemma1Ý = (
+push_goal([], ¬µm n· m < n ´ m Mod n = m®);
+a(REPEAT simple_µ_tac THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(strip_tac THEN strip_asm_tac(all_simple_µ_elim mod_def));
+(* *** Goal "2" *** *)
+a(strip_tac THEN lemma_tac ¬m + 1 < n ´ m < n®);
+a(strip_asm_tac (list_simple_µ_elim[¬m®, ¬m+1®, ¬n®]less_trans_thm));
+a(asm_ante_tac¬³ m < m + 1® THEN rewrite_tac[less_clauses]);
+(* *** Goal "3" *** *)
+a(strip_tac THEN strip_asm_tac(list_simple_µ_elim[¬m + 1®, ¬n®]less_lemma1));
+a(strip_asm_tac (simple_µ_intro¬m:î®(undisch_rule(all_simple_µ_elim mod_def))));
+a(asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûmod_lemma2Ý = (
+push_goal([], ¬µn· 0 < n ´ n Mod n = 0®);
+a(REPEAT strip_tac);
+a(lemma_tac¬¶i·n Mod n = (i + 1) Mod n ± i < n ± i Mod n + 1 = n®);
+(* *** Goal "1" *** *)
+a(POP_ASM_T(strip_asm_tac o rewrite_rule
+		[less_def, ¼_def, plus_clauses, simple_µ_elim¬1®plus_comm_thm]));
+a(simple_¶_tac ¬i® THEN asm_rewrite_tac[]);
+a(lemma_tac¬i < n®);
+(* *** Goal "1.1" *** *)
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule) THEN rewrite_tac[less_clauses]);
+(* *** Goal "1.2" *** *)
+a(strip_tac THEN strip_asm_tac (list_simple_µ_elim[¬i®, ¬n®]mod_lemma1));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬i®, ¬n®]mod_def));
+a(asm_rewrite_tac[less_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûmod_lemma3Ý = (
+push_goal([], ¬µm n· 0 < n ´ (m + n) Mod n = m Mod n®);
+a(REPEAT strip_tac THEN
+	strip_asm_tac (simple_µ_intro¬m:î®(undisch_rule(all_simple_µ_elim mod_def)))
+	THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[plus_clauses]);
+a(strip_asm_tac (simple_µ_elim ¬n® mod_lemma2));
+a(LEMMA_T¬(m + 1) + n = (m + n) + 1® asm_rewrite_thm_tac);
+a(rewrite_tac[plus_assoc_thm, plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûmod_lemma4Ý = (
+push_goal([], ¬µm n i· 0 < n ´ (m*n + i) Mod n = i Mod n®);
+a(REPEAT strip_tac THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(rewrite_tac[times_clauses, plus_clauses]);
+(* *** Goal "2" *** *)
+a(LEMMA_T¬(m + 1) * n + i = (m * n + i) + n® rewrite_thm_tac);
+(* *** Goal "2.1" *** *)
+a(rewrite_tac[times_plus_distrib_thm, plus_assoc_thm, plus_clauses, times_clauses]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬m * n + i®, ¬n®]mod_lemma3));
+a(asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûdiv_lemma1Ý = (
+push_goal([], ¬µn· 0 < n ´ n Div n = 1®);
+a(REPEAT strip_tac THEN
+	STRIP_THM_THEN ante_tac(list_simple_µ_elim[¬n:î®, ¬n:î®] div_mod_thm));
+a(strip_asm_tac(simple_µ_elim¬n® mod_lemma2) THEN POP_ASM_T rewrite_thm_tac);
+a(strip_asm_tac(list_simple_µ_elim[¬n Div n®, ¬1®] less_cases_thm) THEN contr_tac);
+(* *** Goal "1" *** *)
+a(lemma_tac ¬n Div n = 0®);
+(* *** Goal "1.1" *** *)
+a(strip_asm_tac (simple_µ_elim¬n Div n® î_cases_thm));
+a(asm_ante_tac¬n Div n < 1® THEN asm_rewrite_tac[less_clauses]);
+(* *** Goal "1.2" *** *)
+a(asm_ante_tac¬n = (n Div n) * n + 0® THEN asm_rewrite_tac[plus_clauses, times_clauses]);
+a(contr_tac THEN asm_ante_tac¬0 < n®  THEN rewrite_tac[less_def, ¼_def]
+	THEN REPEAT strip_tac);
+a(asm_rewrite_tac[plus_clauses]);
+(* *** Goal "2" *** *)
+a(asm_ante_tac¬1 < n Div n® THEN
+	rewrite_tac[less_def, ¼_def, simple_µ_elim¬i:î® plus_order_thm] THEN
+	REPEAT strip_tac);
+a(conv_tac (RAND_C eq_sym_conv));
+a(contr_tac THEN asm_ante_tac ¬n = (n Div n) * n + 0®);
+a(asm_rewrite_tac[plus_clauses, times_plus_distrib_thm, times_clauses, plus_assoc_thm1]);
+a(REPEAT strip_tac);
+a(asm_ante_tac ¬0 < n® THEN asm_rewrite_tac[less_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûdiv_lemma2Ý = (
+push_goal([], ¬µm n· 0 < n ´ (m + n) Div n = m Div n + 1®);
+a(REPEAT strip_tac THEN
+	strip_asm_tac (simple_µ_intro¬m:î®(undisch_rule(all_simple_µ_elim div_def)))
+	THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(strip_asm_tac(simple_µ_elim¬n®div_lemma1) THEN asm_rewrite_tac[plus_clauses]);
+(* *** Goal "2" *** *)
+a(LEMMA_T¬(m + 1) + n = (m + n) + 1® rewrite_thm_tac);
+(* *** Goal "2.1" *** *)
+a(rewrite_tac [plus_assoc_thm, plus_clauses]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac (simple_µ_intro¬m:î®(undisch_rule(all_simple_µ_elim mod_lemma3))));
+a(asm_rewrite_tac[]);
+a(cases_tac¬m Mod n + 1 < n® THEN asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûdiv_lemma3Ý = (
+push_goal([], ¬µn i· i < n ´ i Div n = 0®);
+a(REPEAT strip_tac);
+a(strip_asm_tac (list_simple_µ_elim[¬i®, ¬n®]less_lemma1));
+a(strip_asm_tac (simple_µ_intro¬m:î®(undisch_rule(all_simple_µ_elim div_def))));
+a(asm_ante_tac¬i < n® THEN induction_tac¬i® THEN asm_rewrite_tac[]
+	THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(lemma_tac¬i < i + 1®);
+(* *** Goal "1.1" *** *)
+a(rewrite_tac[less_clauses]);
+(* *** Goal "1.2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬i®, ¬i + 1®, ¬n®]less_trans_thm));
+(* *** Goal "2" *** *)
+a(lemma_tac¬i < n®);
+(* *** Goal "2.1" *** *)
+a(lemma_tac¬i < i + 1®);
+(* *** Goal "2.1.1" *** *)
+a(rewrite_tac[less_clauses]);
+(* *** Goal "2.1.2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬i®, ¬i + 1®, ¬n®]less_trans_thm));
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬i®, ¬n®]mod_lemma1));
+a(asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûdiv_lemma4Ý = (
+push_goal([], ¬µm n i· i < n ´ (m * n + i) Div n = m®);
+a(REPEAT strip_tac THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬n®, ¬i®]div_lemma3));
+a(asm_rewrite_tac[times_clauses, plus_clauses]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬i®, ¬n®]less_lemma1));
+a(strip_asm_tac(list_simple_µ_elim[¬m * n + i®, ¬n®]div_lemma2));
+a(LEMMA_T¬(m + 1) * n + i = (m * n + i) + n® asm_rewrite_thm_tac);
+a(rewrite_tac[times_plus_distrib_thm, plus_assoc_thm, times_clauses, plus_clauses]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûdiv_mod_unique_thmÝ = (
+push_goal([], ¬µm n d r· r < n ´ (m = d * n + r ´ d = m Div n ± r = m Mod n)®);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬d®, ¬n®, ¬r®]div_lemma4));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac(list_simple_µ_elim[¬r®, ¬n®]less_lemma1));
+a(strip_asm_tac(list_simple_µ_elim[¬d®, ¬n®, ¬r®]mod_lemma4));
+a(strip_asm_tac(list_simple_µ_elim[¬r®, ¬n®]mod_lemma1));
+a(asm_rewrite_tac[]);
+save_pop_thm"div_mod_unique_thm"
+);
+=TEX
+\subsection{Subtraction}
+=SML
+val Ûminus_defÝ = new_spec1 (["-","minus_def"], ["-"], (
+push_goal([], ¬
+	¶$-:î­î­î· µm n·
+		(m + n) - n = m
+®);
+=TEX
+=SML
+a(strip_asm_tac	(conv_rule all_simple_Â_conv
+	(list_simple_µ_elim
+	[¬Ìn:î·0®, ¬Ìf:î­î·Ìm:î·Ìn·if m < n then 0 else (f n) + 1®]
+	(inst_type_rule[(”î­î®, ”'a®)]prim_rec_thm))));
+a(simple_¶_tac ¬f:î­î­î®);
+a(strip_tac THEN strip_tac THEN induction_tac¬m:î®);
+(* *** Goal "1" *** *)
+a(rewrite_tac[plus_clauses] THEN induction_tac¬n® THEN asm_rewrite_tac[less_clauses]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[plus_def, less_clauses]);
+=TEX
+=SML
+pop_thm()
+));
+=TEX
+=SML
+val Ûminus_lemma1Ý = (
+push_goal([], ¬µm· m - m = 0®);
+a(LEMMA_T ¬µm· (0 + m) - m = 0®
+	(rewrite_thm_tac o rewrite_rule[plus_clauses])
+	THEN rewrite_tac[minus_def]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûminus_lemma2Ý = (
+push_goal([], ¬µm· m - 0 = m®);
+a(LEMMA_T ¬µm· (m + 0) - 0 = m®
+	(rewrite_thm_tac o rewrite_rule[plus_clauses])
+	THEN rewrite_tac[minus_def]);
+pop_thm()
+);
+=TEX
+=SML
+val Ûminus_clausesÝ = (
+push_goal([], ¬µm n·
+		m - m = 0
+	±	m - 0 = m
+	±	(m + n) - n = m
+	±	(m + n) - m = n
+®);
+a(rewrite_tac[minus_lemma1, minus_lemma2, minus_def]);
+a(rewrite_tac[simple_µ_elim¬n:î®plus_order_thm, minus_def]);
+save_pop_thm"minus_clauses"
+);
+=TEX
+\section{EPILOGUE}
+=SML
+val _ = pop_pc();
+end; (* of structure î (part 3) *)
+open î;
+=TEX
+
+\end{document}
+
+
+

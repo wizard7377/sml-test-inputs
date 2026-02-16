@@ -1,0 +1,49 @@
+= Release20210117
+
+This is an archived public release of MLton, version 20210117.
+
+== Changes since <<Release20201002#,MLton 20201002>>
+
+* Compiler.
+  ** Fix bug in `SimplifyTypes` SSA optimization pass.
+* Libraries.
+  ** Other libraries.
+    *** Updated: ckit library, MLLPT library, MLRISC library, SML/NJ library
+* Other.
+  ** Preliminary support for `arm64-darwin`.
+  ** Fix bug in `Makefile.binary` detecting default position-independent style.
+
+For a complete list of changes and bug fixes since
+<<Release20201002#>>, see the
+https://github.com/MLton/mlton/blob/on-20210117-release/CHANGELOG.adoc[`CHANGELOG.adoc`] and
+<<Bugs20201002#>>.
+
+== 20210117 binary packages
+
+* AMD64 (aka "x86-64" or "x64")
+** https://sourceforge.net/projects/mlton/files/mlton/20210117/mlton-20210117-1.amd64-darwin-19.6.gmp-homebrew.tgz[Darwin (.tgz)] 19.6 (Mac OS X Catalina), dynamically linked against <<GMP#>> in `/usr/local/lib` (suitable for https://brew.sh/[Homebrew] install of <<GMP#>>)
+** https://sourceforge.net/projects/mlton/files/mlton/20210117/mlton-20210117-1.amd64-darwin-19.6.gmp-static.tgz[Darwin (.tgz)] 19.6 (Mac OS X Catalina), statically linked against <<GMP#>> (but requires <<GMP#>> for generated executables)
+** https://sourceforge.net/projects/mlton/files/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.23.tgz[Linux (.tgz)], glibc 2.23 (Ubuntu 16.04)
+** https://sourceforge.net/projects/mlton/files/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz[Linux (.tgz)], glibc 2.31 (Ubuntu 20.04)
+
+=== Binary packages available at other sites
+
+* http://projects.laas.fr/tina/software.php[TINA toolbox]: Includes binary
+  releases for: amd64-darwin macOS Sierra 10.12 (both statically and dynamically
+  linked against <<GMP#>>), amd64-linux Ubuntu 14 (both statically and
+  dynamically linked against <<GMP#>>), amd64-mingw MSys2 (both statically and
+  dynamically linked against <<GMP#>>), amd64-solaris Solaris 11.4 (both
+  statically and dynamically linked against <<GMP#>>), and arm64-darwin macOS
+  Monterey 12.4 (Apple Silicon) (both statically and dynamically linked against
+  <<GMP#>>).
+
+== 20210117 source packages
+
+ * https://sourceforge.net/projects/mlton/files/mlton/20210117/mlton-20210117.src.tgz[mlton-20210117.src.tgz]
+
+== Also see
+
+* <<Bugs20210117#>>
+* http://www.mlton.org/guide/20210117/[MLton Guide (20210117)].
++
+A snapshot of the MLton website at the time of release.

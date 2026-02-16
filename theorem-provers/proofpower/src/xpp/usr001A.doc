@@ -1,0 +1,141 @@
+=IGN
+********************************************************************************
+usr001A.doc: this file is part of the PPTex system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+% usr001A.doc   %A%
+docsml usr001A.doc
+%
+% Macros for keyboard layout for use in the user documentation.
+%
+% There are two supplied example layouts. XppKeyboard3 and XppKeyboard4.
+%
+% \KEYBOARD draws a diagram of the XppKeyboard3 with the two to five
+% characters each key can send drawn on each keytop.
+% \KEYBOARDKEY draws a key to \KEYBOARD showing which shift keys
+% produce which characters.
+% \KEYBOARDTABLES produces tables with the extended characters
+% in manageable groups showing the key-strokes to produce each character.
+%
+%
+% Support register and macros:
+%
+=TEX
+\newdimen\kbUNITWIDTH		% width of a standard key
+\newdimen\kbUNITHEIGHT		% height of a standard key
+\def\kbSS{\strut\hskip 2pt minus 1.7pt\relax}
+\def\Key#1#2#3#4#5{{%
+	\ShowAllImages
+	\thinmuskip=0mu\medmuskip=0mu\thickmuskip=0mu%
+	\vbox{%
+		\hrule
+		\hbox{%
+			\vrule
+			\vbox to \kbUNITHEIGHT{%
+				\hbox to \kbUNITWIDTH{\kbSS#2 \hfil #3}%
+				\vfill
+				\hbox to \kbUNITWIDTH{\hfil #1 \hfil}%
+				\vfill
+				\hbox to \kbUNITWIDTH{\kbSS#4 \hfil #5}}
+			\vrule}
+		\hrule}\relax}}
+% Call \Key with arguments to be positioned on the key caps as follows:
+%	1:	Centre
+%	2: 	Top left
+%	3:	Top right
+%	4:	Bottom left
+%	5:	Bottom right
+%
+%
+% \KEYBOARD: draw a diagram of XppKeyboard layout.
+%
+\def\KEYBOARD{%
+\kbUNITHEIGHT=0.57in
+\kbUNITWIDTH=0.41in
+\vbox{
+	\hbox{%
+		\Key{1}{±}{¡}{­}{Û}
+		\Key{2}{²}{À}{ß}{Ý}
+		\Key{3}{³}{£}{à}{û}
+		\Key{4}{´}{¤}{ï}{ý}
+		\Key{5}{µ}{¥}{Ï}{§}
+		\Key{6}{¶}{Þ}{Ÿ}{¢}
+		\Key{7}{·}{¦}{}{${\dagger}^1$}
+		\Key{8}{ª}{ }{þ}{ÿ}
+		\Key{9}{¹}{¨}{ž}{}
+		\Key{0}{°}{©}{ª}{œ}}%
+	\hbox{%
+		\hskip 0.5\kbUNITWIDTH
+		\Key{q}{ó}{‘}{Ñ}{}
+		\Key{w}{¬}{—}{×}{${\dagger}^5$}
+		\Key{e}{®}{${\dagger}^6$}{Å}{ì}
+		\Key{r}{¯}{’}{Ò}{ò}
+		\Key{t}{ô}{”}{Ô}{º}
+		\Key{y}{ }{™}{Ù}{ }
+		\Key{u}{ƒ}{•}{Õ}{›}
+		\Key{i}{é}{${\relax}$}{É}{Ü}
+		\Key{o}{«}{${\relax}$}{…}{÷}
+		\Key{p}{ð}{}{Ð}{ü}}%
+	\hbox{%
+		\hskip 1.0\kbUNITWIDTH
+		\Key{a}{ñ}{}{Á}{á}
+		\Key{s}{¿}{“}{Ó}{Ã}
+		\Key{d}{‰}{„}{Ä}{${\dagger}^4$}
+		\Key{f}{æ}{†}{Æ}{ù}
+		\Key{g}{ç}{‡}{Ç}{¾}
+		\Key{h}{è}{${\relax}$}{È}{${\dagger}^3$}
+		\Key{j}{ê}{Š}{Ê}{${\dagger}^2$}
+		\Key{k}{ë}{‹}{Ë}{ˆ}
+		\Key{l}{ }{Œ}{Ì}{¼}}%
+	\hbox{%
+		\hskip 1.5\kbUNITWIDTH
+		\Key{z}{ú}{š}{Ú}{õ}
+		\Key{x}{¸}{˜}{Ø}{ö}
+		\Key{c}{Ö}{ }{»}{€}
+		\Key{v}{ }{ä}{ã}{å}
+		\Key{b}{–}{‚}{Â}{â}
+		\Key{n}{î}{Ž}{Î}{½}
+		\Key{m}{í}{}{Í}{ }}%
+}} % End of \KEYBOARD
+
+\def\KEYBOARDKEY{%
+\kbUNITHEIGHT=0.54in
+\kbUNITWIDTH=2.2in
+\hbox to \hsize{
+	\hspace{2em}
+	\begin{tabular}[c]{cl}
+		${\dagger}^1$ & \ShowAllImages ¹HOLCONST \\
+		${\dagger}^2$ & \ShowAllImages ¹ZAX \\
+		${\dagger}^3$ & \ShowAllImages ¹Z \\
+		${\dagger}^4$ & \ShowAllImages ‰R \\
+		${\dagger}^5$ & \ShowAllImages ›-›1 \\
+		${\dagger}^6$ & \ShowAllImages ¬èê~~~® \\[.1in]
+	\end{tabular}
+	\hfill
+	\hbox{\Key{key}{Mod5+key}{Mod5+Shift+key}{Mod4+key}{Mod4+Shift+key}}%
+	\hspace{5em}}%
+} % End of \KEYBOARDKEY
+
+%
+%End of usr001A.doc
+%
+=IGN
+echo '=TEX' >usr001tst.doc
+cat >> usr001tst.doc <<%%%%
+\documentstyle[hol1,11pt]{article}
+\begin{document}
+\input{usr001A.tex}
+\KEYBOARD
+\par
+\KEYBOARDKEY
+\newpage
+\KEYBOARDTABLES
+\end{document}
+%%%%
+doctex usr001tst usr001A ; texdvi usr001tst
+

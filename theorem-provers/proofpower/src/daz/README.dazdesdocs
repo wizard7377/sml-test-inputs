@@ -1,0 +1,74 @@
+# %Z% $Date: 2002/02/18 17:45:53 $ $Revision: 1.10 $ $RCSfile: README.dazdesdocs,v $
+#
+# README file for ./dazdocs
+#
+
+
+This directory contains specification, design and related documentation for
+the compliance tool. The documents in this directory are listed below with
+their titles. For all the documents, both the source document (in a .doc file)
+and a DVI file are provided.
+
+Compliance Notation Specification
+---------------------------------
+spc501	Volume I
+spc502	Volume II
+spc503	Volume III
+
+The .doc files for the above documents are automatically generated
+from files called spc501.src, spc502.src and spc503.src together with
+the detailed design documents that contain the master copies of the
+formal Z parts of the specification. If the above files are edited,
+the changes will be lost unless the changes are also applied to
+the .src files. Please apply to Lemma 1 Ltd. if you need to
+change the .src files. In addition to the above the LaTeX style, class
+and the BibTeX bibliography database needed to type-set these documents
+are provided.
+
+Critical System Design/Implementation
+-------------------------------------
+		(corresponding to Volumes 1-3 of DRA specification)
+
+dtd502	    Compliance Notation Lexis and Abstract Syntax
+dtd505	    Verification Condition Generator
+dtd507	    Z Generator
+dtd508	    Declaration and Expression Generator
+dtd509	    Z Toolkit Extensions
+dtd513	    Compliance Notation (Volume I) Types
+dtd514	    Compliance Notation (Volume II) Types
+
+imp505	    Verification Condition Generator
+imp507	    Z Generator
+imp508	    Declaration and Expression Generator
+
+Non-Critical System Design
+--------------------------
+
+dtd501	    Compliance Notation Lexical Analyser
+dtd503	    Compliance Notation Parser
+dtd504	    Web Clause Processor
+dtd506	    VC Browser
+dtd510	    SPARK Output Function
+dtd511	    Z Output Function
+dtd512	    Compliance Notation Reader/Writer
+dtd516	    Compliance Tool User Interface
+dtd517	    Script Proof Support
+dtd518      Tactics etc.
+
+High Level Design Documentation
+-------------------------------
+
+hld501     Overview
+hld502     HCI
+hld503     Compliance Notation Processing
+
+Other Documentation
+-------------------
+wrk504     Aliasing (based on DRA/CIS/CSE3/SWI/WP/12/1)
+wrk505     Use of Auxiliary Variables (DRA/CIS/CSE3/SWI/WP/10/1)
+wrk506     Variable Capture (DRA/CIS/CSE3/SWI/WP/11/1)
+wrk508     Report on analysis of statements
+wrk509     Report on analysis of declarations
+wrk511     Report on proofs of SHOLIS VCs
+wrk512     Proof script for SHOLIS VCs
+sholisvcs  Z document containing the SHOLIS VCs

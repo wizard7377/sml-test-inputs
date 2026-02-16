@@ -1,0 +1,33 @@
+TILT's Test directory contains a regression test harness and a suite
+of regression tests for the TILT compiler.  See the comment in
+runtest.sml for a high-level description of the test harness.  This
+file documents the file layout and syntax of individual tests.
+
+We put each test in its own subdirectory of ml96/Test.
+
+The file testlist.txt lists each test by directory and provies a brief
+description.  Each line in the file describes one test.
+
+Each test directory has at least the following files:
+
+	project
+	result
+
+Loosely speaking, these are the test code and expected test result,
+respectively.
+
+The result file is a text file.  The first line must be one of the
+strings
+
+	Bomb Reject Exit Suicide
+
+In the case of Exit, subsequent lines contain the output expected from
+the test code.  (The test code's exit status is ignored.  See
+runtest.sml for more information.)
+
+The file project is a TILT project description.  The harness will
+create an executable containing all the units in this description.
+
+Each test directory should also contain ML source files (referenced by
+the project file) and documentation, but there are as yet no
+conventions governing these.

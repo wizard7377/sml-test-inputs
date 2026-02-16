@@ -1,0 +1,13 @@
+Test of or_1: OK
+Test of or_2: OK
+Test of and_1: OK
+Test of and_2: OK
+Test of xor_1: OK
+Test of xor_2: OK
+Test of shl_1: OK
+Test of shl_2: OK
+Test of shr_1: OK
+Test of shr_2: OK
+Test of shar_1: OK
+Test of shar_2: OK
+[](0.0)

@@ -1,0 +1,7 @@
+unit OVERLOAD = "overload.sig.sml" {
+	Int Word Word8 Real Char String
+}
+unit OvldDefaults = "overload-defaults.sml" {}
+unit Overload = "overload.sml" {
+	Int Word Word8 Real Char String OVERLOAD OvldDefaults
+}

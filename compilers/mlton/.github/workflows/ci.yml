@@ -1,0 +1,190 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: "ubuntu-24.04"
+            cc: "gcc"
+            codegen: "amd64"
+          - runner: "ubuntu-24.04"
+            cc: "gcc"
+            codegen: "c"
+          - runner: "ubuntu-24.04"
+            cc: "clang"
+            codegen: "amd64"
+          - runner: "ubuntu-24.04"
+            cc: "clang"
+            codegen: "c"
+          - runner: "ubuntu-24.04"
+            cc: "clang"
+            codegen: "llvm"
+
+          - runner: "ubuntu-24.04-arm"
+            cc: "gcc"
+            codegen: "c"
+          - runner: "ubuntu-24.04-arm"
+            cc: "clang"
+            codegen: "c"
+          - runner: "ubuntu-24.04-arm"
+            cc: "clang"
+            codegen: "llvm"
+
+          - runner: "macos-15-intel"
+            cc: "clang"
+            codegen: "amd64"
+          - runner: "macos-15-intel"
+            cc: "clang"
+            codegen: "c"
+          - runner: "macos-15-intel"
+            cc: "clang"
+            codegen: "c"
+            install-llvm: true
+            mlton-binary-release-suffix-xtra: "homebrew_clang"
+          - runner: "macos-15-intel"
+            cc: "clang"
+            codegen: "llvm"
+
+          - runner: "macos-15"
+            cc: "clang"
+            codegen: "c"
+          - runner: "macos-15"
+            cc: "clang"
+            codegen: "c"
+            install-llvm: true
+            mlton-binary-release-suffix-xtra: "homebrew_clang"
+          - runner: "macos-15"
+            cc: "clang"
+            codegen: "llvm"
+
+          - runner: windows-2025
+            msystem: mingw64
+            cc: "gcc"
+            codegen: "amd64"
+          - runner: windows-2025
+            msystem: mingw64
+            cc: "gcc"
+            codegen: "c"
+
+          - runner: windows-2025
+            msystem: ucrt64
+            cc: "gcc"
+            codegen: "amd64"
+          - runner: windows-2025
+            msystem: ucrt64
+            cc: "gcc"
+            codegen: "c"
+
+          - runner: windows-2025
+            msystem: clang64
+            cc: "clang"
+            codegen: "amd64"
+          - runner: windows-2025
+            msystem: clang64
+            cc: "clang"
+            codegen: "c"
+          - runner: windows-2025
+            msystem: clang64
+            cc: "clang"
+            codegen: "llvm"
+
+    runs-on: ${{ matrix.runner }}
+
+    env:
+      MLTON_BINARY_RELEASE_SUFFIX: ".${{ matrix.runner }}${{ matrix.msystem && format('_msys2_{0}', matrix.msystem) || '' }}_${{ matrix.cc }}_${{ matrix.codegen }}${{ matrix.mlton-binary-release-suffix-xtra && format('__{0}', matrix.mlton-binary-release-suffix-xtra) || '' }}"
+
+    defaults:
+      run:
+        shell: ${{ (startsWith(matrix.runner, 'windows') && 'msys2 {0}') || 'bash' }}
+
+    steps:
+      - name: Configure git
+        shell: bash
+        run: git config --global core.autocrlf false
+
+      - name: Install msys2 (windows)
+        if: ${{ runner.os == 'Windows' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: false
+          install: >-
+            base-devel
+            git
+            pactoys
+
+      - name: Check environment
+        run: |
+          echo "runner.arch: ${{ runner.arch }}"
+          echo
+          echo "runner.os: ${{ runner.os }}"
+          echo
+          echo "PATH: $PATH"
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install bootstrap dependencies
+        uses: ./.github/actions/install-bootstrap-dependencies
+        with:
+          install-llvm: ${{ matrix.codegen == 'llvm' || matrix.install-llvm }}
+
+      - name: Check versions
+        run: |
+          PATH=$(pwd)/boot/bin:$PATH mlton
+          echo
+          make -version
+          echo
+          ${{ matrix.cc }} --version
+          echo
+          if [[ "${{ matrix.codegen }}" == "llvm" ]]; then llvm-as -version; opt -version; llc -version; fi
+
+      - name: Build
+        run: |
+          # make all
+          PATH=$(pwd)/boot/bin:$PATH \
+          make \
+            CC=${{ matrix.cc }} \
+            OLD_MLTON_RUNTIME_ARGS="ram-slop 0.90" \
+            MLTON_RUNTIME_ARGS="ram-slop 0.90" \
+            MLTON_COMPILE_ARGS="-codegen ${{ matrix.codegen }}" \
+            ${{ env.WITH_GMP_DIR && format('WITH_GMP_DIR={0}', env.WITH_GMP_DIR) || '' }} \
+            WITH_ALL_RUNTIME=true \
+            WITH_DBG_RUNTIME=false \
+            MLTON_BINARY_RELEASE_SUFFIX="${{ env.MLTON_BINARY_RELEASE_SUFFIX }}" \
+            all
+
+      - name: Test
+        run: ./bin/regression -codegen ${{ matrix.codegen }}
+
+      - name: Status
+        run: |
+          git status
+
+      - name: Package
+        run: |
+          # make binary-release
+          make \
+            CC=${{ matrix.cc }} \
+            OLD_MLTON_RUNTIME_ARGS="ram-slop 0.90" \
+            MLTON_RUNTIME_ARGS="ram-slop 0.90" \
+            MLTON_COMPILE_ARGS="-codegen ${{ matrix.codegen }}" \
+            ${{ env.WITH_GMP_DIR && format('WITH_GMP_DIR={0}', env.WITH_GMP_DIR) || '' }} \
+            WITH_ALL_RUNTIME=true \
+            WITH_DBG_RUNTIME=false \
+            MLTON_BINARY_RELEASE_SUFFIX="${{ env.MLTON_BINARY_RELEASE_SUFFIX }}" \
+            binary-release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: mlton${{ env.MLTON_BINARY_RELEASE_SUFFIX }}
+          path: ./*.tgz

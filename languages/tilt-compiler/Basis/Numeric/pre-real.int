@@ -1,0 +1,9 @@
+structure PreLargeReal :
+sig
+	type real = real
+end
+
+structure PreReal :
+sig
+	type real = real
+end

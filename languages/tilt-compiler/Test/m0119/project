@@ -1,0 +1,3 @@
+unit Test = "textio.sml" {
+	Int String Substring TextIO OS
+}

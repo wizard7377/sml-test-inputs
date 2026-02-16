@@ -1,0 +1,2 @@
+interface I1 = "i1.int" {}
+unit U1 : I1 = "u1.sml" {}

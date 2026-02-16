@@ -1,0 +1,8 @@
+functor ProjectLrValsFun(structure Token : TOKEN) :
+Project_LRVALS
+	where type ParserData.pos = ExtSyn.pos
+	where type ParserData.arg = unit
+	where type ParserData.result = ExtSyn.ents
+	where ParserData.LrTable = Token.LrTable
+        where ParserData.Token = Token
+

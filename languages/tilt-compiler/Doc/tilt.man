@@ -1,0 +1,464 @@
+.\" NB Sentences should start on a new line.
+.\" This page mounts a fixed-width font L for literals and
+.\" assumes .B, .BI, etc. use the same font.  The fixed
+.\" width font is typically named "C" or "CW".
+.fp 5 L CW
+.de EX
+.if t .ft L
+.nf
+..
+.de EE
+.ft R
+.fi
+..
+.TH TILT 1
+.SH NAME
+tilt, tilt-nj \- Standard ML compiler
+.SH SYNOPSIS
+.B tilt
+[
+.I option ...
+]
+.I project ...
+.PP
+.B tilt
+[
+.I option ...
+]
+.B -o
+.I exe project ...
+.PP
+.B tilt
+[
+.I option ...
+]
+.B -l
+.I lib project ...
+.PP
+.B tilt
+[
+.I option ...
+]
+.BR -p [ p ]
+.I project ...
+.PP
+.B tilt -s
+.SH DESCRIPTION
+.PP
+TILT is a compiler for Standard ML (SML) that uses Typed Intermediate
+Languages.
+It can make executables and libraries for the SPARC V9 and Intel x86
+architectures running SunOS 5.5.1, SunOS 5.8, SunOS 5.9,
+and linux.
+.I Tilt
+is a version of the compiler compiled by TILT.
+.I Tilt-nj
+is a version of the compiler compiled by Standard ML of New Jersey; it
+should run on any Unix system supported by SML/NJ.
+.PP
+TILT operates on a project description comprising the named
+.I project
+files.
+By default, TILT performs cutoff incremental recompilation (IR) to
+bring every unit and interface in the project description up to date.
+The options are
+.PD 0
+.TP
+.BI -o " exe"
+Perform IR and link every unit into an executable
+.IR exe .
+This fails if there are unimplemented units (see the following section).
+.TP
+.BI -l " lib"
+Perform IR and pack every unit and interface into a library
+.IR lib .
+.TP
+.B -p
+Purge (remove) object files for every source unit in the project
+description.
+With a second
+.BR -p ,
+purge all compiler-generated files for every source unit and source
+interface.
+Files associated with compiled units and interfaces (i.e., library files)
+are not removed.
+.TP
+.B -s
+Act as a slave for any future or ongoing parallel make in the current
+directory.
+When a slave joins a parallel make, the TILT process that
+initiated compilation (the master) sends the target architecture,
+compiler flags, and project description to the slave.
+.TP
+.B -v
+Make TILT more verbose.
+This option can be repeated.
+.TP
+.BI -f " F"
+Set the compiler flag
+.I F
+to true; these flags are undocumented.
+.TP
+.BI -r " F"
+Set
+.I F
+to false.
+.TP
+.BI -j " n"
+Run \fIn\fR slaves to handle compilation.
+The default is to run one slave for each processor on the current machine.
+.TP
+.BI -c " U"
+Operate on unit
+.IR U .
+.TP
+.BI -C " I"
+Operate on interface
+.IR I .
+The
+.B -c
+and
+.B -C
+options can be repeated to specify a list of
+.IR roots .
+TILT will operate on a reduced project description obtained by
+discarding any units and interfaces that are not prerequisite to
+.IR roots .
+.TP
+.BI -t " T"
+Set the target architecture;
+.I T
+must be
+.B sparc
+or
+.BR talx86 .
+The default is the current architecture, if it is supported, and
+.B sparc
+otherwise.
+.PD
+.SS Project descriptions
+.PP
+A project consists of an agglomeration of compilation units and their
+interfaces.
+A project description assigns unit names to units and interface names
+to interfaces, and specifies the dependencies among them.
+An interface must be declared by binding its source to an interface
+identifier.
+A compilation unit may be declared either as a separately compiled
+unit with specified interface, or as a source unit bound to a unit
+identifier.
+(See
+.IR tilt-project (4)
+for the full syntax of projection description files.)
+.PP
+A source unit consists of an SML top-level declaration
+.RI ( topdec ),
+stored in a file.
+The source unit declaration
+.EX
+	unit U = "u.sml"
+.EE
+binds the unit whose source is the file
+.B u.sml
+to the unit identifier
+.IR U .
+.PP
+An interface is a top-level specification
+.RI ( topspec ),
+stored in a file.
+(See
+.IR tilt-project (4)
+for the full syntax of interfaces.)
+The interface declaration
+.EX
+	interface I = "u.int"
+.EE
+binds the interface whose source is in the file
+.B u.int
+to the interface identifier
+.IR I .
+.PP
+A source unit declaration may specify an interface, as well as an
+implementation, in order to require that the source unit match that
+interface.
+Interface matching is similar to opaque signature matching in SML.
+In particular, only the components and type sharing information
+specified in
+.I I
+is propagated to clients of
+.IR U .
+For example,
+the source unit declaration
+.EX
+	unit U : I = "u.sml"
+.EE
+specifies that the implementation of
+.I U
+in the file
+.B u.sml
+must match the interface
+.IR I .
+An advantage of specifying an interface on a source unit is that units
+that depend on it can be compiled before the unit itself has been
+compiled.
+Otherwise, an interface must be obtained by compiling the unit, and
+any dependents can only be compiled afterward.
+.PP
+A unit specification declares a separately compiled unit with an
+assumed interface, but with no implementation.
+For example,
+.EX
+	unit U : I
+.EE
+declares
+.I U
+to be a separately compiled unit with interface
+.IR I .
+.PP
+By default, a source unit or interface depends implicitly on the units
+that precede it in its project description file.
+All preceding units are implicitly opened for use at the time that the
+source is compiled.
+The order of declaration in the project description determines the
+scopes of identifiers according to the usual rules of lexical scoping.
+.PP
+A source unit or interface declaration may explicitly specify on which
+of the preceding units it depends.
+For example, consider the following unit declarations:
+.EX
+	unit U : I
+	unit V : J
+	unit W : K
+	unit X : L = "x.sml" { U W }
+.EE
+The declaration of
+.I X
+specifies that this unit depends only on the units
+.I U
+and
+.IR W ,
+and not on
+.I V
+(on which it would also depend in the absence of an explicit
+specification).
+Explicit dependency specifications are useful to speed up compilation,
+and to provide finer control over the scopes of identifiers.
+Specifically, if in the above example both
+.I U
+and
+.I V
+define an identifier
+.IR a ,
+then uses of
+.I a
+in
+.I X
+refer to the unit
+.IR U ,
+rather than to the default
+.IR V .
+.PP
+One project description file may be included into another.
+Doing so re-orients relative paths in the included description to be
+relative to the including description.
+For example, the declarations
+.EX
+	include "help.proj"
+	unit U : I
+.EE
+incorporate the project description file
+.B help.proj
+and, in addition, declares a separately compiled unit
+.I U
+with interface
+.I I
+(which must be defined in
+.B help.proj
+for this example to be well-formed).
+.PP
+Unit and interface names in a project description are treated as
+definite references in that an identifier designates a unique unit or
+interface in the project.
+There can be at most one source unit declaration for any given unit,
+but there may be many unit specifications for any unit, provided only
+that they declare the same interface (i.e., the same
+.I topspec
+with the same list of open units).
+A given interface identifier may be declared more than once, provided
+that they are all defined to be the same interface.
+(Multiple declarations of units and interfaces arise when several
+project descriptions that depend on the same unit are included in a
+single project description.)
+.SS Executables
+.PP
+A TILT executable is created by linking the implementations of all of
+the units in a project.
+There is no conventional
+.B main
+entry point, but rather the units are executed in the order they are
+specified in the project description when the program is started.
+To access the command line name and arguments, use the following
+functions from the Standard Basis:
+.EX
+	CommandLine.name : unit -> string
+	CommandLine.arguments : unit -> string list
+.EE
+.SS Libraries
+.PP
+A project may be packed into a library, which is a fully compiled copy
+of the project that is regarded as stable, regardless of any changes
+to the sources of the project.
+The packed library contains the sources of all of its constituent
+interfaces, which are necessary for the use of that library, and may
+or may not contain the sources of its constituent units.
+The library is represented by a directory containing the interface
+sources in a sub-directory named
+.BR I ,
+the unit sources (if any) in a sub-directory named
+.BR U ,
+and a project description file named
+.BR project .
+.PP
+To use a library
+.B lib
+in a project, simply include the project description for
+.BR lib . 
+For example,
+.EX
+	include "lib/project"
+	interface I = "i.int"
+	unit U : I = "u.sml" { W X }
+.EE
+From the point of view of the importing project, the library consists
+of an up-to-date collection of separately compiled units.
+When the project is linked, the implementations of these units is
+obtained from
+.BR lib .
+.PP
+The Standard Basis library is automatically included as part of every
+project description.
+Moreover, each interface and source unit is implicitly declared to
+depend on those Standard Basis units that comprise the standard
+top-level environment.
+All structures and functors in the Standard Basis are defined in units
+of the same name as the structure or functor.
+Most signatures defined in the Standard Basis are defined in units of
+the same name as the signature, with the exception of the signatures
+.BR IO ,
+.BR OS ,
+and
+.BR SML90 ,
+which reside in units named
+.BR IO_SIG ,
+.BR OS_SIG ,
+and
+.BR SML90_SIG ,
+respectively.
+.SH EXAMPLES
+.PP
+An SML implementation of
+.IR echo (1):
+.EX
+	(* \fIecho.project\fP *)
+	(* Run "tilt -vv -o echo -c Echo echo.project". *)
+	unit Echo = "echo.sml" { CommandLine OS }
+
+	(* \fIecho.sml\fP *)
+	fun echo (ss:string list) : unit =
+		(case ss of
+			nil => ()
+		|	s::nil => print s
+		|	s::ss => (print s; print " "; echo ss))
+
+	val _ =
+		(case (CommandLine.arguments()) of
+			"-n" :: args => echo args
+		|	args => (echo args; print "\\n"))
+
+	val () = OS.Process.exit OS.Process.success
+.EE
+.PP
+A demonstration of cutoff recompilation:
+.EX
+	(* \fIco.project\fP *)
+	(*
+		Run "tilt -vv -o co -c C co.project".
+
+		Change the representation of S.t in a.sml
+		and recompile to observe that C is not
+		recompiled.
+	*)
+	unit A = "a.sml" { Int }
+	unit B = "b.sml" { A }
+	unit C = "c.sml" { B }
+
+	(* \fIa.sml\fP *)
+	signature SIG =
+	sig
+		type t
+		val x : t
+		val toString : t -> string
+	end
+
+	structure S :> SIG =
+	struct
+		type t = int
+		val x : t = 0
+		val toString = Int.toString
+	end
+
+	(* \fIb.sml\fP *)
+	structure T :> SIG =
+	struct
+		type t = S.t * S.t
+		val x = (S.x, S.x)
+		fun toString (a, b) =
+			"(" ^ S.toString a ^ "," ^ S.toString b ^ ")"
+	end
+
+	(* \fIc.sml\fP *)
+	val _ = print (T.toString T.x ^ "\\n")
+.EE
+.PP
+A demonstration of separate compilation:
+.EX
+	(* \fIsc1.project\fP *)
+	interface AI = "a.int" { }
+	unit A : AI = "a.sml" { Int }
+	interface BI = "b.int" { A }
+	unit B : BI = "b.sml" { A }
+
+	(* \fIa.int\fP *)
+	signature SIG =
+	sig
+		type t
+		val x : t
+		val toString : t -> string
+	end
+
+	structure S : SIG
+
+	(* \fIuse a.sml from previous example\fP *) 
+
+	(* \fIb.int\fP *)
+	structure T : SIG
+
+	(* \fIuse b.sml from previous example\fP *)
+
+	(* \fIsc2.project\fP *)
+	(*
+		Run "tilt -vv sc1.project" to compile A and B.
+		Run "tilt -vv sc2.project" to compile C separately
+		from A and B.
+		Run "tilt -vv -o sc -c C sc1.project sc2.project" to link.
+	*)
+	interface AI = "a.int" { }
+	unit A : AI
+	interface BI = "b.int" { A }
+	unit B : BI
+	unit C = "c.sml" { B }
+
+	(* \fIuse c.sml from previous example\fP *)
+.EE
+.SH SEE ALSO
+.IR tilt-project (4)

@@ -1,0 +1,8 @@
+/*.tmp
+/binary
+/editors/vscode/CHANGELOG.md
+/editors/vscode/LICENSE.md
+/editors/vscode/node_modules
+/editors/vscode/out
+/editors/vscode/vsix
+/target

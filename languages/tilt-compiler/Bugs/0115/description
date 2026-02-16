@@ -1,0 +1,21 @@
+Number: 0115
+Title:       withtype scoping wrong
+Keywords:    withtype
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     scoping of rhs's of withtype's is wrong
+Code:        
+Transcript:  
+Comments:    
+Fix:         
+
+[Derek] Prior to elaboration of datatypes, any withtype definitions
+get macro-expanded.  This is done by InfixParse.parse_datbind,
+and there were a couple bugs there that are now fixed.
+
+Test: m0047
+Owner: rwh
+Status: closed

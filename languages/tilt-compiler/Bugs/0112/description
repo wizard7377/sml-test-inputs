@@ -1,0 +1,17 @@
+Number: 0112
+Title:       option exception
+Keywords:    equality
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     tilt: Option
+Code:        
+Transcript:  
+Comments:    
+Fix: Fixed by unifying the tyvar with unit. - tom7
+	NB m0038 fails for other reasons.
+Test: m0038
+Owner: rwh
+Status: closed

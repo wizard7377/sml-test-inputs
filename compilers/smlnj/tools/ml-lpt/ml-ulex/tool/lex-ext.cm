@@ -1,0 +1,15 @@
+(* lex-ext.cm
+ *
+ * COPYRIGHT (c) 2022 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *
+ * Classifier plugin that maps the ".lex" extension to the ml-ulex tool.
+ *
+ * Author: Matthias Blume (blume@tti-c.org)
+ *)
+
+Library
+  structure ULexLexExt
+is
+  $smlnj/cm/tools.cm
+  lex-ext.sml

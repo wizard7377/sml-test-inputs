@@ -1,0 +1,2414 @@
+\documentclass[12pt,twoside,fleqn]{amsart}
+\usepackage{latexsym}
+\usepackage{fullpage}
+\usepackage{supertab}
+
+\theoremstyle{plain}    
+\newtheorem{thm}{Theorem} 
+\theoremstyle{plain}    
+\newtheorem{lem}{Lemma} 
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\newcommand{\comment}[1]{}
+
+\makeatother
+
+\begin{document}
+
+
+\title{NIL}
+
+\maketitle
+
+\newcommand{\Lam}[3]{\lambda #1 ::#2 .#3 }
+ 
+\newcommand{\Let}[3]{\mathrm{let}\, #1 =#2 \, \mathrm{in}\, #3 \, \mathrm{end}}
+ 
+\newcommand{\lete}[3]{\mathrm{let}\, #1 =#2 \, \mathrm{in}\, #3 \, \mathrm{end}}
+
+\newcommand{\rec}[7]{\mathrm{rec}\, #1 =\lambda (#2 ::#3 ,#4 :#5 ):#6 .#7 }
+
+\newcommand{\ifz}[3]{\mathrm{ifzero}\, #1 \, \mathrm{then}\, #2 \, \mathrm{else}\, #3 }
+
+\newcommand{\st}[1]{S_{T}(#1 )}
+
+\newcommand{\subst}[3]{\{#1 /#2 \}#3 }
+
+\newcommand{\context}{\Delta }
+
+\newcommand{\addk}[3]{#1 [#2 ::#3 ]}
+
+\newcommand{\addt}[3]{#1 [#2 :#3 ]}
+
+\newcommand{\caddk}[2]{\addk{\context }{#1 }{#2 }}
+
+\newcommand{\caddt}[2]{\addt{\context }{#1 }{#2 }}
+
+\newcommand{\extk}[2]{[#1 ::#2 ]}
+
+\newcommand{\extt}[2]{[#1 :#2 ]}
+
+\newcommand{\iffloat}[3]{\mathrm{ifBoxFloat}\, #1 \, \mathrm{then}\, #2 \, \mathrm{else}\, #3 }
+ 
+\newcommand{\recm}[5]{rec\, #1 =\lambda (#2 :#3 ):#4 .#5 }
+
+\newcommand{\carray}[1]{#1 \: array}
+
+\newcommand{\inl}[3]{inl_{#1 ,#2 }#3 }
+
+\newcommand{\inr}[3]{inr_{#1 ,#2 }#3 }
+
+\newcommand{\boxf}[1]{boxfloat(#1 )}
+
+\newcommand{\unboxf}[1]{unboxfloat(#1 )}
+
+\newcommand{\sumsw}[7]{case\, #1 \, of\, \{inl(#2 :#3 )\Rightarrow #4 ,inr(#5 :#6 )\Rightarrow #7 \}}
+
+\newcommand{\arr}[3]{array_{#1 }(#2 ,#3 )}
+
+\newcommand{\sub}[2]{sub(#1 ,#2 )}
+
+\newcommand{\fsub}[2]{fsub(#1 ,#2 )}
+
+\newcommand{\pikind}[3]{\Pi (#1 ::#2 ).#3 }
+
+\newcommand{\sigkind}[3]{\Sigma (#1 ::#2 ).#3 }
+
+\newcommand{\kone}{\kappa _{1}}
+
+\newcommand{\ktwo}{\kappa _{2}}
+
+
+
+\section{Mil (Core Nil)}
+
+
+\subsection{Syntax}
+
+
+\begin{eqnarray*}
+\kappa  & ::= & T\: |\: \st{c}\: |\: \Sigma (\alpha ::\kappa ).\kappa \: |\: \Pi (\alpha ::\kappa ).\kappa \\
+ &  & \\
+c & ::= & \alpha \mid Int\mid BoxFloat\mid \mu (a=c,b=c)\mid c\times c\mid c\rightarrow c\mid c+c\mid \carray{c}\\
+ &  & \mid \Lam{\alpha }{\kappa }{c}\mid c\, c\mid <c,c>\mid c.1\mid c.2\mid \Let{\alpha }{c}{c}\\
+ &  & \\
+\tau  & ::= & T(c)\mid (\alpha _{1}::\kappa _{1}\ldots \alpha _{n}::\kappa _{n},\tau )\rightarrow \tau \mid Float\mid \tau \times \tau \\
+ &  & \\
+p & ::= & \alpha \mid p.1\mid p.2\mid p\, c\\
+ &  & \\
+e & ::= & x\mid \lete{x}{e}{e}\mid \lete{\alpha }{c}{e}\\
+ &  & \mid \rec{f}{\alpha _{i}}{\kappa _{i}}{x}{\tau }{\tau }{e}\\
+ &  & \mid e[c_{1}\ldots c_{n}]e\mid <e,e>\mid e.1\mid e.2\mid n\mid r\mid \boxf{e}\mid \unboxf{e}\\
+ &  & \mid \inl{c}{c}{e}\mid \inr{c}{c}{e}\mid \sumsw{e}{x}{c}{e}{x}{c}{e}\\
+ &  & \mid \iffloat{c}{e}{e}\mid \arr{c}{e}{e}\mid \sub{e}{e}\mid \fsub{e}{e}\\
+ &  & \\
+\Delta  & ::= & \bullet \mid \caddt{x}{\tau }\mid \caddk{\alpha }{\kappa }
+\end{eqnarray*}
+
+
+I occasionally use \( \kappa _{1}\times \kappa _{2} \) for \( \Sigma (\alpha ::\kappa _{1}).\kappa _{2} \)where
+\( \alpha \notin fv(\kappa _{2}) \). In places expecting sequences such as
+polymorphic function types or in contexts where I believe the intended meaning
+is clear, I abbreviate \( \alpha _{1}::\kappa _{1}\ldots \alpha _{i}::\kappa _{i} \)
+as \( \alpha _{i}::\kappa _{i} \). So \( \caddk{\alpha _{i}}{\kappa _{i}} \)
+means \( \caddk{\alpha _{1}}{\kappa _{1}}\ldots \extk{\alpha _{i}}{\kappa _{i}} \)
+and \( (\alpha _{i}::\kappa _{i},\tau )\rightarrow \tau  \) means \( (\alpha _{1}::\kappa _{1}\ldots \alpha _{i}::\kappa _{i},\tau )\rightarrow \tau  \).
+
+
+\newcommand{\infrule}[2]{\frac{#1 }{#2 }}
+
+\newcommand{\axiom}[1]{\overline{#1 }}
+
+\newcommand{\deltaok}[1]{#1 \, \mathrm{ok}}
+
+\newcommand{\kindok}[2]{#1 \vdash #2 }
+
+\newcommand{\kok}[1]{\kindok{\context }{#1 }}
+
+\newcommand{\typeok}[2]{#1 \vdash #2 }
+
+\newcommand{\tok}[1]{\typeok{\context }{#1 }}
+
+\newcommand{\conok}[3]{#1 \vdash #2 ::#3 }
+
+\newcommand{\cok}[2]{\conok{\context }{#1 }{#2 }}
+
+\newcommand{\klessthan}[3]{#1 \vdash #2 \preceq #3 }
+
+\newcommand{\klt}[2]{\klessthan{\context }{#1 }{#2 }}
+
+\newcommand{\eqcon}[4]{#1 \vdash #2 \equiv #3 ::#4 }
+
+\newcommand{\eqtype}[3]{#1 \vdash #2 \equiv #3 }
+
+\newcommand{\expok}[3]{#1 \vdash #2 :#3 }
+
+\newcommand{\eok}[2]{\expok{\context }{#1 }{#2 }}
+
+
+
+\subsection{The declarative system (MIL)}
+
+
+\subsubsection{Well Formed Context }
+
+\begin{description}
+\item [Empty]
+\[
+\axiom{\deltaok{\bullet }}\]
+
+\item [Kind]
+\[
+\infrule{\begin{array}{ll}
+\deltaok{\context } & \kok{\kappa }
+\end{array}}{\deltaok{\caddk{\alpha }{\kappa }}}\quad \alpha \notin dom(\context )\]
+
+\item [Type]
+\[
+\infrule{\begin{array}{ll}
+\deltaok{\context } & \tok{\tau }
+\end{array}}{\deltaok{\caddt{x}{\tau }}}\quad x\notin dom(\context )\]
+
+\end{description}
+
+\subsubsection{Well Formed Kind \protect\( \kindok{\context }{\kappa }\protect \)}
+
+\begin{description}
+\item [Type]
+\[
+\infrule{\deltaok{\context }}{\kindok{\context }{T}}\]
+
+\item [Singleton]
+\[
+\infrule{\begin{array}{ll}
+\cok{c}{T}
+\end{array}}{\kok{\st{c}}}\]
+
+\item [Pi]
+\[
+\infrule{\begin{array}{ll}
+\kok{\kappa _{1}} & \kindok{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}}
+\end{array}}{\kok{\Pi (\alpha ::\kappa _{1}).k_{2}}}\]
+
+\item [Sigma]
+\[
+\infrule{\begin{array}{ll}
+\kok{\kappa _{1}} & \kindok{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}}
+\end{array}}{\kok{\sigkind{\alpha }{\kone }{\ktwo }}}\]
+
+\end{description}
+
+\subsubsection{Sub-Kinding \protect\( \klt{\kone }{\ktwo }\protect \)}
+
+\begin{description}
+\item [Type]
+\[
+\infrule{\deltaok{\context }}{\klt{T}{T}}\]
+
+\item [Singleton]
+\[
+\infrule{\kok{\st{c}}}{\klt{\st{c}}{T}}\]
+
+\item [Singletons]
+\[
+\infrule{\eqcon{\context }{c}{d}{T}}{\klt{\st{c}}{\st{d}}}\]
+
+\item [\( \Pi  \)]
+\[
+\infrule{\begin{array}{ll}
+\klt{\kone '}{\kone } & \klessthan{\caddk{\alpha }{\kone '}}{\ktwo }{\ktwo '}
+\end{array}}{\klt{\pikind{\alpha }{\kone }{\ktwo }}{\pikind{\alpha }{\kone '}{\ktwo '}}}\]
+
+\item [\( \Sigma  \)]
+\[
+\infrule{\begin{array}{ll}
+\klt{\kone }{\kone '} & \klessthan{\caddk{\alpha }{\kone }}{\ktwo }{\ktwo '}
+\end{array}}{\klt{\sigkind{\alpha }{\kone }{\ktwo }}{\sigkind{\alpha }{\kone '}{\ktwo '}}}\]
+
+\end{description}
+
+\subsubsection{Well-formed constructor \protect\( \cok{c}{\kappa }\protect \)}
+
+\begin{description}
+\item [Variable]
+\[
+\infrule{\deltaok{\context }}{\cok{\alpha }{\context (\alpha )}}\]
+
+\item [BoxFloat]
+\[
+\infrule{\deltaok{\context }}{\cok{BoxFloat}{T}}\]
+
+\item [Int]
+\[
+\infrule{\deltaok{\context }}{\cok{Int}{T}}\]
+
+\item [\( \mu  \)]
+\[
+\infrule{\begin{array}{ll}
+\conok{\Delta [a::T,b::T]}{c_{1}}{T} & \conok{\Delta [a::T,b::T]}{c_{2}}{T}
+\end{array}}{\cok{\mu (a=c_{1},b=c_{2})}{T}}\]
+ 
+\item [Pair]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{T} & \cok{c_{2}}{T}
+\end{array}}{\cok{c_{1}\times c_{2}}{T}}\]
+
+\item [Arrow]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{T} & \cok{c_{2}}{T}
+\end{array}}{\cok{c_{1}\rightarrow c_{2}}{T}}\]
+
+\item [Sum]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{T} & \cok{c_{2}}{T}
+\end{array}}{\cok{c_{1}+c_{2}}{T}}\]
+
+\item [Array]
+\[
+\infrule{\cok{c}{T}}{\cok{\carray{c}}{T}}\]
+
+\item [Lambda]
+\[
+\infrule{\begin{array}{ll}
+\kok{\kappa } & \conok{\caddk{\alpha }{\kappa }}{c}{\kappa '}
+\end{array}}{\cok{\lambda (\alpha ::\kappa ).c}{\pikind{\alpha }{\kappa }{\kappa '}}}\]
+
+\item [App]
+\[
+\infrule{\begin{array}{cc}
+\begin{array}{ll}
+\cok{c_{1}}{\pikind{\alpha }{\kappa _{1}}{\ktwo }} & \cok{c_{2}}{\kone }
+\end{array}
+\end{array}}{\cok{c_{1}\, c_{2}}{\subst{c_{2}}{\alpha }{\ktwo }}}\]
+
+\item [Record]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{\kone } & \cok{c_{2}}{\ktwo }
+\end{array}}{\cok{<c_{1},c_{2}>}{\kone \times \ktwo }}\]
+
+\item [Proj1]
+\[
+\infrule{\cok{c}{\sigkind{\alpha }{\kone }{\ktwo }}}{\cok{c.1}{\kone }}\]
+
+\item [Proj2]
+\[
+\infrule{\cok{c}{\sigkind{\alpha }{\kone }{\ktwo }}}{\cok{c.2}{\subst{c.1}{\alpha }{\ktwo }}}\]
+
+\item [Let]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{\kone } & \conok{\caddk{\alpha }{\kone }}{c_{2}}{\ktwo }
+\end{array}}{\cok{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}}{\alpha }{\ktwo }}}\]
+
+\item [Selfify]
+\[
+\infrule{\cok{c}{T}}{\cok{c}{\st{c}}}\]
+
+\item [Subkind]
+\[
+\infrule{\begin{array}{ll}
+\cok{c}{\kappa } & \klt{\kappa }{\kappa '}
+\end{array}}{\cok{c}{\kappa '}}\]
+
+\item [Sigma~Eta1]
+\[
+\infrule{\begin{array}{ll}
+\cok{c}{\sigkind{\alpha }{\kone }{\ktwo }} & \cok{c.1}{\kone '}
+\end{array}}{\cok{c}{\sigkind{\alpha }{\kone '}{\ktwo }}}\]
+
+\item [Sigma~Eta2]
+\[
+\infrule{\begin{array}{ll}
+\cok{c}{\sigkind{\alpha }{\kone }{\ktwo }} & \conok{\caddk{\alpha }{\kone }}{c.2}{\ktwo '}
+\end{array}}{\cok{c}{\sigkind{\alpha }{\kone }{\ktwo '}}}\]
+
+\item [Pi~Eta]
+\[
+\infrule{\begin{array}{ll}
+\cok{c}{\pikind{\alpha }{\kone }{\ktwo }} & \conok{\caddk{\alpha }{\kone }}{c\, \alpha }{\ktwo '}
+\end{array}}{\cok{c}{\pikind{\alpha }{\kone }{\ktwo '}}}\]
+
+\end{description}
+
+\subsubsection{Well-formed Type \protect\( \tok{\tau }\protect \)}
+
+\begin{description}
+\item [Constructor]
+\[
+\frac{\cok{c}{T}}{\tok{T(c)}}\]
+
+\item [ArrowType]
+\[
+\frac{\begin{array}{ll}
+\kindok{\caddk{\alpha _{i}}{\kappa _{i}}}{\kappa _{i+1}} & \\
+\typeok{\caddk{\alpha _{i}}{\kappa _{i}}}{\tau _{1}} & \typeok{\caddk{\alpha _{i}}{\kappa _{i}}}{\tau _{2}}
+\end{array}}{\tok{(\alpha _{i}::\kappa _{i},\tau _{1})\rightarrow \tau _{2}}}\]
+
+\item [Float]
+\[
+\infrule{\deltaok{\context }}{\tok{Float}}\]
+
+\item [PairType]
+\[
+\frac{\begin{array}{ll}
+\tok{\tau _{1}} & \tok{\tau _{2}}
+\end{array}}{\tok{\tau _{1}\times \tau _{2}}}\]
+
+\end{description}
+
+\subsubsection{Well-typed term: \protect\( \eok{e}{\tau }\protect \)}
+
+\begin{description}
+\item [variable]
+\[
+\infrule{\deltaok{\context }}{\eok{x}{\context (x)}}\]
+
+\item [lete]
+\[
+\frac{\begin{array}{ll}
+\eok{e_{1}}{\tau _{1}} & \expok{\caddt{x}{\tau _{1}}}{e_{2}}{\tau _{2}}
+\end{array}}{\eok{\lete{x}{e_{1}}{e_{2}}}{\tau _{2}}}\]
+
+\item [letc]
+\[
+\frac{\begin{array}{ll}
+\cok{c}{\kappa } & \expok{\caddk{\alpha }{\kappa }}{e}{\tau }
+\end{array}}{\eok{\lete{\alpha }{c}{e}}{\subst{c}{\alpha }{\tau }}}\]
+
+\item [rec]
+\[
+\infrule{\begin{array}{ll}
+\kindok{\caddk{\alpha _{i}}{\kappa _{i}}}{\kappa _{i+1}} & \typeok{\caddk{\alpha _{n}}{\kappa _{n}}}{\tau _{1}}\\
+\typeok{\caddk{\alpha _{n}}{\kappa _{n}}}{\tau _{2}} & \expok{\context \extt{f}{(\alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}\extk{\alpha _{n}}{\kappa _{n}}\extt{x}{\tau _{1}}}{e}{\tau _{2}}
+\end{array}}{\eok{\rec{f}{\alpha _{n}}{\kappa _{n}}{x}{\tau _{1}}{\tau _{2}}{e}}{(\alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}}\]
+
+\item [app]
+\[
+\infrule{\begin{array}{ll}
+\eok{e_{1}}{(\alpha _{1}::\kappa _{1}\ldots \alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}} & \conok{\context }{c_{i+1}}{\subst{c_{i}}{\alpha _{i}}{\kappa _{i+1}}}\\
+\eok{e_{2}}{\subst{c_{n}}{\alpha _{n}}{\tau _{1}}} & 
+\end{array}}{\eok{e_{1}[c_{1}\ldots c_{n}]e_{2}}{\subst{c_{n}}{\alpha _{n}}{\tau _{2}}}}\]
+
+\item [pair]
+\[
+\infrule{\begin{array}{ll}
+\eok{e_{1}}{\tau _{1}} & \eok{e_{2}}{\tau _{2}}
+\end{array}}{\eok{<e_{1},e_{2}>}{\tau _{1}\times \tau _{2}}}\]
+
+\item [proj1]
+\[
+\infrule{\begin{array}{ll}
+\eok{e}{\tau _{1}\times \tau _{2}}
+\end{array}}{\eok{e.1}{\tau _{1}}}\]
+
+\item [proj2]
+\[
+\infrule{\begin{array}{ll}
+\eok{e}{\tau _{1}\times \tau _{2}}
+\end{array}}{\eok{e.2}{\tau _{2}}}\]
+
+\item [float]
+\[
+\infrule{\deltaok{\context }}{\eok{r}{Float}}\]
+
+\item [int]
+\[
+\infrule{\deltaok{\context }}{\eok{n}{T(Int)}}\]
+
+\item [box]
+\[
+\infrule{\eok{e}{Float}}{\eok{\boxf{e}}{T(BoxFloat)}}\]
+
+\item [unbox]
+\[
+\infrule{\eok{e}{BoxFloat}}{\eok{\unboxf{e}}{Float}}\]
+
+\item [sumswitch]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{T} & \expok{\caddt{x_{1}}{T(c_{1})}}{e_{1}}{\tau }\\
+\cok{c_{2}}{T} & \expok{\caddt{x_{2}}{T(c_{2})}}{e_{2}}{\tau }\\
+\eok{e}{T(c_{1}+c_{2})} & 
+\end{array}}{\eok{\sumsw{e}{x_{1}}{c_{1}}{e_{1}}{x_{2}}{c_{2}}{e_{2}}}{\tau }}\]
+
+\item [inl]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{T} & \conok{\context }{c_{2}}{T}\\
+\eok{e}{T(c_{1})} & 
+\end{array}}{\eok{\inl{c_{1}}{c_{2}}{e}}{T(c_{1}+c_{2})}}\]
+
+\item [inr]
+\[
+\infrule{\begin{array}{ll}
+\cok{c_{1}}{T} & \conok{\context }{c_{2}}{T}\\
+\eok{e}{T(c_{2})} & 
+\end{array}}{\eok{\inr{c_{1}}{c_{2}}{e}}{T(c_{1}+c_{2})}}\]
+
+\item [ifBoxFloat]
+\[
+\infrule{\begin{array}{ll}
+\cok{c}{T} & \eok{e_{1}}{\tau }\\
+\eok{e_{2}}{\tau } & 
+\end{array}}{\eok{\iffloat{c}{e_{1}}{e_{2}}}{\tau }}\]
+
+\item [array]
+\[
+\infrule{\begin{array}{ll}
+\eok{e_{1}}{Int} & \cok{c}{T}\\
+\eok{e_{2}}{T(c)} & 
+\end{array}}{\eok{\arr{c}{e_{1}}{e_{2}}}{\carray{T(c}})}\]
+
+\item [sub]
+\[
+\infrule{\begin{array}{lll}
+\eok{e_{1}}{\carray{T(c})} & \eok{e_{2}}{T(Int)}
+\end{array}}{\eok{\sub{e_{1}}{e_{2}}}{T(c)}}\]
+
+\item [fsub]
+\[
+\infrule{\begin{array}{ll}
+\eok{e_{1}}{\carray{T(BoxFloat})} & \eok{e_{2}}{T(Int)}
+\end{array}}{\eok{\fsub{e_{1}}{e_{2}}}{Float}}\]
+
+\end{description}
+
+\section{the algorithmic MIL}
+
+
+\newcommand{\kindvalid}[2]{#1 \models #2 }
+
+\newcommand{\kindsynth}[3]{#1 \models #2 \Uparrow #3 }
+
+\newcommand{\subkind}[3]{#1 \models #2 \preceq #3 }
+
+\newcommand{\conequiv}[4]{#1 \models #2 \equiv #3 ::#4 }
+
+\newcommand{\coneq}[3]{\models }
+ 
+\newcommand{\typevalid}[2]{#1 \models #2 }
+
+\newcommand{\typev}[1]{\typevalid{\Delta }{#1 }}
+
+
+
+\newcommand{\typesynth}[3]{#1 \models #2 \Uparrow #3 }
+
+\newcommand{\types}[2]{\typesynth{\context }{#1 }{#2 }}
+
+\newcommand{\typeequiv}[3]{#1 \models #2 \equiv #3 }
+
+\newcommand{\typeeq}[2]{\typeequiv{\context }{#1 }{#2 }}
+
+\newcommand{\hnf}[3]{#1 \models #2 \Longrightarrow #3 }
+
+\newcommand{\Hnf}[2]{\hnf{\context }{#1 }{#2 }}
+
+\newcommand{\pathextract}[3]{#1 \models #2 \leadsto #3 }
+
+\newcommand{\pext}[2]{\pathextract{\context }{#1 }{#2 }}
+
+\newcommand{\selfify}[3]{#1 ::#2 \doteq #3 }
+
+\newcommand{\kcheck}[3]{#1 \models #2 \Downarrow #3 }
+
+\newcommand{\betared}[3]{#1 \models #2 \rightarrow #3 }
+
+
+
+\newcommand{\tcheck}[3]{#1 \models #2 \Downarrow #3 }
+ 
+
+
+\subsection{Judgments}
+
+
+\subsubsection{Well Formed Kind \protect\( \kindvalid{\context }{\kappa }\protect \)}
+
+\begin{description}
+\item [Type]
+\[
+\axiom{\kindvalid{\context }{T}}\]
+
+\item [Singleton]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T}
+\end{array}}{\kindvalid{\context }{\st{c}}}\]
+
+\item [Pi]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\context }{\kappa _{1}} & \kindvalid{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}}
+\end{array}}{\kindvalid{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}}\]
+
+\item [Sigma]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\context }{\kappa _{1}} & \kindvalid{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}}
+\end{array}}{\kindvalid{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}}\]
+
+\end{description}
+
+\subsubsection{Sub-Kinding \protect\( \subkind{\Delta }{\kappa _{1}}{\kappa _{2}}\protect \)}
+
+Assume that \( \Delta  \), \( \kappa _{1} \) and \( \kappa _{2} \) are well-formed.
+Check that \( \kappa _{1} \) is a subkind of \( \kappa _{2} \).
+
+TS: Termination
+
+TS: if \( \klt{\kone }{\ktwo } \), then \( \subkind{\context }{\kone }{\ktwo } \)
+
+TS: if \( \deltaok{\context } \), \( \kok{\kone } \), \( \kok{\ktwo } \),
+and \( \subkind{\context }{\kone }{\ktwo } \), then \( \klt{\kone }{\ktwo } \)
+
+\begin{description}
+\item [Type]
+\[
+\axiom{\subkind{\Delta }{T}{T}}\]
+
+\item [Singleton]
+\[
+\axiom{\subkind{\Delta }{\st{c}}{T}}\]
+
+\item [Singletons]
+\[
+\infrule{\conequiv{\Delta }{c}{d}{T}}{\subkind{\Delta }{\st{c}}{\st{d}}}\]
+
+\item [\( \Pi  \)]
+\[
+\infrule{\begin{array}{ll}
+\subkind{\Delta }{\kappa _{1}'}{\kappa _{1}} & \subkind{\Delta [\alpha ::\kappa _{1}']}{\kappa _{2}}{\kappa _{2}'}
+\end{array}}{\subkind{\Delta }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}').\kappa _{2}'}}\quad \alpha \notin dom(\Delta )\]
+
+\item [\( \Sigma  \)]
+\[
+\infrule{\begin{array}{ll}
+\subkind{\Delta }{\kappa _{1}}{\kappa _{1}'} & \subkind{\Delta [\alpha ::\kappa _{1}]}{\kappa _{2}}{\kappa _{2}'}
+\end{array}}{\subkind{\Delta }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'}}\quad \alpha \notin dom(\Delta )\]
+
+\end{description}
+
+\subsubsection{Selfification \protect\( \selfify{c}{\kappa }{\kappa '}\protect \)}
+
+This is the definition of selfification. Assume \( c \) and \( \kappa  \)
+are well-formed with respect to some context. Return the most precise kind of
+\( c \). Intuitively, this is the definition of a singleton at the higher kind. 
+
+TS: if \( \kok{\kappa } \), \( \cok{c}{\kappa } \), and \( \selfify{c}{\kappa }{\kappa '} \),
+then \( \cok{c}{\kappa '} \).
+
+TS: if \( \kok{\kappa } \), \( \cok{c}{\kappa } \), and \( \selfify{c}{\kappa }{\kappa '} \),
+then for all \( \kappa '' \) such that \( \cok{c}{\kappa ''} \), \( \klt{\kappa '}{\kappa ''} \) 
+
+\begin{description}
+\item [Type]\( \selfify{c}{T}{\st{c}} \)
+\item [Singleton]\( \selfify{c}{\st{d}}{\st{d}} \)
+\item [\( \Pi  \)]\( \selfify{c}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}'} \)
+\\
+where \( \selfify{c\, \alpha }{\kappa _{2}}{\kappa _{2}'} \)
+\item [\( \Sigma  \)]\( \selfify{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'} \)
+\\
+where \( \selfify{c.1}{\kappa _{1}}{\kappa _{1}'} \) and \( \selfify{c.2}{\subst{c.1}{\alpha }{\kappa _{2}}}{\kappa _{2}'} \)
+\end{description}
+
+\subsubsection{Kind Analysis \protect\( \kcheck{\context }{c}{\kappa }\protect \)}
+
+Assume \( \context  \) and \( \kappa  \) are well formed. Check that \( c \)
+is well formed and can be given kind \( \kappa  \).
+
+TS: if \( \cok{c}{\kappa } \) then \( \kcheck{\context }{c}{\kappa } \).
+
+TS: if \( \deltaok{\context } \), \( \kok{\kappa } \) and \( \kcheck{\context }{c}{\kappa } \),
+then \( \cok{c}{\kappa } \)
+
+
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\context }{c}{\kappa '} & \subkind{\context }{\kappa '}{\kappa }
+\end{array}}{\kcheck{\context }{c}{\kappa }}\]
+
+
+
+\subsubsection{Kind Synthesis \protect\( \kindsynth{\Delta }{c}{\kappa }\protect \)}
+
+Assumes that \( \Delta  \) is well-formed. Check that c is well-kinded, and
+construct \( \kappa  \) s.t. \( \kindvalid{\Delta }{\kappa } \) and c has
+kind \( \kappa  \). 
+
+TS: if \( \deltaok{\context } \), and \( \kindsynth{\context }{c}{\kappa } \)
+then \( \kok{\kappa } \)
+
+TS: if \( \deltaok{\context } \), and \( \kindsynth{\context }{c}{\kappa } \)
+then \( \cok{c}{\kappa } \).
+
+TS: if \( \cok{c}{\kappa } \), then \( \kindsynth{\context }{c}{\kappa '} \),
+such that \( \klt{\kappa '}{\kappa } \)
+
+\begin{description}
+\item [Variable]
+\[
+\infrule{\selfify{\alpha }{\kappa }{\kappa '}}{\kindsynth{\Delta [\alpha ::\kappa ]}{\alpha }{\kappa }'}\]
+
+\item [BoxFloat]
+\[
+\axiom{\kindsynth{\Delta }{BoxFloat}{\st{BoxFloat}}}\]
+
+\item [Int]
+\[
+\axiom{\kindsynth{\context }{Int}{\st{Int}}}\]
+
+\item [\( \mu  \)]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\Delta [a::T,b::T]}{c_{1}}{T} & \kcheck{\Delta [a::T,b::T]}{c_{2}}{T}
+\end{array}}{\kindsynth{\Delta }{\mu (a=c_{1},b=c_{2})}{\st{\mu (a=c_{1},b=c_{2}).1}\times \st{\mu (a=c_{1},b=c_{2}).2}}}\quad a,b\notin dom(\Delta )\]
+ 
+\item [Pair]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}
+\end{array}}{\kindsynth{\Delta }{c_{1}\times c_{2}}{\st{c_{1}\times c_{2}}}}\]
+
+\item [Arrow]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}
+\end{array}}{\kindsynth{\Delta }{c_{1}\rightarrow c_{2}}{\st{c_{1}\rightarrow c_{2}}}}\]
+
+\item [Sum]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}
+\end{array}}{\kindsynth{\Delta }{c_{1}+c_{2}}{\st{c_{1}+c_{2}}}}\]
+
+\item [Array]
+\[
+\infrule{\kcheck{\context }{c}{T}}{\kindsynth{\context }{\carray{c}}{\st{\carray{c}}}}\]
+
+\item [Lambda]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\Delta }{\kappa } & \kindsynth{\Delta [\alpha ::\kappa ]}{c}{\kappa '}
+\end{array}}{\kindsynth{\Delta }{\Lam{\alpha }{\kappa }{c}}{\Pi (\alpha ::\kappa ).\kappa '}}\quad \alpha \notin dom(\Delta )\]
+
+\item [App]
+\[
+\infrule{\begin{array}{cc}
+\begin{array}{ll}
+\kindsynth{\Delta }{c_{1}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}} & \kcheck{\context }{c_{2}}{\kappa _{1}}
+\end{array}
+\end{array}}{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}}{\alpha }{\kappa _{2}}}}\]
+
+\item [Record]
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\Delta }{c_{1}}{\kappa _{1}} & \kindsynth{\Delta }{c_{2}}{\kappa _{2}}
+\end{array}}{\kindsynth{\Delta }{<c_{1},c_{2}>}{\kappa _{1}\times \kappa _{2}}}\]
+
+\item [Proj1]
+\[
+\infrule{\kindsynth{\Delta }{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}}{\kindsynth{\Delta }{c.1}{\kappa _{1}}}\]
+
+\item [Proj2]
+\[
+\infrule{\kindsynth{\Delta }{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}}{\kindsynth{\Delta }{c.2}{\subst{c.1}{\alpha }{\kappa _{2}}}}\]
+
+\item [Let]
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\Delta }{c_{1}}{\kappa _{1}} & \kindsynth{\Delta [\alpha ::\kappa _{1}]}{c_{2}}{\kappa _{2}}
+\end{array}}{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}}{\alpha }{\kappa _{2}}}}\quad \alpha \notin dom(\Delta )\]
+
+\end{description}
+
+\subsubsection{Well-formed Type \protect\( \typev{\tau }\protect \)}
+
+Assume \( \context  \) is well-formed. Check that \( \tau  \) is well-formed.
+
+TS: if \( \deltaok{\context } \) and \( \typev{\tau } \) then \( \tok{\tau } \).
+
+TS: if \( \tok{\tau } \) then \( \typev{\tau '} \) such that \( \eqtype{\context }{\tau }{\tau '} \)
+
+\begin{description}
+\item [Constructor]
+\[
+\frac{\kcheck{\context }{c}{T}}{\typev{T(c)}}\]
+
+\item [ArrowType]
+\[
+\frac{\begin{array}{ll}
+\kindvalid{\caddk{\alpha _{i}}{\kappa _{i}}}{\kappa _{i+1}} & \\
+\typevalid{\caddk{\alpha _{i}}{\kappa _{i}}}{\tau _{1}} & \typevalid{\caddk{\alpha _{i}}{\kappa _{i}}}{\tau _{2}}
+\end{array}}{\typev{(\alpha _{i}::\kappa _{i},\tau _{1})\rightarrow \tau _{2}}}\quad \alpha _{i+1}\notin dom(\context [\alpha _{i}::\kappa _{i}])\]
+
+\item [Float]
+\[
+\axiom{\typev{Float}}\]
+
+\item [PairType]
+\[
+\frac{\begin{array}{ll}
+\typev{\tau _{1}} & \typev{\tau _{2}}
+\end{array}}{\typev{\tau _{1}\times \tau _{2}}}\]
+
+\end{description}
+
+\subsubsection{Type Analysis \protect\( \tcheck{\context }{e}{\tau }\protect \)}
+
+Assume \( \context  \) and \( \tau  \) are well-formed. Check that \( e \)
+is well-typed, and has type \( \tau  \).
+
+TS: if \( \deltaok{\context } \), \( \tok{\tau } \) and \( \tcheck{\context }{e}{\tau } \),
+then \( \eok{e}{\tau } \)
+
+TS: if \( \eok{e}{\tau } \) then \( \tcheck{\context }{e}{\tau } \)
+
+
+\[
+\infrule{\begin{array}{ll}
+\types{e}{\tau '} & \typeeq{\tau '}{\tau }
+\end{array}}{\tcheck{\context }{e}{\tau }}\]
+
+
+
+\subsubsection{Type Synthesis \protect\( \types{e}{\tau }\protect \)}
+
+Assume \( \context  \) is well-formed. Check that \( e \) is well-formed and
+construct its type \( \tau  \), where \( \typev{\tau } \)
+
+TS: if \( \deltaok{\context } \) and \( \types{e}{\tau } \) then \( \tok{\tau } \).
+
+TS: if \( \deltaok{\context } \) and \( \types{e}{\tau } \) then \( \eok{e}{\tau } \)
+
+TS if \( \eok{e}{\tau } \), then \( \types{e}{\tau '} \) such that \( \eqtype{\context }{\tau }{\tau '} \)
+
+\begin{description}
+\item [variable]
+\[
+\axiom{\typesynth{\caddt{x}{\tau }}{x}{\tau }}\]
+
+\item [lete]
+\[
+\frac{\begin{array}{ll}
+\types{e_{1}}{\tau _{1}} & \typesynth{\caddt{x}{\tau _{1}}}{e_{2}}{\tau _{2}}
+\end{array}}{\types{\lete{x}{e_{1}}{e_{2}}}{\tau _{2}}}\quad x\notin dom(\context )\]
+
+\item [letc]
+\[
+\frac{\begin{array}{ll}
+\kindsynth{\context }{c}{\kappa } & \typesynth{\caddk{\alpha }{\kappa }}{e}{\tau }
+\end{array}}{\types{\lete{\alpha }{c}{e}}{\subst{c}{\alpha }{\tau }}}\quad \alpha \notin dom(\context )\]
+
+\item [rec]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\caddk{\alpha _{i}}{\kappa _{i}}}{\kappa _{i+1}} & \typevalid{\caddk{\alpha _{n}}{\kappa _{n}}}{\tau _{1}}\\
+\typevalid{\caddk{\alpha _{n}}{\kappa _{n}}}{\tau _{2}} & \kcheck{\context \extt{f}{(\alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}\extk{\alpha _{n}}{\kappa _{n}}\extt{x}{\tau _{1}}}{e}{\tau _{2}}
+\end{array}}{\types{\rec{f}{\alpha _{n}}{\kappa _{n}}{x}{\tau _{1}}{\tau _{2}}{e}}{(\alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}}\]
+  where \( f,x\notin dom(\context ),\alpha _{i+1}\notin dom(\caddk{\alpha _{i}}{\kappa _{i}} \)
+.
+\item [app]
+\[
+\infrule{\begin{array}{lll}
+\types{e_{1}}{(\alpha _{1}::\kappa _{1}\ldots \alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}} & \kcheck{\context }{c_{i+1}}{\subst{c_{i}}{\alpha _{i}}{\kappa _{i+1}}} & \kcheck{\context }{e_{2}}{\subst{c_{n}}{\alpha _{n}}{\tau _{1}}}
+\end{array}}{\types{e_{1}[c_{1}\ldots c_{n}]e_{2}}{\subst{c_{n}}{\alpha _{n}}{\tau _{2}}}}\]
+
+\item [mono\_con\_app]
+\[
+\infrule{\begin{array}{lll}
+\types{e_{1}}{T(c_{e})} & \hnf{\context }{c_{e}}{c_{1}\rightarrow c_{2}} & \tcheck{\context }{e_{2}}{T(c_{1})}
+\end{array}}{\types{e_{1}[]e_{2}}{T(c_{2})}}\]
+
+\item [pair]
+\[
+\infrule{\begin{array}{ll}
+\types{e_{1}}{\tau _{1}} & \types{e_{2}}{\tau _{2}}
+\end{array}}{\types{<e_{1},e_{2}>}{\tau _{1}\times \tau _{2}}}\]
+
+\item [type\_proj1]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{\tau _{1}\times \tau _{2}}
+\end{array}}{\types{e.1}{\tau _{1}}}\]
+
+\item [con\_proj1]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{T(c)} & \hnf{\context }{c}{c_{1}\times c_{2}}
+\end{array}}{\types{e.1}{T(c_{1})}}\]
+
+\item [type\_proj2]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{\tau _{1}\times \tau _{2}}
+\end{array}}{\types{e.2}{\tau _{2}}}\]
+
+\item [con\_proj2]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{T(c)} & \hnf{\context }{c}{c_{1}\times c_{2}}
+\end{array}}{\types{e.2}{T(c_{2})}}\]
+
+\item [float]
+\[
+\axiom{\types{r}{Float}}\]
+
+\item [int]
+\[
+\axiom{\types{n}{T(Int)}}\]
+
+\item [box]
+\[
+\infrule{\tcheck{\context }{e}{Float}}{\types{\boxf{e}}{T(BoxFloat)}}\]
+
+\item [unbox]
+\[
+\infrule{\tcheck{\context }{e}{T(BoxFloat)}}{\types{\unboxf{e}}{Float}}\]
+
+\item [sumswitch]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \typesynth{\caddt{x_{1}}{T(c_{1})}}{e_{1}}{\tau _{1}}\\
+\kcheck{\context }{c_{2}}{T} & \typesynth{\caddt{x_{2}}{T(c_{2})}}{e_{2}}{\tau _{2}}\\
+\tcheck{\context }{e}{T(c_{1}+c_{2})} & \typeeq{\tau _{1}}{\tau _{2}}
+\end{array}}{\types{\sumsw{e}{x_{1}}{c_{1}}{e_{1}}{x_{2}}{c_{2}}{e_{2}}}{\tau _{1}}}\]
+
+\item [inl]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}\\
+\tcheck{\context }{e}{T(c_{1})} & 
+\end{array}}{\types{\inl{c_{1}}{c_{2}}{e}}{T(c_{1}+c_{2})}}\]
+
+\item [inr]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T} & \kcheck{\context }{c_{2}}{T}\\
+\tcheck{\context }{e}{T(c_{2})} & 
+\end{array}}{\types{\inr{c_{1}}{c_{2}}{e}}{T(c_{1}+c_{2})}}\]
+
+\item [ifBoxFloat]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T} & \types{e_{1}}{\tau _{1}}\\
+\types{e_{2}}{\tau _{2}} & \typeeq{\tau _{1}}{\tau _{2}}
+\end{array}}{\types{\iffloat{c}{e_{1}}{e_{2}}}{\tau _{1}}}\]
+
+\item [array]
+\[
+\infrule{\begin{array}{ll}
+\tcheck{\context }{e_{1}}{T(Int)} & \kcheck{\context }{c}{T}\\
+\tcheck{\context }{e_{2}}{T(c)} & 
+\end{array}}{\types{\arr{c}{e_{1}}{e_{2}}}{\carray{T(c}})}\]
+
+\item [sub]
+\[
+\infrule{\begin{array}{lll}
+\types{e_{1}}{T(c)} & \hnf{\context }{c}{\carray{c'}} & \tcheck{\context }{e_{2}}{Int}
+\end{array}}{\types{\sub{e_{1}}{e_{2}}}{T(c')}}\]
+
+\item [fsub]
+\[
+\infrule{\begin{array}{ll}
+\tcheck{\context }{e_{1}}{\carray{T(BoxFloat})} & \tcheck{\context }{e_{2}}{T(Int)}
+\end{array}}{\types{\fsub{e_{1}}{e_{2}}}{Float}}\]
+
+\end{description}
+
+\subsubsection{Natural Kind Extraction \protect\( \pext{p}{\kappa }\protect \)}
+
+Assumes that \( \Delta  \) and \( p \) are well-formed. Returns the unselfified
+kind of \( p \). 
+
+TS: if \( \deltaok{\context } \), \( \cok{p}{\kappa } \)and \( \pext{p}{\kappa '} \),
+then \( \kok{\kappa } \).
+
+TS: if \( \deltaok{\context } \), \( \cok{p}{\kappa } \)and \( \pext{p}{\kappa '} \),
+then \( \cok{p}{\kappa '} \).
+
+\begin{description}
+\item [Variable]
+\[
+\axiom{\pathextract{\caddk{\alpha }{\kappa }}{\alpha }{\kappa }}\]
+
+\item [Proj1]
+\[
+\infrule{\begin{array}{ll}
+\pext{p}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}} & 
+\end{array}}{\pext{p.1}{\kappa _{1}}}\]
+
+\item [Proj2]
+\[
+\infrule{\begin{array}{ll}
+\pext{p}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}} & 
+\end{array}}{\pext{p.2}{\subst{p.1}{\alpha }{\kappa _{2}}}}\]
+
+\item [App]
+\[
+\infrule{\begin{array}{ll}
+\pext{p}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}} & 
+\end{array}}{\pext{p\, c}{\subst{c}{\alpha }{\kappa _{2}}}}\]
+
+\end{description}
+
+\subsubsection{Constructor Weak Head Normal Form \protect\( \hnf{\context }{c}{c'}\protect \)}
+
+Assumes that \( \Delta  \) and \( c \) are well-formed. Returns the head normal
+form of \( c \). 
+
+TS: if \( \cok{c}{\kappa } \)and \( \hnf{\context }{c}{c'} \), then \( \cok{c'}{\kappa } \)
+
+\begin{description}
+\item [Variable]
+\[
+\infrule{\begin{array}{ll}
+\pext{\alpha }{\st{c}} & \hnf{\context }{c}{c'}
+\end{array}}{\hnf{\context }{\alpha }{c'}}\]
+
+\item [OpaqueVariable]
+\[
+\infrule{\begin{array}{ll}
+\pext{\alpha }{\kappa } & 
+\end{array}}{\hnf{\context }{\alpha }{\alpha }}\]
+\\
+where \( \kappa  \) is not a singleton
+\item [BoxFloat]
+\[
+\axiom{\hnf{\context }{BoxFloat}{BoxFloat}}\]
+
+\item [Int]
+\[
+\axiom{\hnf{\context }{Int}{Int}}\]
+
+\item [\( \mu  \)]
+\[
+\axiom{\Hnf{\mu (a=c_{1},b=c_{2})}{\mu (a=c_{1},b=c_{2})}}\]
+ 
+\item [Pair]
+\[
+\axiom{\Hnf{c_{1}\times c_{2}}{c_{1}\times c_{2}}}\]
+
+\item [Arrow]
+\[
+\axiom{\Hnf{c_{1}\rightarrow c_{2}}{c_{1}\rightarrow c_{2}}}\]
+
+\item [Sum]
+\[
+\axiom{\Hnf{c_{1}+c_{2}}{c_{1}+c_{2}}}\]
+
+\item [Array]
+\[
+\axiom{\hnf{\context }{\carray{c}}{\carray{c}}}\]
+
+\item [Lambda]
+\[
+\axiom{\Hnf{\Lam{\alpha }{\kappa }{c}}{\Lam{\alpha }{\kappa }{c}}}\]
+
+\item [App]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c_{1}}{\lambda \alpha ::\kappa .c_{1}} & \hnf{\context }{\subst{c_{2}}{\alpha }{c_{1}}}{c}
+\end{array}}{\Hnf{c_{1}\, c_{2}}{c}}\]
+ 
+\item [PathApp]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c_{1}}{p} & \pext{p\, c}{\st{c'}}\\
+\hnf{\context }{c'}{c''} & 
+\end{array}}{\Hnf{c_{1}\, c_{2}}{c''}}\]
+
+\item [OpaquePathApp]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c_{1}}{p} & \pext{p\, c}{\kappa }
+\end{array}}{\Hnf{c_{1}\, c_{2}}{p\, c}}\]
+\\
+where \( \kappa  \) is not a singleton
+\item [Record]
+\[
+\axiom{\Hnf{<c_{1},c_{2}>}{<c_{1},c_{2}>}}\]
+
+\item [Proj1]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c}{<c_{1},c_{2}>} & \Hnf{c_{1}}{c_{1}'}
+\end{array}}{\Hnf{c.1}{c_{1}'}}\]
+
+\item [PathProj1]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c}{p} & \pext{p.1}{\st{c'}}\\
+\hnf{\context }{c'}{c''} & 
+\end{array}}{\Hnf{c.1}{c''}}\]
+
+\item [OpaquePathProj1]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c}{p} & \pext{p.1}{\kappa }
+\end{array}}{\Hnf{c.1}{p.1}}\]
+\\
+where \( \kappa  \) is not a singleton
+\item [Proj2]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c}{<c_{1},c_{2}>} & \Hnf{c_{2}}{c_{2}'}
+\end{array}}{\Hnf{c.2}{c_{2}'}}\]
+
+\item [PathProj2]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c}{p} & \pext{p.2}{\st{c'}}\\
+\hnf{\context }{c'}{c''} & 
+\end{array}}{\Hnf{c.2}{c''}}\]
+
+\item [OpaquePathProj2]
+\[
+\infrule{\begin{array}{ll}
+\Hnf{c}{p} & \pext{p.2}{\kappa }
+\end{array}}{\Hnf{c.2}{p.2}}\]
+\\
+where \( \kappa  \) is not a singleton
+\item [Let]
+\[
+\infrule{\Hnf{\subst{c_{1}}{\alpha }{c_{2}}}{c}}{\Hnf{\Let{\alpha }{c_{1}}{c_{2}}}{c}}\]
+ 
+\end{description}
+
+\subsection{Termination Proofs}
+
+
+\newcommand{\csz}[1]{sz_{c}(#1 )}
+
+\newcommand{\ksz}[1]{sz_{\kappa }(#1 )}
+
+
+
+\newcommand{\Kmeas}[1]{SZ_{\kappa }(#1 )}
+
+\newcommand{\Ameas}[1]{SZ_{\Downarrow }(#1 )}
+ 
+\newcommand{\Smeas}[1]{SZ_{\Uparrow }(#1 )}
+
+\newcommand{\kmeas}[2]{\Kmeas{\kindvalid{#1 }{#2 }}}
+
+\newcommand{\ameas}[3]{\Ameas{\kcheck{#1 }{#2 }{#3 }}}
+
+\newcommand{\smeas}[3]{\Smeas{\kindsynth{#1 }{#2 }{#3 }}}
+
+
+For the time being, we assume that constructor equivalence at kind type is decidable.
+For this section, I view the judgments given above as algorithms, as they were
+intended to be. All of the judgments presented above are algorithmic in the
+sense that either they are entirely syntax directed, or else at worse, require
+the ``results'' of one of their hypotheses to determine a rule which uniquely
+applies.
+
+
+\subsubsection{Termination of sub-kinding.}
+
+Consider the relation \( \prec  \) on sub-kinding judgments defined as follows:
+\( (\subkind{\context '}{\kappa _{1}'}{\kappa _{2}'})\prec (\subkind{\context }{\kappa _{1}}{\kappa _{2}}) \)
+iff showing \( \subkind{\context '}{\kappa _{1}'}{\kappa _{2}'} \) is an immediate
+sub-goal of showing \( \subkind{\context }{\kappa _{1}}{\kappa _{2}} \). It
+suffices to show that the \( \prec  \) relation is well-founded, since if there
+are no infinite descending chains in the relation, then clearly there are no
+infinite sequences of rule applications. To show that this is the case, we exhibit
+a mapping \( SZ \) which maps judgments to natural numbers, and show that this
+map is order preserving. 
+
+\begin{defn}
+\( SZ(\subkind{\context }{\kappa _{1}}{\kappa _{2}})=sz(\kappa _{1})+sz(\kappa _{2}) \),
+where
+
+
+\[
+sz(\kappa )=\left\{ \begin{array}{ll}
+1 & \mathrm{if}\, \kappa =T\\
+1 & \mathrm{if}\, \kappa =\st{c}\\
+sz(\kappa _{1})+sz(\kappa _{2}) & \mathrm{if}\, \kappa =\Sigma (\alpha ::\kappa _{1}).\kappa _{2}\\
+sz(\kappa _{1})+sz(\kappa _{2}) & \mathrm{if}\, \kappa =\Pi (\alpha ::\kappa _{1}).\kappa _{2}
+\end{array}\right. \]
+
+\end{defn}
+\begin{lem}
+\( SZ \) is a function.
+\end{lem}
+\begin{proof}
+Clearly it suffices to show that \( sz \) is a function - that is, \( \forall \kappa ,\exists !n\, s.t.\, sz(\kappa )=n \).
+This follows by induction over the structure of \( \kappa  \).
+\end{proof}
+\begin{lem}
+\( SZ \) is order preserving. That is, 
+\[
+(\subkind{\context '}{\kappa _{1}'}{\kappa _{2}'})\prec (\subkind{\context }{\kappa _{1}}{\kappa _{2})}\Rightarrow SZ(\subkind{\context '}{\kappa _{1}'}{\kappa _{2}'})<SZ(\subkind{\context }{\kappa _{1}}{\kappa _{2}})\]
+
+\end{lem}
+\begin{proof}
+We proceed by cases on the subkinding judgements that define\( \prec  \).
+\begin{enumerate}
+\item \( \subkind{\context }{T}{T} \). Vacuously true - the rule has no premises,
+and hence has nothing smaller than it. 
+\item \( \subkind{\context }{\st{c}}{T} \). Vacuously true - the rule has no premises,
+and hence has nothing smaller than it. 
+\item \( \subkind{\context }{\st{c}}{\st{d}} \). This rule has no sub-kinding premises,
+and hence has nothing smaller than it. The only subgoal is an equivalence judgment,
+which we assume terminates. 
+\item \( \subkind{\Delta }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}').\kappa _{2}'} \).
+The subkinding rule for the \( \Pi  \) judgment defines two judgments as smaller:
+
+\begin{enumerate}
+\item By definition, \( (\subkind{\context }{\kappa _{1}'}{\kappa _{1}})\prec (\subkind{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}').\kappa _{2}'}) \).
+But note that 
+\begin{eqnarray*}
+SZ(\subkind{\context }{\kappa _{1}'}{\kappa _{1}}) & = & sz(\kappa _{1}')+sz(\kappa _{1})\\
+ & < & sz(\kappa _{1}')+sz(\kappa _{1})+sz(\kappa _{2}')+sz(\kappa _{2})\\
+ & = & SZ(\subkind{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}').\kappa _{2}'})
+\end{eqnarray*}
+
+\item By definition, \( (\subkind{\caddk{\alpha }{\kappa _{1}'}}{\kappa _{2}}{\kappa _{2}'})\prec (\subkind{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}').\kappa _{2}'}) \).
+But note that 
+\begin{eqnarray*}
+SZ(\subkind{\caddk{\alpha }{\kappa _{1}'}}{\kappa _{2}}{\kappa _{2}}') & = & sz(\kappa _{2}')+sz(\kappa _{2})\\
+ & < & sz(\kappa _{1}')+sz(\kappa _{1})+sz(\kappa _{2}')+sz(\kappa _{2})\\
+ & = & SZ(\subkind{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}{\Pi (\alpha ::\kappa _{1}').\kappa _{2}'})
+\end{eqnarray*}
+
+\end{enumerate}
+\item \( \subkind{\Delta }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'} \).
+The subkinding rule for the \( \Sigma  \) judgment defines two judgements as
+smaller:
+
+\begin{enumerate}
+\item By definition, \( \subkind{\context }{\kappa _{1}}{\kappa _{1}'}\prec \subkind{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'} \).
+But note that 
+\begin{eqnarray*}
+SZ(\subkind{\context }{\kappa _{1}}{\kappa _{1}'}) & = & sz(\kappa _{1}')+sz(\kappa _{1})\\
+ & < & sz(\kappa _{1}')+sz(\kappa _{1})+sz(\kappa _{2}')+sz(\kappa _{2})\\
+ & = & SZ(\subkind{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'})
+\end{eqnarray*}
+
+\item By definition, \( \subkind{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}}{\kappa _{2}'}\prec \subkind{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'} \).
+But note that 
+\begin{eqnarray*}
+SZ(\subkind{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}}{\kappa _{2}}') & = & sz(\kappa _{2}')+sz(\kappa _{2})\\
+ & < & sz(\kappa _{1}')+sz(\kappa _{1})+sz(\kappa _{2}')+sz(\kappa _{2})\\
+ & = & SZ(\subkind{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}{\Sigma (\alpha ::\kappa _{1}').\kappa _{2}'})
+\end{eqnarray*}
+
+\end{enumerate}
+\end{enumerate}
+\end{proof}
+\begin{thm}
+\label{thm:subkindTerm}The algorithm for checking subkinding always terminates.
+That is, the algorithmic rules for subkinding do not permit any infinite sequences
+of rule applications. 
+\end{thm}
+\begin{proof}
+By the previous lemmas, every rule uses only premises that are strictly smaller
+than the conclusion according to a well-founded ordering. Therefore, there can
+be no infinite sequence of rule applications, since such a sequence would correspond
+to an infinite descending chain in the well-founded ordering.
+\end{proof}
+
+\subsubsection{Termination of the well-formed kind, kind analysis, and kind synthesis algorithms}
+
+We start by defining measure functions which map judgments to pairs of natural
+numbers ordered lexicographically below. These functions are defined in terms
+of inductive defined functions \( \ksz{} \) and \( \csz{} \), which act as
+measures on kinds and constructors, respectively.
+
+\begin{defn}
+\label{def:kindConMetrics}
+\begin{eqnarray*}
+\ksz{\kappa } & = & \left\{ \begin{array}{ll}
+1 & \mathrm{if}\, \kappa =T\\
+\csz{c}+1 & \mathrm{if}\, \kappa =\st{c}\\
+\ksz{\kappa _{1}}+\ksz{\kappa _{2}} & \mathrm{if}\, \kappa =\Sigma (\alpha ::\kappa _{1}).\kappa _{2}\\
+\ksz{\kappa _{1}}+\ksz{\kappa _{2}} & \mathrm{if}\, \kappa =\Pi (\alpha ::\kappa _{1}).\kappa _{2}
+\end{array}\right. \\
+\csz{c} & = & \left\{ \begin{array}{ll}
+1 & \mathrm{if}\, c=\alpha ,Int,BoxFloat\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=\mu (a=c_{1},b=c_{2})\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=c_{1}\times c_{2},c_{1}\rightarrow c_{2},c_{1}+c_{2}\\
+\csz{c'}+1 & \mathrm{if}\, \carray{c=c'}\\
+\csz{c'}+\ksz{\kappa } & \mathrm{if}\, c=\Lam{\alpha }{\kappa }{c'}\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=c_{1}\, c_{2}\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=<c_{1},c_{2}>\\
+\csz{c'}+1 & \mathrm{if}\, c=c'.1,c'.2\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=\Let{\alpha }{c_{1}}{c_{2}}
+\end{array}\right. 
+\end{eqnarray*}
+
+\end{defn}
+%
+
+\begin{defn}
+Well-formed kind measure. \( \kmeas{\context }{\kappa }=(\ksz{\kappa },0) \)
+\end{defn}
+%
+
+\begin{defn}
+Type analysis measure. \( \ameas{\context }{c}{\kappa }=(\csz{c},1) \)
+\end{defn}
+%
+
+\begin{defn}
+Type synthesis measure. \( \smeas{\context }{c}{\kappa }=(\csz{c},0) \)
+\end{defn}
+\begin{lem}
+\( \Kmeas{} \), \( \Smeas{} \), and \( \Ameas{} \) are well-defined functions.
+\end{lem}
+\begin{proof}
+It clearly suffices to show that \( \csz{} \), and \( \ksz{} \) are well-defined.
+This follows by induction over the structure of \( \kappa  \) and \( c \).
+\end{proof}
+\begin{lem}
+\label{lem:selfificationTerm}Termination of selfification.
+\end{lem}
+\begin{proof}
+Follows immediately by induction over the structure of \( \kappa  \).
+\end{proof}
+\begin{lem}
+\label{lem:ConKindMeasureReduce}For each rule in the well-formed kind, kind
+synthesis and kind analysis judgments, the measure of each premise is smaller
+than the measure of the conclusion. 
+\end{lem}
+\begin{proof}
+The proof proceeds by cases over the rules, demonstrating that each premise
+has a measure which is strictly smaller than the measure of the conclusion of
+the rule. We ignore premises that correspond to judgements which are independently
+known or assumed to terminate, such as subkinding and constructor equivalence.
+Technically, this may be viewed as using the constant measure that always returns
+zero for these judgements. 
+\begin{itemize}
+\item Well Formed Kind \( \kindvalid{\context }{\kappa } \)
+
+\begin{description}
+\item [Type]No premises.
+\item [Singleton]
+\begin{eqnarray*}
+\ameas{\context }{c}{T} & = & (\csz{c},1)\\
+ & < & (\csz{c}+1,0)\\
+ & = & \kmeas{\context }{\st{c}}
+\end{eqnarray*}
+
+\item [Pi]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\kmeas{\context }{\kappa _{1}} & = & (\ksz{\kappa _{1}},0)\\
+ & < & (\ksz{\kappa _{1}}+\ksz{\kappa _{2}},0)\\
+ & = & \kmeas{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\kmeas{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}} & = & (\ksz{\kappa _{2}},0)\\
+ & < & (\ksz{\kappa _{1}}+\ksz{\kappa _{2}},0)\\
+ & = & \kmeas{\context }{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [Sigma]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\kmeas{\context }{\kappa _{1}} & = & (\ksz{\kappa _{1}},0)\\
+ & < & (\ksz{\kappa _{1}}+\ksz{\kappa _{2}},0)\\
+ & = & \kmeas{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\kmeas{\caddk{\alpha }{\kappa _{1}}}{\kappa _{2}} & = & (\ksz{\kappa _{2}},0)\\
+ & < & (\ksz{\kappa _{1}}+\ksz{\kappa _{2}},0)\\
+ & = & \kmeas{\context }{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}
+\end{eqnarray*}
+
+\end{enumerate}
+\end{description}
+\item Kind Analysis \( \kcheck{\context }{c}{\kappa } \). Here is where the second
+component of the size metric is used.
+\begin{eqnarray*}
+\smeas{\context }{c}{\kappa '} & = & (\csz{c},0)\\
+ & < & (\csz{c},1)\\
+ & = & \ameas{\context }{c}{\kappa }
+\end{eqnarray*}
+
+\item Kind Synthesis \( \kindsynth{\Delta }{c}{\kappa } \)
+
+\begin{description}
+\item [Variable]By lemma \ref{lem:selfificationTerm}
+\item [BoxFloat]No premises
+\item [Int]No premises
+\item [\( \mu  \)]~
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\ameas{\Delta [a::T,b::T]}{c_{1}}{T} & = & (\csz{c_{1}},1)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\mu (a=c_{1},b=c_{2})},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\mu (a=c_{1},b=c_{2})}{\kappa }}
+\end{eqnarray*}
+where \( \kappa =\st{\mu (a=c_{1},b=c_{2}).1}\times \st{\mu (a=c_{1},b=c_{2}).2} \).\\
+
+\item Similar
+\end{enumerate}
+\begin{description}
+\item [Pair]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Ameas{\kcheck{\context }{c_{1}}{T}} & = & (\csz{c_{1}},1)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{c_{1}\times c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\times c_{2}}{\st{c_{1}\times c_{2}}}}
+\end{eqnarray*}
+
+\item Similarly for the second premise.
+\end{enumerate}
+\item [Arrow]As with the Pair case.
+\item [Sum]As with the Pair case.
+\item [Array]
+\begin{eqnarray*}
+\Ameas{\kcheck{\context }{c}{T}} & = & (\csz{c},1)\\
+ & < & (\csz{c}+1,0)\\
+ & = & (\csz{\carray{c}},0)\\
+ & = & \Smeas{\kindsynth{\context }{\carray{c}}{\st{\carray{c}}}}
+\end{eqnarray*}
+
+\item [Lambda]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Kmeas{\kindvalid{\Delta }{\kappa }} & = & (\ksz{\kappa },0)\\
+ & < & (\ksz{\kappa }+\csz{c},0)\\
+ & = & (\csz{\Lam{\alpha }{\kappa }{c}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Lam{\alpha }{\kappa }{c}}{\Pi (\alpha ::\kappa ).\kappa '}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta [\alpha ::\kappa ]}{c}{\kappa '}} & = & (\csz{c},0)\\
+ & < & (\ksz{\kappa }+\csz{c},0)\\
+ & = & (\csz{\Lam{\alpha }{\kappa }{c}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Lam{\alpha }{\kappa }{c}}{\Pi (\alpha ::\kappa ).\kappa '}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [App]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c_{1}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{c_{1}\, c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Ameas{\kcheck{\context }{c_{2}}{\kappa _{1}}} & = & (\csz{c_{2}},1)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{c_{1}\, c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [Record]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c_{1}}{\kappa _{1}}} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (,\csz{<c_{1},c_{2}>},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{<c_{1},c_{2}>}{\kappa _{1}\times \kappa _{2}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c_{2}}{\kappa _{2}}} & = & (\csz{c_{2}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{<c_{1},c_{2}>},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{<c_{1},c_{2}>}{\kappa _{1}\times \kappa _{2}}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [Proj1]
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}} & = & (\csz{c},0)\\
+ & < & (\csz{c}+1,0)\\
+ & = & (\csz{c.1},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c.1}{\kappa _{1}}}
+\end{eqnarray*}
+
+\item [Proj2]As with Proj1
+\item [Let]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c_{1}}{\kappa _{1}}} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\Let{\alpha }{c_{1}}{c_{2}}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta [\alpha ::\kappa _{1}]}{c_{2}}{\kappa _{2}}} & = & (\csz{c_{2}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\Let{\alpha }{c_{1}}{c_{2}}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\end{enumerate}
+\end{description}
+\end{itemize}
+\end{proof}
+\begin{thm}
+The rules for kind synthesis, kind analysis, and kind well-formedness do not
+permit an infinite sequence of rule applications.
+\end{thm}
+\begin{proof}
+By lemma \ref{lem:ConKindMeasureReduce}, any infinite sequence of rule applications
+corresponds to an infinite descending chain of pairs of natural numbers ordered
+lexicographically, which contradicts the well-foundedness of \( (N\times N,<) \). 
+\end{proof}
+
+\section{NIL (Extended MIL)}
+
+
+\subsection{Syntax}
+
+This is a slight simplification of the syntactic forms of the NIL. In particular,
+to be completely faithful to the implementation, there should be an intermediate
+syntactic form, which at the kind level corresponds to the greek syntax, except
+in that the contents of singletons may be constructors drawn from the roman
+syntax. In such a system, I believe that the constructor standardization rules
+do not play a part in the algorithm - only in the statement of the theorems.
+
+
+\newcommand{\typeof}[1]{\mathrm{Typeof}(#1 )}
+
+
+
+\begin{eqnarray*}
+k & ::= & S(c)\mid T\: |\: \st{c}\: |\: \Sigma (\alpha ::k).k\: |\: \Pi (\alpha ::k).k\\
+ &  & \\
+c & ::= & \alpha \mid Int\mid BoxFloat\mid \mu (a=c,b=c)\mid c\times c\mid c\rightarrow c\mid c+c\mid \carray{c}\\
+ &  & \mid \Lam{\alpha }{k}{c}\mid c\, c\mid <c,c>\mid c.1\mid c.2\mid \Let{\alpha }{c}{c}\\
+ &  & \\
+t & ::= & \typeof{e}\mid T(c)\mid (\alpha _{1}::k_{1}\ldots \alpha _{n}::k_{n},x:t)\rightarrow t\mid Float\mid t\times t\\
+ &  & \\
+p & ::= & \alpha \mid p.1\mid p.2\mid p\, c\\
+ &  & \\
+e & ::= & x\mid \lete{x}{e}{e}\mid \lete{\alpha }{c}{e}\\
+ &  & \mid \rec{f}{\alpha _{1}}{k_{1}\ldots \alpha _{n}::\kappa _{n}}{x}{t}{t}{e}\\
+ &  & \mid e[c_{1}\ldots c_{n}]e\mid <e,e>\mid e.1\mid e.2\mid n\mid r\mid \boxf{e}\mid \unboxf{e}\\
+ &  & \mid \inl{c}{c}{e}\mid \inr{c}{c}{e}\mid \sumsw{e}{x}{c}{e}{x}{c}{e}\\
+ &  & \mid \iffloat{c}{e}{e}\mid \arr{c}{e}{e}\mid \sub{e}{e}\mid \fsub{e}{e}\\
+ &  & \\
+\Delta  & ::= & \bullet \mid \caddt{x}{\tau }\mid \caddk{\alpha }{\kappa }
+\end{eqnarray*}
+
+
+Note that contexts are restricted to the core syntactic forms.
+
+
+\subsection{Judgments}
+
+
+\newcommand{\kstandard}[3]{#1 \models #2 \backslash #3 }
+
+\newcommand{\cstandard}[3]{#1 \models #2 \backslash #3 }
+
+\newcommand{\tstandard}[3]{#1 \models #2 \backslash #3 }
+ 
+\newcommand{\estandard}[3]{#1 \models #2 \backslash #3 }
+
+
+
+\subsubsection{Kind Standardization \protect\( \kstandard{\context }{k}{\kappa }\protect \)}
+
+Asumes that \( \context  \) and \( k \) are well-formed (as defined below),
+and constructs a \( \kappa  \) such that \( \kappa  \) is well-formed as defined
+above.
+
+TS: if \( \deltaok{\context } \), \( \kindvalid{\context }{k} \), and \( \kstandard{\context }{k}{\kappa } \)
+then \( \kindok{\context }{\kappa } \)
+
+\begin{description}
+\item [Type]
+\[
+\axiom{\kstandard{\context }{T}{T}}\]
+
+\item [Singleton~Type]
+\[
+\infrule{\cstandard{\context }{c}{c'}}{\kstandard{\context }{\st{c}}{\st{c'}}}\]
+
+\item [Singleton~Any]
+\[
+\infrule{\kindsynth{\context }{c}{\kappa }}{\kstandard{\context }{S(c)}{\kappa }}\]
+
+\item [Pi]
+\[
+\infrule{\begin{array}{ll}
+\kstandard{\context }{k_{1}}{\kappa _{1}} & \kstandard{\caddk{\alpha }{\kappa _{1}}}{k_{2}}{\kappa _{2}}
+\end{array}}{\kstandard{\context }{\Pi (\alpha ::k_{1}).k_{2}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}}\]
+
+\item [Sigma]
+\[
+\infrule{\begin{array}{ll}
+\kstandard{\context }{k_{1}}{\kappa _{1}} & \kstandard{\caddk{\alpha }{\kappa _{1}}}{k_{2}}{\kappa _{2}}
+\end{array}}{\kstandard{\context }{\Sigma (\alpha ::k_{1}).k_{2}}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}}\]
+
+\end{description}
+
+\subsubsection{Constructor standardization \protect\( \cstandard{\context }{c}{c'}\protect \)}
+
+Assumes that \( \context  \) and \( c \) are well-formed in the sense defined
+below. Constructs an ``equivalent'' \( c' \) that is well-formed in the declarative
+sense.
+
+TS: if \( \deltaok{\context } \), \( \kindsynth{\context }{c}{\kappa } \),
+and \( \cstandard{\context }{c}{c'} \) then \( \conok{\context }{c}{\kappa } \)
+
+All cases proceed compositionally over the structure of the constructors except
+for the following cases:
+
+\begin{description}
+\item [Lambda]
+\[
+\infrule{\begin{array}{ll}
+\kstandard{\context }{k}{\kappa } & \cstandard{\caddk{\alpha }{\kappa }}{c}{c'}
+\end{array}}{\cstandard{\context }{\Lam{\alpha }{k}{c}}{\Lam{\alpha }{\kappa }{c'}}}\]
+
+\item [Let](Note that the kind for \( c_{1} \) could also be synthesized from \( c_{1}' \),
+but the proof of termination then gets harder)
+\[
+\infrule{\begin{array}{ll}
+\cstandard{\context }{c_{1}}{c_{1}'} & \kindsynth{\context }{c_{1}}{\kappa }\\
+\cstandard{\caddk{\alpha }{\kappa }}{c_{2}}{c_{2}'} & 
+\end{array}}{\cstandard{\context }{\Let{\alpha }{c_{1}}{c_{2}}}{\Let{\alpha }{c_{1}'}{c_{2}'}}}\]
+
+\end{description}
+
+\subsubsection{Type standardization \protect\( \tstandard{\context }{t}{\tau }\protect \)}
+
+Assumes that \( \context  \) and \( t \) are well-formed in the sense defined
+below. Constructs an ``equivalent'' \( \tau  \) that is well-formed in the
+declarative sense.
+
+TS: if \( \deltaok{\context } \), \( \typevalid{\context }{t} \), and \( \tstandard{\context }{t}{\tau } \),
+then \( \typeok{\context }{\tau } \)
+
+\begin{description}
+\item [Typeof]
+\[
+\infrule{\typesynth{\context }{e}{\tau }}{\tstandard{\context }{\typeof{e}}{\tau }}\]
+
+\item [Constructor]
+\[
+\infrule{\cstandard{\context }{c}{c'}}{\tstandard{\context }{T(c)}{T(c')}}\]
+
+\item [Arrow]
+\[
+\infrule{\begin{array}{ll}
+\kstandard{\caddk{\alpha _{i}}{\kappa _{i}}}{k_{i+1}}{\kappa _{i+1}} & \tstandard{\caddk{\alpha _{n}}{\kappa _{n}}}{t_{1}}{\tau _{1}}\\
+\tstandard{\caddk{\alpha _{n}}{\kappa _{n}}\extt{x}{\tau _{1}}}{t_{2}}{\tau _{2}} & 
+\end{array}}{\tstandard{\context }{(\alpha _{1}::k_{1}\ldots \alpha _{n}::k_{n},x:t_{1})\rightarrow t_{2}}{(\alpha _{1}::\kappa _{1}\ldots \alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}}\]
+
+\item [Float]
+\[
+\axiom{\tstandard{\context }{Float}{Float}}\]
+
+\item [Pair]
+\[
+\infrule{\begin{array}{ll}
+\tstandard{\context }{t_{1}}{\tau _{1}} & \tstandard{\context }{t_{2}}{\tau _{2}}
+\end{array}}{\tstandard{\context }{t_{1}\times t_{2}}{\tau _{1}\times \tau _{2}}}\]
+
+\end{description}
+
+\subsubsection{Expression standardization \protect\( \estandard{\context }{e}{e'}\protect \)}
+
+This judgement is not necessary for the algorithm, but is necessary for stating
+properties that should hold with respect to the declarative system. 
+
+
+\subsubsection{Well Formed Kind \protect\( \kindvalid{\context }{k}\protect \)}
+
+Assumes that \( \context  \) is well-formed, asserts that \( k \) is well-formed. 
+
+TS: if \( \deltaok{\context } \), \( \kindvalid{\context }{k} \) and \( \kstandard{\context }{k}{\kappa } \),
+then \( \kindok{\context }{\kappa } \).
+
+TS: if \( \kindok{\context }{\kappa } \) then \( \kindvalid{\context }{\kappa } \).
+(Technically, there is an identity coercion here mapping the \( \kappa  \)
+to a \( k \). Or alternatively, just view the NIL as containing the MIL as
+well)
+
+\begin{description}
+\item [Type]As before
+\item [Singleton~Type]As before 
+\item [Singleton~Any]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T}
+\end{array}}{\kindvalid{\context }{S(c)}}\]
+
+\item [Pi]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\context }{k_{1}} & \kstandard{\context }{k_{1}}{\kappa _{1}}\\
+\kindvalid{\caddk{\alpha }{\kappa _{1}}}{k_{2}} & 
+\end{array}}{\kindvalid{\context }{\Pi (\alpha ::k_{1}).k_{2}}}\]
+
+\item [Sigma]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\context }{k_{1}} & \kstandard{\context }{k_{1}}{\kappa _{1}}\\
+\kindvalid{\caddk{\alpha }{\kappa _{1}}}{k_{2}} & 
+\end{array}}{\kindvalid{\context }{\Sigma (\alpha ::k_{1}).k_{2}}}\]
+
+\end{description}
+
+\subsubsection{Sub-Kinding \protect\( \subkind{\Delta }{\kappa _{1}}{\kappa _{2}}\protect \)}
+
+We do not choose to define subkinding for the extended NIL - all queries will
+be restricted to core syntax.
+
+
+\subsubsection{Kind Analysis \protect\( \kcheck{\context }{c}{\kappa }\protect \)}
+
+Note that we restrict this judgement to core kinds. Assume \( \context  \)
+and \( \kappa  \) are well formed. Check that \( c \) is well formed and can
+be given kind \( k \).
+
+TS: if \( \cok{c}{\kappa } \) then \( \kcheck{\context }{c}{\kappa } \).
+
+TS: if \( \deltaok{\context } \), \( \kok{\kappa } \), \( \kcheck{\context }{c}{\kappa } \),
+then \( \cok{c}{\kappa } \)
+
+
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\context }{c}{\kappa '} & \subkind{\context }{\kappa '}{\kappa }
+\end{array}}{\kcheck{\context }{c}{\kappa }}\]
+
+
+
+\subsubsection{Kind Synthesis \protect\( \kindsynth{\Delta }{c}{k}\protect \)}
+
+Assumes that \( \Delta  \) is well-formed. Check that \( c \) is well-kinded,
+and construct \( \kappa  \) s.t. \( \kindvalid{\Delta }{\kappa } \) and c
+has kind \( \kappa  \). 
+
+TS: if \( \conok{\context }{c}{\kappa } \) then \( \kcheck{\context }{c}{\kappa } \)
+
+TS: if \( \deltaok{\context } \), \( \kindsynth{\context }{c}{\kappa } \),
+and \( \cstandard{\context }{c}{c'} \) then \( \cok{c'}{\kappa } \).
+
+\begin{description}
+\item [Variable]
+\[
+\infrule{\selfify{\alpha }{\kappa }{\kappa '}}{\kindsynth{\Delta [\alpha ::\kappa ]}{\alpha }{\kappa }'}\]
+
+\item [BoxFloat]
+\[
+\axiom{\kindsynth{\Delta }{BoxFloat}{\st{BoxFloat}}}\]
+
+\item [Int]
+\[
+\axiom{\kindsynth{\context }{Int}{\st{Int}}}\]
+
+\item [\( \mu  \)]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\Delta [a::T,b::T]}{c_{1}}{T} & \kcheck{\Delta [a::T,b::T]}{c_{2}}{T}\\
+\cstandard{\Delta [a::T,b::T]}{c_{1}}{c_{1}'} & \cstandard{\Delta [a::T,b::T]}{c_{2}}{c_{2}'}
+\end{array}}{\kindsynth{\Delta }{\mu (a=c_{1},b=c_{2})}{\st{\mu (a=c_{1}',b=c_{2}').1}\times \st{\mu (a=c_{1}',b=c_{2}').2}}}\quad a,b\notin dom(\Delta )\]
+ 
+\item [Pair]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}\\
+\cstandard{\context }{c_{1}}{c_{1}'} & \cstandard{\context }{c_{2}}{c_{2}'}
+\end{array}}{\kindsynth{\Delta }{c_{1}\times c_{2}}{\st{c_{1}'\times c_{2}'}}}\]
+
+\item [Arrow]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}\\
+\cstandard{\context }{c_{1}}{c_{1}'} & \cstandard{\context }{c_{2}}{c_{2}'}
+\end{array}}{\kindsynth{\Delta }{c_{1}\rightarrow c_{2}}{\st{c_{1}'\rightarrow c_{2}'}}}\]
+
+\item [Sum]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}\\
+\cstandard{\context }{c_{1}}{c_{1}'} & \cstandard{\context }{c_{2}}{c_{2}'}
+\end{array}}{\kindsynth{\Delta }{c_{1}+c_{2}}{\st{c_{1}'+c_{2}'}}}\]
+
+\item [Array]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T} & \cstandard{\context }{c}{c'}
+\end{array}}{\kindsynth{\context }{\carray{c}}{\st{\carray{c'}}}}\]
+
+\item [Lambda]
+\[
+\infrule{\begin{array}{ll}
+\kindvalid{\Delta }{k} & \kstandard{\context }{k}{\kappa }\\
+\kindsynth{\Delta [\alpha ::\kappa ]}{c}{\kappa '} & 
+\end{array}}{\kindsynth{\Delta }{\Lam{\alpha }{k}{c}}{\Pi (\alpha ::\kappa ).\kappa '}}\quad \alpha \notin dom(\Delta )\]
+
+\item [App]
+\[
+\infrule{\begin{array}{cc}
+\begin{array}{ll}
+\kindsynth{\Delta }{c_{1}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}} & \kcheck{\context }{c_{2}}{\kappa _{1}}\\
+\cstandard{\context }{c_{2}}{c_{2}'} & 
+\end{array}
+\end{array}}{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}'}{\alpha }{\kappa _{2}}}}\]
+
+\item [Record]
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\Delta }{c_{1}}{\kappa _{1}} & \kindsynth{\Delta }{c_{2}}{\kappa _{2}}
+\end{array}}{\kindsynth{\Delta }{<c_{1},c_{2}>}{\kappa _{1}\times \kappa _{2}}}\]
+
+\item [Proj1]
+\[
+\infrule{\kindsynth{\Delta }{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}}{\kindsynth{\Delta }{c.1}{\kappa _{1}}}\]
+
+\item [Proj2]
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\Delta }{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}} & \cstandard{\context }{c}{c'}
+\end{array}}{\kindsynth{\Delta }{c.2}{\subst{c'.1}{\alpha }{\kappa _{2}}}}\]
+
+\item [Let]
+\[
+\infrule{\begin{array}{ll}
+\kindsynth{\Delta }{c_{1}}{\kappa _{1}} & \kindsynth{\Delta [\alpha ::\kappa _{1}]}{c_{2}}{\kappa _{2}}\\
+\cstandard{\context }{c_{1}}{c_{1}'} & 
+\end{array}}{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}'}{\alpha }{\kappa _{2}}}}\quad \alpha \notin dom(\Delta )\]
+
+\end{description}
+There should be a lemma showing that for let binding at least, the substitution
+is not necessary since the kinds are principle, and since selfification chooses
+to preserve the contents of singletons. Maybe for record kinds as well?
+
+
+\subsubsection{Well-formed Type \protect\( \typev{t}\protect \)}
+
+Assume \( \context  \) is well-formed. Check that \( t \) is well-formed.
+
+TS: if \( \deltaok{\context } \), \( \typev{t} \), and \( \tstandard{\context }{t}{\tau } \)
+then \( \tok{\tau } \).
+
+TS: if \( \tok{\tau } \) then \( \typev{\tau '} \) such that \( \eqtype{\context }{\tau }{\tau '} \)
+
+\begin{description}
+\item [Constructor]
+\[
+\frac{\kcheck{\context }{c}{T}}{\typev{T(c)}}\]
+
+\item [ArrowType]
+\[
+\frac{\begin{array}{ll}
+\kindvalid{\caddk{\alpha _{i}}{\kappa _{i}}}{k_{i+1}} & \kstandard{\caddk{\alpha _{i}}{\kappa _{i}}}{k_{i+1}}{\kappa _{i+1}}\\
+\typevalid{\caddk{\alpha _{n}}{\kappa _{n}}}{t_{1}} & \tstandard{\caddk{\alpha _{n}}{\kappa _{n}}}{t_{1}}{\tau _{1}}\\
+\typevalid{\caddk{\alpha _{i}}{\kappa _{i}}\extt{x}{\tau _{1}}}{t_{2}} & 
+\end{array}}{\typev{(\alpha _{n}::k_{n},x:t_{1})\rightarrow t_{2}}}\quad \alpha _{i+1}\notin dom(\context [\alpha _{i}::\kappa _{i}])\]
+
+\item [Float]
+\[
+\axiom{\typev{Float}}\]
+
+\item [PairType]
+\[
+\frac{\begin{array}{ll}
+\typev{t_{1}} & \typev{t_{2}}
+\end{array}}{\typev{t_{1}\times t_{2}}}\]
+
+\end{description}
+
+\subsubsection{Type Analysis \protect\( \tcheck{\context }{e}{\tau }\protect \)}
+
+Note that we restrict this to core types. Assume \( \context  \) and \( t \)
+are well-formed. Check that \( e \) is well-typed, and has type \( \tau  \).
+
+
+\[
+\infrule{\begin{array}{ll}
+\types{e}{\tau '} & \typeeq{\tau '}{\tau }
+\end{array}}{\tcheck{\context }{e}{\tau }}\]
+
+
+
+\subsubsection{Type Synthesis \protect\( \types{e}{\tau }\protect \)}
+
+Assume \( \context  \) is well-formed. Check that \( e \) is well-formed and
+construct its type \( \tau  \), such that \( \typev{\tau } \)
+
+TS: if \( \deltaok{\context } \) and \( \types{e}{\tau } \), and \( \estandard{\context }{e}{e'} \)then
+\( \eok{e'}{\tau } \) 
+
+TS if \( \eok{e}{\tau } \), then \( \types{e}{\tau '} \) such that \( \eqtype{\context }{\tau }{\tau '} \)
+
+\begin{description}
+\item [variable]
+\[
+\axiom{\typesynth{\caddt{x}{\tau }}{x}{\tau }}\]
+
+\item [lete]
+\[
+\frac{\begin{array}{ll}
+\types{e_{1}}{\tau _{1}} & \typesynth{\caddt{x}{\tau _{1}}}{e_{2}}{\tau _{2}}
+\end{array}}{\types{\lete{x}{e_{1}}{e_{2}}}{\tau _{2}}}\quad x\notin dom(\context )\]
+
+\item [letc]
+\[
+\frac{\begin{array}{ll}
+\kindsynth{\context }{c}{\kappa } & \cstandard{\context }{c}{c'}\\
+\typesynth{\caddk{\alpha }{\kappa }}{e}{\tau } & 
+\end{array}}{\types{\lete{\alpha }{c}{e}}{\subst{c'}{\alpha }{\tau }}}\quad \alpha \notin dom(\context )\]
+
+\item [rec]
+\[
+\infrule{\begin{array}{l}
+\begin{array}{ll}
+\kindvalid{\caddk{\alpha _{i}}{\kappa _{i}}}{k_{i+1}} & \kstandard{\caddk{\alpha }{\kappa _{i}}}{k_{i+1}}{\kappa _{i+1}}\\
+\typevalid{\caddk{\alpha _{n}}{\kappa _{n}}}{t_{1}} & \tstandard{\caddk{\alpha _{n}}{\kappa _{n}}}{t_{1}}{\tau _{1}}\\
+\typevalid{\caddk{\alpha _{n}}{\kappa _{n}}\extt{x}{\tau _{1}}}{t_{2}} & \tstandard{\caddk{\alpha _{n}}{\kappa _{n}}\extt{x}{\tau _{1}}}{t_{2}}{\tau _{2}}
+\end{array}\\
+\kcheck{\context \extt{f}{(\alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}\extk{\alpha _{n}}{\kappa _{n}}\extt{x}{\tau _{1}}}{e}{\tau _{2}}
+\end{array}}{\types{\rec{f}{\alpha _{n}}{k_{n}}{x}{t_{1}}{t_{2}}{e}}{(\alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}}}\]
+  where \( f,x\notin dom(\context ),\alpha _{i+1}\notin dom(\caddk{\alpha _{i}}{\kappa _{i}}) \)
+.
+\item [app]
+\[
+\infrule{\begin{array}{lll}
+\types{e_{1}}{(\alpha _{1}::\kappa _{1}\ldots \alpha _{n}::\kappa _{n},\tau _{1})\rightarrow \tau _{2}} & \kcheck{\context }{c_{i+1}}{\subst{c_{i}'}{\alpha _{i}}{\kappa _{i+1}}} & \\
+\cstandard{\context }{c_{i}}{c_{i}'} & \kcheck{\context }{e_{2}}{\subst{c_{n}'}{\alpha _{n}}{\tau _{1}}} & 
+\end{array}}{\types{e_{1}[c_{1}\ldots c_{n}]e_{2}}{\subst{c_{n}'}{\alpha _{n}}{\tau _{2}}}}\]
+
+\item [mono\_con\_app]
+\[
+\infrule{\begin{array}{lll}
+\types{e_{1}}{T(c_{e})} & \hnf{\context }{c_{e}}{c_{1}\rightarrow c_{2}} & \tcheck{\context }{e_{2}}{T(c_{1})}
+\end{array}}{\types{e_{1}[]e_{2}}{T(c_{2})}}\]
+
+\item [pair]
+\[
+\infrule{\begin{array}{ll}
+\types{e_{1}}{\tau _{1}} & \types{e_{2}}{\tau _{2}}
+\end{array}}{\types{<e_{1},e_{2}>}{\tau _{1}\times \tau _{2}}}\]
+
+\item [type\_proj1]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{\tau _{1}\times \tau _{2}}
+\end{array}}{\types{e.1}{\tau _{1}}}\]
+
+\item [con\_proj1]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{T(c)} & \hnf{\context }{c}{c_{1}\times c_{2}}
+\end{array}}{\types{e.1}{T(c_{1})}}\]
+
+\item [type\_proj2]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{\tau _{1}\times \tau _{2}}
+\end{array}}{\types{e.2}{\tau _{2}}}\]
+
+\item [con\_proj2]
+\[
+\infrule{\begin{array}{ll}
+\types{e}{T(c)} & \hnf{\context }{c}{c_{1}\times c_{2}}
+\end{array}}{\types{e.2}{T(c_{2})}}\]
+
+\item [float]
+\[
+\axiom{\types{r}{Float}}\]
+
+\item [int]
+\[
+\axiom{\types{n}{T(Int)}}\]
+
+\item [box]
+\[
+\infrule{\tcheck{\context }{e}{Float}}{\types{\boxf{e}}{T(BoxFloat)}}\]
+
+\item [unbox]
+\[
+\infrule{\tcheck{\context }{e}{T(BoxFloat)}}{\types{\unboxf{e}}{Float}}\]
+
+\item [sumswitch]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \cstandard{\context }{c_{1}}{c_{1}'}\\
+\kcheck{\context }{c_{2}}{T} & \cstandard{\context }{c_{2}}{c_{2}'}\\
+\typesynth{\caddt{x_{1}}{T(c_{1}')}}{e_{1}}{\tau _{1}} & \typesynth{\caddt{x_{2}}{T(c_{2}')}}{e_{2}}{\tau _{2}}\\
+\tcheck{\context }{e}{T(c_{1}'+c_{2}')} & \typeeq{\tau _{1}}{\tau _{2}}
+\end{array}}{\types{\sumsw{e}{x_{1}}{c_{1}}{e_{1}}{x_{2}}{c_{2}}{e_{2}}}{\tau _{1}}}\]
+
+\item [inl]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c_{1}}{T} & \kcheck{\context }{c_{2}}{T}\\
+\cstandard{\context }{c_{1}}{c_{1}'} & \cstandard{\context }{c_{2}}{c_{2}'}\\
+\tcheck{\context }{e}{T(c_{1}')} & 
+\end{array}}{\types{\inl{c_{1}}{c_{2}}{e}}{T(c_{1}'+c_{2}')}}\]
+
+\item [inr]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T} & \kcheck{\context }{c_{2}}{T}\\
+\cstandard{\context }{c_{1}}{c_{1}'} & \cstandard{\context }{c_{2}}{c_{2}'}\\
+\tcheck{\context }{e}{T(c_{2}')} & 
+\end{array}}{\types{\inr{c_{1}}{c_{2}}{e}}{T(c_{1}'+c_{2}')}}\]
+
+\item [ifBoxFloat]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T} & \types{e_{1}}{\tau _{1}}\\
+\types{e_{2}}{\tau _{2}} & \typeeq{\tau _{1}}{\tau _{2}}
+\end{array}}{\types{\iffloat{c}{e_{1}}{e_{2}}}{\tau _{1}}}\]
+
+\item [array]
+\[
+\infrule{\begin{array}{ll}
+\kcheck{\context }{c}{T} & \cstandard{\context }{c}{c'}\\
+\tcheck{\context }{e_{1}}{T(Int)} & \tcheck{\context }{e_{2}}{T(c')}
+\end{array}}{\types{\arr{c}{e_{1}}{e_{2}}}{\carray{T(c'}})}\]
+
+\item [sub]
+\[
+\infrule{\begin{array}{lll}
+\types{e_{1}}{T(c)} & \hnf{\context }{c}{\carray{c'}} & \tcheck{\context }{e_{2}}{Int}
+\end{array}}{\types{\sub{e_{1}}{e_{2}}}{T(c')}}\]
+
+\item [fsub]
+\[
+\infrule{\begin{array}{ll}
+\tcheck{\context }{e_{1}}{\carray{T(BoxFloat})} & \tcheck{\context }{e_{2}}{T(Int)}
+\end{array}}{\types{\fsub{e_{1}}{e_{2}}}{Float}}\]
+
+\end{description}
+
+\subsection{Termination Proofs}
+
+We assume that constructor equivalence at kind type \emph{for the core NIL}
+is decidable. 
+
+
+\subsubsection{Termination of the kind standardization, constructor standardization, well-formed
+kind, kind analysis, and kind synthesis algorithms}
+
+
+\newcommand{\KSmeas}[1]{SZ_{\backslash k}(#1 )}
+
+\newcommand{\CSmeas}[1]{SZ_{\backslash c}(#1 )}
+
+\newcommand{\ksmeas}[3]{\KSmeas{\kstandard{#1 }{#2 }{#3 }}}
+
+\newcommand{\csmeas}[3]{\CSmeas{\cstandard{#1 }{#2 }{#3 }}}
+
+
+\renewcommand{\ksz}[1]{sz_k(#1)}
+\renewcommand{\Kmeas}[1]{SZ_k(#1)}
+
+We start by defining measure functions which map judgments to pairs of natural
+numbers ordered lexicographically below. These functions are defined in terms
+of the inductively defined functions \( \ksz{} \) and \( \csz{} \).
+
+\begin{defn}
+
+\begin{eqnarray*}
+\ksz{k} & = & \left\{ \begin{array}{ll}
+1 & \mathrm{if}\, k=T\\
+\csz{c}+1 & \mathrm{if}\, k=\st{c}\\
+\csz{c}+1 & if\, k=S(c)\\
+\ksz{k_{1}}+\ksz{k_{2}} & \mathrm{if}\, k=\Sigma (\alpha ::k_{1}).k_{2}\\
+\ksz{k_{1}}+\ksz{k_{2}} & \mathrm{if}\, k=\Pi (\alpha ::k_{1}).k_{2}
+\end{array}\right. \\
+\csz{c} & = & \left\{ \begin{array}{ll}
+1 & \mathrm{if}\, c=\alpha ,Int,BoxFloat\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=\mu (a=c_{1},b=c_{2})\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=c_{1}\times c_{2},c_{1}\rightarrow c_{2},c_{1}+c_{2}\\
+\csz{c'}+1 & \mathrm{if}\, \carray{c=c'}\\
+\csz{c'}+\ksz{k} & \mathrm{if}\, c=\Lam{\alpha }{k}{c'}\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=c_{1}\, c_{2}\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=<c_{1},c_{2}>\\
+\csz{c'}+1 & \mathrm{if}\, c=c'.1,c'.2\\
+\csz{c_{1}}+\csz{c_{2}} & \mathrm{if}\, c=\Let{\alpha }{c_{1}}{c_{2}}
+\end{array}\right. 
+\end{eqnarray*}
+
+\end{defn}
+%
+
+\begin{defn}
+Kind standardization. \( \ksmeas{\context }{k}{\kappa }=(\ksz{k},0) \)
+\end{defn}
+%
+
+\begin{defn}
+Constructor standardization \( \csmeas{\context }{c}{c'}=(\csz{c},0) \) 
+\end{defn}
+%
+
+\begin{defn}
+Well-formed kind measure. \( \kmeas{\context }{k}=(\ksz{k},0) \)
+\end{defn}
+%
+
+\begin{defn}
+Type analysis measure. \( \ameas{\context }{c}{\kappa }=(\csz{c},1) \)
+\end{defn}
+%
+
+\begin{defn}
+Type synthesis measure. \( \smeas{\context }{c}{\kappa }=(\csz{c},0) \)
+\end{defn}
+\begin{lem}
+\( \Kmeas{} \), \( \Smeas{} \), \( \Ameas{} \), \( \KSmeas{} \), and \( \CSmeas{} \)
+are well-defined functions.
+\end{lem}
+\begin{proof}
+It clearly suffices to show that \( \csz{} \), and \( \ksz{} \) are well-defined.
+This follows by induction over the structure of \( k \) and \( c \).
+\end{proof}
+\begin{lem}
+\label{lem:ExtConKindMeasureReduce}For each rule in the kind standardization,
+constructor standardization, well-formed kind, kind synthesis and kind analysis
+judgments, the measure of each premise is smaller than the measure of the conclusion. 
+\end{lem}
+\begin{proof}
+The proof proceeds by cases over the rules, demonstrating that each premise
+has a measure which is strictly smaller than the measure of the conclusion of
+the rule. We ignore premises that correspond to judgements which are independently
+known or assumed to terminate, such as subkinding and constructor equivalence.
+Rules which remain unchanged from the core syntax proof are omitted.
+\begin{itemize}
+\item Kind standardization \( \kstandard{\context }{k}{\kappa } \)
+
+\begin{description}
+\item [Type]No premises
+\item [Singleton\_Type]
+\begin{eqnarray*}
+\csmeas{\context }{c}{c'} & = & (\csz{c},0)\\
+ & < & (\csz{c}+1,0)\\
+ & = & \ksmeas{\context }{\st{c}}{\st{c'}}
+\end{eqnarray*}
+
+\item [Singleton\_Any]
+\begin{eqnarray*}
+\smeas{\context }{c}{\kappa } & = & (\csz{c},0)\\
+ & < & (\csz{c}+1,0)\\
+ & = & \ksmeas{\context }{S(c)}{\kappa }
+\end{eqnarray*}
+
+\item [Pi]~
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\ksmeas{\context }{k_{1}}{\kappa _{1}} & = & (\ksz{k_{1}},0)\\
+ & < & (\ksz{\Pi (\alpha ::k_{1}).k_{2}},0)\\
+ & = & \ksmeas{\context }{\Pi (\alpha ::k_{1}).k_{2}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\ksmeas{\caddk{\alpha }{\kappa _{1}}}{k_{2}}{\kappa _{2}} & = & (\ksz{k_{2}},0)\\
+ & < & (\ksz{\Pi (\alpha ::k_{1}).k_{2}},0)\\
+ & = & \ksmeas{\context }{\Pi (\alpha ::k_{1}).k_{2}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}
+\end{eqnarray*}
+
+\end{enumerate}
+\begin{description}
+\item [Sigma]As with the Pi case.
+\end{description}
+\item Constructor standardization (All cases except those below are just decomposition
+of the constructor)
+
+\begin{description}
+\item [Lambda]~
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\ksmeas{\context }{k}{\kappa } & = & (\ksz{k},0)\\
+ & < & (\csz{\Lam{\alpha }{k}{c}},0)\\
+ & = & \csmeas{\context }{\Lam{\alpha }{k}{c}}{\Lam{\alpha }{\kappa }{c'}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\caddk{\alpha }{\kappa }}{c}{c'} & = & (\csz{c},0)\\
+ & < & (\csz{\Lam{\alpha }{k}{c}},0)\\
+ & = & \csmeas{\context }{\Lam{\alpha }{k}{c}}{\Lam{\alpha }{\kappa }{c'}}
+\end{eqnarray*}
+
+\end{enumerate}
+\begin{description}
+\item [Let]Note that the size of the conclusion is \( \csmeas{\context }{\Let{\alpha }{c_{1}}{c_{2}}}{\Let{\alpha }{c_{1}'}{c_{2}'}}=(\csz{c_{1}}+\csz{c_{2}},0) \)
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\csmeas{\context }{c_{1}}{c_{1}'} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)
+\end{eqnarray*}
+ 
+\item 
+\begin{eqnarray*}
+\smeas{\context }{c_{1}}{\kappa } & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\caddk{\alpha }{\kappa }}{c_{2}}{c_{2}'} & = & (\csz{c_{2}},0)\\
+ & < & (\csz{c_{2}}+\csz{c_{1}},0)
+\end{eqnarray*}
+
+\end{enumerate}
+\item Well Formed Kind \( \kindvalid{\context }{k} \)
+
+\begin{description}
+\item [Type,~Singleton\_Type]As before
+\item [Singleton\_Any]
+\begin{eqnarray*}
+\smeas{\context }{c}{\kappa } & = & (\csz{c},0)\\
+ & < & (\csz{c}+1,0)\\
+ & = & \kmeas{\context }{S(c)}
+\end{eqnarray*}
+
+\item [Pi]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\kmeas{\context }{k_{1}} & = & (\ksz{k_{1}},0)\\
+ & < & (\ksz{k_{1}}+\ksz{k_{2}},0)\\
+ & = & \kmeas{\context }{\Pi (\alpha ::k_{1}).k_{2}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\kmeas{\caddk{\alpha }{\kappa _{1}}}{k_{2}} & = & (\ksz{k_{2}},0)\\
+ & < & (\ksz{k_{1}}+\ksz{k_{2}},0)\\
+ & = & \kmeas{\context }{\Pi (\alpha ::k_{1}).k_{2}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [Sigma]As with the Pi case.
+\end{description}
+\item Kind Analysis remains unchanged.
+\item Kind Synthesis \( \kindsynth{\Delta }{c}{\kappa } \)
+
+\begin{description}
+\item [Variable]By lemma \ref{lem:selfificationTerm}. Note that kinds in the context
+are restricted to the core syntactic forms.
+\item [BoxFloat]No premises
+\item [Int]No premises
+\item [\( \mu  \)]Let \( \kappa =\st{\mu (a=c_{1},b=c_{2}).1}\times \st{\mu (a=c_{1}',b=c_{2}').2} \)
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\ameas{\Delta [a::T,b::T]}{c_{1}}{T} & = & (\csz{c_{1}},1)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\mu (a=c_{1},b=c_{2})},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\mu (a=c_{1},b=c_{2})}{\kappa }}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\Delta [a::T,b::T]}{c_{1}}{c_{1}'} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\mu (a=c_{1},b=c_{2})},0)
+\end{eqnarray*}
+ 
+\item The cases for \( c_{2} \) are exactly the same.
+\end{enumerate}
+\begin{description}
+\item [Pair]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Ameas{\kcheck{\context }{c_{1}}{T}} & = & (\csz{c_{1}},1)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{c_{1}\times c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\times c_{2}}{\st{c_{1}'\times c_{2}'}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\context }{c_{1}}{c_{1}'} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & \smeas{\context }{c_{1}\times c_{2}}{\st{c_{1}'\times c_{2}'}}
+\end{eqnarray*}
+
+\item Similarly for the \( c_{2} \) premises.
+\end{enumerate}
+\item [Arrow]As with the Pair case.
+\item [Sum]As with the Pair case.
+\item [Array]~
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Ameas{\kcheck{\context }{c}{T}} & = & (\csz{c},1)\\
+ & < & (\csz{c}+1,0)\\
+ & = & (\csz{\carray{c}},0)\\
+ & = & \Smeas{\kindsynth{\context }{\carray{c}}{\st{\carray{c}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\context }{c}{c'} & = & (\csz{c},0)\\
+ & < & (\csz{c}+1,0)\\
+ & = & \smeas{\context }{\carray{c}}{\carray{c'}}
+\end{eqnarray*}
+
+\end{enumerate}
+\begin{description}
+\item [Lambda]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Kmeas{\kindvalid{\Delta }{k}} & = & (\ksz{k},0)\\
+ & < & (\ksz{k}+\csz{c},0)\\
+ & = & (\csz{\Lam{\alpha }{k}{c}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Lam{\alpha }{k}{c}}{\Pi (\alpha ::\kappa ).\kappa '}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\ksmeas{\context }{k}{\kappa } & = & (\ksz{k},0)\\
+ & < & (\csz{\Lam{\alpha }{k}{c}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Lam{\alpha }{k}{c}}{\Pi (\alpha ::\kappa ).\kappa '}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta [\alpha ::\kappa ]}{c}{\kappa '}} & = & (\csz{c},0)\\
+ & < & (\csz{\Lam{\alpha }{k}{c}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Lam{\alpha }{k}{c}}{\Pi (\alpha ::\kappa ).\kappa '}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [App]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c_{1}}{\Pi (\alpha ::\kappa _{1}).\kappa _{2}}} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{c_{1}\, c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}'}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Ameas{\kcheck{\context }{c_{2}}{\kappa _{1}}} & = & (\csz{c_{2}},1)\\
+ & < & (\csz{c_{1}\, c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}'}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\context }{c_{2}}{c_{2}'} & = & (\csz{c_{2}},0)\\
+ & < & (\csz{c_{1}\, c_{2}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c_{1}\, c_{2}}{\subst{c_{2}'}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\end{enumerate}
+\item [Record]As before
+\item [Proj1]As before
+\item [Proj2]~
+\end{description}
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c}{\Sigma (\alpha ::\kappa _{1}).\kappa _{2}}} & = & (\csz{c},0)\\
+A & < & (\csz{c}+1,0)\\
+ & = & (\csz{c.1},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c.1}{\subst{c'.1}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\context }{c}{c'} & = & (\csz{c},0)\\
+ & < & (\csz{c.1},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{c.1}{\subst{c'.1}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\end{enumerate}
+\begin{description}
+\item [Let]~
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta }{c_{1}}{\kappa _{1}}} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\Let{\alpha }{c_{1}}{c_{2}}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}'}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\Smeas{\kindsynth{\Delta [\alpha ::\kappa _{1}]}{c_{2}}{\kappa _{2}}} & = & (\csz{c_{2}},0)\\
+ & < & (\csz{c_{1}}+\csz{c_{2}},0)\\
+ & = & (\csz{\Let{\alpha }{c_{1}}{c_{2}}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}'}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+\csmeas{\context }{c_{1}}{c_{1}'} & = & (\csz{c_{1}},0)\\
+ & < & (\csz{\Let{\alpha }{c_{1}}{c_{2}}},0)\\
+ & = & \Smeas{\kindsynth{\Delta }{\Let{\alpha }{c_{1}}{c_{2}}}{\subst{c_{1}'}{\alpha }{\kappa _{2}}}}
+\end{eqnarray*}
+
+\end{enumerate}
+\end{description}
+\end{itemize}
+\end{proof}
+\begin{thm}
+The rules for kind-standardization, constructor standardization, kind synthesis,
+kind analysis, and kind well-formedness do not permit an infinite sequence of
+rule applications.
+\end{thm}
+\begin{proof}
+By lemma \ref{lem:ExtConKindMeasureReduce} stated above, any infinite sequence
+of rule applications corresponds to an infinite descending chain of pairs of
+natural numbers ordered lexicographically, which contradicts the well-foundedness
+of \( (N\times N,<) \). 
+
+\end{proof}
+\end{document}

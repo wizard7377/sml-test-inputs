@@ -1,0 +1,20 @@
+local
+   $(SML_LIB)/basis/basis.mlb
+   ../lib/github.com/diku-dk/sml-setmap/mono_map.mlb
+   ../lib/github.com/diku-dk/sml-setmap/mono_set.mlb
+   ../lib/github.com/diku-dk/sml-random/random.mlb
+   ../lib/github.com/diku-dk/sml-uref/uref.mlb
+in
+   ../util.mlb
+
+   apl.mlb   (* interpreter *)
+
+   tail_type.sig
+   tail_exp.sig
+   tail.sig
+
+   tail_exp.sml        (* functor *)
+   tail_optimize.sml
+   tail_type.sml
+   tail.sml
+end

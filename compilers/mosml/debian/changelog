@@ -1,0 +1,11 @@
+mosml (2.10.2-0ubuntu0) focal; urgency=low
+
+  * Rebuild for focal
+
+ -- Ken Friis Larsen <ken@friislarsen.net>  Mon, 18 Jan 2021 15:45:57 +0000
+
+mosml (2.10.1-0ubuntu0) trusty; urgency=low
+
+  * Initial release
+
+ -- Ken Friis Larsen <ken@friislarsen.net>  Thu, 28 Aug 2014 07:41:21 +0000

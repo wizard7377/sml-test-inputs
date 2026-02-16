@@ -1,0 +1,50 @@
+{
+  "`let` exp": {
+    "prefix": "let",
+    "body": ["let", "  ${1:...}", "in", "  ${2:...}", "end"]
+  },
+  "`case` exp": {
+    "prefix": "case",
+    "body": ["case ${1:_} of", "  ${2:_} => ${3:_}", "| ${4:_} => ${5:_}"]
+  },
+  "`if` exp": {
+    "prefix": "if",
+    "body": ["if ${1:_} then", "  ${2:_}", "else", "  ${3:_}"]
+  },
+  "`handle` exp tail": {
+    "prefix": "handle",
+    "body": ["handle", "  ${2:_} => ${3:_}"]
+  },
+  "`local` dec": {
+    "prefix": "local",
+    "body": ["local", "  ${1:...}", "in", "  ${2:...}", "end"]
+  },
+  "`datatype` dec": {
+    "prefix": "datatype",
+    "body": ["datatype ${1:name} = ${2:Name}"]
+  },
+  "`fun` dec": {
+    "prefix": "fun",
+    "body": ["fun ${1:name} (${2:_} : ${3:_}) : ${4:_} = ${5:_}"]
+  },
+  "`structure` dec": {
+    "prefix": "structure",
+    "body": ["structure ${1:Name} = struct", "  ${2:...}", "end"]
+  },
+  "`signature` dec": {
+    "prefix": "signature",
+    "body": ["signature ${1:NAME} = sig", "  ${2:...}", "end"]
+  },
+  "`functor` dec": {
+    "prefix": "functor",
+    "body": [
+      "functor ${1:Name} (${2:Arg}: ${3:SIG}) = struct",
+      "  ${4:...}",
+      "end"
+    ]
+  },
+  "`print` with newline exp": {
+    "prefix": "println",
+    "body": ["print (${1:exp} ^ \"\\n\")"]
+  }
+}

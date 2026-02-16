@@ -1,0 +1,3 @@
+unit Value = "value.sml" {Int}
+unit Fixity = "fixity.sml" {}
+unit Test = "test.sml" {Value Fixity}

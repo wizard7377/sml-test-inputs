@@ -1,0 +1,18 @@
+Number: 0101
+Title:       external symbol clash
+Keywords:    ld
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    major
+Problem:     defining chr at top level leads to ld error for multiply-defined symbol
+Code:        
+Transcript:  
+Comments:    name mangling?
+Fix:         
+	[Leaf] I believe Dave fixed this by adding additional mangling
+	to TILT generated labels.
+Test: m0026
+Owner: rwh
+Status: closed

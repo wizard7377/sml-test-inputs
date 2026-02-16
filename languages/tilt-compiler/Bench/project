@@ -1,0 +1,73 @@
+include $libdir ^ "/smlnj-lib/project"
+include $libdir ^ "/arg/project"
+
+interface RUN = "run.sig.sml"
+
+unit RUN : RUN = "run.sig.sml" {}
+
+unit life = "life.sml" {RUN}
+
+unit leroy = "leroy.sml" {List Int RUN}
+
+unit fft = "fft.sml" {
+	Int Math Real Array RUN
+}
+
+unit boyer = "boyer.sml" {Int RUN}
+
+unit simple = "simple.sml" {
+	Array Array2 Int Real64 Math64 List TiltPreReal TiltRealExtern RUN 
+}
+
+unit tyan = "tyan.sml" {
+	List Array Int TextIO RUN
+}
+
+unit msort = "msort.sml" { RUN }
+
+unit pia = "pia.sml" {
+	Real Math TextIO String RUN
+}
+
+unit lexgen = "lexgen.sml" {
+	Int String TextIO Array List RUN
+}
+
+unit frank = "frank.sml" {Int TextIO RUN}
+
+unit arithmetic = "arithmetic.sml" {Int Real RUN}
+
+unit arithmetic32 = "arithmetic32.sml" {Int32 Real RUN}
+
+unit f_arithmetic = "f_arithmetic.sml" {Int Real RUN}
+
+unit BarnesHut = "barnes-hut.sml" {
+	Int List Math64 Real String RUN
+}
+
+unit PQueens = "pqueens.sml" {
+	Int Array CharVector RUN
+}
+
+unit Quicksort = "quicksort.sml" {Array RUN}
+
+unit Quicksort2 = "quicksort2.sml" {Array RUN}
+
+unit Isort = "sort.sml" {Int RUN}
+
+unit Takc = "takc.sml" {Int RUN}
+
+unit Taku = "taku.sml" {Int RUN}
+
+interface TIMEANDRUN = "time_and_run.sig.sml"
+
+unit TIMEANDRUN : TIMEANDRUN = "time_and_run.sig.sml" {}
+
+unit TimeAndRun = "time_and_run.sml" {TIMEANDRUN Time Timer List String Int ListPair Real }
+
+unit btimes = "btimes.sml" {
+	Time Timer List String life leroy fft boyer simple tyan msort pia
+	frank lexgen ListPair Real arithmetic32 arithmetic f_arithmetic BarnesHut PQueens Quicksort
+	Quicksort2 Isort Takc Taku Arg TextIO CommandLine Int OS RUN TimeAndRun
+}
+

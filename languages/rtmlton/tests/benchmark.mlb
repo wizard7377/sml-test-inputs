@@ -1,0 +1,11 @@
+local
+    $(SML_LIB)/basis/basis.mlb
+    microbench.sig
+    fib.sml
+    mandelbrot.sml
+    md5.sml
+    barnes-hut.sml
+    matrix-multiply.sml (*redefines Array structure*)
+in
+    main.sml
+end

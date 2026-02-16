@@ -1,0 +1,502 @@
+(*
+	Some sources are excluded since they don't appear in CM
+	description files: opsem/assign.sig, opsem/assign.fun, and
+	meta/prover.sig.
+
+	The topological sort was found by running CM.mkusefile.  The sort
+	affects the order that global effects are computed at runtime.
+*)
+unit INTSYN = "src/lambda/intsyn.sig.sml" {}
+unit WHNF = "src/lambda/whnf.sig.sml" {INTSYN}
+unit NAMES = "src/names/names.sig.sml" {INTSYN}
+unit TRAVERSE = "src/print/traverse.sig.sml" {INTSYN}
+unit Traverse = "src/print/traverse.fun.sml" {
+	TRAVERSE INTSYN WHNF NAMES
+}
+unit FUNSYN = "src/meta/funsyn.sig.sml" {INTSYN}
+unit Interpreter = "src/meta/interpret.sig.sml" {FUNSYN}
+unit TimingStructs = "src/timing/timing.sml" {
+	Int StringCvt Time Timer
+}
+unit TIMERS = "src/timing/timers.sig.sml" {TimingStructs}
+unit Timers = "src/timing/timers.fun.sml" {
+	List TIMERS TimingStructs
+}
+unit TimersStructs = "src/timing/timers.sml" {
+	Timers TimingStructs
+}
+unit StreamStructs = "src/stream/stream.sml" {}
+unit GLOBAL = "src/global/global.sig.sml" {}
+unit GlobalStructs = "src/global/global.sml" {GLOBAL}
+unit IntSyn = "src/lambda/intsyn.fun.sml" {
+	Array Int INTSYN GLOBAL
+}
+unit Whnf = "src/lambda/whnf.fun.sml" {WHNF INTSYN}
+unit CONV = "src/lambda/conv.sig.sml" {INTSYN}
+unit Conv = "src/lambda/conv.fun.sml" {CONV INTSYN WHNF}
+unit CONSTRAINTS = "src/lambda/constraints.sig.sml" {INTSYN}
+unit Constraints = "src/lambda/constraints.fun.sml" {
+	CONSTRAINTS INTSYN CONV
+}
+unit TRAIL = "src/lambda/trail.sig.sml" {INTSYN}
+unit Trail = "src/lambda/trail.fun.sml" {TRAIL INTSYN}
+unit NoTrail = "src/lambda/notrail.fun.sml" {TRAIL INTSYN}
+unit UNIFY = "src/lambda/unify.sig.sml" {INTSYN}
+unit Unify = "src/lambda/unify.fun.sml" {
+	UNIFY INTSYN WHNF TRAIL
+}
+unit ABSTRACT = "src/lambda/abstract.sig.sml" {INTSYN}
+unit Abstract = "src/lambda/abstract.fun.sml" {
+	ABSTRACT INTSYN WHNF UNIFY CONSTRAINTS
+}
+unit LambdaStructs = "src/lambda/lambda.sml" {
+	IntSyn Whnf Conv Constraints Trail NoTrail Unify Abstract
+	GlobalStructs
+}
+unit TABLE = "src/table/table.sig.sml" {}
+unit RedBlackStructs = "src/table/redblack.sml" {String Int TABLE}
+unit HashStructs = "src/table/hash.sml" {
+	Array Char String TABLE
+}
+unit Names = "src/names/names.fun.sml" {
+	Int Array Char String Substring NAMES GLOBAL INTSYN TABLE
+}
+unit NamesStructs = "src/names/names.sml" {
+	Names GlobalStructs LambdaStructs HashStructs RedBlackStructs
+}
+unit PATHS = "src/paths/paths.sig.sml" {}
+unit Paths = "src/paths/paths.fun.sml" {List Int PATHS}
+unit ORIGINS = "src/paths/origins.sig.sml" {INTSYN PATHS}
+unit Origins = "src/paths/origins.fun.sml" {
+	Array ORIGINS GLOBAL INTSYN PATHS
+}
+unit PathsStructs = "src/paths/paths.sml" {
+	Origins Paths GlobalStructs LambdaStructs
+}
+unit FORMATTER = "src/formatter/formatter.sig.sml" {TextIO}
+unit Formatter = "src/formatter/formatter.fun.sml" {
+	TextIO List String FORMATTER
+}
+unit FormatterStructs = "src/formatter/formatter.sml" {
+	Formatter FORMATTER
+}
+unit PRINT_TWEGA = "src/print/print-twega.sig.sml" {}
+unit PrintTwega = "src/print/print-twega.fun.sml" {
+	Int PRINT_TWEGA INTSYN WHNF ABSTRACT CONSTRAINTS NAMES FORMATTER
+}
+unit SYMBOL = "src/print/symbol.sig.sml" {}
+unit SymbolFunctors = "src/print/symbol.fun.sml" {String SYMBOL}
+unit PRINT = "src/print/print.sig.sml" {INTSYN FORMATTER}
+unit Print = "src/print/print.fun.sml" {
+	List Int PRINT INTSYN WHNF ABSTRACT CONSTRAINTS NAMES FORMATTER
+	SYMBOL
+}
+unit CLAUSEPRINT = "src/print/clause-print.sig.sml" {INTSYN FORMATTER}
+unit ClausePrint = "src/print/clause-print.fun.sml" {
+	CLAUSEPRINT INTSYN WHNF NAMES FORMATTER PRINT SYMBOL
+}
+unit PrintStructs = "src/print/print.sml" {
+	SymbolFunctors Print ClausePrint PrintTwega LambdaStructs
+	NamesStructs FormatterStructs
+}
+unit STRICT = "src/typecheck/strict.sig.sml" {INTSYN PATHS}
+unit Strict = "src/typecheck/strict.fun.sml" {
+	STRICT INTSYN PATHS
+}
+unit TYPECHECK = "src/typecheck/typecheck.sig.sml" {INTSYN}
+unit TypeCheck = "src/typecheck/typecheck.fun.sml" {
+	TYPECHECK INTSYN CONV WHNF PRINT
+}
+unit TypeCheckStructs = "src/typecheck/typecheck.sml" {
+	TypeCheck Strict LambdaStructs PrintStructs PathsStructs
+}
+unit QueueStructs = "src/table/queue.sml" {List}
+unit INDEX = "src/index/index.sig.sml" {INTSYN}
+unit Index = "src/index/index.fun.sml" {
+	Array INDEX GLOBAL INTSYN QueueStructs
+}
+unit IndexSkolem = "src/index/index-skolem.fun.sml" {
+	Array INDEX GLOBAL INTSYN QueueStructs
+}
+unit IndexStructs = "src/index/index.sml" {
+	Index IndexSkolem GlobalStructs QueueStructs LambdaStructs
+}
+unit MODESYN = "src/modes/modesyn.sig.sml" {INTSYN}
+unit ModeSyn = "src/modes/modesyn.fun.sml" {
+	MODESYN INTSYN NAMES TABLE INDEX
+}
+unit MODEDEC = "src/modes/modedec.sig.sml" {
+	MODESYN PATHS LambdaStructs
+}
+unit ModeDec = "src/modes/modedec.fun.sml" {
+	MODEDEC MODESYN PATHS
+}
+unit MODECHECK = "src/modes/modecheck.sig.sml" {MODESYN PATHS}
+unit ModeCheck = "src/modes/modecheck.fun.sml" {
+	MODECHECK MODESYN PATHS
+}
+unit MODEPRINT = "src/modes/modeprint.sig.sml" {MODESYN}
+unit ModePrint = "src/modes/modeprint.fun.sml" {
+	MODEPRINT MODESYN NAMES FORMATTER PRINT
+}
+unit ModesStructs = "src/modes/modes.sml" {
+	ModeSyn ModeDec ModeCheck ModePrint LambdaStructs NamesStructs
+	RedBlackStructs IndexStructs PathsStructs FormatterStructs
+	PrintStructs
+}
+unit SUBORDINATE = "src/subordinate/subordinate.sig.sml" {INTSYN}
+unit Subordinate = "src/subordinate/subordinate.fun.sml" {
+	Array List SUBORDINATE GLOBAL INTSYN WHNF
+}
+unit SubordinateStructs = "src/subordinate/subordinate.sml" {
+	Subordinate GlobalStructs LambdaStructs
+}
+unit TWELF_ORDER = "src/order/order.sig.sml" {INTSYN}
+unit TwelfOrder = "src/order/order.fun.sml" {
+	List TWELF_ORDER INTSYN TABLE
+}
+unit OrderStructs = "src/order/order.sml" {
+	TwelfOrder LambdaStructs RedBlackStructs
+}
+unit TERMINATE = "src/terminate/terminate.sig.sml" {INTSYN}
+unit Terminate = "src/terminate/terminate.fun.sml" {
+	TERMINATE GLOBAL INTSYN WHNF CONV UNIFY TRAIL NAMES INDEX
+	SUBORDINATE FORMATTER PRINT TWELF_ORDER PATHS ORIGINS
+}
+unit TerminateStructs = "src/terminate/terminate.sml" {
+	Terminate GlobalStructs LambdaStructs NamesStructs IndexStructs
+	SubordinateStructs FormatterStructs PrintStructs OrderStructs
+	PathsStructs
+}
+unit THMSYN = "src/thm/thmsyn.sig.sml" {MODESYN PATHS}
+unit ThmSyn = "src/thm/thmsyn.fun.sml" {
+	THMSYN MODESYN ABSTRACT WHNF PATHS
+}
+unit THMPRINT = "src/thm/thmprint.sig.sml" {THMSYN}
+unit ThmPrint = "src/thm/thmprint.fun.sml" {
+	THMPRINT THMSYN FORMATTER
+}
+unit THM = "src/thm/thm.sig.sml" {THMSYN PATHS}
+unit Thm = "src/thm/thm.fun.sml" {
+	List THM GLOBAL THMSYN TWELF_ORDER THMPRINT PATHS NamesStructs
+}
+unit ThmStructs = "src/thm/thm.sml" {
+	GlobalStructs ThmSyn ThmPrint Thm LambdaStructs ModesStructs
+	PathsStructs FormatterStructs OrderStructs
+}
+unit COMPSYN = "src/opsem/compsyn.sig.sml" {INTSYN}
+unit CompSyn = "src/opsem/compsyn.fun.sml" {
+	Array COMPSYN GLOBAL INTSYN NAMES
+}
+unit COMPILE = "src/opsem/compile.sig.sml" {INTSYN COMPSYN}
+unit Compile = "src/opsem/compile.fun.sml" {
+	COMPILE INTSYN COMPSYN WHNF TYPECHECK NAMES
+}
+unit CPRINT = "src/opsem/cprint.sig.sml" {INTSYN COMPSYN}
+unit CPrint = "src/opsem/cprint.fun.sml" {
+	String CPRINT INTSYN COMPSYN PRINT FORMATTER NAMES
+}
+unit ABSMACHINE = "src/opsem/absmachine.sig.sml" {INTSYN COMPSYN}
+unit AbsMachine = "src/opsem/absmachine.fun.sml" {
+	ABSMACHINE INTSYN COMPSYN UNIFY INDEX TRAIL CPRINT NAMES
+}
+unit TRACE = "src/opsem/trace.sig.sml" {INTSYN}
+unit Trace = "src/opsem/trace.fun.sml" {
+	List String Char TextIO Int TRACE INTSYN NAMES WHNF ABSTRACT PRINT
+}
+unit TMachine = "src/opsem/tmachine.fun.sml" {
+	ABSMACHINE INTSYN COMPSYN UNIFY INDEX TRAIL CPRINT NAMES TRACE
+}
+unit OpsemStructs = "src/opsem/opsem.sml" {
+	CompSyn Compile CPrint AbsMachine Trace TMachine GlobalStructs
+	LambdaStructs NamesStructs TypeCheckStructs PrintStructs
+	FormatterStructs IndexStructs INTSYN COMPSYN CPRINT
+}
+unit METAGLOBAL = "src/m2/meta-global.sig.sml" {}
+unit MetaGlobal = "src/m2/meta-global.sml" {METAGLOBAL}
+unit RingStructs = "src/table/ring.sml" {List}
+unit METASYN = "src/m2/metasyn.sig.sml" {INTSYN}
+unit MetaSyn = "src/m2/metasyn.fun.sml" {
+	METASYN INTSYN WHNF
+}
+unit METAABSTRACT = "src/m2/meta-abstract.sig.sml" {METASYN}
+unit MetaAbstract = "src/m2/meta-abstract.fun.sml" {
+	METAABSTRACT GLOBAL METASYN METAGLOBAL ABSTRACT MODESYN WHNF PRINT
+	CONSTRAINTS UNIFY NAMES TRAIL TYPECHECK SUBORDINATE StreamStructs
+}
+unit METAPRINT = "src/m2/meta-print.sig.sml" {METASYN}
+unit MetaPrint = "src/m2/meta-print.fun.sml" {
+	Int METAPRINT GLOBAL METASYN FORMATTER PRINT CLAUSEPRINT
+}
+unit INIT = "src/m2/init.sig.sml" {METASYN}
+unit Init = "src/m2/init.fun.sml" {
+	INIT METASYN METAABSTRACT
+}
+unit SEARCH = "src/m2/search.sig.sml" {METASYN}
+unit Search = "src/m2/search.fun.sml" {
+	SEARCH INTSYN METAGLOBAL METASYN COMPSYN WHNF UNIFY INDEX COMPILE
+	TRAIL CPRINT PRINT NAMES GlobalStructs
+}
+unit LEMMA = "src/m2/lemma.sig.sml" {METASYN}
+unit Lemma = "src/m2/lemma.fun.sml" {
+	LEMMA METASYN METAABSTRACT
+}
+unit SPLITTING = "src/m2/splitting.sig.sml" {METASYN}
+unit Splitting = "src/m2/splitting.fun.sml" {
+	Int List SPLITTING GLOBAL METASYN METAABSTRACT METAPRINT MODESYN
+	WHNF INDEX PRINT UNIFY LambdaStructs
+}
+unit FILLING = "src/m2/filling.sig.sml" {METASYN}
+unit Filling = "src/m2/filling.fun.sml" {
+	FILLING METASYN METAABSTRACT SEARCH WHNF PRINT
+}
+unit RECURSION = "src/m2/recursion.sig.sml" {METASYN}
+unit Recursion = "src/m2/recursion.fun.sml" {
+	RECURSION GLOBAL METASYN WHNF UNIFY CONV TRAIL NAMES SUBORDINATE
+	PRINT TWELF_ORDER MODESYN LEMMA FILLING METAPRINT METAABSTRACT
+	FORMATTER MetaGlobal
+}
+unit QED = "src/m2/qed.sig.sml" {METASYN}
+unit Qed = "src/m2/qed.fun.sml" {
+	QED GLOBAL METASYN
+}
+unit STRATEGY = "src/m2/strategy.sig.sml" {METASYN}
+unit Strategy = "src/m2/strategy.fun.sml" {
+	STRATEGY METAGLOBAL METASYN FILLING SPLITTING RECURSION LEMMA
+	QED METAPRINT TIMERS GlobalStructs
+}
+unit PROVER = "src/m2/prover.sig.sml" {INTSYN}
+unit Prover = "src/m2/prover.fun.sml" {
+	List GlobalStructs PROVER METAGLOBAL METASYN INIT STRATEGY FILLING
+	SPLITTING RECURSION QED METAPRINT NAMES TIMERS OrderStructs
+}
+unit MPI = "src/m2/mpi.sig.sml" {METASYN}
+unit Mpi = "src/m2/mpi.fun.sml" {
+	List Int MPI METAGLOBAL METASYN INIT FILLING SPLITTING RECURSION
+	LEMMA STRATEGY QED METAPRINT NAMES TIMERS RingStructs OrderStructs
+}
+unit SKOLEM = "src/m2/skolem.sig.sml" {INTSYN}
+unit Skolem = "src/m2/skolem.fun.sml" {
+	TextIO SKOLEM GLOBAL INTSYN WHNF ABSTRACT INDEX MODESYN PRINT
+	COMPILE TIMERS NAMES
+}
+unit M2Structs = "src/m2/m2.sml" {
+	MetaSyn MetaAbstract MetaPrint Init Search Lemma Splitting
+	Filling Recursion Qed Strategy Prover Mpi Skolem MetaGlobal
+	LambdaStructs GlobalStructs ModesStructs PrintStructs NamesStructs
+	TypeCheckStructs SubordinateStructs FormatterStructs OpsemStructs
+	IndexStructs OrderStructs TimersStructs RingStructs
+}
+unit HEURISTIC = "src/heuristic/heuristic.sig.sml" {}
+unit Heuristic = "src/heuristic/heuristic.fun.sml" {
+	Int Real StringCvt HEURISTIC
+}
+unit MTPGLOBAL = "src/meta/global.sig.sml" {}
+unit MTPGlobal = "src/meta/global.fun.sml" {MTPGLOBAL}
+unit STATESYN = "src/meta/statesyn.sig.sml" {INTSYN FUNSYN}
+unit MTPINIT = "src/meta/init.sig.sml" {FUNSYN STATESYN}
+unit MTPSTRATEGY = "src/meta/strategy.sig.sml" {STATESYN}
+unit RELFUN = "src/meta/relfun.sig.sml" {FUNSYN}
+unit MTProver = "src/meta/prover.fun.sml" {
+	List MTPGlobal MTPGLOBAL PROVER INTSYN FUNSYN STATESYN TWELF_ORDER
+	MTPINIT MTPSTRATEGY RELFUN MTPGlobal M2Structs
+}
+unit FUNPRINT = "src/meta/funprint.sig.sml" {FUNSYN FORMATTER}
+unit MTPRINT = "src/meta/print.sig.sml" {
+	FORMATTER STATESYN
+}
+unit MTPrint = "src/meta/print.fun.sml" {
+	Int MTPRINT GLOBAL INTSYN FUNSYN NAMES STATESYN FORMATTER PRINT
+	FUNPRINT
+}
+unit MTPFILLING = "src/meta/filling.sig.sml" {FUNSYN STATESYN}
+unit MTPDATA = "src/meta/data.sig.sml" {}
+unit MTPSPLITTING = "src/meta/splitting.sig.sml" {STATESYN}
+unit MTPRECURSION = "src/meta/recursion.sig.sml" {STATESYN}
+unit INFERENCE = "src/meta/inference.sig.sml" {FUNSYN STATESYN}
+unit MTPStrategy = "src/meta/strategy.fun.sml" {
+	Int MTPSTRATEGY MTPGLOBAL STATESYN MTPFILLING MTPDATA MTPSPLITTING
+	MTPRECURSION INFERENCE MTPRINT TIMERS GlobalStructs
+}
+unit StateSyn = "src/meta/statesyn.fun.sml" {
+	STATESYN INTSYN FUNSYN WHNF CONV
+}
+unit FUNTYPECHECK = "src/meta/funtypecheck.sig.sml" {FUNSYN STATESYN}
+unit UNIQUESEARCH = "src/meta/uniquesearch.sig.sml" {
+	INTSYN FUNSYN STATESYN
+}
+unit Inference = "src/meta/inference.fun.sml" {
+	INFERENCE MTPGLOBAL INTSYN FUNSYN STATESYN ABSTRACT TYPECHECK
+	FUNTYPECHECK UNIQUESEARCH PRINT WHNF GlobalStructs
+}
+unit MTPABSTRACT = "src/meta/abstract.sig.sml" {
+	INTSYN FUNSYN STATESYN
+}
+unit MTPSplitting = "src/meta/splitting.fun.sml" {
+	List Int MTPSPLITTING MTPGLOBAL GLOBAL INTSYN FUNSYN STATESYN
+	HEURISTIC MTPABSTRACT MTPRINT NAMES CONV WHNF TYPECHECK
+	SUBORDINATE FUNTYPECHECK INDEX PRINT UNIFY LambdaStructs
+}
+unit UniqueSearch = "src/meta/uniquesearch.fun.sml" {
+	List UNIQUESEARCH GLOBAL INTSYN FUNSYN STATESYN ABSTRACT MTPGLOBAL
+	COMPSYN WHNF UNIFY INDEX COMPILE TRAIL CPRINT PRINT NAMES
+}
+unit MTPSEARCH = "src/meta/search.sig.sml" {STATESYN}
+unit MTPSearch = "src/meta/search.fun.sml" {
+	List MTPSEARCH GLOBAL INTSYN ABSTRACT MTPGLOBAL STATESYN COMPSYN
+	WHNF UNIFY INDEX COMPILE TRAIL CPRINT PRINT NAMES
+}
+unit MTPRecursion = "src/meta/recursion.fun.sml" {
+	List MTPRECURSION GLOBAL INTSYN FUNSYN STATESYN ABSTRACT
+	MTPABSTRACT FUNTYPECHECK MTPRINT WHNF UNIFY CONV TRAIL NAMES
+	SUBORDINATE PRINT TYPECHECK FORMATTER FUNPRINT MTPGlobal
+	OrderStructs
+}
+unit MTPI = "src/meta/mpi.sig.sml" {FUNSYN STATESYN}
+unit MTPi = "src/meta/mpi.fun.sml" {
+	TextIO Int List MTPI MTPGLOBAL INTSYN FUNSYN STATESYN RELFUN
+	FORMATTER PRINT FUNTYPECHECK MTPDATA MTPINIT MTPFILLING INFERENCE
+	MTPSPLITTING MTPRECURSION MTPSTRATEGY MTPRINT TWELF_ORDER NAMES
+	TIMERS RingStructs GlobalStructs
+}
+unit MTPData = "src/meta/data.fun.sml" {MTPDATA MTPGLOBAL}
+unit MTPFilling = "src/meta/filling.fun.sml" {
+	Int MTPFILLING INTSYN FUNSYN STATESYN ABSTRACT TYPECHECK MTPDATA
+	MTPSEARCH WHNF GlobalStructs MTPGlobal
+}
+unit MTPInit = "src/meta/init.fun.sml" {
+	List MTPINIT MTPGLOBAL MTPDATA INTSYN NAMES FUNSYN STATESYN
+	FORMATTER WHNF PRINT FUNPRINT
+}
+unit MTPAbstract = "src/meta/abstract.fun.sml" {
+	List MTPABSTRACT INTSYN FUNSYN STATESYN WHNF CONSTRAINTS
+	SUBORDINATE TYPECHECK FUNTYPECHECK ABSTRACT TRAIL GlobalStructs
+}
+unit FunSyn = "src/meta/funsyn.fun.sml" {
+	Array Int FUNSYN INTSYN WHNF CONV GlobalStructs
+}
+unit FUNNAMES = "src/meta/funnames.sig.sml" {FUNSYN}
+unit FunNames = "src/meta/funnames.fun.sml" {
+	Array FUNNAMES GLOBAL FUNSYN TABLE LambdaStructs
+}
+unit FunPrint = "src/meta/funprint.fun.sml" {
+	List FUNPRINT FUNSYN FORMATTER NAMES PRINT
+}
+unit WEAKEN = "src/meta/weaken.sig.sml" {INTSYN}
+unit Weaken = "src/meta/weaken.fun.sml" {
+	WEAKEN INTSYN WHNF
+}
+unit FUNWEAKEN = "src/meta/funweaken.sig.sml" {FUNSYN}
+unit FunWeaken = "src/meta/funweaken.fun.sml" {
+	FUNWEAKEN FUNSYN WEAKEN
+}
+unit FunTypeCheck = "src/meta/funtypecheck.fun.sml" {
+	FUNTYPECHECK FUNSYN STATESYN ABSTRACT TYPECHECK CONV WHNF PRINT
+	SUBORDINATE WEAKEN FUNPRINT
+}
+unit RelFun = "src/meta/relfun.fun.sml" {
+	List RELFUN GLOBAL FUNSYN MODESYN NAMES TRAIL UNIFY WHNF WEAKEN
+	TYPECHECK FUNWEAKEN FUNNAMES SubordinateStructs
+}
+unit MetaStructs = "src/meta/meta.sml" {
+	MTPGlobal RingStructs FunSyn StateSyn FunNames FunPrint Weaken
+	FunWeaken FunTypeCheck RelFun MTPData MTPAbstract MTPInit
+	MTPrint MTPSearch MTPFilling MTPSplitting UniqueSearch Inference
+	MTPRecursion MTPStrategy MTProver MTPi LambdaStructs GlobalStructs
+	HashStructs FormatterStructs PrintStructs NamesStructs
+	TypeCheckStructs SubordinateStructs ModesStructs IndexStructs
+	OpsemStructs Heuristic OrderStructs M2Structs TimersStructs
+}
+unit LEXER = "src/frontend/lexer.sig.sml" {
+	PATHS StreamStructs TextIO
+}
+unit Lexer = "src/frontend/lexer.fun.sml" {
+	TextIO Char String LEXER PATHS StreamStructs
+}
+unit PARSING = "src/frontend/parsing.sig.sml" {
+	StreamStructs LEXER
+}
+unit Parsing = "src/frontend/parsing.fun.sml" {
+	PARSING StreamStructs LEXER
+}
+unit TP_RECON = "src/frontend/tprecon.sig.sml" {PATHS INTSYN}
+unit TpRecon = "src/frontend/tprecon.fun.sml" {
+	List INTSYN NAMES GLOBAL PATHS WHNF UNIFY ABSTRACT TYPECHECK
+	STRICT PRINT TIMERS TP_RECON
+}
+unit TpTrace = "src/frontend/tptrace.fun.sml" {
+	List Int TP_RECON GLOBAL INTSYN NAMES PATHS WHNF UNIFY ABSTRACT
+	TYPECHECK STRICT PRINT TIMERS
+}
+unit MODE_RECON = "src/frontend/moderecon.sig.sml" {
+	MODESYN TP_RECON PATHS
+}
+unit ModeRecon = "src/frontend/moderecon.fun.sml" {
+	MODE_RECON GLOBAL MODESYN WHNF PATHS MODEPRINT MODEDEC TP_RECON
+	NamesStructs
+}
+unit THM_RECON = "src/frontend/thmrecon.sig.sml" {
+	TP_RECON PATHS THMSYN
+}
+unit ThmRecon = "src/frontend/thmrecon.fun.sml" {
+	List THM_RECON GLOBAL MODESYN THMSYN PATHS TP_RECON NAMES
+}
+unit PARSE_TERM = "src/frontend/parse-term.sig.sml" {PARSING TP_RECON}
+unit ParseTerm = "src/frontend/parse-term.fun.sml" {
+	PARSE_TERM PARSING TP_RECON NAMES
+}
+unit PARSE_CONDEC = "src/frontend/parse-condec.sig.sml" {PARSING TP_RECON}
+unit ParseConDec = "src/frontend/parse-condec.fun.sml" {
+	PARSE_CONDEC PARSING TP_RECON PARSE_TERM
+}
+unit PARSE_QUERY = "src/frontend/parse-query.sig.sml" {PARSING TP_RECON}
+unit ParseQuery = "src/frontend/parse-query.fun.sml" {
+	PARSE_QUERY PARSING TP_RECON PARSE_TERM
+}
+unit PARSE_FIXITY = "src/frontend/parse-fixity.sig.sml" {PARSING NAMES}
+unit ParseFixity = "src/frontend/parse-fixity.fun.sml" {
+	Int PARSE_FIXITY PARSING NAMES
+}
+unit PARSE_MODE = "src/frontend/parse-mode.sig.sml" {
+	PARSING MODE_RECON
+}
+unit ParseMode = "src/frontend/parse-mode.fun.sml" {
+	String PARSE_MODE PATHS PARSING MODE_RECON PARSE_TERM
+}
+unit PARSE_THM = "src/frontend/parse-thm.sig.sml" {PARSING THM_RECON}
+unit ParseThm = "src/frontend/parse-thm.fun.sml" {
+	PARSE_THM PATHS PARSING THM_RECON PARSE_TERM
+}
+unit PARSER = "src/frontend/parser.sig.sml" {
+	PARSING StreamStructs TP_RECON NAMES MODE_RECON THM_RECON TextIO
+}
+unit Parser = "src/frontend/parser.fun.sml" {
+	PARSER PARSING StreamStructs TP_RECON NAMES MODE_RECON THM_RECON
+	PARSE_CONDEC PARSE_QUERY PARSE_FIXITY PARSE_MODE PARSE_THM
+	PARSE_TERM
+}
+unit SOLVE = "src/frontend/solve.sig.sml" {
+	INTSYN TP_RECON PATHS
+}
+unit Solve = "src/frontend/solve.fun.sml" {
+	Int String TextIO SOLVE GLOBAL INTSYN NAMES PARSER CONSTRAINTS
+	ABSTRACT TP_RECON TIMERS COMPSYN COMPILE TRAIL ABSMACHINE
+	STRICT PRINT
+}
+unit TWELF = "src/frontend/twelf.sig.sml" {}
+unit Twelf = "src/frontend/twelf.fun.sml" {
+	TextIO OS IO Int List Substring Char TWELF GLOBAL TIMERS INTSYN
+	WHNF PRINT NAMES PATHS ORIGINS LEXER PARSING PARSER TYPECHECK
+	CONSTRAINTS ABSTRACT TP_RECON MODESYN MODECHECK MODE_RECON
+	MODEPRINT MODEDEC TERMINATE INDEX SUBORDINATE COMPSYN COMPILE
+	TRAIL ABSMACHINE SOLVE THMSYN THM THM_RECON THMPRINT METAGLOBAL
+	FUNSYN SKOLEM PROVER CLAUSEPRINT TRACE OpsemStructs
+}
+unit FrontendStructs = "src/frontend/frontend.sml" {
+	Lexer Parsing TpRecon TpTrace ModeRecon ThmRecon ParseTerm
+	ParseConDec ParseQuery ParseFixity ParseMode ParseThm Parser Solve
+	Twelf StreamStructs PathsStructs LambdaStructs NamesStructs
+	GlobalStructs TypeCheckStructs PrintStructs TimersStructs
+	ModesStructs OpsemStructs IndexStructs SubordinateStructs
+	MetaGlobal MetaStructs M2Structs ThmStructs TerminateStructs
+}

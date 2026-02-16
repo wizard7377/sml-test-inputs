@@ -1,0 +1,85 @@
+Number: 0151
+Title:       name clash problem in ld
+Keywords:    ld, elaboration
+Submitter:   rwh
+Date:        08/18/02
+Version:     CVS
+System:      any
+Severity:    critical
+Problem:
+	Despite name-mangling, we still get crashes from ld because of
+	multiply-defined identifiers.  In this test file, if you
+	replace "hd_" by "hd", ld will reject.
+Code:        
+Transcript:  
+Comments:
+
+	Notation: I write A[x1,...,xn] for a unit named A that exports
+	the list of labels x1,...,xn.  An empty export list is elided
+	as are unit names when they are unimportant.  (I write * when
+	I want to elide both.)  To indicate that unit A imports unit
+	B, I write B <- A.
+
+	We want:
+
+	1. To permit a compilation unit to shadow an imported label;
+	that is, to allow
+
+		[x] <- [x]
+
+	2. To permit ambiguous imports; that is, to allow
+
+		[x] <- * -> [x]
+
+	the order of imports determine which x wins.
+
+	3. To allow
+
+		[x] <- * <- * -> [x]
+
+	and Leaf's closely related example
+
+		[x] <- * <- * -> * -> [x]
+
+	See tests bug151a, bug151b, and bug151d for concrete examples
+	of (1), (2), and (3), respectively.
+
+	The situation in (3) is not ambiguous because the labels of
+	indirect imports can not appear free in a compilation unit's
+	source code.
+
+Fix:
+
+	Separate compilation: A compilation unit is a HS module.
+	Imports are treated like "open".
+
+	* I added a third type of external RTL labels; an extern can
+	be C, ML, or LINK.  LINK labels are used to name things needed
+	by the backend, runtime, or link unit to link compilation
+	units.  Since LINK names no longer conflict with ML names, I
+	made them less ugly; for example, we now have link_gctable
+	rather than ml_GCTABLE_BEGIN_VAL.
+
+	* I moved the msLabel function from the Sparc and Alpha
+	backends into the backend core.sml so that we have only one
+	copy.  (We do not want platform-specific name mangling; the
+	Runtime has to know how some identifiers are mangled.)
+
+	* I changed the msLabel mangling so that well-chosen unit
+	names can not cause multiply-defined identifiers.  For
+	example, under the old scheme both A[bDOTc] and ADOTb[c] would
+	mangle as ADOTbDOTc.  The new scheme uses _ as a
+	meta-character to introduce other special characters
+	(including _); we have A_DOTbDOTc vs ADOTb_DOTc.
+
+	* I eliminated some ad hoc mangling in the backend.  An RTL
+	module now has a record of entry point labels rather than a
+	single label main.  Backend components no longer mangle main,
+	they just project out the labels they are interested in.
+
+	* The Sparc backend and printutils were marking too many
+	labels .globl.
+
+Test: m0131, bug151a-d
+Owner: swasey
+Status: closed

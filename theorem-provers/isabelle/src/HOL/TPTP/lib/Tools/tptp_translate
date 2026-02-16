@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# Author: Jasmin Blanchette
+# Author: Martin Desharnais-Schäfer
+#
+# DESCRIPTION: translate between TPTP formats
+
+PRG="$(basename "$0")"
+
+function usage() {
+  echo
+  echo "Usage: isabelle $PRG FORMAT FILE"
+  echo
+  echo "  Translates TPTP input file to the specified format (\"FOF\", \"TF0\", \"TH0\", or \"DFG\")."
+  echo "  Emits the result to standard output."
+  echo
+  exit 1
+}
+
+[ "$#" -ne 2 -o "$1" = "-?" ] && usage
+
+SCRATCH="Scratch_${PRG}_$$_${RANDOM}"
+SCRATCH_FILE=/tmp/${SCRATCH}.thy
+
+args=("$@")
+
+echo "theory ${SCRATCH} imports \"HOL-TPTP.ATP_Problem_Import\" begin \
+ML \<open> ATP_Problem_Import.translate_tptp_file @{theory} \"${args[0]}\" \"${args[1]}\" \<close> end" \
+    > "${SCRATCH_FILE}"
+
+isabelle process_theories -O -U -l HOL-TPTP -f "${SCRATCH_FILE}" "${SCRATCH}" \
+    | grep --line-buffered -vE \
+        -e '^Running Draft ...$' \
+        -e '^[[:space:]]*$' \
+        -e '^Output \(line [[:digit:]]+ of ".*"):$' \
+        -e '^val it = \(\): unit$' \
+        -e '^Finished Draft \([0-9:]+ elapsed time(, [0-9:]+ cpu time, factor [0-9.]+)?\)$' \
+        -e '^PROOF FAILED for depth' \
+        -e '^Failure node' \
+        -e 'inferences so far.  Searching to depth' \
+        -e '^val ' \
+        -e 'Loading theory' \
+        -e '^poly.*warning: The type of' \
+        -e '^   monotype.$'

@@ -1,0 +1,43 @@
+group 
+is
+
+../smlnj-lib.cm             (* ------ SML/NJ library ------- *)
+../Util/util.cm             (* ------ Our own utilities ---- *)
+../Elaborator/elaborator.cm (* ------ Elaborator Stuff ----- *)
+../Lil/lil.cm               (* ------ Nil Stuff ------------ *)
+../Backend/backend.cm
+
+tal.sml
+
+peep.sig.sml
+peep.sml
+abbrev.sig.sml
+abbrev.sml
+pp.sig.sml
+pp.sml
+talout.sig.sml
+talout.sml
+tal_abbrev.sig.sml
+tal_abbrev.sml
+instructions.sig.sml
+instructions.sml
+taltranslationdefs.sig.sml
+taltranslationdefs.sml
+liltotalenv.sig.sml
+liltotalenv.sml
+liltotalcon.sig.sml
+liltotalcon.sml
+statetypes.sml
+stackdesc.sig.sml
+stackdesc.sml
+instrdesc.sig.sml
+instrdesc.sml
+liltotalstate.sig.sml
+liltotalstate.sml
+liltotalexp.sig.sml
+liltotalexp.sml
+
+liltotal.sig.sml
+liltotal.sml
+
+linktal.sml

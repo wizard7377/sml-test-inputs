@@ -1,0 +1,131 @@
+#
+# make_rel: build a ProofPower release
+#
+# must be run from the tools directory
+#
+# Supporting variables and functions:
+PROGNAME=`basename "$0"`
+usage(){
+	echo \
+"$PROGNAME: usage: make_rel [-htu] -v <version> [-b <basedir>] [-p <prodname>]
+
+    -h              print this help text and exit
+    -t              just construct the installation directory not the tarball
+    -u              suppress updating the version file ../version
+    -v <version>    specify the version number
+    -b <basedir>    specify directory to hold the installation directory
+                    and tarball (default: ../rel)
+    -p <prodname>   specify the name of the product (default: OpenProofPower)
+"
+	exit $1
+}
+fail() {
+	echo $PROGNAME: $* 1>&2
+	exit 1
+}
+#
+# Establish parameters:
+#
+VERSION=""
+PRODNAME="OpenProofPower"
+TGZNAME="$PRODNAME"
+CWD=`pwd`
+BASEDIR="$CWD/../rel"
+WANTTARBALL=y
+UPDATEVERSIONFILE=y
+while getopts htuv:b:p: arg
+do
+	case $arg in
+	h)	usage 0 ;;
+	t)	WANTTARBALL=n ;;
+	u)	UPDATEVERSIONFILE=n ;;
+	v)	VERSION=$OPTARG ;;
+	b)	BASEDIR=$OPTARG ;;
+	p)	PRODNAME=$OPTARG ;;
+	'?')	usage 1 ;;
+	esac
+done
+#
+# Validate parameters:
+#
+if	[ "$VERSION" = "" ]
+then	usage 1
+fi
+#
+# Calculate destination directories and files:
+#
+PRODUCT=$PRODNAME-$VERSION
+RELDIR=$BASEDIR/$PRODUCT
+TARBALL=$TGZNAME-$VERSION.tgz
+#
+# Extra files that do not belong in any package:
+#
+EXTRAS='
+	CHANGES
+	CONTRIBUTORS
+	distclean'
+#
+# ... some requiring an edit for the version number, the year etc.
+#
+VEREXTRAS='
+	README
+	LICENSE
+	configure
+	distclean'
+#
+# ... some needing to be executable:
+#
+SCRIPTS='
+	distclean
+	configure'
+#
+# ... and some belonging in the src directory:
+#
+SRCEXTRAS='
+	index.html.src
+	lemma1.gif
+	newpplogo.gif'
+#
+# Create destination directories and files:
+#
+rm -rf $RELDIR || fail "unable to delete $RELDIR"
+git ls-files ../src | cpio -pdL --quiet $RELDIR/src
+cp $EXTRAS $RELDIR
+for f in $VEREXTRAS
+do
+	sed <$f >$RELDIR/$f \
+		-e '/\$PPVER/s/\$PPVER/'"$VERSION/" \
+		-e '/\$YEAR/s/\$YEAR/'"`date +%Y`/" \
+		-e '/\$DATE/s/\$DATE/'"`date`/"
+done
+cp $SRCEXTRAS $RELDIR/src
+for f in $SCRIPTS
+do
+	chmod +x $RELDIR/$f
+done
+#
+# One-offs:
+#
+cd $RELDIR/src/dev
+make -s -f dev.mkf usr032a.eps
+cd $RELDIR/src/xpp
+make -s -f xpp.mkf help.c >/dev/null
+#
+cd $BASEDIR/$PRODUCT
+touch src/packinglist
+find src/* > src/packinglist
+#
+# Create the tarball if wanted
+#
+cd $BASEDIR
+if	[ "$WANTTARBALL" = y ]
+then	tar cfz $TARBALL $PRODUCT
+fi
+cd $CWD
+if	[ "$UPDATEVERSIONFILE" = y ]
+then	echo $VERSION > ../version
+	echo make_rel: updated ../version to $VERSION
+fi
+#
+# That's it!
+#

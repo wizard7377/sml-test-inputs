@@ -1,0 +1,1 @@
+structure Int = Int32

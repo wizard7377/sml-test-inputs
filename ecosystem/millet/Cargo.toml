@@ -1,0 +1,74 @@
+[workspace]
+members = ["crates/*", "xtask"]
+resolver = "2"
+
+[workspace.package]
+version = "0.15.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+# third-party
+anyhow = "1.0.75"
+better-panic = "0.3.0"
+codespan-reporting = "0.12.0"
+crossbeam-channel = "0.5.9"
+drop_bomb = "0.1.5"
+env_logger = "0.11.8"
+flate2 = "1.0.28"
+la-arena = "0.3.1"
+log = "0.4.20"
+lsp-server = "0.7.5"
+lsp-types = { version = "0.95.0", features = ["proposed"] }
+num-bigint = "0.4.4"
+num-traits = "0.2.17"
+pico-args = "0.5.0"
+pretty_assertions = "1.4.0"
+proc-macro2 = "1.0.70"
+pulldown-cmark = "0.13.0"
+quote = "1.0.33"
+rowan = "0.16.1"
+serde = { version = "1.0.193", features = ["derive"] }
+serde_json = "1.0.108"
+toml = "0.9.5"
+glob = "0.3.1"
+# language-util
+chain-map.git = "https://github.com/azdavis/language-util.git"
+code-h2-md-map.git = "https://github.com/azdavis/language-util.git"
+diagnostic.git = "https://github.com/azdavis/language-util.git"
+elapsed.git = "https://github.com/azdavis/language-util.git"
+event-parse.git = "https://github.com/azdavis/language-util.git"
+fast-hash.git = "https://github.com/azdavis/language-util.git"
+fmt-util.git = "https://github.com/azdavis/language-util.git"
+idx.git = "https://github.com/azdavis/language-util.git"
+paths.git = "https://github.com/azdavis/language-util.git"
+pattern-match.git = "https://github.com/azdavis/language-util.git"
+str-util.features = ["serde"]
+str-util.git = "https://github.com/azdavis/language-util.git"
+syntax-gen.git = "https://github.com/azdavis/language-util.git"
+text-pos.git = "https://github.com/azdavis/language-util.git"
+text-size-util.git = "https://github.com/azdavis/language-util.git"
+token.git = "https://github.com/azdavis/language-util.git"
+topo-sort.git = "https://github.com/azdavis/language-util.git"
+uniq.git = "https://github.com/azdavis/language-util.git"
+write-rs-tokens.git = "https://github.com/azdavis/language-util.git"
+# sml-libs
+sml-libs.git = "https://github.com/azdavis/sml-libs.git"
+
+[workspace.lints.rust]
+elided-lifetimes-in-paths = "deny"
+explicit-outlives-requirements = "deny"
+missing-debug-implementations = "deny"
+missing-docs = "deny"
+unused-extern-crates = "deny"
+
+[workspace.lints.clippy]
+pedantic = "deny"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+# for backtraces
+debug = 1
+strip = "none"

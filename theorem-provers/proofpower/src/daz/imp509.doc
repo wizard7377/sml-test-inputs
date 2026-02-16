@@ -1,0 +1,2347 @@
+=IGN
+********************************************************************************
+imp509.doc: this file is part of the PPDaz system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+% imp509.doc   %Z% $Date: 2008/02/10 15:59:51 $ $Revision: 1.21 $ $RCSfile: imp509.doc,v $
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Implementation: Z Toolkit Extensions}
+
+\def\AbstractText{This document contains the implementation for the CN parser.}
+
+\def\Reference{ISS/HAT/DAZ/IMP509}
+
+\def\Author{R.D. Arthan}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+\def\Hide#1{}
+\def\Bool{``$\it{:}bool\,$''}
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{DAZ PROJECT}  %% Mandatory field
+%% LaTeX2e port: %\TPPvolume{}
+%% LaTeX2e port: %\TPPpart{}
+%% LaTeX2e port: \TPPtitle{Implementation: Z Toolkit Extensions}  %% Mandatory field
+%% LaTeX2e port: \TPPref{ISS/HAT/DAZ/IMP509}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Revision: 1.21 $%
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2008/02/10 15:59:51 $%
+%% LaTeX2e port: }}
+%% LaTeX2e port: \TPPstatus{Draft}			%% Mandatory field
+%% LaTeX2e port: \TPPtype{Specification}
+%% LaTeX2e port: \TPPkeywords{HOL}
+%% LaTeX2e port: \TPPauthor{R.D.~Arthanlocation 1\\Name 2&location 2\\Name 3&location 3}
+%% LaTeX2e port: \TPPauthorisation{D.J.~King & DAZ Team Leader}
+%% LaTeX2e port: \TPPabstract{
+%% LaTeX2e port: This document contains the implementation for the CN
+%% LaTeX2e port: parser.}
+%% LaTeX2e port: %\TPPabstractB{}
+%% LaTeX2e port: %\TPPabstractC{}
+%% LaTeX2e port: %\TPPabstractD{}
+%% LaTeX2e port: %\TPPabstractE{}
+%% LaTeX2e port: %\TPPabstractF{}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port: 	Library}}
+%% LaTeX2e port: 
+%% LaTeX2e port: %\TPPclass{CLASSIFICATION}
+%% LaTeX2e port: %\def\TPPheadlhs{}
+%% LaTeX2e port: %\def\TPPheadcentre{}
+%% LaTeX2e port: %def\TPPheadrhs{}
+%% LaTeX2e port: %\def\TPPfootlhs{}
+%% LaTeX2e port: %\def\TPPfootcentre{}
+%% LaTeX2e port: %\def\TPPfootrhs{}
+%% LaTeX2e port: 
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \TPPsetsizes
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: 
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: 
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: 
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+
+\newpage
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu,daz}
+
+\subsection{Changes History}  % to get section number `0.3'
+\begin{description}
+
+\item[Issues 1.1 (1994/12/22) - 1.3 (1994/12/22)] Initial Versions.
+\item[Issue 1.4 (1996/02/22)] $intmod$, $intdiv$ and $rem$ theorems added.
+\item[Issue 1.5 (1996/03/07)]
+Added cn1 proof context.
+\item[Issue 1.6 (1996/03/12)]
+Added $cn\_boolean\_clauses1$ and $cn\_boolean\_clauses2$.
+\item[Issue 1.7 (1996/03/21)]
+Renaming and making public of $cn\_boolean\_\in\_boolean\_thm$
+and removed $cn1$ proof context which is now to be defined in \cite{ISS/HAT/DAZ/IMP518}.
+\item[Issue 1.8 (1996/03/21)]
+Added $z\_succÁnÍ\_ª\_thm$.
+\item[Issue 1.9 (1999/03/07)]
+Update for new INTEGER type.
+\item[Issues 1.10 (2000/12/13), 1.11 (2000/12/14)]
+Updates for real numbers.
+\item[Issue 1.12 (2001/11/08)] R0021: new treatment of AND THEN and OR ELSE.
+\item[Issue 1.13 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.14 (2002/10/17)] DAZ-specific updates to banner for open source release
+\item[Issue 1.15 (2002/10/17)] DAZ-specific updates to banner for open source release
+\item[Issue 1.16 (2004/01/19)] The Z universal set is now called É
+\item[Issue 1.17 (2005/02/26)] Allowed for ISO Z precedences and associativities that {\Product} now uses.
+\item[Issue 1.18 (2005/09/09)] Allowed for introduction of ñ and ø.
+\item[Issue 1.19 (2006/04/20)] Ada real literals are now translated into Z floating point literals.
+\item[Issue 1.20 (2007/08/04)] {\em z\_dots\_conv} has been renamed as {\em zz\_dot\_dot\_conv}.
+\item[Issue 1.64] Allowed for change to lexical rules for underscores in Z.
+\item[Issue 1.65] Modular types.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported daz source documents onto the Lemma 1 document template
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+\subsection{Changes Forecast}
+\pagebreak
+\section{GENERAL}
+\subsection{Scope}
+This document contains the implementation for the theory `cn'.
+The detailed design for this material is in \cite{ISS/HAT/DAZ/DTD509}.
+
+\subsection{Introduction}
+
+\subsection{Purpose and Background}
+
+\subsection{Algorithms}
+
+\subsection{Dependencies}
+
+\subsection{Known Deficencies}
+
+\subsection{Possible Enhancements}
+\section{PROLOGUE}
+=SML
+structure €CNToolkitExtensions› : CNToolkitExtensions = struct
+=TEX
+\section{THEOREMS}
+
+
+
+=SML
+val _ = set_merge_pcs["z_library", "'z_reals"];
+val €old_sgpq_flag› = set_flag("subgoal_package_quiet", true);
+=TEX
+=SML
+val €cn_boolean_thm› = (
+set_goal([], ÒBOOLEAN = {FALSE, TRUE}Æ);
+a(rewrite_tac[z_get_specÒBOOLEANÆ,z_get_specÒTRUEÆ,z_get_specÒFALSEÆ]);
+a(conv_tac (LEFT_C z_dot_dot_conv) THEN REPEAT strip_tac);
+save_pop_thm"cn_boolean_thm"
+);
+=TEX
+=SML
+val cn_succ_thm = (
+set_goal([],Òµ i, j : É ∑ (i,j) ç succ ¥ j = i + 1Æ);
+a(REPEAT strip_tac);
+a(strip_asm_tac (z_get_specÒsuccÆ));
+a(all_fc_tac [z_fun_app_clauses]);
+a(all_var_elim_asm_tac1);
+a(lemma_tacÒi ç ÓÆ);
+(* *** Goal "1" *** *)
+a(PC_T1 "z_fun_ext" asm_prove_tac []);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+(fn _ => pop_thm()) "cn_succ_thm"
+);
+=TEX
+=SML
+val cn_succ_0_thm = (
+set_goal([],Òsucc 0 = 1Æ);
+a(asm_tac z_0_Ó_thm);
+a(strip_asm_tac (z_get_specÒsuccÆ));
+a(z_spec_asm_tac Òµ n : Ó ∑ succ n = n + 1Æ Ò0Æ);
+a(asm_rewrite_tac[]);
+(fn _ => pop_thm())"cn_succ_0_thm"
+);
+=TEX
+=SML
+val cn_boolean_succ_thm = (
+set_goal([], ÒBOOLEANvSUCC = {FALSE Ì TRUE}Æ);
+a(rewrite_tac[z_get_specÒBOOLEANvSUCCÆ]);
+a(rewrite_tac[cn_boolean_thm, z_get_specÒBOOLEANvLASTÆ]);
+a(rewrite_tac[z_get_specÒTRUEÆ,z_get_specÒFALSEÆ]);
+a(PC_T1 "z_library_ext" prove_tac[]);
+(* *** Goal "1" *** *)
+a(strip_asm_tac cn_succ_thm);
+a(all_asm_fc_tac[]);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(all_var_elim_asm_tac1);
+a(strip_asm_tac cn_succ_0_thm);
+a(strip_asm_tac (z_get_specÒsuccÆ));
+a(asm_tac z_0_Ó_thm);
+a(all_asm_fc_tac[z_≠_app_eq_§_ç_rel_thm]);
+save_pop_thm"cn_boolean_succ_thm"
+);
+=TEX
+=SML
+val cn_boolean_pred_thm = (
+set_goal([], ÒBOOLEANvPRED = {TRUE Ì FALSE}Æ);
+a(rewrite_tac[z_get_specÒBOOLEANvPREDÆ]);
+a(rewrite_tac[z_get_specÒBOOLEANvSUCCÆ]);
+a(rewrite_tac[cn_boolean_thm, z_get_specÒBOOLEANvLASTÆ]);
+a(rewrite_tac[z_get_specÒTRUEÆ,z_get_specÒFALSEÆ]);
+a(PC_T1 "z_library_ext" prove_tac[]);
+(* *** Goal "1" *** *)
+a(strip_asm_tac cn_succ_thm);
+a(all_asm_fc_tac[]);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(all_var_elim_asm_tac1);
+a(strip_asm_tac cn_succ_0_thm);
+a(strip_asm_tac (z_get_specÒsuccÆ));
+a(asm_tac z_0_Ó_thm);
+a(all_asm_fc_tac[z_≠_app_eq_§_ç_rel_thm]);
+save_pop_thm"cn_boolean_pred_thm"
+);
+=TEX
+=SML
+val cn_boolean_pos_thm = (
+set_goal([],ÒBOOLEANvPOS = id BOOLEANÆ);
+a(rewrite_tac[z_get_specÒBOOLEANvPOSÆ]);
+save_pop_thm"cn_boolean_pos_thm"
+);
+=TEX
+=SML
+val cn_boolean_val_thm = (
+set_goal([], ÒBOOLEANvVAL = id BOOLEANÆ);
+a(rewrite_tac[z_get_specÒBOOLEANvVALÆ]);
+a(rewrite_tac[cn_boolean_pos_thm]);
+a(rewrite_tac[cn_boolean_thm,z_get_specÒTRUEÆ,z_get_specÒFALSEÆ]);
+a(PC_T1 "z_library_ext" prove_tac[]);
+save_pop_thm"cn_boolean_val_thm"
+);
+=TEX
+=SML
+val €cn_≥_true_eq_false_thm› = (
+set_goal([], Ò≥TRUE = FALSEÆ);
+a(rewrite_tac[z_get_specÒTRUEÆ, z_get_specÒFALSEÆ]);
+save_pop_thm"cn_≥_true_eq_false_thm"
+);
+=TEX
+=SML
+val €cn_boolean_cases_thm› = (
+set_goal([], Òµx:BOOLEAN∑ x = TRUE ≤ x = FALSEÆ);
+a(rewrite_tac[z_get_specÒTRUEÆ, z_get_specÒFALSEÆ, z_get_specÒBOOLEANÆ]);
+a(REPEAT strip_tac);
+a(strip_asm_tac (z_µ_elimÒxÆz_Ó_cases_thm));
+(* *** Goal "1" *** *)
+a(all_fc_tac[z_º_less_trans_thm]);
+(* *** Goal "2" *** *)
+a(all_var_elim_asm_tac1);
+a(all_fc_tac[z_º_antisym_thm]);
+a(all_var_elim_asm_tac1);
+a(POP_ASM_T ante_tac THEN rewrite_tac[]);
+save_pop_thm"cn_boolean_cases_thm"
+);
+=TEX
+=SML
+val €cn_false_true_boolean_thm› = (
+set_goal([], ÒFALSE ç BOOLEAN ± TRUE ç BOOLEANÆ);
+a(rewrite_tac[z_get_specÒTRUEÆ, z_get_specÒFALSEÆ, z_get_specÒBOOLEANÆ]);
+pop_thm()
+);
+=TEX
+=SML
+val €cn_boolean_not_thm› = (
+set_goal([], Òµ p : É ∑ not Boolean p = Boolean (ê(≥p))Æ);
+a(REPEAT strip_tac THEN strip_asm_tac cn_false_true_boolean_thm);
+a(cases_tac ÒpÆ THEN asm_rewrite_tac[z_get_specÒBooleanÆ]);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[z_get_specÒ(not _)Æ]);
+(* *** Goal "2" *** *)
+a(ALL_FC_T rewrite_tac[z_get_specÒ(not _)Æ]);
+(fn _ => pop_thm())"cn_boolean_not_thm"
+);
+=TEX
+=SML
+val cn_boolean_and_thm = (
+set_goal([],Òµ p, q : É ∑ Boolean p and Boolean q = Boolean (ê(p ± q))Æ);
+a(REPEAT strip_tac THEN strip_asm_tac cn_false_true_boolean_thm);
+a(cases_tac ÒpÆ
+    THEN cases_tac ÒqÆ
+    THEN asm_rewrite_tac[z_get_specÒBooleanÆ]
+    THEN strip_asm_tac (z_get_specÒ(_ and _)Æ)
+    THEN all_asm_fc_tac[]);
+(fn _ => pop_thm())"cn_boolean_and_thm"
+);
+=TEX
+=SML
+val cn_boolean_or_thm = (
+set_goal([],Òµ p, q : É ∑ Boolean p or Boolean q = Boolean (ê(p ≤ q))Æ);
+a(REPEAT strip_tac THEN strip_asm_tac cn_false_true_boolean_thm);
+a(cases_tac ÒpÆ
+    THEN cases_tac ÒqÆ
+    THEN asm_rewrite_tac[z_get_specÒBooleanÆ]
+    THEN strip_asm_tac (z_get_specÒ(_ or _)Æ)
+    THEN all_asm_fc_tac[]);
+(fn _ => pop_thm())"cn_boolean_or_thm"
+);
+=TEX
+=SML
+val cn_boolean_xor_thm = (
+set_goal([],Òµ p, q : É ∑ Boolean p xor Boolean q = Boolean (ê(≥(p § q)))Æ);
+a(REPEAT strip_tac THEN strip_asm_tac cn_false_true_boolean_thm);
+a(cases_tac ÒpÆ
+    THEN cases_tac ÒqÆ
+    THEN asm_rewrite_tac[z_get_specÒBooleanÆ]
+    THEN strip_asm_tac (z_get_specÒ(_ xor _)Æ)
+    THEN all_asm_fc_tac[]);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[]);
+(fn _ => pop_thm())"cn_boolean_xor_thm"
+);
+=TEX
+=SML
+val cn_boolean_eq_thm = (
+set_goal([],Òµ p, q : É ∑ Boolean p = Boolean q § (p § q)Æ);
+a(REPEAT_N 4 strip_tac);
+a(cases_tac ÒpÆ THEN cases_tac ÒqÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ,cn_≥_true_eq_false_thm]);
+(* *** Goal "3" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ,z_get_specÒTRUEÆ,z_get_specÒFALSEÆ]);
+(* *** Goal "4" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+(fn _ => pop_thm())"cn_boolean_eq_thm"
+);
+=TEX
+=SML
+val cn_boolean_clauses = (
+set_goal([], ÒTRUE = Boolean true
+    ± FALSE = Boolean false
+    ± (µ p : É ∑ not Boolean p = Boolean (ê(≥p)))
+    ± (µ p, q : É ∑ Boolean p and Boolean q = Boolean (ê(p ± q)))
+    ± (µ p, q : É ∑ Boolean p or Boolean q = Boolean (ê(p ≤ q)))
+    ± (µ p, q : É ∑ Boolean p xor Boolean q = Boolean (ê(≥(p § q))))
+    ± (µ p, q : É ∑ Boolean p = Boolean q § (p § q))Æ);
+a(rewrite_tac[cn_boolean_not_thm,cn_boolean_and_thm]);
+a(rewrite_tac[cn_boolean_or_thm,cn_boolean_xor_thm]);
+a(rewrite_tac[z_get_specÒBooleanÆ,cn_boolean_eq_thm]);
+save_pop_thm "cn_boolean_clauses"
+);
+=TEX
+=SML
+val €cn_and_then_or_else_clauses› = (
+set_goal ([], Ò
+	µx, y:É∑	(x and_then y) = (x and y) ± (x or_else y) = (x or y)Æ);
+a(rewrite_tac[z_get_specÒ(_ and_then _)Æ]);
+save_pop_thm "cn_and_then_or_else_clauses"
+);
+=TEX
+=SML
+val cn_boolean_ç_boolean_thm = (
+set_goal([],Òµ x : É ∑ Boolean x ç BOOLEANÆ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(rewrite_rule[z_get_specÒñÆ](z_get_specÒBooleanÆ)));
+a(LEMMA_T Òx ç ÉÆ asm_tac);
+(* *** Goal "1" *** *)
+a(prove_tac[]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[z_fun_dom_clauses]);
+a(all_asm_fc_tac[z_fun_ç_clauses]);
+save_pop_thm "cn_boolean_ç_boolean_thm"
+);
+=TEX
+=SML
+val cn_mem_def_thm = (
+set_goal([],Òµ x : É; S :  É ∑ x mem S = TRUE § x ç SÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[cn_false_true_boolean_thm]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ mem _)Æ)));
+a(REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(eq_sym_asm_tacÒx mem S = TRUEÆ);
+a(z_spec_nth_asm_tac 5 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ);
+(* *** Goal "2.2" *** *)
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x mem S = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(z_spec_nth_asm_tac 4 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ);
+(fn _ => pop_thm()) "cn_mem_def_thm"
+);
+=TEX
+=SML
+val cn_mem_boolean_thm = (
+set_goal([],Òµ x : É; S : É ∑ x mem S = Boolean (x ç S)Æ);
+a(REPEAT strip_tac);
+a(cases_tac Òx ç SÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_mem_def_thm);
+a(z_spec_nth_asm_tac 1 Ò(x¶x,S¶S)Æ);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_mem_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,S¶S)Æ);
+a(lemma_tacÒx mem S ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ mem _)Æ)));
+a(LIST_DROP_NTH_ASM_T [1,2,3,4] discard_tac);
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,S) ç É ∏  ÉÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx mem SÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_mem_boolean_thm"
+);
+=TEX
+=SML
+val cn_notmem_def_thm = (
+set_goal([],Òµ x : É; S :  É ∑ x notmem S = TRUE § x é SÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[cn_false_true_boolean_thm]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ notmem _)Æ)));
+a(REPEAT_N 7 strip_tac);
+(* *** Goal "2.1" *** *)
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(eq_sym_asm_tacÒx notmem S = TRUEÆ);
+a(z_spec_nth_asm_tac 5 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ
+    THEN asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x notmem S = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(z_spec_nth_asm_tac 4 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ);
+(fn _ => pop_thm()) "cn_notmem_def_thm"
+);
+=TEX
+=SML
+val cn_notmem_boolean_thm = (
+set_goal([],Òµ x : É; S : É ∑ x notmem S = Boolean (ê(≥x ç S))Æ);
+a(REPEAT strip_tac);
+a(cases_tac Ò≥x ç SÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_notmem_def_thm);
+a(z_spec_nth_asm_tac 1 Ò(x¶x,S¶S)Æ);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_notmem_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,S¶S)Æ);
+a(lemma_tacÒx notmem S ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ mem _)Æ)));
+a(LIST_DROP_NTH_ASM_T [1,2,3,5] discard_tac);
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,S) ç É ∏  ÉÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx notmem SÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_notmem_boolean_thm"
+);
+=TEX
+=SML
+val cn_eq_def_thm = (
+set_goal([],Òµ x : É; y : É ∑ x eq y = TRUE § x = yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 asm_rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ eq _)Æ)));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(eq_sym_asm_tacÒx eq y = TRUEÆ);
+a(z_spec_nth_asm_tac 5 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x eq y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(z_spec_nth_asm_tac 5 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ);
+(fn _ => pop_thm()) "cn_eq_def_thm"
+);
+=TEX
+=SML
+val cn_eq_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x eq y = Boolean (x = y)Æ);
+a(REPEAT strip_tac);
+a(cases_tac Òx = yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_eq_def_thm);
+a(z_spec_nth_asm_tac 1 Ò(x¶x,y¶y)Æ);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_eq_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y)Æ);
+a(lemma_tacÒx eq y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ eq _)Æ)));
+a(LIST_DROP_NTH_ASM_T [1,2,4,5] discard_tac);
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y) ç É ∏ ÉÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx eq yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_eq_boolean_thm"
+);
+=TEX
+=SML
+val cn_noteq_def_thm = (
+set_goal([],Òµ x : É; y : É ∑ x noteq y = TRUE § x Ω yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ noteq _)Æ)));
+a(REPEAT_N 7 strip_tac);
+(* *** Goal "1" *** *)
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(eq_sym_asm_tacÒx noteq y = TRUEÆ);
+a(z_spec_nth_asm_tac 5 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ
+    THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x noteq y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(LEMMA_T Òx ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T ÒS ç  ÉÆ asm_tac THEN1 prove_tac[]);
+a(z_spec_nth_asm_tac 5 Ò(x¶x,y¶y,S¶S,b¶TRUE)Æ);
+(fn _ => pop_thm()) "cn_noteq_def_thm"
+);
+=TEX
+=SML
+val cn_noteq_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x noteq y = Boolean (ê(≥x = y))Æ);
+a(REPEAT strip_tac);
+a(cases_tac Ò≥x = yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_noteq_def_thm);
+a(z_spec_nth_asm_tac 1 Ò(x¶x,y¶y)Æ);
+(* *** Goal "2" *** *)
+a(all_var_elim_asm_tac1);
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_noteq_def_thm);
+a(z_spec_nth_asm_tac 1 Ò(x¶y,y¶y)Æ);
+a(contr_tac);
+a(lemma_tacÒy noteq y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_gen_pred_elim[ÒÉÆ](z_get_specÒ(_ noteq _)Æ)));
+a(LIST_DROP_NTH_ASM_T [1,3,4,5] discard_tac);
+a(LEMMA_T Òy ç ÉÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(y,y) ç É ∏ ÉÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒy noteq yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_noteq_boolean_thm"
+);
+=TEX
+=SML
+val cn_less_def_thm = (
+set_goal([],Òµ x : ˙; y : ˙ ∑ x less y = TRUE § x < yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ less _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx less y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x less y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_less_def_thm"
+);
+=TEX
+=SML
+val cn_less_eq_def_thm = (
+set_goal([],Òµ x : ˙; y : ˙ ∑ x less_eq y = TRUE § x º yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ less_eq _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx less_eq y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x less_eq y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_less_eq_def_thm"
+);
+=TEX
+=SML
+val cn_greater_def_thm = (
+set_goal([],Òµ x : ˙; y : ˙ ∑ x greater y = TRUE § x > yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ greater _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx greater y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x greater y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_greater_def_thm"
+);
+=TEX
+=SML
+val cn_greater_eq_def_thm = (
+set_goal([],Òµ x : ˙; y : ˙ ∑ x greater_eq y = TRUE § x æ yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ greater_eq _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx greater_eq y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x greater_eq y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_greater_eq_def_thm"
+);
+=TEX
+=SML
+val cn_real_less_def_thm = (
+set_goal([],Òµ x : É; y : É ∑ x real_less y = TRUE § x <âR yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ real_less _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx real_less y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x real_less y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_real_less_def_thm"
+);
+=TEX
+=SML
+val cn_real_less_eq_def_thm = (
+set_goal([],Òµ x : É; y : É ∑ x real_less_eq y = TRUE § x ºâR yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ real_less_eq _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx real_less_eq y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x real_less_eq y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_real_less_eq_def_thm"
+);
+=TEX
+=SML
+val cn_real_greater_def_thm = (
+set_goal([],Òµ x : É; y : É ∑ x real_greater y = TRUE § x >âR yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ real_greater _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx real_greater y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x real_greater y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_real_greater_def_thm"
+);
+=TEX
+=SML
+val cn_real_greater_eq_def_thm = (
+set_goal([],Òµ x : É; y : É ∑ x real_greater_eq y = TRUE § x æâR yÆ);
+a(lemma_tacÒTRUE ç BOOLEANÆ
+    THEN1 rewrite_tac[cn_false_true_boolean_thm]);
+a(strip_asm_tac(z_get_specÒ(_ real_greater_eq _)Æ));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(eq_sym_asm_tacÒx real_greater_eq y = TRUEÆ);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y,b¶TRUE)Æ);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(eq_sym_asm_tacÒ≥ x real_greater_eq y = TRUEÆ);
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y,b¶TRUE)Æ));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+(fn _ => pop_thm()) "cn_real_greater_eq_def_thm"
+);
+=TEX
+=SML
+val cn_less_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x less y = Boolean (x < y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx < yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_less_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_less_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y)Æ);
+a(lemma_tacÒx less y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ less _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,2,3,4] discard_tac);
+a(LEMMA_T Òx ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç ˙ ∏ ˙Æ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx less yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_less_boolean_thm"
+);
+=TEX
+=SML
+val cn_less_eq_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x less_eq y = Boolean (x º y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx º yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_less_eq_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_less_eq_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y)Æ);
+a(lemma_tacÒx less_eq y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ less_eq _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,2,3,5] discard_tac);
+a(LEMMA_T Òx ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç ˙ ∏ ˙Æ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx less_eq yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_less_eq_boolean_thm"
+);
+=TEX
+=SML
+val cn_greater_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x greater y = Boolean (x > y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx > yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_greater_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_greater_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+a(REPEAT strip_tac);
+a(lemma_tacÒx greater y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ greater _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,2,4,5] discard_tac);
+a(LEMMA_T Òx ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç ˙ ∏ ˙Æ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx greater yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_greater_boolean_thm"
+);
+=TEX
+=SML
+val cn_greater_eq_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x greater_eq y = Boolean (x æ y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx æ yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_greater_eq_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_greater_eq_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+a(REPEAT strip_tac);
+a(lemma_tacÒx greater_eq y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ greater_eq _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,3,4,5] discard_tac);
+a(LEMMA_T Òx ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ˙Æ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç ˙ ∏ ˙Æ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx greater_eq yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_greater_eq_boolean_thm"
+);
+=TEX
+=SML
+val cn_relational_clauses = (
+set_goal([], Ò(µ x : É; S : É ∑ x mem S = Boolean (x ç S))
+    ± (µ x : É; S : É ∑ x notmem S = Boolean (ê(≥x ç S)))
+    ± (µ x, y : É ∑ x eq y = Boolean (x = y))
+    ± (µ x, y : É ∑ x noteq y = Boolean (ê(≥x = y)))
+    ± (µ x, y : É ∑ x less y = Boolean (x < y))
+    ± (µ x, y : É ∑ x less_eq y = Boolean (x º y))
+    ± (µ x, y : É ∑ x greater y = Boolean (x > y))
+    ± (µ x, y : É ∑ x greater_eq y = Boolean (x æ y))Æ);
+a(REPEAT strip_tac);
+a(rewrite_tac[cn_mem_boolean_thm]);
+a(rewrite_tac[cn_notmem_boolean_thm]);
+a(rewrite_tac[cn_eq_boolean_thm]);
+a(rewrite_tac[cn_noteq_boolean_thm]);
+a(rewrite_tac[cn_less_boolean_thm]);
+a(rewrite_tac[cn_less_eq_boolean_thm]);
+a(rewrite_tac[cn_greater_boolean_thm]);
+a(rewrite_tac[cn_greater_eq_boolean_thm]);
+save_pop_thm"cn_relational_clauses"
+);
+=TEX
+=SML
+=TEX
+=SML
+val cn_real_less_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x real_less y = Boolean (x <âR y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx <âR yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_less_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_less_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y)Æ);
+a(lemma_tacÒx real_less y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ real_less _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,2,3,4] discard_tac);
+a(LEMMA_T Òx ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç Ø ∏ ØÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx real_less yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_real_less_boolean_thm"
+);
+=TEX
+=SML
+val cn_real_less_eq_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x real_less_eq y = Boolean (x ºâR y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx ºâR yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_less_eq_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_less_eq_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(z_spec_nth_asm_tac 2 Ò(x¶x,y¶y)Æ);
+a(lemma_tacÒx real_less_eq y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ real_less_eq _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,2,3,5] discard_tac);
+a(LEMMA_T Òx ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç Ø ∏ ØÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx real_less_eq yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_real_less_eq_boolean_thm"
+);
+=TEX
+=SML
+val cn_real_greater_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x real_greater y = Boolean (x >âR y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx >âR yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_greater_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_greater_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+a(REPEAT strip_tac);
+a(lemma_tacÒx real_greater y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ real_greater _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,2,4,5] discard_tac);
+a(LEMMA_T Òx ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç Ø ∏ ØÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx real_greater yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_real_greater_boolean_thm"
+);
+=TEX
+=SML
+val cn_real_greater_eq_boolean_thm = (
+set_goal([],Òµ x, y : É ∑ x real_greater_eq y = Boolean (x æâR y)Æ);
+a(REPEAT strip_tac);
+a(PC_T1 "z_predicates" cases_tac Òx æâR yÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_greater_eq_def_thm);
+a(DROP_NTH_ASM_T 1 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_get_specÒBooleanÆ]);
+a(strip_asm_tac cn_real_greater_eq_def_thm);
+a(swap_nth_asm_concl_tac 2);
+a(DROP_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x¶x,y¶y)Æ));
+a(asm_rewrite_tac[]);
+a(REPEAT strip_tac);
+a(lemma_tacÒx real_greater_eq y ç BOOLEANÆ);
+(* *** Goal "2.1" *** *)
+a(DROP_ASMS_T discard_tac);
+a(strip_asm_tac (z_get_specÒ(_ real_greater_eq _)Æ));
+a(LIST_DROP_NTH_ASM_T [1,3,4,5] discard_tac);
+a(LEMMA_T Òx ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Òy ç ØÆ asm_tac THEN1 prove_tac[]);
+a(LEMMA_T Ò(x,y)ç Ø ∏ ØÆ asm_tac THEN1 prove_tac[]);
+a(all_asm_fc_tac[z_≠_app_thm]);
+(* *** Goal "2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒx real_greater_eq yÆcn_boolean_cases_thm));
+(fn _ => pop_thm()) "cn_real_greater_eq_boolean_thm"
+);
+=TEX
+=SML
+val cn_relational_clauses1 = (
+set_goal([], Ò
+	(µ x, y : É ∑ x real_less y = Boolean (x <âR y))
+    ±	(µ x, y : É ∑ x real_less_eq y = Boolean (x ºâR y))
+    ±	(µ x, y : É ∑ x real_greater y = Boolean (x >âR y))
+    ±	(µ x, y : É ∑ x real_greater_eq y = Boolean (x æâR y))Æ);
+a(REPEAT strip_tac);
+a(rewrite_tac[cn_real_less_boolean_thm]);
+a(rewrite_tac[cn_real_less_eq_boolean_thm]);
+a(rewrite_tac[cn_real_greater_boolean_thm]);
+a(rewrite_tac[cn_real_greater_eq_boolean_thm]);
+save_pop_thm"cn_relational_clauses1"
+);
+=TEX
+=SML
+val €cn_integer_to_real_thm› = (
+set_goal([], Òµ x : ˙ ∑ integer_to_real x = real xÆ);
+a(rewrite_tac[z_get_specÒinteger_to_realÆ]);
+save_pop_thm "cn_integer_to_real_thm"
+);
+=TEX
+\section{PROOF PROCEDURES}
+=TEX
+\subsection{Syntax Manipulation}
+=SML
+fun €dest_z_bin_op› (area : string) (msg : int)
+	(n : string) : TERM -> TERM * TERM = (fn tm =>
+	let	val (f, args) = (dest_z_app tm);
+		val (cn, _) = dest_const f;
+		val ops = dest_z_tuple args;
+	in	if n = cn
+		then (hd ops, hd(tl ops))
+		else term_fail area msg [tm]
+	end	handle Fail _ => term_fail area msg [tm]
+);
+=TEX
+=SML
+fun is_z_bin_op (n : string) : TERM -> bool = (
+	let	val dest = dest_z_bin_op "is_z_bin_op" 0 n
+	in	(fn tm =>
+			(dest tm; true) handle Fail _ => false
+		)
+	end
+);
+=TEX
+=SML
+fun mk_z_simple_bin_op (tm : TERM) : TERM * TERM -> TERM = (fn (a1, a2) =>
+	mk_z_app(tm, mk_z_tuple [a1, a2])
+);
+=TEX
+=SML
+val €˙› = î˙Æ;
+fun €mk_˙_bin_op› (area : string) (tm : TERM) : (TERM * TERM) -> TERM = (
+	let	val f = mk_z_simple_bin_op tm;
+	in	(fn tt as (t1, t2) => (
+			if	type_of t1 =: ˙
+			then	if	type_of t2 =: ˙
+				then	f tt
+				else	term_fail area 509001 [t2]
+			else	term_fail area 509001 [t1]
+		))
+	end
+);
+=TEX
+=SML
+val €dest_cn_intdiv› = dest_z_bin_op "dest_cn_intdiv" 509002 (fst(dest_constÒ(_ intdiv _)Æ));
+val €dest_cn_intmod› = dest_z_bin_op "dest_cn_intmod" 509004 (fst(dest_constÒ(_ intmod _)Æ));
+val €dest_cn_rem› = dest_z_bin_op "dest_cn_rem" 509003 (fst(dest_constÒ(_ rem _)Æ));
+val €dest_cn_star_star› = dest_z_bin_op "dest_cn_star_star" 509004 (fst(dest_constÒ(_ ** _)Æ));
+
+val €is_cn_intdiv› = is_z_bin_op (fst(dest_constÒ(_ intdiv _)Æ));
+val €is_cn_intmod› = is_z_bin_op (fst(dest_constÒ(_ intmod _)Æ));
+val €is_cn_rem› = is_z_bin_op (fst(dest_constÒ(_ rem _)Æ));
+val €is_cn_star_star› = is_z_bin_op (fst(dest_constÒ(_ ** _)Æ));
+
+val €mk_cn_intdiv› = mk_˙_bin_op "mk_cn_intdiv" Ò(_ intdiv _)Æ;
+val €mk_cn_intmod› = mk_˙_bin_op "mk_cn_intmod" Ò(_ intmod _)Æ;
+val €mk_cn_rem› = mk_˙_bin_op "mk_cn_rem" Ò(_ rem _)Æ;
+val €mk_cn_star_star› = mk_˙_bin_op "mk_cn_star_star" Ò(_ ** _)Æ;
+=TEX
+\subsection{Constant Expression Evaluation}
+=SML
+val €cn_intdiv_thm1› = (
+set_goal ([], ¨µx y∑ Ò≥y = 0 ¥
+	(0 º x * y ¥ x intdiv y = abs x div abs y)
+        ± (x * y < 0 ¥ x intdiv y = ~ (abs x div abs y))ÆÆ);
+a(REPEAT µ_tac THEN strip_tac);
+a(ante_tac (z_µ_elimÒ(x¶x, y¶y)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a taut_tac;
+pop_thm()
+);
+=TEX
+=SML
+val €cn_rem_thm1› = (
+set_goal ([], ¨µx y∑ Ò≥y = 0 ¥
+	(x rem y = x - (x intdiv y) * y)ÆÆ);
+a(REPEAT µ_tac THEN strip_tac);
+a(ante_tac (z_µ_elimÒ(x¶x, y¶y)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+pop_thm()
+);
+=TEX
+=SML
+val €cn_intmod_thm1› = (
+set_goal ([], ¨µx y∑ Ò≥y = 0 ¥
+	((0 º x * y ≤ x rem y = 0 ¥ x intmod y = x rem y)
+        ± (x * y < 0 ± ≥x rem y = 0 ¥ x intmod y = x rem y + y))ÆÆ);
+a(REPEAT µ_tac THEN strip_tac);
+a(ante_tac (z_µ_elimÒ(x¶x, y¶y)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a(taut_tac);
+pop_thm()
+);
+=TEX
+=SML
+val €cn_star_star_0_thm› = (
+set_goal ([], ¨µx∑ Òx ** 0 = 1ÆÆ);
+a(REPEAT strip_tac);
+a(ante_tac (z_µ_elimÒ(x¶x, y¶0)Æ(±_right_elim (z_get_specÒ(_ ** _)Æ))));
+a(REPEAT strip_tac THEN asm_rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val €cn_star_star_plus1_thm› = (
+set_goal ([], ¨µx y∑ Ò0 º y ¥ x ** (y + 1) = x * (x ** y)ÆÆ);
+a(REPEAT strip_tac);
+a(ante_tac (z_µ_elimÒ(x¶x, y¶y)Æ(±_right_elim (z_get_specÒ(_ ** _)Æ))));
+a(asm_rewrite_tac[] THEN taut_tac);
+pop_thm()
+);
+=TEX
+=SML
+val z_zero = Ò0Æ;
+val misc_thm1 = taut_rule¨µp∑(≥F ¥ p) ¥ pÆ;
+val misc_thm2 = taut_rule¨µp∑(T ¥ p) ¥ pÆ;
+val misc_thm3 = pc_rule1"z_library" prove_rule[]¨µi j∑Òi - j = i + ~jÆÆ;
+val misc_thm4 = pc_rule1"z_library" prove_rule[]¨µi j∑Òi - ~j = i + jÆÆ;
+val misc_thm5 = taut_rule¨µp∑(T ≤ p) § TÆ;
+val misc_thm6 = taut_rule¨µp∑(p ≤ T) § TÆ;
+val misc_thm7 = taut_rule¨µp∑(T ± ≥F) § TÆ;
+fun €Z_LEFT_C› (c : CONV) : CONV = RAND_C (LEFT_C c);
+fun €Z_RIGHT_C› (c : CONV) : CONV = RAND_C (RIGHT_C c);
+fun €Z_RANDS_C› (c : CONV) : CONV = Z_LEFT_C c THEN_C Z_RIGHT_C c;
+fun €Z_REL_LEFT_C› (c : CONV) : CONV = LEFT_C (LEFT_C c);
+fun €Z_REL_RIGHT_C› (c : CONV) : CONV = LEFT_C (RIGHT_C c);
+=TEX
+=SML
+val €cn_intdiv_conv› = (fn tm =>
+	let	val (x, y) = dest_cn_intdiv tm;
+		val ix = dest_z_signed_int x;
+		val iy = dest_z_signed_int y;
+		val thm1 = list_µ_elim [x, y] cn_intdiv_thm1;
+		val thm2 = conv_rule (LEFT_C (RAND_C z_˙_eq_conv)) thm1;
+		val thm3 = simple_¥_match_mp_rule misc_thm1 thm2;
+		val left = ix @* iy @>= zero;
+		val thm4 = (if left then ±_left_elim else ±_right_elim) thm3;
+		val conv1 =
+			if left
+			then (Z_REL_RIGHT_C z_times_conv THEN_C z_º_conv)
+			else (Z_REL_LEFT_C z_times_conv THEN_C z_less_conv);
+		val thm5 = conv_rule (LEFT_C conv1) thm4;
+		val thm6 = simple_¥_match_mp_rule misc_thm2 thm5;
+		val conv2 = Z_RANDS_C z_abs_conv  THEN_C z_div_conv;
+		val conv3 = if left then conv2 else RIGHT_C conv2;
+	in	conv_rule (RIGHT_C conv3) thm6	
+	end	handle Fail _ => term_fail "cn_intdiv_conv" 509011 [tm]
+);
+=TEX
+=SML
+val €cn_rem_conv› = (fn tm =>
+	let	val (x, y) = dest_cn_rem tm;
+		val thm1 = list_µ_elim [x, y] cn_rem_thm1;
+		val thm2 = conv_rule (LEFT_C (RAND_C z_˙_eq_conv)) thm1;
+		val thm3 = simple_¥_match_mp_rule misc_thm1 thm2;
+		val subtract_conv = simple_eq_match_conv misc_thm4
+				ORELSE_C simple_eq_match_conv misc_thm3;
+		val conv = Z_RIGHT_C(Z_LEFT_C cn_intdiv_conv THEN_C z_times_conv)
+				THEN_C subtract_conv
+				THEN_C z_plus_conv;
+	in	conv_rule (RIGHT_C conv) thm3
+	end	handle Fail _ => term_fail "cn_rem_conv" 509012 [tm]
+);
+=TEX
+=SML
+val €cn_intmod_conv› = (fn tm =>
+	let	val (x, y) = dest_cn_intmod tm;
+		val ix = dest_z_signed_int x;
+		val iy = dest_z_signed_int y;
+		val thm1 = list_µ_elim [x, y] cn_intmod_thm1;
+		val thm2 = conv_rule (LEFT_C (RAND_C z_˙_eq_conv)) thm1;
+		val thm3 = simple_¥_match_mp_rule misc_thm1 thm2;
+		val left = ix @* iy @>= zero;
+		val right = ix imod iy = zero;
+	in	if	left orelse right
+		then
+	let	val thm4 = ±_left_elim thm3;
+		val conv1 =
+			if left
+			then LEFT_C (Z_REL_RIGHT_C z_times_conv THEN_C z_º_conv)
+				THEN_C simple_eq_match_conv misc_thm5
+			else RIGHT_C(LEFT_C cn_rem_conv THEN_C z_˙_eq_conv)
+				THEN_C simple_eq_match_conv misc_thm6;
+		val thm5 = conv_rule (LEFT_C conv1) thm4;
+		val thm6 = simple_¥_match_mp_rule misc_thm2 thm5;
+		val conv2 = RIGHT_C cn_rem_conv;
+	in	conv_rule conv2 thm6
+	end	else
+	let	val thm4 = ±_right_elim thm3;
+		val conv1 =
+			LEFT_C (Z_REL_LEFT_C z_times_conv THEN_C z_less_conv)
+		THEN_C	RIGHT_C (RAND_C(LEFT_C cn_rem_conv THEN_C z_˙_eq_conv))
+		THEN_C simple_eq_match_conv misc_thm7;
+		val thm5 = conv_rule (LEFT_C conv1) thm4;
+		val thm6 = simple_¥_match_mp_rule misc_thm2 thm5;
+		val conv2 = RIGHT_C (Z_LEFT_C cn_rem_conv THEN_C z_plus_conv);
+	in	conv_rule conv2 thm6
+	end
+	end	handle Fail _ => term_fail "cn_intmod_conv" 509013 [tm]
+);
+=TEX
+=SML
+val rec €cn_star_star_conv› = (fn tm =>
+	let	val (x, y) = dest_cn_star_star tm;
+		val ix = dest_z_signed_int x;
+		val iy = dest_z_signed_int y;
+	in	if	iy = zero
+		then	µ_elim x cn_star_star_0_thm
+		else
+	let	val thm1 = list_µ_elim
+			[x, mk_z_signed_int (iy@-one)] cn_star_star_plus1_thm;
+		val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+		val thm3 = simple_¥_match_mp_rule misc_thm2 thm2;
+		val conv1 = LEFT_C (Z_RIGHT_C z_plus_conv);
+		val thm4 = conv_rule conv1 thm3;
+		val conv2 = Z_RIGHT_C cn_star_star_conv THEN_C z_times_conv;
+	in	conv_rule (RIGHT_C conv2) thm4	
+	end
+	end	handle Fail _ => term_fail "cn_star_star_conv" 509014 [tm]
+);
+=TEX
+Now for the binary bitwise operations.
+First group the defining properties nicely:
+=SML
+val €cn_mod_xor_def1› :: €cn_mod_xor_def0› ::
+	€cn_mod_or_def1› :: €cn_mod_or_def0› ::
+	€cn_mod_and_def1› :: €cn_mod_and_def0› :: _ =
+		rev(strip_±_rule (z_get_specÒ(_ mod_and _)Æ));
+val €cn_mod_and_def› = ±_intro cn_mod_and_def0 cn_mod_and_def1;
+val €cn_mod_or_def› = ±_intro cn_mod_or_def0 cn_mod_or_def1;
+val €cn_mod_xor_def› = ±_intro cn_mod_xor_def0 cn_mod_xor_def1;
+=TEX
+Now prove theorems giving the defining properties in
+a form that is convenient for the computational conversions.
+=SML
+val [and_thm0, and_thm1,
+	or_thm0, or_thm1,
+	xor_thm0, xor_thm1] = (
+set_goal([], ¨
+	¨µi∑ Ò0 º i ¥ i mod_and 0 = 0ÆÆ ±
+	¨µi j∑ Ò0 º i ¥ 0 < j ¥
+		i mod_and j = 2 * (i div 2 mod_and j div 2) + i mod 2 * (j mod 2)ÆÆ ±
+	¨µi∑ Ò0 º i ¥ i mod_or 0 = iÆÆ ±
+	¨µi j∑ Ò0 º i ¥ 0 < j ¥
+		i mod_or j = 2 * (i div 2 mod_or j div 2) + max {i mod 2, j mod 2}ÆÆ ±
+	¨µi∑ Ò0 º i ¥ i mod_xor 0 = iÆÆ ±
+	¨µi j∑ Ò0 º i ¥ 0 < j ¥
+		i mod_xor j = 2 * (i div 2 mod_xor j div 2) + (i + j) mod 2ÆÆ
+Æ);
+a(REPEAT strip_tac THEN
+	ALL_FC_T rewrite_tac[
+		cn_mod_and_def, cn_mod_or_def,
+		cn_mod_xor_def]);
+strip_±_rule (pop_thm())
+);
+=TEX
+Now the conversions:
+=SML
+val rec €cn_mod_and_conv› : CONV = (fn tm =>
+	let	val args = dest_z_tuple (snd (dest_z_app tm));
+		val (arg1, arg2) = (hd args, hd(tl args));
+	in	if	dest_z_signed_int arg2 = zero
+		then let
+			val thm1 = simple_µ_elim arg1 and_thm0;
+			val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+			val thm3 = ¥_mp_rule thm2 t_thm;
+		in	thm3
+		end else let
+			val thm1 = list_simple_µ_elim args and_thm1;
+			val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+			val thm3 = ¥_mp_rule thm2 t_thm;
+			val thm4 = conv_rule (LEFT_C z_less_conv) thm3;
+			val thm5 = ¥_mp_rule thm4 t_thm;
+		in	((fn tm => thm5)
+			THEN_C	Z_RIGHT_C (Z_RANDS_C z_mod_conv THEN_C z_times_conv)
+			THEN_C	Z_LEFT_C(
+					Z_RIGHT_C(Z_RANDS_C z_div_conv)
+				THEN_C	Z_RIGHT_C cn_mod_and_conv
+				THEN_C	z_times_conv)
+			THEN_C	z_plus_conv)
+			tm
+		end
+	end	handle Fail _ => term_fail "cn_mod_and_conv" 509021 [tm]
+);
+=TEX
+We need to evaluate the $max$ expression in the definition of $mod\_or$.
+=SML
+val €z_max_singleton_thm› = (
+set_goal([] , Òµi : ˙∑ max {i} = iÆ);
+a(rewrite_tac[z_max_def] THEN REPEAT strip_tac);
+a(z_app_eq_tac THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_var_elim_asm_tac1);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒ(S ¶ {i}, m ¶ i)Æ THEN PC_T1 "z_library_ext" prove_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val €z_max_pair_lemma› = (
+set_goal([] , Òµi, j : ˙| i º j∑ max {i, j} = jÆ);
+a(rewrite_tac[z_max_def] THEN REPEAT strip_tac);
+a(z_app_eq_tac THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(REPEAT all_var_elim_asm_tac1);
+a(z_spec_nth_asm_tac 1 ÒjÆ THEN PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒ(S ¶ {i, j}, m ¶ j)Æ THEN PC_T1 "z_library_ext" prove_tac[]);
+pop_thm ()
+);
+=TEX
+=SML
+val €z_max_pair_thm› = (
+set_goal([] , Òµi, j : ˙∑ max {i, j} = if i º j then j else iÆ);
+a(REPEAT strip_tac);
+a(lemma_tacÒi º j ≤ j º iÆ THEN1 PC_T1 "z_lin_arith" prove_tac[]);
+(* *** Goal "1" *** *)
+a(ALL_FC_T asm_rewrite_tac [z_max_pair_lemma]);
+(* *** Goal "2" *** *)
+a(LEMMA_T Ò{i, j} = {j, i}Æ rewrite_thm_tac THEN1
+	(PC_T1 "z_sets_ext" prove_tac[]));
+a(ALL_FC_T asm_rewrite_tac[z_max_pair_lemma]);
+a(cases_tac Òi = jÆ THEN1 asm_rewrite_tac[]);
+a(LEMMA_T Ò≥i º jÆ rewrite_thm_tac THEN1
+	(PC_T1 "z_lin_arith" asm_prove_tac[]));
+pop_thm()
+);
+=TEX
+=SML
+val €z_max_pair_conv› = (
+	let	val max_thm = (conv_rule z_µ_elim_conv1 o
+			pure_rewrite_rule[z_get_specÒ˙Æ])
+				z_max_pair_thm;
+		val if_thms = (map all_µ_intro o
+			strip_±_rule o
+			all_µ_elim o
+			conv_rule z_µ_elim_conv1)
+				z_if_thm;
+		val €IF_COND_C› = fn conv =>
+			RAND_C (RATOR_C (RATOR_C (RAND_C conv)));
+	in	simple_eq_match_conv max_thm
+		THEN_C	IF_COND_C z_º_conv
+		THEN_C	FIRST_C (map simple_eq_match_conv if_thms)
+	end
+);
+=TEX
+=SML
+val rec €cn_mod_or_conv› : CONV = (fn tm =>
+	let	val args = dest_z_tuple (snd (dest_z_app tm));
+		val (arg1, arg2) = (hd args, hd(tl args));
+		val €Z_MAX_PAIR_C› : CONV -> CONV =
+		(fn conv =>
+			Z_RAND_C(RAND_C(LEFT_C conv
+				THEN_C (RIGHT_C (LEFT_C conv))))
+);
+	in	if	dest_z_signed_int arg2 = zero
+		then let
+			val thm1 = simple_µ_elim arg1 or_thm0;
+			val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+			val thm3 = ¥_mp_rule thm2 t_thm;
+		in	thm3
+		end else let
+			val thm1 = list_simple_µ_elim args or_thm1;
+			val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+			val thm3 = ¥_mp_rule thm2 t_thm;
+			val thm4 = conv_rule (LEFT_C z_less_conv) thm3;
+			val thm5 = ¥_mp_rule thm4 t_thm;
+		in	((fn tm => thm5)
+			THEN_C	Z_RIGHT_C (Z_MAX_PAIR_C z_mod_conv THEN_C z_max_pair_conv)
+			THEN_C	Z_LEFT_C(
+					Z_RIGHT_C(Z_RANDS_C z_div_conv)
+				THEN_C	Z_RIGHT_C cn_mod_or_conv
+				THEN_C	z_times_conv)
+			THEN_C	z_plus_conv)
+			tm
+		end
+	end	handle Fail _ => term_fail "cn_mod_or_conv" 509022 [tm]
+);
+=TEX
+=SML
+val rec €cn_mod_xor_conv› : CONV = (fn tm =>
+	let	val args = dest_z_tuple (snd (dest_z_app tm));
+		val (arg1, arg2) = (hd args, hd(tl args));
+	in	if	dest_z_signed_int arg2 = zero
+		then let
+			val thm1 = simple_µ_elim arg1 xor_thm0;
+			val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+			val thm3 = ¥_mp_rule thm2 t_thm;
+		in	thm3
+		end else let
+			val thm1 = list_simple_µ_elim args xor_thm1;
+			val thm2 = conv_rule (LEFT_C z_º_conv) thm1;
+			val thm3 = ¥_mp_rule thm2 t_thm;
+			val thm4 = conv_rule (LEFT_C z_less_conv) thm3;
+			val thm5 = ¥_mp_rule thm4 t_thm;
+		in	((fn tm => thm5)
+			THEN_C	Z_RIGHT_C (Z_LEFT_C z_plus_conv THEN_C z_mod_conv)
+			THEN_C	Z_LEFT_C(
+					Z_RIGHT_C(Z_RANDS_C z_div_conv)
+				THEN_C	Z_RIGHT_C cn_mod_xor_conv
+				THEN_C	z_times_conv)
+			THEN_C	z_plus_conv)
+			tm
+		end
+	end	handle Fail _ => term_fail "cn_mod_xor_conv" 509023 [tm]
+);
+=TEX
+Now $mod\_not$
+=SML
+val €cn_mod_not_def› = z_get_specÒ(mod_not _)Æ;
+val €cn_mod_not_thm› =
+	conv_rule z_µ_elim_conv1(
+	±_right_elim(rewrite_rule[z_get_specÒ˙Æ] cn_mod_not_def));
+val €z_minus_minus_conv› = simple_eq_match_conv
+	(prove_rule[]¨µx : ˙ ∑Ò~(~x) = xÆÆ);
+val €cn_mod_not_conv› : CONV = (fn tm =>
+		(simple_eq_match_conv cn_mod_not_thm
+	THEN_C Z_RIGHT_C (Z_RAND_C z_plus_conv)
+	THEN_TRY_C Z_RIGHT_C z_minus_minus_conv
+	THEN_C	z_plus_conv) tm
+		handle Fail _ => term_fail "cn_mod_not_conv" 509024 [tm]
+);
+=TEX
+\subsection{Proof Contexts}
+=SML
+val €cn_cxt1› = (flat o map (cthm_eqn_cxt (current_ad_rw_canon()))) [
+	cn_boolean_thm,
+	cn_boolean_succ_thm,
+	cn_boolean_pred_thm,
+	cn_boolean_pos_thm,
+	cn_boolean_val_thm,
+ 	cn_boolean_clauses,
+	cn_relational_clauses,
+	z_get_specÒBOOLEANvFIRSTÆ,
+	z_get_specÒBOOLEANvLASTÆ,
+	cn_and_then_or_else_clauses
+];
+val €cn_cxt2› = [
+
+	(Òi intdiv jÆ, cn_intdiv_conv),
+	(Òi rem jÆ, cn_rem_conv),
+	(Òi intmod jÆ, cn_intmod_conv),
+	(Òi ** jÆ, cn_star_star_conv),
+	(Òi mod_and jÆ, cn_mod_and_conv),
+	(Òi mod_or jÆ, cn_mod_or_conv),
+	(Òi mod_xor jÆ, cn_mod_xor_conv),
+	(Òmod_not jÆ, cn_mod_not_conv)
+];
+val €cn_cxt› = cn_cxt1 @ cn_cxt2;
+val €cn_cxt3› = (flat o map (cthm_eqn_cxt (current_ad_rw_canon()))) [
+	cn_integer_to_real_thm,
+	cn_relational_clauses1
+];
+=IGN
+map (fn (t, c) => TRY_C c t) cn_cxt3;
+=TEX
+=SML
+val _ = delete_pc "'cn" handle Fail _ => ();
+val _ = new_pc €"'cn"›;
+val _ = set_rw_eqn_cxt cn_cxt "'cn";
+val _ = set_st_eqn_cxt cn_cxt "'cn";
+val _ = set_sc_eqn_cxt cn_cxt "'cn";
+val _ = commit_pc "'cn";
+=TEX
+=SML
+val _ = delete_pc "cn" handle Fail _ => ();
+val _ = new_pc €"cn"›;
+val _ = merge_pcs ["'cn","z_library"] "cn";
+val _ = commit_pc "cn";
+=TEX
+=SML
+val _ = delete_pc "cn_ext" handle Fail _ => ();
+val _ = new_pc €"cn_ext"›;
+val _ = merge_pcs ["'cn","z_library_ext"] "cn_ext";
+val _ = commit_pc "cn_ext";
+=TEX
+=SML
+val _ = delete_pc "'cn_reals" handle Fail _ => ();
+val _ = new_pc €"'cn_reals"›;
+val _ = set_rw_eqn_cxt cn_cxt3 "'cn_reals";
+val _ = set_st_eqn_cxt cn_cxt3 "'cn_reals";
+val _ = set_sc_eqn_cxt cn_cxt3 "'cn_reals";
+val _ = commit_pc "'cn_reals";
+=TEX
+\subsection{Boolean Clauses Reprised}
+=SML
+val _ = push_pc "cn";
+=TEX
+=SML
+val €cn_boolean_clauses1› = (
+set_goal([], Ò
+	(µ x : BOOLEAN ∑ (not x = Boolean (ê(≥ x = Boolean true)))) ±
+	(µ x, y : BOOLEAN ∑
+		(x and y) = Boolean (ê((x = Boolean true) ± (y = Boolean true)))) ±
+	(µ x, y : BOOLEAN ∑
+		(x or y) = Boolean (ê((x = Boolean true) ≤ (y = Boolean true)))) ±
+	(µ x, y : BOOLEAN ∑
+		(x xor y) = Boolean (ê(≥ (x = Boolean true) § (y = Boolean true))))
+	Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(strip_asm_tac (z_µ_elim ÒxÆ cn_boolean_cases_thm) THEN
+	all_var_elim_asm_tac1 THEN rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac (z_µ_elim ÒxÆ cn_boolean_cases_thm) THEN
+	strip_asm_tac (z_µ_elim ÒyÆ cn_boolean_cases_thm) THEN
+	all_var_elim_asm_tac1 THEN rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(strip_asm_tac (z_µ_elim ÒxÆ cn_boolean_cases_thm) THEN
+	strip_asm_tac (z_µ_elim ÒyÆ cn_boolean_cases_thm) THEN
+	all_var_elim_asm_tac1 THEN rewrite_tac[]);
+(* *** Goal "4" *** *)
+a(strip_asm_tac (z_µ_elim ÒxÆ cn_boolean_cases_thm) THEN
+	strip_asm_tac (z_µ_elim ÒyÆ cn_boolean_cases_thm) THEN
+	all_var_elim_asm_tac1 THEN rewrite_tac[]);
+save_pop_thm "cn_boolean_clauses1"
+);
+=TEX
+=SML
+val €cn_boolean_clauses2› = (
+set_goal([], Ò
+	(µ x : BOOLEAN ; p : É ∑
+		(x and Boolean p) = Boolean (ê((x = Boolean true) ± p))) ±
+	(µ x : BOOLEAN ; p : É ∑
+		(Boolean p and x) = Boolean (ê(p ± (x = Boolean true)))) ±
+	(µ x : BOOLEAN ; p : É ∑
+		(x or Boolean p) = Boolean (ê((x = Boolean true) ≤ p))) ±
+	(µ x : BOOLEAN ; p : É ∑
+		(Boolean p or x) = Boolean (ê(p ≤ (x = Boolean true)))) ±
+	(µ x : BOOLEAN ; p : É ∑
+		(x xor Boolean p) = Boolean (ê(≥ (x = Boolean true) § p))) ±
+	(µ x : BOOLEAN ; p : É ∑
+		(Boolean p xor x) = Boolean (ê(≥ p § (x = Boolean true))))
+	Æ);
+a(REPEAT strip_tac THEN
+	strip_asm_tac (z_µ_elim Òx ∫ BOOLEANÆ cn_boolean_cases_thm) THEN
+	all_var_elim_asm_tac1 THEN rewrite_tac[]);
+save_pop_thm "cn_boolean_clauses2"
+);
+=TEX
+=SML
+val _ = pop_pc();
+=TEX
+\section{NUMERIC OPERATOR THEOREMS}
+These theorems are proved separately using the proof context $cn$.
+=SML
+val _ = set_pc"cn";
+=TEX
+=SML
+val €cn_intdiv_0_thm› = (
+set_goal([],Òµ j: ˙ | ≥j = 0 ∑ 0 intdiv j = 0 ± 0 rem j = 0 ± 0 intmod j = 0Æ);
+a(z_µ_tac THEN REPEAT ¥_tac);
+a(ante_tac (z_µ_elimÒ(x¶0, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a ¥_tac;
+a(LEMMA_TÒ0 div abs j = 0Æasm_rewrite_thm_tac);
+a(LIST_DROP_NTH_ASM_T[1,2,3](MAP_EVERY discard_tac));
+a(ante_tac (z_µ_elimÒ(i ¶ 0,j ¶ abs j,d ¶ 0,r ¶ 0)Æz_div_mod_unique_thm));
+a(rewrite_tac[]);
+a(strip_asm_tac (z_µ_elim¨jÆz_˙_cases_thm)
+	THEN all_var_elim_asm_tac1 THEN all_asm_fc_tac[z_abs_thm]);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2](MAP_EVERY discard_tac));
+a(LEMMA_TÒ≥ j' = 0 ± 0 º j' ¥ 0 < j'Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]THEN ¥_T rewrite_thm_tac);
+a(¥_tac THEN DROP_NTH_ASM_T 2 (rewrite_thm_tac o eq_sym_rule));
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2](MAP_EVERY discard_tac));
+a(lemma_tacÒ≥ ~ j' = 0  ¥ ≥ j' = 0ÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(LEMMA_TÒ≥ j' = 0 ± 0 º j' ¥ 0 < j'Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]THEN ¥_T rewrite_thm_tac);
+a(¥_tac THEN DROP_NTH_ASM_T 2 (rewrite_thm_tac o eq_sym_rule));
+save_pop_thm"cn_intdiv_0_thm"
+);
+=TEX
+=SML
+val €cn_intdiv_thm› = (
+set_goal([],Òµ i,j,k : ˙ | ≥j = 0 ∑ (i intdiv j = k) §
+	(∂ m : ˙ ∑ i = k * j + m ± abs m < abs j
+	± ((0 º i ± 0 º m ) ≤ (i < 0 ± m º 0)) )Æ);
+a(z_µ_tac THEN ¥_T strip_asm_tac);
+a(§_T asm_tac);
+(* *** Goal "1" *** *)
+a(cases_tacÒi=0Æ);
+(* *** Goal "1.1" *** *)
+a(all_var_elim_asm_tac1 THEN rewrite_tac[]);
+a(LEMMA_TÒ0 intdiv j = 0Ærewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[cn_intdiv_0_thm]);
+a(z_∂_tacÒ0Æ THEN rewrite_tac[]);
+a(all_asm_fc_tac[z_abs_0_less_thm]);
+(* *** Goal "1.2" *** *)
+a(DROP_NTH_ASM_T 2 (rewrite_thm_tac o eq_sym_rule));
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(z_∂_tacÒi rem jÆ);
+a(DROP_NTH_ASM_T 3 rewrite_thm_tac);
+a(LEMMA_TÒ(i intdiv j) * j + (i + ~ ((i intdiv j) * j))=iÆrewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(lemma_tacÒ0 º i * j ≤ i * j < 0ÆTHEN1 prove_tac[]);
+(* *** Goal "1.2.1" *** *)
+a(all_asm_fc_tac[]);
+a(LIST_DROP_NTH_ASM_T[2,4,5,6,7](MAP_EVERY discard_tac));
+a(POP_ASM_T rewrite_thm_tac);
+a(LEMMA_TÒ0 < i * jÆante_tac);
+(* *** Goal "1.2.1.1" *** *)
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_º_less_eq_thm]
+	THEN REPEAT strip_tac);
+a(POP_ASM_T (ante_tac o eq_sym_rule));
+a(asm_rewrite_tac[z_times_eq_0_thm]);
+(* *** Goal "1.2.1.2" *** *)
+a(POP_ASM_T discard_tac);
+a(asm_rewrite_tac[z_0_less_times_thm]);
+a(¥_T strip_asm_tac);
+(* *** Goal "1.2.1.2.1" *** *)
+a(all_asm_fc_tac[z_abs_pos_thm]);
+a(asm_rewrite_tac[z_º_less_eq_thm]);
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ j,d ¶ i div j ,r ¶ i mod j)Æ z_div_mod_unique_thm));
+a(asm_rewrite_tac[]);
+a(¥_T strip_asm_tac);
+a(lemma_tacÒi = (i div j) * j + i mod j ¥ (i div j) * j = i + ~ (i mod j)Æ
+	 THEN1 	PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 discard_tac);
+a(POP_ASM_T rewrite_thm_tac);
+a(all_asm_fc_tac[z_abs_thm]);
+a(DROP_NTH_ASM_T 4 ante_tac THEN asm_rewrite_tac
+	[z_plus_assoc_thm1,z_minus_thm,z_º_less_eq_thm]);
+a(¥_T rewrite_thm_tac);
+(* *** Goal "1.1.2.2.2" *** *)
+a(all_asm_fc_tac[z_abs_neg_thm]);
+a(asm_rewrite_tac[]);
+a(LEMMA_TÒ~ ((~ i div ~ j) * j) = (~ i div ~ j) * ~ jÆ
+	rewrite_thm_tac THEN1 rewrite_tac[z_minus_times_thm]);
+a(ante_tac (z_µ_elim
+	Ò(i ¶ ~ i,j ¶ ~ j,d ¶ ~ i div ~ j ,r ¶ ~ i mod ~ j)Æ z_div_mod_unique_thm));
+a(lemma_tacÒ≥ j = 0 ¥ ≥ ~ j = 0ÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]);
+a(¥_T strip_asm_tac);
+a(lemma_tacÒ~ i = (~ i div ~ j) * ~ j + ~ i mod ~ j ¥
+	(~ i div ~ j) * ~ j = ~ i + ~ (~ i mod ~ j)Æ
+	 THEN1 	PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 discard_tac);
+a(POP_ASM_T rewrite_thm_tac);
+a(rewrite_tac	[z_plus_assoc_thm1]);
+a(LEMMA_TÒ 0 º ~ i mod ~ j ¥ ~ (~ i mod ~ j) º 0Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[] THEN ¥_tac);
+a(all_asm_fc_tac[z_abs_thm]);
+a(asm_rewrite_tac[]);
+(* *** Goal "1.2.2" *** *)
+a(all_asm_fc_tac[]);
+a(LIST_DROP_NTH_ASM_T[3,4,5,6](MAP_EVERY discard_tac));
+a(POP_ASM_T rewrite_thm_tac);
+a(POP_ASM_T (strip_asm_tac o rewrite_rule[z_times_less_0_thm]));
+(* *** Goal "1.2.2.1" *** *)
+a(all_asm_fc_tac[z_abs_pos_thm,z_abs_neg_thm]);
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ ~ j,d ¶ i div ~ j ,r ¶ i mod ~j)Æ z_div_mod_unique_thm));
+a(lemma_tacÒ≥ j = 0 ¥ ≥ ~ j = 0ÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]);
+a(¥_T strip_asm_tac);
+a(lemma_tacÒi = (i div ~ j) * ~ j + i mod ~ j ¥ (i div ~ j) * ~ j = i + ~ (i mod ~ j)Æ
+	 THEN1 	PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 discard_tac);
+a(LEMMA_TÒ (~ (i div ~ j) * j) = (i div ~ j) * ~ jÆ
+	rewrite_thm_tac THEN1 rewrite_tac[z_minus_times_thm]);
+a(POP_ASM_T rewrite_thm_tac);
+a(all_asm_fc_tac[z_abs_thm]);
+a(asm_rewrite_tac[z_plus_assoc_thm1,z_minus_thm]);
+a(asm_rewrite_tac[z_º_less_eq_thm]);
+(* *** Goal "1.2.2.2" *** *)
+a(all_asm_fc_tac[z_abs_pos_thm,z_abs_neg_thm]);
+a(ante_tac (z_µ_elim
+	Ò(i ¶ ~ i,j ¶ j,d ¶ ~ i div j ,r ¶ ~ i mod j)Æ z_div_mod_unique_thm));
+a(asm_rewrite_tac[]);
+a(¥_T strip_asm_tac);
+a(lemma_tacÒ~ i = (~ i div j) * j + ~ i mod j ¥ (~ i div j) * j = ~ i + ~(~ i mod j)Æ
+	 THEN1 	PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 discard_tac);
+a(LEMMA_TÒ ~ (~ (~ i div j) * j) = (~ i div j) * jÆ
+	rewrite_thm_tac THEN1 rewrite_tac[z_minus_times_thm]);
+a(POP_ASM_T rewrite_thm_tac);
+a(LEMMA_TÒ0 º  ~ i mod j ¥  ~ (~ i mod  j ) º 0 Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[] THEN ¥_tac);
+a(all_asm_fc_tac[z_abs_thm]);
+a(asm_rewrite_tac[z_plus_assoc_thm1,z_minus_thm]);
+(* *** Goal "2" *** *)
+a(cases_tacÒi=0Æ);
+(* *** Goal "2.1" *** *)
+a(all_var_elim_asm_tac1);
+a(LEMMA_TÒ0 intdiv j = 0Ærewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[cn_intdiv_0_thm]);
+a(LEMMA_TÒk * j + m = 0 ¥ m = ~(k * j)Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 3 (rewrite_thm_tac o eq_sym_rule));
+a ¥_tac;
+a contr_tac;
+a(POP_ASM_T (asm_tac o ≥_eq_sym_rule));
+a(all_var_elim_asm_tac1);
+a(DROP_NTH_ASM_T 3 (strip_asm_tac o rewrite_rule[z_abs_minus_thm]));
+a(ante_tac(z_µ_elimÒ(i ¶ k, j ¶ j)Æz_abs_º_times_thm));
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(lemma_tacÒ0 º i * j ≤ i * j < 0ÆTHEN1 prove_tac[]);
+(* *** Goal "2.2.1" *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(GET_NTH_ASM_T 4 rewrite_thm_tac THEN ¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(all_asm_fc_tac[]);
+a(LIST_DROP_NTH_ASM_T[2,3,4,5,6,7](MAP_EVERY discard_tac));
+a(POP_ASM_T rewrite_thm_tac);
+a(LEMMA_TÒ0 < i * jÆante_tac);
+(* *** Goal "2.2.1.1" *** *)
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_º_less_eq_thm]
+	THEN REPEAT strip_tac);
+a(POP_ASM_T (ante_tac o eq_sym_rule));
+a(asm_rewrite_tac[z_times_eq_0_thm]);
+(* *** Goal "2.2.1.2" *** *)
+a(POP_ASM_T discard_tac);
+a(rewrite_tac[z_0_less_times_thm]);
+a(DROP_NTH_ASM_T 2 strip_asm_tac);
+(* *** Goal "2.2.1.2.1" *** *)
+a(lemma_tacÒabs m = m ± abs i = iÆTHEN1 ALL_ASM_FC_T rewrite_tac[z_abs_thm]);
+a(DROP_NTH_ASM_T 5 ante_tac THEN POP_ASM_T rewrite_thm_tac
+	THEN POP_ASM_T rewrite_thm_tac THEN ¥_tac);
+a(LEMMA_TÒ≥ i < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(REPEAT strip_tac);
+a(DROP_NTH_ASM_T 7 (asm_tac o eq_sym_rule));
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ abs j,d ¶ k ,r ¶ m)Æ z_div_mod_unique_thm));
+a(DROP_NTH_ASM_T 5 ante_tac);
+a(lemma_tacÒabs j = jÆTHEN1 ALL_ASM_FC_T rewrite_tac[z_abs_pos_thm]);
+a(asm_rewrite_tac[]);
+a(¥_T rewrite_thm_tac THEN ¥_T rewrite_thm_tac);
+(* *** Goal "2.2.1.2.2" *** *)
+a(LEMMA_TÒm º 0 ¥ 0 º ~mÆante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T rewrite_thm_tac THEN ¥_T asm_tac);
+a(lemma_tacÒabs ~ m = ~ m ± abs i = ~ iÆ
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_thm,z_abs_neg_thm]);
+a(POP_ASM_T rewrite_thm_tac);
+a(DROP_NTH_ASM_T 4 ante_tac 	THEN POP_ASM_T
+	(rewrite_thm_tac o rewrite_rule[z_abs_minus_thm]) THEN ¥_tac);
+a(LEMMA_TÒ≥ 0 < iÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(REPEAT strip_tac);
+a(DROP_NTH_ASM_T 6 (asm_tac o eq_sym_rule));
+a(ante_tac (z_µ_elim
+	Ò(i ¶ ~ i,j ¶ ~ j,d ¶  k ,r ¶ ~ m)Æ z_div_mod_unique_thm));
+a(DROP_NTH_ASM_T 4 ante_tac);
+a(lemma_tacÒabs j = ~ jÆTHEN1 ALL_ASM_FC_T rewrite_tac[z_abs_neg_thm]);
+a(asm_rewrite_tac[z_abs_minus_thm]);
+a(lemma_tacÒ≥ j = 0 ¥ ≥ ~ j = 0ÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(¥_T rewrite_thm_tac THEN POP_ASM_T rewrite_thm_tac);
+a(LEMMA_TÒ ~i =  k * ~ j + ~ m § k * j + m = iÆasm_rewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(¥_T rewrite_thm_tac);
+(* *** Goal "2.2.2" *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(GET_NTH_ASM_T 4 rewrite_thm_tac THEN ¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(all_asm_fc_tac[]);
+a(LIST_DROP_NTH_ASM_T[2,3,4,5,6](MAP_EVERY discard_tac));
+a(POP_ASM_T rewrite_thm_tac);
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_times_less_0_thm]);
+a(DROP_NTH_ASM_T 2 strip_asm_tac);
+(* *** Goal "2.2.2.1" *** *)
+a(lemma_tacÒabs m = m ± abs i = iÆTHEN1 ALL_ASM_FC_T rewrite_tac[z_abs_thm]);
+a(DROP_NTH_ASM_T 5 ante_tac THEN POP_ASM_T rewrite_thm_tac
+	THEN POP_ASM_T rewrite_thm_tac THEN ¥_tac);
+a(LEMMA_TÒ≥ i < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(REPEAT strip_tac);
+a(DROP_NTH_ASM_T 7 (asm_tac o eq_sym_rule));
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ abs j,d ¶ ~ k ,r ¶ m)Æ z_div_mod_unique_thm));
+a(DROP_NTH_ASM_T 5 ante_tac);
+a(lemma_tacÒabs j = ~ jÆTHEN1 ALL_ASM_FC_T rewrite_tac[z_abs_neg_thm]);
+a(asm_rewrite_tac[z_abs_minus_thm]);
+a(lemma_tacÒ≥ j = 0 ¥ ≥ ~ j = 0ÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(¥_T rewrite_thm_tac THEN POP_ASM_T rewrite_thm_tac);
+a(LEMMA_TÒi = ~ k * ~ j + m § k * j + m = iÆasm_rewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(LEMMA_TÒ~ k = i div ~ j § ~ (i div ~ j) = kÆrewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(¥_T rewrite_thm_tac);
+(* *** Goal "2.2.2.2" *** *)
+a(LEMMA_TÒm º 0 ¥ 0 º ~mÆante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T rewrite_thm_tac THEN ¥_T asm_tac);
+a(lemma_tacÒabs ~ m = ~ m ± abs i = ~ iÆ
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_thm,z_abs_neg_thm]);
+a(POP_ASM_T rewrite_thm_tac);
+a(DROP_NTH_ASM_T 4 ante_tac 	THEN POP_ASM_T
+	(rewrite_thm_tac o rewrite_rule[z_abs_minus_thm]) THEN ¥_tac);
+a(LEMMA_TÒ≥ 0 < iÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(REPEAT strip_tac);
+a(DROP_NTH_ASM_T 6 (asm_tac o eq_sym_rule));
+a(ante_tac (z_µ_elim
+	Ò(i ¶ ~ i,j ¶ j,d ¶ ~ k ,r ¶ ~ m)Æ z_div_mod_unique_thm));
+a(DROP_NTH_ASM_T 4 ante_tac);
+a(lemma_tacÒabs j = jÆTHEN1 ALL_ASM_FC_T rewrite_tac[z_abs_pos_thm]);
+a(asm_rewrite_tac[]);
+a(¥_T rewrite_thm_tac);
+a(LEMMA_TÒ ~i = ~ k * j + ~ m § k * j + m = iÆasm_rewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(LEMMA_TÒ~ k = ~ i div j § ~ (~ i div j) = k Ærewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(¥_T rewrite_thm_tac);
+save_pop_thm"cn_intdiv_thm"
+);
+=TEX
+=SML
+val €cn_rem_thm› = (
+set_goal([],Òµ i,j,k : ˙ | ≥j = 0 ∑ (i rem j = k) §
+	(∂ d : ˙ ∑ i = d * j + k ± abs k < abs j
+	± ((0 º i ± 0 º k ) ≤ (i < 0 ± k º 0)) )Æ);
+a(z_µ_tac THEN ¥_T strip_asm_tac);
+a(§_T asm_tac);
+(* *** Goal "1" *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ i intdiv j)Æcn_intdiv_thm));
+a(asm_rewrite_tac[]);
+a(¥_tac);
+(* *** Goal "1.1" *** *)
+a(LIST_DROP_NTH_ASM_T[1,3](MAP_EVERY ante_tac));
+a(LEMMA_TÒi = (i intdiv j) * j + m ¥ m = i + ~ ((i intdiv j) * j)Æ
+	ante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 2 (rewrite_thm_tac o eq_sym_rule));
+a(¥_T rewrite_thm_tac THEN REPEAT ¥_tac);
+a(z_∂_tacÒi intdiv jÆ);
+a(asm_rewrite_tac[]);
+a(PC_T1"z_lin_arith"prove_tac[]);
+(* *** Goal "1.2" *** *)
+a(LIST_DROP_NTH_ASM_T[1,3](MAP_EVERY ante_tac));
+a(LEMMA_TÒi = (i intdiv j) * j + m ¥ m = i + ~ ((i intdiv j) * j)Æ
+	ante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 2 (rewrite_thm_tac o eq_sym_rule));
+a(¥_T rewrite_thm_tac THEN REPEAT ¥_tac);
+a(z_∂_tacÒi intdiv jÆ);
+a(asm_rewrite_tac[]);
+a(PC_T1"z_lin_arith"prove_tac[]);
+(* *** Goal "2" *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(asm_rewrite_tac[]);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2,3,4,5](MAP_EVERY discard_tac));
+a(POP_ASM_T strip_asm_tac);
+(* *** Goal "2.1" *** *)
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ d)Æcn_intdiv_thm));
+a(LEMMA_TÒ(∂ m : ˙
+                 ∑ i = d * j + m
+                   ± abs m < abs j
+                   ± (0 º i ± 0 º m ≤ i < 0 ± m º 0))Ærewrite_thm_tac);
+(* *** Goal "2.1.1" *** *)
+a(z_∂_tacÒkÆTHEN asm_rewrite_tac[]);
+(* *** Goal "2.1.2" *** *)
+a(DROP_NTH_ASM_T 5 rewrite_thm_tac THEN ¥_T rewrite_thm_tac);
+a(LEMMA_TÒd * j + k = i ¥ i + ~ (d * j) = kÆante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ d)Æcn_intdiv_thm));
+a(LEMMA_TÒ(∂ m : ˙
+                 ∑ i = d * j + m
+                   ± abs m < abs j
+                   ± (0 º i ± 0 º m ≤ i < 0 ± m º 0))Ærewrite_thm_tac);
+(* *** Goal "2.2.1" *** *)
+a(z_∂_tacÒkÆTHEN asm_rewrite_tac[]);
+(* *** Goal "2.2.2" *** *)
+a(DROP_NTH_ASM_T 5 rewrite_thm_tac THEN ¥_T rewrite_thm_tac);
+a(LEMMA_TÒd * j + k = i ¥ i + ~ (d * j) = kÆante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]);
+save_pop_thm"cn_rem_thm"
+);
+=TEX
+=SML
+val €cn_intmod_thm› = (
+set_goal([],Òµ i,j,k : ˙ | ≥j = 0 ∑ (i intmod j = k) §
+	(∂ d : ˙ ∑ i = d * j + k ± abs k < abs j
+	± ((0 º j ± 0 º k ) ≤ (j < 0 ± k º 0)) )Æ);
+a(z_µ_tac THEN ¥_T strip_asm_tac);
+a(§_T asm_tac);
+(* *** Goal "1" *** *)
+a(cases_tacÒi = 0Æ);
+(* *** Goal "1.1" *** *)
+a(all_var_elim_asm_tac1);
+a(all_asm_fc_tac[z_abs_0_less_thm,cn_intdiv_0_thm]);
+a(asm_rewrite_tac[]);
+a(z_∂_tacÒ0Æ  THEN rewrite_tac[]);
+a(prove_tac[]);
+(* *** Goal "1.2" *** *)
+a(lemma_tacÒ0 º i * j ≤ i * j < 0ÆTHEN1 prove_tac[]);
+(* *** Goal "1.2.1" *** *)
+a(z_∂_tacÒi intdiv jÆ);
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(GET_NTH_ASM_T 4 rewrite_thm_tac);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(all_asm_fc_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,3,4,6,7](MAP_EVERY discard_tac));
+a(DROP_NTH_ASM_T 5 ante_tac THEN asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2](MAP_EVERY discard_tac));
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ i intdiv j)Æcn_intdiv_thm));
+a(asm_rewrite_tac[]);
+a(LEMMA_TÒ0 < i * jÆante_tac);
+(* *** Goal "1.2.1.1" *** *)
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_º_less_eq_thm]
+	THEN REPEAT strip_tac);
+a(POP_ASM_T (ante_tac o eq_sym_rule));
+a(asm_rewrite_tac[z_times_eq_0_thm]);
+(* *** Goal "1.2.1.2" *** *)
+a(POP_ASM_T discard_tac);
+a(rewrite_tac[z_0_less_times_thm]);
+a(¥_tac);
+(* *** Goal "1.2.1.2.1" *** *)
+a(LEMMA_TÒ≥ i < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(¥_tac THEN ¥_tac);
+a(lemma_tacÒi + ~ ((i intdiv j) * j) = k ± i = (i intdiv j) * j + m ¥
+	(i intdiv j) * j + k = i ± k = mÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 7 discard_tac THEN asm_rewrite_tac[]);
+a(asm_rewrite_tac[z_º_less_eq_thm]);
+(* *** Goal "1.2.1.2.2" *** *)
+a(LEMMA_TÒ≥ 0 º iÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(¥_tac THEN ¥_tac);
+a(lemma_tacÒi + ~ ((i intdiv j) * j) = k ± i = (i intdiv j) * j + m ¥
+	(i intdiv j) * j + k = i ± k = mÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 6 discard_tac THEN asm_rewrite_tac[]);
+(* *** Goal "1.2.2" *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(GET_NTH_ASM_T 4 rewrite_thm_tac);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(cases_tacÒi rem j = 0Æ THEN all_asm_fc_tac[]);
+(* *** Goal "1.2.2.1" *** *)
+a(POP_ASM_T discard_tac);
+a(LIST_DROP_NTH_ASM_T[5,10](MAP_EVERY ante_tac) THEN asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2,3,4,5,6](MAP_EVERY discard_tac));
+a(¥_T (rewrite_thm_tac o eq_sym_rule));
+a(¥_tac);
+a(LEMMA_TÒ0 = i + ~ ((i intdiv j) * j) ¥ ((i intdiv j) * j) = iÆante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule) THEN ¥_tac);
+a(z_∂_tacÒi intdiv jÆ);
+a(all_asm_fc_tac[z_abs_0_less_thm]);
+a(asm_rewrite_tac[]);
+a(prove_tac[]);
+(* *** Goal "1.2.2.2" *** *)
+a(POP_ASM_T discard_tac);
+a(LIST_DROP_NTH_ASM_T[2,10](MAP_EVERY ante_tac) THEN asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2,3,4,5,6](MAP_EVERY discard_tac));
+a(REPEAT  ¥_tac);
+a(z_∂_tacÒi intdiv j + ~ 1Æ);
+a(LEMMA_TÒ(i + ~ ((i intdiv j) * j)) + j = k ¥ (i intdiv j + ~ 1) * j + k = iÆ
+	ante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 2 rewrite_thm_tac THEN ¥_tac);
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ i intdiv j)Æcn_intdiv_thm));
+a(asm_rewrite_tac[]);
+a(LEMMA_TÒ(i intdiv j + ~ 1) * j + k = i ¥ (i intdiv j) * j = i + (j + ~ k)Æ
+	ante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[] THEN REPEAT ¥_tac);
+(* *** Goal "1.2.2.2.1" *** *)
+a(lemma_tacÒ(i intdiv j) * j = i + (j + ~ k) ±(i = (i intdiv j) * j + m)
+	¥ k = j + mÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(LEMMA_TÒ(i = (i intdiv j) * j + m)  ± ≥ i + ~ ((i intdiv j) * j) = 0
+	± 0 º m ¥ 0 < mÆante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 5 (rewrite_thm_tac o eq_sym_rule));
+a(LIST_DROP_NTH_ASM_T[5,6](MAP_EVERY discard_tac));
+a(LIST_DROP_NTH_ASM_T[1,2,5](MAP_EVERY rewrite_thm_tac));
+a(LEMMA_TÒ≥ i < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 4 (strip_asm_tac o rewrite_rule[z_times_less_0_thm]));
+a(LEMMA_TÒ≥ 0 º jÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(¥_tac);
+a(DROP_NTH_ASM_T 7 ante_tac);
+a(LEMMA_TÒabs m = m ± abs j = ~jÆasm_rewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_pos_thm,z_abs_neg_thm]);
+a(¥_tac);
+a(LEMMA_TÒm < ~ j ¥ j + m < 0Æante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T rewrite_thm_tac THEN ¥_tac);
+a(LEMMA_TÒabs (j + m) = ~(j + m)Ærewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_neg_thm]);
+a(asm_rewrite_tac[z_º_less_eq_thm]);
+a(DROP_NTH_ASM_T 2 ante_tac THEN PC_T1"z_lin_arith"prove_tac[]);
+(* *** Goal "1.2.2.2.2" *** *)
+a(lemma_tacÒ(i intdiv j) * j = i + (j + ~ k) ±(i = (i intdiv j) * j + m)
+	¥ k = j + mÆTHEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(LEMMA_TÒ(i = (i intdiv j) * j + m)  ± ≥ i + ~ ((i intdiv j) * j) = 0
+	± m º 0 ¥ m < 0Æante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 5 (rewrite_thm_tac o eq_sym_rule));
+a(LIST_DROP_NTH_ASM_T[5,6](MAP_EVERY discard_tac));
+a(LIST_DROP_NTH_ASM_T[1,2,5](MAP_EVERY rewrite_thm_tac));
+a(LEMMA_TÒ≥ 0 < iÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 4 (strip_asm_tac o rewrite_rule[z_times_less_0_thm]));
+a(LEMMA_TÒ≥ j < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(¥_tac);
+a(DROP_NTH_ASM_T 6 ante_tac);
+a(LEMMA_TÒabs m = ~ m ± abs j = jÆasm_rewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_pos_thm,z_abs_neg_thm]);
+a(¥_tac);
+a(LEMMA_TÒ~ m <  j ¥ 0 < j + mÆante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T rewrite_thm_tac THEN ¥_tac);
+a(LEMMA_TÒabs (j + m) = j + mÆrewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_pos_thm]);
+a(asm_rewrite_tac[z_º_less_eq_thm]);
+(* *** Goal "2" *** *)
+a(cases_tacÒi=0Æ);
+(* *** Goal "2.1" *** *)
+a(all_asm_fc_tac[cn_intdiv_0_thm]);
+a(LIST_DROP_NTH_ASM_T[2,3](MAP_EVERY discard_tac));
+a(all_var_elim_asm_tac1 THEN POP_ASM_T rewrite_thm_tac);
+(* *** Goal "2.1.1" *** *)
+a(conv_tac eq_sym_conv);
+a(LEMMA_TÒ0 = d * j + k ¥ k = ~ (d * j)Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4(rewrite_thm_tac o eq_sym_rule));
+a(cases_tacÒd=0ÆTHEN_TRY asm_rewrite_tac[]);
+a(¥_tac THEN i_contr_tac);
+a(DROP_NTH_ASM_T 5 ante_tac THEN asm_rewrite_tac[z_abs_minus_thm]);
+a(all_asm_fc_tac[z_abs_º_times_thm]);
+(* *** Goal "2.1.2" *** *)
+a(conv_tac eq_sym_conv);
+a(LEMMA_TÒ0 = d * j + k ¥ k = ~ (d * j)Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4(rewrite_thm_tac o eq_sym_rule));
+a(cases_tacÒd=0ÆTHEN_TRY asm_rewrite_tac[]);
+a(¥_tac THEN i_contr_tac);
+a(DROP_NTH_ASM_T 5 ante_tac THEN asm_rewrite_tac[z_abs_minus_thm]);
+a(all_asm_fc_tac[z_abs_º_times_thm]);
+(* *** Goal "2.2" *** *)
+a(lemma_tacÒ0 º i * j ≤ i * j < 0ÆTHEN1 prove_tac[]);
+(* *** Goal "2.2.1" *** *)
+a(LEMMA_TÒ0 < i * jÆante_tac);
+(* *** Goal "2.2.1.1" *** *)
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_º_less_eq_thm]
+	THEN REPEAT strip_tac);
+a(POP_ASM_T (ante_tac o eq_sym_rule));
+a(asm_rewrite_tac[z_times_eq_0_thm]);
+(* *** Goal "2.2.1.2" *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(GET_NTH_ASM_T 4 rewrite_thm_tac);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(all_asm_fc_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,3,4,6,7,8](MAP_EVERY discard_tac));
+a(POP_ASM_T rewrite_thm_tac THEN POP_ASM_T rewrite_thm_tac);
+a(rewrite_tac[z_0_less_times_thm] THEN ¥_T asm_tac);
+a(DROP_NTH_ASM_T 3 strip_asm_tac);
+(* *** Goal "2.2.1.2.1" *** *)
+a(LEMMA_TÒi = d * j + k ¥ i + ~ (d * j) = kÆante_tac
+	THEN1 PC_T1"z_lin_arith" prove_tac[]);
+a(GET_NTH_ASM_T 4 (rewrite_thm_tac o eq_sym_rule));
+a ¥_tac;
+a(LEMMA_TÒ≥ j = 0 ± 0 º j ¥ 0 < jÆante_tac
+	THEN1 PC_T1"z_lin_arith" prove_tac[]);
+a(DROP_NTH_ASM_T 3 rewrite_thm_tac);
+a ¥_tac;
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ d)Æcn_intdiv_thm));
+a(GET_NTH_ASM_T 8 rewrite_thm_tac);
+a(LEMMA_TÒ∂ m : ˙
+                 ∑ i = d * j + m
+                   ± abs m < abs j
+                   ± (0 º i ± 0 º m ≤ i < 0 ± m º 0)Ærewrite_thm_tac);
+(* *** Goal "2.2.1.2.1.1" *** *)
+a(z_∂_tacÒkÆ);
+a(DROP_NTH_ASM_T 5 (asm_rewrite_thm_tac o eq_sym_rule));
+a(LIST_DROP_NTH_ASM_T[2,4](MAP_EVERY discard_tac));
+a(LEMMA_TÒ≥ j < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 4 strip_asm_tac);
+a(asm_rewrite_tac[z_º_less_eq_thm]);
+(* *** Goal "2.2.1.2.1.2" *** *)
+a(¥_T rewrite_thm_tac);
+a(DROP_NTH_ASM_T 2 rewrite_thm_tac);
+(* *** Goal "2.2.1.2.2" *** *)
+a(LEMMA_TÒi = d * j + k ¥ i + ~ (d * j) = kÆante_tac
+	THEN1 PC_T1"z_lin_arith" prove_tac[]);
+a(GET_NTH_ASM_T 4 (rewrite_thm_tac o eq_sym_rule));
+a ¥_tac;
+a(ante_tac(z_µ_elimÒ(i ¶ i,j ¶ j,k ¶ d)Æcn_intdiv_thm));
+a(GET_NTH_ASM_T 8 rewrite_thm_tac);
+a(LEMMA_TÒ∂ m : ˙
+                 ∑ i = d * j + m
+                   ± abs m < abs j
+                   ± (0 º i ± 0 º m ≤ i < 0 ± m º 0)Ærewrite_thm_tac);
+(* *** Goal "2.2.1.2.2.1" *** *)
+a(z_∂_tacÒkÆ);
+a(DROP_NTH_ASM_T 5 (asm_rewrite_thm_tac o eq_sym_rule));
+a(LIST_DROP_NTH_ASM_T[1,4](MAP_EVERY discard_tac));
+a(LEMMA_TÒ≥ 0 < jÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 4 strip_asm_tac);
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2.1.2.2.2" *** *)
+a(¥_T rewrite_thm_tac);
+a(POP_ASM_T rewrite_thm_tac);
+(* *** Goal "2.2.2." *** *)
+a(ante_tac (z_µ_elimÒ(x¶i, y¶j)Æ
+		(±_right_elim (z_get_specÒ(_ intdiv _)Æ))));
+a(GET_NTH_ASM_T 4 rewrite_thm_tac);
+a(¥_T (REPEAT_TTCL ±_THEN asm_tac));
+a(cases_tacÒi rem j = 0Æ THEN all_asm_fc_tac[]);
+(* *** Goal "2.2.2.1" *** *)
+a(POP_ASM_T discard_tac);
+a(DROP_NTH_ASM_T 5 ante_tac THEN asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T[1,2,3,4,5,6](MAP_EVERY discard_tac));
+a(LEMMA_TÒ0 = i + ~ ((i intdiv j) * j) § ((i intdiv j) * j) = iÆrewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(¥_tac);
+a(DROP_NTH_ASM_T 4 strip_asm_tac);
+(* *** Goal "2.2.2.1.1" *** *)
+a(LIST_DROP_NTH_ASM_T[1,2](MAP_EVERY discard_tac));
+set_labelled_goal"2.2.2.1.2";
+(* *** Goal "2.2.2.1.2" *** *)
+a(LIST_DROP_NTH_ASM_T[1,2](MAP_EVERY discard_tac));
+a(conv_tac eq_sym_conv);
+a(lemma_tacÒ(i intdiv j) * j = i ± i = d * j + k ¥ ((i intdiv j) * j = d * j + k
+	± i + ~ (d * j)=k)Æ
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(LIST_DROP_NTH_ASM_T[4,5](MAP_EVERY discard_tac));
+a(DROP_NTH_ASM_T 2 ante_tac THEN cases_tacÒi intdiv j = dÆ
+	THEN_TRY asm_rewrite_tac[]);
+a(¥_tac THEN i_contr_tac);
+a(lemma_tacÒ(i intdiv j) * j = d * j + k ¥ k = ((i intdiv j) + ~ d) * jÆ
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(lemma_tacÒ≥ i intdiv j = d ¥ ≥ (i intdiv j + ~ d) = 0Æ
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 6 ante_tac THEN asm_rewrite_tac[]);
+a(all_asm_fc_tac[z_abs_º_times_thm]);
+(* *** Goal "2.2.2.2" *** *)
+a(POP_ASM_T discard_tac);
+a(POP_ASM_T rewrite_thm_tac);
+a(LIST_DROP_NTH_ASM_T[2,3,4,5,6](MAP_EVERY discard_tac));
+a(cases_tacÒk=0Æ);
+(* *** Goal "2.2.2.2.1" *** *)
+a(all_var_elim_asm_tac1);
+(* *** Goal "2.2.2.2.1.1" *** *)
+a(DROP_NTH_ASM_T 4 discard_tac);
+set_labelled_goal"2.2.2.2.1.2";
+(* *** Goal "2.2.2.2.1.2" *** *)
+a(DROP_NTH_ASM_T 4 discard_tac);
+a(i_contr_tac);
+a(POP_ASM_T ante_tac THEN ALL_FC_T1 fc_§_canon rewrite_tac[cn_rem_thm]);
+a(z_∂_tac¨dÆ);
+a(DROP_NTH_ASM_T 4 (rewrite_thm_tac o eq_sym_rule o rewrite_rule[]));
+a(DROP_NTH_ASM_T 3 ante_tac THEN rewrite_tac[]);
+a(prove_tac[]);
+(* *** Goal "2.2.2.2.2" *** *)
+a(DROP_NTH_ASM_T 2 discard_tac);
+a(DROP_NTH_ASM_T 2 (asm_tac o rewrite_rule[z_times_less_0_thm]));
+a(LEMMA_TÒi rem j + j = k § i rem j = k + ~ jÆrewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(ALL_FC_T1 fc_§_canon rewrite_tac[cn_rem_thm]);
+a(DROP_NTH_ASM_T 4 strip_asm_tac);
+(* *** Goal "2.2.2.2.2.1" *** *)
+a(z_∂_tacÒd + 1Æ);
+a(LEMMA_TÒ(d + 1) * j + (k + ~ j) = d * j + kÆrewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 (rewrite_thm_tac o eq_sym_rule));
+a(LEMMA_TÒ≥ j < 0Æasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 5 strip_asm_tac);
+a(DROP_NTH_ASM_T 6 ante_tac);
+a(LEMMA_TÒabs k = k ± abs j = jÆrewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_thm]);
+a(¥_tac);
+a(LEMMA_TÒk < j ¥ k + ~ j < 0Æante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T rewrite_thm_tac);
+a(¥_tac);
+a(lemma_tacÒabs (k + ~ j) = ~ (k + ~ j)Æ
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_neg_thm]);
+a(asm_rewrite_tac[z_minus_thm,z_º_less_eq_thm]);
+a(LIST_DROP_NTH_ASM_T[6,8](MAP_EVERY ante_tac) THEN
+	 PC_T1"z_lin_arith"prove_tac[]);
+(* *** Goal "2.2.2.2.2.2" *** *)
+a(z_∂_tacÒd + 1Æ);
+a(LEMMA_TÒ(d + 1) * j + (k + ~ j) = d * j + kÆrewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 (rewrite_thm_tac o eq_sym_rule));
+a(LEMMA_TÒ≥ 0 < jÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 5 strip_asm_tac);
+a(DROP_NTH_ASM_T 5 ante_tac);
+a(LEMMA_TÒ≥ k = 0 ± k º 0 ¥ k < 0Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(asm_rewrite_tac[]);
+a(¥_tac);
+a(LEMMA_TÒabs k = ~ k ± abs j = ~ jÆrewrite_thm_tac
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_neg_thm]);
+a(¥_tac);
+a(LEMMA_TÒ~ k < ~ j ¥ 0 < k + ~ j Æante_tac
+	 THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(POP_ASM_T rewrite_thm_tac);
+a(¥_tac);
+a(lemma_tacÒabs (k + ~ j) =  (k + ~ j)Æ
+	THEN1 ALL_ASM_FC_T rewrite_tac[z_abs_pos_thm]);
+a(asm_rewrite_tac[z_minus_thm,z_º_less_eq_thm]);
+save_pop_thm"cn_intmod_thm"
+);
+=TEX
+=SML
+val _ = push_pc "z_library1";
+val €z_succÁnÍ_ª_thm› = (
+set_goal([], Òµ x : É; y : É ∑
+	(succ Á x Í ª y) =
+		{ a : É; b : É |
+		((1 º x ± 0 º a) ≤ (≥ (0 º x) ± ((0 - x) º a)) ≤ (x = 0));
+		(a + x, b) ç y ∑
+		(a, b)}
+	Æ);
+a(z_µ_tac THEN strip_tac);
+a(lemma_tac Òx º ~ 1 ≤ x = 0 ≤ 1 º xÆ THEN1 PC_T1 "z_lin_arith" prove_tac[]);
+(* *** Goal "1" *** *)
+a(strip_asm_tac (z_µ_elim Ò~ xÆ z_succÁminus_nÍ_thm));
+(* *** Goal "1.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "1.2" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "1.3" *** *)
+a(DROP_NTH_ASM_T 1 (rewrite_thm_tac o rewrite_rule[]));
+a(PC_T1 "z_library1_ext" asm_rewrite_tac []);
+a(REPEAT strip_tac THEN_TRY PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "1.3.1" *** *)
+a(all_var_elim_asm_tac1);
+a(asm_rewrite_tac[pc_rule1 "z_lin_arith" prove_rule []  Ò(y' + ~ x) + x = y'Æ]);
+(* *** Goal "1.3.2" *** *)
+a(z_∂_tac Òx1 + xÆ THEN REPEAT strip_tac);
+a(z_∂_tac Òx1 + xÆ THEN PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac [z_succÁ0Í_thm]);
+a(PC_T1 "z_library1_ext" rewrite_tac[]);
+a(REPEAT strip_tac THEN_TRY PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "2.1" *** *)
+a(all_var_elim_asm_tac1);
+(* *** Goal "2.2" *** *)
+a(z_∂_tac Òx1Æ THEN REPEAT strip_tac);
+(* *** Goal "3" *** *)
+a(strip_asm_tac (z_µ_elim ÒxÆ z_succÁnÍ_thm));
+a(DROP_NTH_ASM_T 1 rewrite_thm_tac);
+a(PC_T1 "z_library1_ext" asm_rewrite_tac []);
+a(REPEAT strip_tac THEN_TRY all_var_elim_asm_tac1);
+(* *** Goal "3.1" *** *)
+a(z_∂_tac Òx1 + xÆ THEN REPEAT strip_tac);
+a(z_∂_tac Òx1Æ THEN REPEAT strip_tac);
+(* *** Goal "3.2" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac[]);
+save_pop_thm "z_succÁnÍ_ª_thm"
+);
+val _ = pop_pc();
+val _ = set_flag("subgoal_package_quiet", old_sgpq_flag);
+=TEX
+\section{EPILOGUE}
+=SML
+end (* of structure CNToolkitExtensions *);
+open CNToolkitExtensions;
+=TEX
+\small
+\twocolumn[\section{INDEX}]
+\printindex
+\end{document}

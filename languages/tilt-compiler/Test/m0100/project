@@ -1,0 +1,3 @@
+unit Test = "real5.sml" {
+	Real StringCvt Int
+}

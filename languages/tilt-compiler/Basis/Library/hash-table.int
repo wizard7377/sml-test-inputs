@@ -1,0 +1,1 @@
+structure HashTable : HASH_TABLE 

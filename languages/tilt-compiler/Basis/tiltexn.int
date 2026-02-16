@@ -1,0 +1,7 @@
+exception Div
+exception Overflow
+structure TiltExn :
+sig
+    exception SysErr of string * int option
+    exception LibFail of string
+end

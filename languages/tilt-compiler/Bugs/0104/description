@@ -1,0 +1,19 @@
+Number: 0104
+Title:       hidden hidden name clash
+Keywords:    elaborator, nonexport
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     as fails with re-definition of "hidden hidden" identifiers, specifically ml_hidden1_bindTuple_INT and ml_hidden1_BANGbindarg_INT
+Code:        
+Transcript:  
+Comments:
+	See ../0100/description.
+
+	N.B. TILT still fails test m0029.
+Fix:         
+Test: m0029
+Owner: swasey
+Status: closed

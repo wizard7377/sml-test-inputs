@@ -1,0 +1,39 @@
+[package]
+name = "tests"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+doctest = false
+
+[build-dependencies]
+quote.workspace = true
+proc-macro2.workspace = true
+write-rs-tokens.workspace = true
+
+[dev-dependencies]
+diagnostic.workspace = true
+env_logger.workspace = true
+fast-hash.workspace = true
+log.workspace = true
+paths.workspace = true
+pretty_assertions.workspace = true
+pulldown-cmark.workspace = true
+serde_json.workspace = true
+str-util.workspace = true
+text-pos.workspace = true
+
+analysis = { path = "../analysis", features = ["sync"] } # @ignore
+cm-syntax.path = "../cm-syntax"
+config.path = "../config"
+cov-mark.path = "../cov-mark"
+input.path = "../input"
+mlb-syntax.path = "../mlb-syntax"
+slash-var-path.path = "../slash-var-path"
+sml-file.path = "../sml-file"
+sml-syntax.path = "../sml-syntax"

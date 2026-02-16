@@ -1,0 +1,260 @@
+LLVM backend todo list
+
+***** TODOs *****      
+    
+    - Pass all regression tests and benchmarks that should pass.
+        - find out why the linter complains about those few things.
+        - find out why instcombine breaks our programs
+    
+    - Floating point literals: add regression tests to ensure that your
+      custom conversion to LLVM floats outputs the right float literals. 
+      You'll want to check for denormals, inf, negative zero, etc. Can just
+      create a list of floats and print all of those corner cases out.
+    
+    
+***** BUGS *****  
+    
+    - Linter complains of things like the following: [ NOTE this didn't actually fix anything like i thought it would! ]
+    
+    Unusual: Address one pointer dereference
+    %r_C65F = load i64*, i64** %r_C65E
+    
+    And it's caused by the following type of CFG
+    
+    let con_nil<B6C3>#2 = enum(0):enum(0)
+    ...
+    let t<BBC6>#1 = enum(0):enum(0)
+    if NotEqual(con_nil<B6C3>,t<BBC6>)
+      then $then<BBCB>(ep<B6BE>,con_nil<B6C3>,_lit<B6C4>,letJoinK<B6EB>)
+      else $else<BBDA>(_wlit<B6C5>,letJoinK<B6EB>)
+
+  block $then<BBCB>#3 (
+    ep<BBC7>#2,
+    con_nil<BBCA>#1,
+    _lit<BBC9>#1,
+    letJoinK<BBC8>#1
+  ) =
+    let xs<BBCC>#1 = ([any,any])con_nil<BBCA>
+    let _t<BBCD>#1 = #1 xs<BBCC>
+
+  where in the LLVM codegen, we're doing an unsafe constant propagation (because
+  binding constants to vars in LLVM is not allowed/tricky) of con_nil
+  to the 'then' block when it will never get there because the branch protects
+  agianst it.
+  
+  Soln: we need to do those (gross) constant binding forms to prevent this! 
+  
+  
+  
+  - why inst combine breaks our code: datalayouts are not to be relied on! the documentation about them is
+    extremely misleading. First sentence says "A module may specify a target specific data
+     layout string that specifies how data is to be laid out in memory." but well after explaining
+     what they're for, near the end of the entry, they warn "The function of the data layout string
+     may not be what you expect. Notably, this is not a specification from the frontend of what
+     alignment the code generator should use."
+     
+     and thus, basing alignments on the datalayout string was a bad idea. we need to change all
+     loads/stores into ones of an i64 width. All address calculations should be done based 
+     on integer arithmetic, or via GEPs on i64*
+     
+     Here's example code that shows the mismatch between what LLC generates and OPT understands.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+target datalayout = "e-m:o-p:64:64:64-i64:64:64-i32:32:64-i8:8:64"
+;target datalayout = "e-m:o-p:64:64:64-i64:64:64-i32:64:64-i8:64:64"  
+target triple = "x86_64-apple-macosx"
+
+%_utupTy.6 = type { i64*, i64* }
+%_utupTy.7 = type { i32, i32, i32 }
+
+declare i8* @M_Arguments()
+
+;; with i8:64:64, instcombine breaks @foo because it turns it into a GEP i8*, i32 1, thinking
+;; that LLC will generate 8(%reg) to access 2nd component of this struct. LLC does whatever it wants.
+define i64* @foo() {
+    %ret_C179 = call i8* @M_Arguments()
+    %x1 = bitcast i8* %ret_C179 to %_utupTy.6*
+    %r_C131 = getelementptr inbounds %_utupTy.6, %_utupTy.6* %x1, i32 0, i32 1
+    %r_C132 = load volatile i64*, i64** %r_C131
+    ret i64* %r_C132
+}
+
+;; this code is broken as-is if you need 8 byte alignment of i32s.
+;; whether you say i32:64:64 or not. LLC will generate 4(%reg)
+define i32 @bar(%_utupTy.7* %x) {
+    %addr = getelementptr inbounds %_utupTy.7, %_utupTy.7* %x, i32 0, i32 1
+    %ret = load volatile i32, i32* %addr
+    ret i32 %ret
+}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Here's another example from merge.pml without -sequential flag (explanation after the code):
+
+%_utupTy.352 = type { void (BLAH BLAH)*, i32*, i64*, %_utupTy.28*, i32*, %_utupTy.342*, i32, i32, i32 }
+%_utupTy.400 = type { void (BLAH BLAH)*, i32*, i64*, %_utupTy.28*, i32*, void (BLAH BLAH)**, i32, i32, i32 }
+%_utupTy.401 = type { %_utupTy.400, i64 }
+
+letJoinK_cfg11188_168C6:
+    ; ....
+    %r_16953 = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 1
+	%r_16954 = load i32*, i32** %r_16953
+	%r_16955 = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 2
+	%r_16956 = load i64*, i64** %r_16955
+	%r_16957 = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 3
+	%r_16958 = load %_utupTy.28*, %_utupTy.28** %r_16957
+	%r_16959 = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 4
+	%r_1695A = load i32*, i32** %r_16959
+	%r_1695B = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 5
+	%r_1695C = load %_utupTy.342*, %_utupTy.342** %r_1695B
+	%r_1695D = bitcast %_utupTy.342* %r_1695C to void (i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, float, float, float, float, float, float, float, float, double, double, double, double, double, double, double, double)**
+	%r_1695E = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 6
+	%r_1695F = load i32, i32* %r_1695E
+	%r_16960 = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 7
+	%r_16961 = load i32, i32* %r_16960
+	%r_16962 = getelementptr inbounds %_utupTy.352, %_utupTy.352* %ep_cfg11187_168DD, i32 0, i32 8
+	%r_16963 = load i32, i32* %r_16962
+	%r_16964 = bitcast i64** %r_1694F to %_utupTy.401*
+	%r_16965 = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 -1, i32 1
+	%r_16966 = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0
+	%r_16967 = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 1, i32 0
+	%r_16968 = bitcast %_utupTy.400* %r_16967 to i64**
+	store i64 589887, i64* %r_16965
+	%r_16969 = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 0
+	store void (i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, float, float, float, float, float, float, float, float, double, double, double, double, double, double, double, double)* @letJoinK_cfgFC36_12649, void (i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, float, float, float, float, float, float, float, float, double, double, double, double, double, double, double, double)** %r_16969
+	%r_1696A = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 1
+	store i32* %r_16954, i32** %r_1696A
+	%r_1696B = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 2
+	store i64* %r_16956, i64** %r_1696B
+	%r_1696C = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 3
+	store %_utupTy.28* %r_16958, %_utupTy.28** %r_1696C
+	%r_1696D = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 4
+	store i32* %r_1695A, i32** %r_1696D
+	%r_1696E = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 5
+	store void (i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, float, float, float, float, float, float, float, float, double, double, double, double, double, double, double, double)** %r_1695D, void (i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, float, float, float, float, float, float, float, float, double, double, double, double, double, double, double, double)*** %r_1696E
+	%r_1696F = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 6
+	store i32 %r_1695F, i32* %r_1696F
+	%r_16970 = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 7
+	store i32 %r_16961, i32* %r_16970
+	%r_16971 = getelementptr inbounds %_utupTy.401, %_utupTy.401* %r_16964, i32 0, i32 0, i32 8
+	store i32 %r_16963, i32* %r_16971
+
+generates:
+
+LBB102_7:                               ## %letJoinK_cfg11188_168C6
+	movq	%rsi, 144(%r14)
+	movl	$3, %esi
+	movq	%r14, %rdi
+	callq	_PromoteObj
+	movq	144(%r14), %rdi
+	movq	24(%rbp), %rcx
+	movq	(%rcx), %rcx
+	movslq	56(%rbp), %rdx
+	movq	%rax, (%rcx,%rdx,8)
+	movq	32(%rbp), %rax
+	movb	(%rax), %cl
+	movl	$1, %eax
+	shll	%cl, %eax
+	movq	$65537, -8(%rdi)        ## imm = 0x10001
+	movl	%eax, (%rdi)
+	leaq	40(%rdi), %rdx
+	movq	$131081, 8(%rdi)        ## imm = 0x20009
+	movq	%rdi, 16(%rdi)
+	leaq	_spin_cfgFC35_1264C(%rip), %rcx
+	movq	%rcx, 24(%rdi)
+	movq	8(%rbp), %r15
+	movq	16(%rbp), %rbx
+	movq	24(%rbp), %r8
+	movq	32(%rbp), %r9
+	movq	40(%rbp), %r10
+	movq	48(%rbp), %r11
+	movl	56(%rbp), %ebp
+	leaq	112(%rdi), %rsi
+	movq	$589887, 32(%rdi)       ## imm = 0x9003F
+	leaq	_letJoinK_cfgFC36_12649(%rip), %rcx
+	movq	%rcx, 40(%rdi)
+	movq	%r15, 48(%rdi)
+	movq	%rbx, 56(%rdi)
+	movq	%r8, 64(%rdi)
+	movq	%r9, 72(%rdi)
+	movq	%r10, 80(%rdi)
+	movq	%r11, 88(%rdi)
+	movl	%ebp, 96(%rdi)
+	testl	%eax, %eax
+	jle	LBB102_8
+
+
+notice, however, that the tuple we loaded values from (and copying into a new allocation) 
+end with 3 32-bit integers as its type. Notice, however, that these 3 ints were loaded like this:
+
+	movq	48(%rbp), %r11
+	movl	56(%rbp), %ebp
+    
+and placed into the new allocation like this:
+
+	movq	%r11, 88(%rdi)
+	movl	%ebp, 96(%rdi)
+    
+Clearly, these i32s are NOT 8 byte aligned, contrary to what our datalayout "asked" for!
+
+---------------------------------
+
+
+
+***** FUTURE OPTIMIZATIONS *****
+
+    - Add some aliasing information for the allocation pointer and codegen.
+    
+        We can use the 'noalias' and 'nocapture' attribute on the parameter of every function which is the allocation pointer.
+        
+        This will require changing the jwaCC type list (so the first one is an LT.allocPtrTy instead of an i64)
+        
+        and also adding a block of function prototype declarations, because only in the prototypes can you write noalias. NOTE debatable, GHC uses "i64* noalias nocapture %Hp_Arg" in function definitions.
+        
+         This attribute corresponds to the 'restrict' keyword in C99. https://en.wikipedia.org/wiki/Restrict
+
+   - Take advantage of LTO in LLVM,
+   and to do this, we need to compile the entire runtime system to .ll
+   files and then run the LLVM linker. More details about LTO:
+    
+    ------------------------------   
+    12:42 (kavon) does anything other than DCE occur during LTO?
+
+    12:42 (kavon) i could see maybe calling convention optimizations
+
+    12:42 <joker-eph> kavon: we run all the optimizer potentially
+
+    12:42 <@nlewycky> uh, yes. tons. loads.
+
+    12:43 <@nlewycky> we do interprocedural constant propagation. we do inlining.
+    we try to replace larger global variables that only have two possible values with booleans.
+    we try to tighten linkage on every function or global. we merge identical constants.
+
+    12:43 <joker-eph> kavon: if you're asking what is benefiting from LTO: since global 
+    variables can also be turned into "internal" we can see all their uses and see that 
+    their address is not taken and alias analysis is suddenly a lot better :)
+    ------------------------------
+
+    How to use LTO:
+
+    You run clang as usual but you add -flto. The .o generated will be a bitcode file.
+    it has a .o extension but it is exactly the same file that clang would generate with 
+    `clang -c foo.c -o foo.o -S -emit-llvm`. All .ll and these special .o files need to
+    be merged together in a single file, using llvm-link for example. Then you build
+    the executable.
+    
+    Note that while manticore functions should be marked noinline due to
+    GC checks being inserted early, runtime system calls that do not
+    perform allocation are fair game. We'll want to annotate functions in the runtime system.
+
+
+***** NOTES *****
+
+- MEMORY FENCES: It looks like we need to mark all loads/stores as 
+seq_cst to play it safe for now, in order to have a working memory fence in LLVM.
+
+19:48 (kavon) if i'm using the fence operation, do _all_ of my load/store instructions need to be marked with the same atomic ordering in order for it to have an effect?
+19:52 <TNorthover> kavon: no, fences are capable of enforcing ordering even with non-atomic loads.
+19:53 <TNorthover> kavon: you do have to be a bit careful though.
+19:58 <TNorthover> kavon: for example if one thread did "data = whatever(); produced_data = true; fence" the two assignments could still be reordered (and even seen in a different order by different threads).
+19:58 <TNorthover> Just the usual stuff really.
+19:59 (kavon) ahh okay, i'll keep that in mind

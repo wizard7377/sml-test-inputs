@@ -1,0 +1,21 @@
+[package]
+name = "sml-hir"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+doctest = false
+test = false
+
+[dependencies]
+la-arena.workspace = true
+str-util.workspace = true
+
+sml-lab.path = "../sml-lab"
+sml-path.path = "../sml-path"
+sml-scon.path = "../sml-scon"

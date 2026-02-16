@@ -1,0 +1,2133 @@
+=IGN
+********************************************************************************
+sholisvcs.doc: this file is part of the PPDaz system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+=TEX
+%\documentstyle[twoside, 10pt, madams44, hol1]{article}
+%\documentstyle[twoside, 10pt, TQa4, hol1]{article}
+\documentclass[a4paper, 10pt]{article}
+\usepackage{A4}
+\usepackage{ProofPower}
+%\latextwohack
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{3mm}
+\raggedbottom
+
+%\docno{}
+%\class{}
+
+
+
+\title{Z document for compliance Argument for SHOLIS Alarm Package Body}
+
+\author{}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+%\startmain
+
+\ftlinepenalty=9999
+
+\section{Basic Types}
+
+=SML
+open_theory "cn";
+
+new_theory "BASICTYPESspec";
+=TEX
+
+πZ
+‹ BASICTYPESoBRIDGEDISPLAY ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITION ¶
+‹ BASICTYPESoBRIDGEDISPLAY .. BASICTYPESoBRIDGEDISPLAY
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITIONvFIRST ¶ BASICTYPESoBRIDGEDISPLAY
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITIONvLAST ¶ BASICTYPESoBRIDGEDISPLAY
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITIONvSUCC ¶
+‹ (BASICTYPESoDISPLAYPOSITION \ {BASICTYPESoDISPLAYPOSITIONvLAST}) Ú succ
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITIONvPRED ¶ BASICTYPESoDISPLAYPOSITIONvSUCC Á~Í
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITIONvPOS ¶ id BASICTYPESoDISPLAYPOSITION
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPOSITIONvVAL ¶ BASICTYPESoDISPLAYPOSITIONvPOS Á~Í
+∞
+
+πZ
+‹ BASICTYPESoANGLE ¶ ~ 1800 .. 1799
+∞
+
+πZ
+‹ BASICTYPESoANGLEvFIRST ¶ ~ 1800
+∞
+
+πZ
+‹ BASICTYPESoANGLEvLAST ¶ 1799
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYANGLE ¶ ~ 180 .. 179
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYANGLEvFIRST ¶ ~ 180
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYANGLEvLAST ¶ 179
+∞
+
+πZ
+‹ BASICTYPESoSPEED ¶ 0 .. 55
+∞
+
+πZ
+‹ BASICTYPESoSPEEDvFIRST ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoSPEEDvLAST ¶ 55
+∞
+
+πZ
+‹ BASICTYPESoWINDVECTOR ¶
+‹ [WINDSPEED : BASICTYPESoSPEED; WINDDIRECTION : BASICTYPESoANGLE]
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYVECTOR ¶
+‹ [SIZE : BASICTYPESoSPEED; DIRECTION : BASICTYPESoDISPLAYANGLE]
+∞
+
+πZ
+‹ BASICTYPESoNOERROR ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoMAXERROR ¶ 1
+∞
+
+πZ
+‹ BASICTYPESoERROR ¶ BASICTYPESoNOERROR .. BASICTYPESoMAXERROR
+∞
+
+πZ
+‹ BASICTYPESoERRORvFIRST ¶ BASICTYPESoNOERROR
+∞
+
+πZ
+‹ BASICTYPESoERRORvLAST ¶ BASICTYPESoMAXERROR
+∞
+
+πZ
+‹ BASICTYPESoERRORvSUCC ¶
+‹ (BASICTYPESoERROR \ {BASICTYPESoERRORvLAST}) Ú succ
+∞
+
+πZ
+‹ BASICTYPESoERRORvPRED ¶ BASICTYPESoERRORvSUCC Á~Í
+∞
+
+πZ
+‹ BASICTYPESoERRORvPOS ¶ id BASICTYPESoERROR
+∞
+
+πZ
+‹ BASICTYPESoERRORvVAL ¶ BASICTYPESoERRORvPOS Á~Í
+∞
+
+πZ
+‹ BASICTYPESoTIME ¶ 0 .. 2 ** 31 - 1
+∞
+
+πZ
+‹ BASICTYPESoTIMEvFIRST ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoTIMEvLAST ¶ 2 ** 31 - 1
+∞
+
+πZ
+‹ BASICTYPESoTICKSPERSEC ¶ 614628
+∞
+
+πZ
+‹ BASICTYPESoNOSELECTIONINPROGRESS ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONINPROGRESS ¶ 1
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUS ¶
+‹ BASICTYPESoNOSELECTIONINPROGRESS .. BASICTYPESoSELECTIONINPROGRESS
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUSvFIRST ¶ BASICTYPESoNOSELECTIONINPROGRESS
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUSvLAST ¶ BASICTYPESoSELECTIONINPROGRESS
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUSvSUCC ¶
+‹ (BASICTYPESoSELECTIONSTATUS \ {BASICTYPESoSELECTIONSTATUSvLAST}) Ú succ
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUSvPRED ¶ BASICTYPESoSELECTIONSTATUSvSUCC Á~Í
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUSvPOS ¶ id BASICTYPESoSELECTIONSTATUS
+∞
+
+πZ
+‹ BASICTYPESoSELECTIONSTATUSvVAL ¶ BASICTYPESoSELECTIONSTATUSvPOS Á~Í
+∞
+
+πZ
+‹ BASICTYPESoNONE ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoINITIAL ¶ 1
+∞
+
+πZ
+‹ BASICTYPESoSHOL ¶ 2
+∞
+
+πZ
+‹ BASICTYPESoSHOLSELECTION ¶ 3
+∞
+
+πZ
+‹ BASICTYPESoHISTORY ¶ 4
+∞
+
+πZ
+‹ BASICTYPESoCONEOFCOURSES ¶ 5
+∞
+
+πZ
+‹ BASICTYPESoPOLARGRAPH ¶ 6
+∞
+
+πZ
+‹ BASICTYPESoCONETEMPLATE ¶ 7
+∞
+
+πZ
+‹ BASICTYPESoINITIALSELECTION ¶ 8
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGE ¶ BASICTYPESoNONE .. BASICTYPESoINITIALSELECTION
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGEvFIRST ¶ BASICTYPESoNONE
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGEvLAST ¶ BASICTYPESoINITIALSELECTION
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGEvSUCC ¶
+‹ (BASICTYPESoDISPLAYPAGE \ {BASICTYPESoDISPLAYPAGEvLAST}) Ú succ
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGEvPRED ¶ BASICTYPESoDISPLAYPAGEvSUCC Á~Í
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGEvPOS ¶ id BASICTYPESoDISPLAYPAGE
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYPAGEvVAL ¶ BASICTYPESoDISPLAYPAGEvPOS Á~Í
+∞
+
+πZ
+‹ BASICTYPESoANGLECIRCLE ¶ 3600
+∞
+
+πZ
+‹ BASICTYPESoDISPLAYANGLECIRLCE ¶ 360
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEX ¶ 1 .. 8
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEXvFIRST ¶ 1
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEXvLAST ¶ 8
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEXvSUCC ¶ INTEGERvSUCC
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEXvPRED ¶ INTEGERvPRED
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEXvPOS ¶ INTEGERvPOS
+∞
+
+πZ
+‹ BASICTYPESoAVAILABLEBUTTONSINDEXvVAL ¶ INTEGERvVAL
+∞
+
+πZ
+‹ BASICTYPESoBUTTONSPRESSED ¶ BASICTYPESoAVAILABLEBUTTONSINDEX ≠ BOOLEAN
+∞
+
+πZ
+‹ BASICTYPESoBUTTONSPRESSEDvFIRST ¶ BASICTYPESoAVAILABLEBUTTONSINDEXvFIRST
+∞
+
+πZ
+‹ BASICTYPESoBUTTONSPRESSEDvLAST ¶ BASICTYPESoAVAILABLEBUTTONSINDEXvLAST
+∞
+
+πZ
+‹ BASICTYPESoBUTTONSPRESSEDvLENGTH ¶ # BASICTYPESoAVAILABLEBUTTONSINDEX
+∞
+
+πZ
+‹ BASICTYPESoBUTTONSPRESSEDvRANGE ¶ BASICTYPESoAVAILABLEBUTTONSINDEX
+∞
+
+πZ
+‹ BASICTYPESoBRIDGEDISPLAYPOWER ¶ 0
+∞
+
+πZ
+‹ BASICTYPESoFDODISPLAYPOWER ¶ 1
+∞
+
+πZ
+‹ BASICTYPESoSHOLSELECTAUTH ¶ 2
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEX ¶
+‹ BASICTYPESoBRIDGEDISPLAYPOWER .. BASICTYPESoSHOLSELECTAUTH
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvFIRST ¶ BASICTYPESoBRIDGEDISPLAYPOWER
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvLAST ¶ BASICTYPESoSHOLSELECTAUTH
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvSUCC ¶
+‹ (BASICTYPESoSWITCHPOSITIONSINDEX \ {BASICTYPESoSWITCHPOSITIONSINDEXvLAST})
+‹     Ú succ
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvPRED ¶
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvSUCC Á~Í
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvPOS ¶ id BASICTYPESoSWITCHPOSITIONSINDEX
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvVAL ¶
+‹ BASICTYPESoSWITCHPOSITIONSINDEXvPOS Á~Í
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONS ¶ BASICTYPESoSWITCHPOSITIONSINDEX ≠ BOOLEAN
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSvFIRST ¶ BASICTYPESoSWITCHPOSITIONSINDEXvFIRST
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSvLAST ¶ BASICTYPESoSWITCHPOSITIONSINDEXvLAST
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSvLENGTH ¶ # BASICTYPESoSWITCHPOSITIONSINDEX
+∞
+
+πZ
+‹ BASICTYPESoSWITCHPOSITIONSvRANGE ¶ BASICTYPESoSWITCHPOSITIONSINDEX
+∞
+
+πZAX
+‹ BASICTYPESoGREATERTIME : BASICTYPESoTIME ∏ BASICTYPESoTIME ≠ BOOLEAN
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoOTHERDISPLAY : BASICTYPESoDISPLAYPOSITION ≠ BASICTYPESoDISPLAYPOSITION
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoCONVERTTOANGLE : BASICTYPESoDISPLAYANGLE ≠ BASICTYPESoANGLE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoCONVERTTODISPLAYANGLE :
+‹ BASICTYPESoANGLE ≠ BASICTYPESoDISPLAYANGLE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoADDANGLES :
+‹ BASICTYPESoANGLE ∏ BASICTYPESoANGLE ≠ BASICTYPESoANGLE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoSUBTRACTANGLES :
+‹ BASICTYPESoANGLE ∏ BASICTYPESoANGLE ≠ BASICTYPESoANGLE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoADDDISPLAYANGLES :
+‹ BASICTYPESoDISPLAYANGLE ∏ BASICTYPESoDISPLAYANGLE ≠ BASICTYPESoDISPLAYANGLE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZAX
+‹ BASICTYPESoSUBTRACTDISPLAYANGLES :
+‹ BASICTYPESoDISPLAYANGLE ∏ BASICTYPESoDISPLAYANGLE ≠ BASICTYPESoDISPLAYANGLE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+\newpage
+
+\section{Alarm body}
+
+=SML
+open_theory "cn";
+
+new_theory "Alarm_body";
+
+open_theory "cn";
+
+new_theory "SENSORspec";
+
+open_theory "Alarm_body";
+
+open_theory "cn";
+
+new_theory "SHOLSELECTIONspec";
+
+open_theory "Alarm_body";
+
+new_parent "BASICTYPESspec";
+
+new_parent "SENSORspec";
+
+new_parent "SHOLSELECTIONspec";
+
+(* new_parent "cache'SHOLIS_v1"; *)
+=IGN
+open_theory "cn";
+
+new_theory "Alarm2_body";
+
+new_parent "cache'sholis";
+
+πZ
+‹ ROLLALARM ¶ 0
+∞
+
+πZ
+‹ PITCHALARM ¶ 1
+∞
+
+πZ
+‹ WINDALARM ¶ 2
+∞
+
+πZ
+‹ ALARMTYPE ¶ ROLLALARM .. WINDALARM
+∞
+
+πZ
+‹ ALARMTYPEvFIRST ¶ ROLLALARM
+∞
+
+πZ
+‹ ALARMTYPEvLAST ¶ WINDALARM
+∞
+
+πZ
+‹ ALARMTYPEvSUCC ¶ (ALARMTYPE \ {ALARMTYPEvLAST}) Ú succ
+∞
+
+πZ
+‹ ALARMTYPEvPRED ¶ ALARMTYPEvSUCC Á~Í
+∞
+
+πZ
+‹ ALARMTYPEvPOS ¶ id ALARMTYPE
+∞
+
+πZ
+‹ ALARMTYPEvVAL ¶ ALARMTYPEvPOS Á~Í
+∞
+
+πZ
+‹ NORMAL ¶ 0
+∞
+
+πZ
+‹ FLASH ¶ 1
+∞
+
+πZ
+‹ INVERSE ¶ 2
+∞
+
+πZ
+‹ ATTRIBUTE ¶ NORMAL .. INVERSE
+∞
+
+πZ
+‹ ATTRIBUTEvFIRST ¶ NORMAL
+∞
+
+πZ
+‹ ATTRIBUTEvLAST ¶ INVERSE
+∞
+
+πZ
+‹ ATTRIBUTEvSUCC ¶ (ATTRIBUTE \ {ATTRIBUTEvLAST}) Ú succ
+∞
+
+πZ
+‹ ATTRIBUTEvPRED ¶ ATTRIBUTEvSUCC Á~Í
+∞
+
+πZ
+‹ ATTRIBUTEvPOS ¶ id ATTRIBUTE
+∞
+
+πZ
+‹ ATTRIBUTEvVAL ¶ ATTRIBUTEvPOS Á~Í
+∞
+
+πZ
+‹ AUDIOVISUALFLASH ¶ 0
+∞
+
+πZ
+‹ VISUALFLASH ¶ 1
+∞
+
+πZ
+‹ VISUALINVERSE ¶ 2
+∞
+
+πZ
+‹ ALARMLEVEL ¶ AUDIOVISUALFLASH .. VISUALINVERSE
+∞
+
+πZ
+‹ ALARMLEVELvFIRST ¶ AUDIOVISUALFLASH
+∞
+
+πZ
+‹ ALARMLEVELvLAST ¶ VISUALINVERSE
+∞
+
+πZ
+‹ ALARMLEVELvSUCC ¶ (ALARMLEVEL \ {ALARMLEVELvLAST}) Ú succ
+∞
+
+πZ
+‹ ALARMLEVELvPRED ¶ ALARMLEVELvSUCC Á~Í
+∞
+
+πZ
+‹ ALARMLEVELvPOS ¶ id ALARMLEVEL
+∞
+
+πZ
+‹ ALARMLEVELvVAL ¶ ALARMLEVELvPOS Á~Í
+∞
+
+πZ
+‹ RESET ¶ 0
+∞
+
+πZ
+‹ NORESET ¶ 1
+∞
+
+πZ
+‹ ALARMRESET ¶ RESET .. NORESET
+∞
+
+πZ
+‹ ALARMRESETvFIRST ¶ RESET
+∞
+
+πZ
+‹ ALARMRESETvLAST ¶ NORESET
+∞
+
+πZ
+‹ ALARMRESETvSUCC ¶ (ALARMRESET \ {ALARMRESETvLAST}) Ú succ
+∞
+
+πZ
+‹ ALARMRESETvPRED ¶ ALARMRESETvSUCC Á~Í
+∞
+
+πZ
+‹ ALARMRESETvPOS ¶ id ALARMRESET
+∞
+
+πZ
+‹ ALARMRESETvVAL ¶ ALARMRESETvPOS Á~Í
+∞
+
+πZ
+‹ ALARMDATA ¶ [RAISED : BOOLEAN; LEVEL : ALARMLEVEL; REOCCURS : ALARMRESET]
+∞
+
+πZ
+‹ ALARMSTATE1 ¶ ALARMTYPE ≠ ALARMDATA
+∞
+
+πZ
+‹ ALARMSTATE1vFIRST ¶ ALARMTYPEvFIRST
+∞
+
+πZ
+‹ ALARMSTATE1vLAST ¶ ALARMTYPEvLAST
+∞
+
+πZ
+‹ ALARMSTATE1vLENGTH ¶ # ALARMTYPE
+∞
+
+πZ
+‹ ALARMSTATE1vRANGE ¶ ALARMTYPE
+∞
+
+πZ
+‹ ALARMSTATE ¶ BASICTYPESoDISPLAYPOSITION ≠ ALARMSTATE1
+∞
+
+πZ
+‹ ALARMSTATEvFIRST ¶ BASICTYPESoDISPLAYPOSITIONvFIRST
+∞
+
+πZ
+‹ ALARMSTATEvLAST ¶ BASICTYPESoDISPLAYPOSITIONvLAST
+∞
+
+πZ
+‹ ALARMSTATEvLENGTH ¶ # BASICTYPESoDISPLAYPOSITION
+∞
+
+πZ
+‹ ALARMSTATEvRANGE ¶ BASICTYPESoDISPLAYPOSITION
+∞
+
+πZ
+‹ TIMERDATA ¶ [ACTIVE : BOOLEAN; TIMEOUT : BASICTYPESoTIME]
+∞
+
+πZ
+‹ TIMERSTATE1 ¶ ALARMTYPE ≠ TIMERDATA
+∞
+
+πZ
+‹ TIMERSTATE1vFIRST ¶ ALARMTYPEvFIRST
+∞
+
+πZ
+‹ TIMERSTATE1vLAST ¶ ALARMTYPEvLAST
+∞
+
+πZ
+‹ TIMERSTATE1vLENGTH ¶ # ALARMTYPE
+∞
+
+πZ
+‹ TIMERSTATE1vRANGE ¶ ALARMTYPE
+∞
+
+πZ
+‹ TIMERSTATE ¶ BASICTYPESoDISPLAYPOSITION ≠ TIMERSTATE1
+∞
+
+πZ
+‹ TIMERSTATEvFIRST ¶ BASICTYPESoDISPLAYPOSITIONvFIRST
+∞
+
+πZ
+‹ TIMERSTATEvLAST ¶ BASICTYPESoDISPLAYPOSITIONvLAST
+∞
+
+πZ
+‹ TIMERSTATEvLENGTH ¶ # BASICTYPESoDISPLAYPOSITION
+∞
+
+πZ
+‹ TIMERSTATEvRANGE ¶ BASICTYPESoDISPLAYPOSITION
+∞
+
+πZ
+‹ TIMEOUTPERIOD ¶ 300 * BASICTYPESoTICKSPERSEC
+∞
+
+πZAX
+‹ DisplayAttribute : ALARMSTATE ∏ BASICTYPESoDISPLAYPOSITION ∏ ALARMTYPE ≠ ATTRIBUTE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE; DISPLAY : BASICTYPESoDISPLAYPOSITION; ATYPE : ALARMTYPE
+‹   ∑ ((STATE DISPLAY ATYPE).RAISED = FALSE
+‹       ¥ DisplayAttribute (STATE, DISPLAY, ATYPE) = NORMAL)
+‹     ± ((STATE DISPLAY ATYPE).RAISED = TRUE
+‹         ± (STATE DISPLAY ATYPE).LEVEL = VISUALINVERSE
+‹       ¥ DisplayAttribute (STATE, DISPLAY, ATYPE) = INVERSE)
+‹     ± ((STATE DISPLAY ATYPE).RAISED = TRUE
+‹         ± (STATE DISPLAY ATYPE).LEVEL Ω VISUALINVERSE
+‹       ¥ DisplayAttribute (STATE, DISPLAY, ATYPE) = FLASH)
+∞
+
+πZAX
+‹ DISPLAYATTRIBUTE : BASICTYPESoDISPLAYPOSITION ∏ ALARMTYPE ≠ ATTRIBUTE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZ
+‹ vc501_1 ?Ù
+‹     µ STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | true ± not (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ∑ NORMAL = DisplayAttribute (STATE, DISPLAY, ATYPE)
+∞
+
+πZ
+‹ vc501_2 ?Ù
+‹     µ STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | true
+‹         ± not (STATE DISPLAY ATYPE).RAISED = FALSE
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq VISUALINVERSE = TRUE
+‹       ∑ INVERSE = DisplayAttribute (STATE, DISPLAY, ATYPE)
+∞
+
+πZ
+‹ vc501_3 ?Ù
+‹     µ STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | true
+‹         ± not (STATE DISPLAY ATYPE).RAISED = FALSE
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq VISUALINVERSE = FALSE
+‹       ∑ FLASH = DisplayAttribute (STATE, DISPLAY, ATYPE)
+∞
+
+ˇ AlarmChange ¸¸¸¸¸¸¸¸
+‹ STATEâ0, STATE : ALARMSTATE;
+‹ TIMERSâ0, TIMERS : TIMERSTATE;
+‹ DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹ ATYPE : ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ TimerInvariant ¸¸¸¸¸¸¸¸
+‹ STATE : ALARMSTATE;
+‹ TIMERS : TIMERSTATE;
+‹ DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹ ATYPE : ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ (TIMERS DISPLAY ATYPE).ACTIVE = TRUE
+‹   § (STATE DISPLAY ATYPE).RAISED = TRUE
+‹     ± (STATE DISPLAY ATYPE).LEVEL Ω AUDIOVISUALFLASH
+‹     ± (STATE DISPLAY ATYPE).REOCCURS = NORESET
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+πZAX
+‹ InactiveAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = FALSE
+∞
+
+πZAX
+‹ AcceptedAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç AcceptedAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ± (STATE DISPLAY ATYPE).LEVEL = VISUALINVERSE
+∞
+
+πZAX
+‹ NonAcceptedAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ± (STATE DISPLAY ATYPE).LEVEL Ω VISUALINVERSE
+∞
+
+πZAX
+‹ WithinTimeoutAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç WithinTimeoutAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = TRUE ± (TIMERS DISPLAY ATYPE).ACTIVE = TRUE
+∞
+
+πZAX
+‹ TimedOutAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç TimedOutAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ± (STATE DISPLAY ATYPE).REOCCURS = RESET
+‹       ± (TIMERS DISPLAY ATYPE).ACTIVE = FALSE
+∞
+
+πZAX
+‹ AudioVisualFlashAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ± (STATE DISPLAY ATYPE).LEVEL = AUDIOVISUALFLASH
+‹       ± (TIMERS DISPLAY ATYPE).ACTIVE = FALSE
+∞
+
+πZAX
+‹ VisualFlashAlarms : ALARMSTATE ∏ TIMERSTATE ∏ BASICTYPESoDISPLAYPOSITION ≠  ALARMTYPE
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ µ STATE : ALARMSTATE;
+‹     TIMERS : TIMERSTATE;
+‹     DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹     ATYPE : ALARMTYPE
+‹   ∑ ATYPE ç VisualFlashAlarms (STATE, TIMERS, DISPLAY)
+‹     § (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ± (STATE DISPLAY ATYPE).LEVEL = VISUALFLASH
+∞
+
+πZAX
+‹ AUDIOVISUALFLASHALARMEXISTS : BASICTYPESoDISPLAYPOSITION ≠ BOOLEAN
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+
+πZ
+‹ vc701_1 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ALARMTYPEvFIRST º ALARMTYPEvLAST
+‹       ∑ (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ALARMTYPEvFIRST - 1
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § FALSE = TRUE)
+∞
+
+πZ
+‹ vc701_2 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ALARMTYPEvFIRST > ALARMTYPEvLAST
+‹       ∑ FALSE = TRUE
+‹         § (∂ ATYPE : ALARMTYPE
+‹           ∑ ATYPE ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+∞
+
+πZ
+‹ vc701_3 ?Ù
+‹     µ AUDIOVFEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ATYPE Ω ALARMTYPEvLAST
+‹         ± (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ATYPE
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § AUDIOVFEXISTS = TRUE)
+‹       ∑ (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. (ATYPE + 1) - 1
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § AUDIOVFEXISTS = TRUE)
+∞
+
+πZ
+‹ vc701_4 ?Ù
+‹     µ AUDIOVFEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ALARMTYPEvLAST
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § AUDIOVFEXISTS = TRUE)
+‹       ∑ AUDIOVFEXISTS = TRUE
+‹         § (∂ ATYPE : ALARMTYPE
+‹           ∑ ATYPE ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+∞
+
+πZ
+‹ vc702_1 ?Ù
+‹     µ AUDIOVFEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | ((µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § AUDIOVFEXISTS = TRUE))
+‹         ± (STATE DISPLAY ATYPE).RAISED
+‹               and (STATE DISPLAY ATYPE).LEVEL eq AUDIOVISUALFLASH
+‹           = TRUE
+‹       ∑ (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ATYPE
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § TRUE = TRUE)
+∞
+
+πZ
+‹ vc702_2 ?Ù
+‹     µ AUDIOVFEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | ((µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § AUDIOVFEXISTS = TRUE))
+‹         ± (STATE DISPLAY ATYPE).RAISED
+‹               and (STATE DISPLAY ATYPE).LEVEL eq AUDIOVISUALFLASH
+‹           = FALSE
+‹       ∑ (µ ATYPE : ALARMTYPE ∑ TimerInvariant)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ATYPE
+‹             ∑ I ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY))
+‹           § AUDIOVFEXISTS = TRUE)
+∞
+
+ˇ RaiseNewAlarm ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç InactiveAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ RaiseWithinTimeoutAlarm ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç WithinTimeoutAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç WithinTimeoutAlarms (STATE, TIMERS, DISPLAY)
+‹     ± ATYPE ç VisualFlashAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ RaiseAudioVisualFlashAlarm ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç AudioVisualFlashAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ RaiseTimedOutAlarm ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç TimedOutAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç AudioVisualFlashAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+πZ
+‹ RaiseAlarm ¶
+‹ RaiseNewAlarm
+‹   ± RaiseWithinTimeoutAlarm
+‹   ± RaiseAudioVisualFlashAlarm
+‹   ± RaiseTimedOutAlarm
+∞
+
+πZ
+‹ vc807_1 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | TimerInvariant ± not (STATE DISPLAY ATYPE).RAISED = TRUE
+‹       ∑ (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY,
+‹             STATE ¶
+‹                 STATE
+‹                     ´ {DISPLAY
+‹                           Ì STATE DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (LEVEL ¶ AUDIOVISUALFLASH, RAISED ¶ TRUE,
+‹                                         REOCCURS ¶ NORESET)}}, STATEâ0 ¶ STATE,
+‹             TIMERS ¶ TIMERS, TIMERSâ0 ¶ TIMERS)
+‹         ç RaiseAlarm
+∞
+
+πZ
+‹ vc807_2 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | TimerInvariant
+‹         ± not (STATE DISPLAY ATYPE).RAISED = FALSE
+‹         ± (STATE DISPLAY ATYPE).REOCCURS eq RESET = TRUE
+‹       ∑ (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY,
+‹             STATE ¶
+‹                 STATE
+‹                     ´ {DISPLAY
+‹                           Ì STATE DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (LEVEL ¶ AUDIOVISUALFLASH, RAISED ¶ TRUE,
+‹                                         REOCCURS ¶ NORESET)}}, STATEâ0 ¶ STATE,
+‹             TIMERS ¶ TIMERS, TIMERSâ0 ¶ TIMERS)
+‹         ç RaiseAlarm
+∞
+
+πZ
+‹ vc807_3 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | TimerInvariant
+‹         ± not (STATE DISPLAY ATYPE).RAISED = FALSE
+‹         ± (STATE DISPLAY ATYPE).REOCCURS eq RESET = FALSE
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq VISUALINVERSE = TRUE
+‹       ∑ (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY,
+‹             STATE ¶
+‹                 STATE
+‹                     ´ {DISPLAY
+‹                           Ì STATE DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (LEVEL ¶ VISUALFLASH, RAISED ¶ TRUE,
+‹                                         REOCCURS ¶ NORESET)}}, STATEâ0 ¶ STATE,
+‹             TIMERS ¶ TIMERS, TIMERSâ0 ¶ TIMERS)
+‹         ç RaiseAlarm
+∞
+
+πZ
+‹ vc807_4 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | TimerInvariant
+‹         ± not (STATE DISPLAY ATYPE).RAISED = FALSE
+‹         ± (STATE DISPLAY ATYPE).REOCCURS eq RESET = FALSE
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq VISUALINVERSE = FALSE
+‹       ∑ (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY, STATE ¶ STATE, STATEâ0 ¶ STATE,
+‹             TIMERS ¶ TIMERS, TIMERSâ0 ¶ TIMERS)
+‹         ç RaiseAlarm
+∞
+
+ˇ TimeoutAlarm ¸¸¸¸¸¸¸¸
+‹ AlarmChange;
+‹ CURRENTTIME : BASICTYPESoTIME
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç WithinTimeoutAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹     ± (CURRENTTIME - (TIMERSâ0 DISPLAY ATYPE).TIMEOUT)
+‹           intmod (BASICTYPESoTIMEvLAST + 1)
+‹         < 1 * BASICTYPESoTICKSPERSEC
+‹   ¥ ATYPE ç TimedOutAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+πZ
+‹ vc901_1 ?Ù
+‹     true ¥ true
+∞
+
+πZ
+‹ vc901_2 ?Ù
+‹     µ TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE;
+‹         CURRENTTIME : BASICTYPESoTIME
+‹       | true
+‹         ± (ATYPE ç WithinTimeoutAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹             ± (CURRENTTIME - (TIMERSâ0 DISPLAY ATYPE).TIMEOUT æ 0
+‹                 ± CURRENTTIME - (TIMERSâ0 DISPLAY ATYPE).TIMEOUT
+‹                     < 1 * BASICTYPESoTICKSPERSEC
+‹               ≤ CURRENTTIME - (TIMERSâ0 DISPLAY ATYPE).TIMEOUT < 0
+‹                 ± (CURRENTTIME - (TIMERSâ0 DISPLAY ATYPE).TIMEOUT)
+‹                       + BASICTYPESoTIMEvLAST + 1
+‹                     < 1 * BASICTYPESoTICKSPERSEC)
+‹           ¥ ATYPE ç TimedOutAlarms (STATE, TIMERS, DISPLAY))
+‹       ∑ TimeoutAlarm
+∞
+
+πZ
+‹ vc902_1 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE;
+‹         CURRENTTIME : BASICTYPESoTIME
+‹       | true
+‹         ± (TIMERS DISPLAY ATYPE).ACTIVE
+‹               and ((TIMERS DISPLAY ATYPE).TIMEOUT less_eq CURRENTTIME
+‹                     and CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT
+‹                         less 30 * BASICTYPESoTICKSPERSEC)
+‹                   or (TIMERS DISPLAY ATYPE).TIMEOUT greater CURRENTTIME
+‹                       and (TIMERS DISPLAY ATYPE).TIMEOUT - CURRENTTIME
+‹                           greater_eq BASICTYPESoTIMEvLAST
+‹                               - 30 * BASICTYPESoTICKSPERSEC
+‹           = TRUE
+‹       ∑ ATYPE ç WithinTimeoutAlarms (STATE, TIMERS, DISPLAY)
+‹           ± (CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT æ 0
+‹               ± CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT
+‹                   < 1 * BASICTYPESoTICKSPERSEC
+‹             ≤ CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT < 0
+‹               ± (CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT)
+‹                     + BASICTYPESoTIMEvLAST + 1
+‹                   < 1 * BASICTYPESoTICKSPERSEC)
+‹         ¥ ATYPE
+‹           ç TimedOutAlarms
+‹               (STATE
+‹                     ´ {DISPLAY
+‹                           Ì STATE DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (LEVEL ¶ (STATE DISPLAY ATYPE).LEVEL,
+‹                                         RAISED ¶ (STATE DISPLAY ATYPE).RAISED,
+‹                                         REOCCURS ¶ RESET)}},
+‹                 TIMERS
+‹                     ´ {DISPLAY
+‹                           Ì TIMERS DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (ACTIVE ¶ FALSE,
+‹                                         TIMEOUT ¶
+‹                                             (TIMERS DISPLAY ATYPE).TIMEOUT)}},
+‹                 DISPLAY)
+∞
+
+πZ
+‹ vc902_2 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE;
+‹         CURRENTTIME : BASICTYPESoTIME
+‹       | true
+‹         ± (TIMERS DISPLAY ATYPE).ACTIVE
+‹               and ((TIMERS DISPLAY ATYPE).TIMEOUT less_eq CURRENTTIME
+‹                     and CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT
+‹                         less 30 * BASICTYPESoTICKSPERSEC)
+‹                   or (TIMERS DISPLAY ATYPE).TIMEOUT greater CURRENTTIME
+‹                       and (TIMERS DISPLAY ATYPE).TIMEOUT - CURRENTTIME
+‹                           greater_eq BASICTYPESoTIMEvLAST
+‹                               - 30 * BASICTYPESoTICKSPERSEC
+‹           = FALSE
+‹       ∑ ATYPE ç WithinTimeoutAlarms (STATE, TIMERS, DISPLAY)
+‹           ± (CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT æ 0
+‹               ± CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT
+‹                   < 1 * BASICTYPESoTICKSPERSEC
+‹             ≤ CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT < 0
+‹               ± (CURRENTTIME - (TIMERS DISPLAY ATYPE).TIMEOUT)
+‹                     + BASICTYPESoTIMEvLAST + 1
+‹                   < 1 * BASICTYPESoTICKSPERSEC)
+‹         ¥ ATYPE ç TimedOutAlarms (STATE, TIMERS, DISPLAY)
+∞
+
+πZ
+‹ vc1001_1 ?Ù
+‹     true
+‹       ¥ (µ DISPLAY : BASICTYPESoDISPLAYPOSITION; ATYPE : ALARMTYPE
+‹         ∑ ATYPE
+‹           ç InactiveAlarms
+‹               (ALARMSTATEvRANGE
+‹                   ∏ {ALARMSTATE1vRANGE
+‹                       ∏ {(LEVEL ¶ ALARMLEVELvFIRST, RAISED ¶ FALSE,
+‹                             REOCCURS ¶ ALARMRESETvFIRST)}},
+‹                 TIMERSTATEvRANGE
+‹                   ∏ {TIMERSTATE1vRANGE
+‹                       ∏ {(ACTIVE ¶ FALSE, TIMEOUT ¶ BASICTYPESoTIMEvLAST)}},
+‹                 DISPLAY))
+∞
+
+πZ
+‹ vc11_1 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | true ± ALARMTYPEvFIRST º ALARMTYPEvLAST
+‹       ∑ µ I : ALARMTYPEvFIRST .. ALARMTYPEvFIRST - 1
+‹         ∑ I ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+∞
+
+πZ
+‹ vc11_2 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | true ± ALARMTYPEvFIRST > ALARMTYPEvLAST
+‹       ∑ µ ATYPE : ALARMTYPE ∑ ATYPE ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+∞
+
+πZ
+‹ vc11_3 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | true
+‹         ± ATYPE Ω ALARMTYPEvLAST
+‹         ± (µ I : ALARMTYPEvFIRST .. ATYPE
+‹           ∑ I ç InactiveAlarms (STATE, TIMERS, DISPLAY))
+‹       ∑ µ I : ALARMTYPEvFIRST .. (ATYPE + 1) - 1
+‹         ∑ I ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+∞
+
+πZ
+‹ vc11_4 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | true
+‹         ± (µ I : ALARMTYPEvFIRST .. ALARMTYPEvLAST
+‹           ∑ I ç InactiveAlarms (STATE, TIMERS, DISPLAY))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ ATYPE ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+∞
+
+πZ
+‹ vc1101_1 ?Ù
+‹     µ TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         ATYPE : ALARMTYPE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | µ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹         ∑ I ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+‹       ∑ µ I : ALARMTYPEvFIRST .. ATYPE
+‹         ∑ I
+‹           ç InactiveAlarms
+‹               (STATE
+‹                     ´ {DISPLAY
+‹                           Ì STATE DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (LEVEL ¶ (STATE DISPLAY ATYPE).LEVEL,
+‹                                         RAISED ¶ FALSE,
+‹                                         REOCCURS ¶
+‹                                             (STATE DISPLAY ATYPE).REOCCURS)}},
+‹                 TIMERS
+‹                     ´ {DISPLAY
+‹                           Ì TIMERS DISPLAY
+‹                               ´ {ATYPE
+‹                                     Ì (ACTIVE ¶ FALSE,
+‹                                         TIMEOUT ¶
+‹                                             (TIMERS DISPLAY ATYPE).TIMEOUT)}},
+‹                 DISPLAY)
+∞
+
+ˇ FirstAcceptance ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç NonAcceptedAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç AcceptedAlarms (STATE, TIMERS, DISPLAY);
+‹ ATYPE ç AudioVisualFlashAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç WithinTimeoutAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ SecondAcceptance ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ≥
+‹     (∂ ATYPE1 : ALARMTYPE
+‹         ∑ ATYPE1 ç NonAcceptedAlarms (STATEâ0, TIMERSâ0, DISPLAY))
+‹     ± ATYPE ç AcceptedAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ NoAcceptance ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (STATEâ0, TIMERSâ0, DISPLAY))
+‹     ± ATYPE ç AcceptedAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç AcceptedAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+ˇ InactiveAcceptance ¸¸¸¸¸¸¸¸
+‹ AlarmChange
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ ATYPE ç InactiveAlarms (STATEâ0, TIMERSâ0, DISPLAY)
+‹   ¥ ATYPE ç InactiveAlarms (STATE, TIMERS, DISPLAY)
+à¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+
+πZ
+‹ AcceptAlarm ¶
+‹ FirstAcceptance ± SecondAcceptance ± NoAcceptance ± InactiveAcceptance
+∞
+
+πZ
+‹ vc1202_1 ?Ù
+‹     true ¥ true
+∞
+
+πZ
+‹ vc1202_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | true ± S = STATEâ0 ± (µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ AcceptAlarm
+∞
+
+πZ
+‹ vc1203_1 ?Ù
+‹     µ S : ALARMSTATE; STATE : ALARMSTATE | S = STATE ∑ S = STATE
+∞
+
+πZ
+‹ vc1203_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± (µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0])
+∞
+
+πZ
+‹ vc1204_1 ?Ù
+‹     µ S : ALARMSTATE; T : TIMERSTATE; TIMERS : TIMERSTATE; STATE : ALARMSTATE
+‹       | T = TIMERS ± S = STATE
+‹       ∑ S = STATE ± T = TIMERS
+∞
+
+πZ
+‹ vc1204_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (T = TIMERSâ0
+‹         ± S = STATEâ0)
+‹         ± S = STATE
+‹         ± T = TIMERS
+‹         ± ((∂ ATYPE1 : ALARMTYPE
+‹             ∑ ATYPE1 ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± ((∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+∞
+
+πZ
+‹ vc1204_3 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (T = TIMERSâ0
+‹         ± S = STATEâ0)
+‹         ± (µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0])
+∞
+
+πZ
+‹ vc1205_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE ± T = TIMERS) ± ALARMTYPEvFIRST º ALARMTYPEvLAST
+‹       ∑ (∂ I : ALARMTYPEvFIRST .. ALARMTYPEvFIRST - 1
+‹           ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹         § FALSE = TRUE
+∞
+
+πZ
+‹ vc1205_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE ± T = TIMERS) ± ALARMTYPEvFIRST > ALARMTYPEvLAST
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± ((∂ ATYPE1 : ALARMTYPE
+‹             ∑ ATYPE1 ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § FALSE = TRUE)
+∞
+
+πZ
+‹ vc1205_3 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (S = STATE
+‹         ± T = TIMERS)
+‹         ± ATYPE Ω ALARMTYPEvLAST
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ATYPE
+‹             ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+‹       ∑ (∂ I : ALARMTYPEvFIRST .. (ATYPE + 1) - 1
+‹           ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹         § NONVIEXISTS = TRUE
+∞
+
+πZ
+‹ vc1205_4 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE
+‹         ± T = TIMERS)
+‹         ± ((∂ I : ALARMTYPEvFIRST .. ALARMTYPEvLAST
+‹             ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± ((∂ ATYPE1 : ALARMTYPE
+‹             ∑ ATYPE1 ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+∞
+
+πZ
+‹ vc120501_1 ?Ù
+‹     µ NONVIEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | ((∂ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹             ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+‹         ± (STATE DISPLAY ATYPE).RAISED
+‹               and (STATE DISPLAY ATYPE).LEVEL noteq VISUALINVERSE
+‹           = TRUE
+‹       ∑ (∂ I : ALARMTYPEvFIRST .. ATYPE
+‹           ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹         § TRUE = TRUE
+∞
+
+πZ
+‹ vc120501_2 ?Ù
+‹     µ NONVIEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | ((∂ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹             ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹           § NONVIEXISTS = TRUE)
+‹         ± (STATE DISPLAY ATYPE).RAISED
+‹               and (STATE DISPLAY ATYPE).LEVEL noteq VISUALINVERSE
+‹           = FALSE
+‹       ∑ (∂ I : ALARMTYPEvFIRST .. ATYPE
+‹           ∑ I ç NonAcceptedAlarms (STATE, TIMERS, DISPLAY))
+‹         § NONVIEXISTS = TRUE
+∞
+
+πZ
+‹ vc1206_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE
+‹         ± T = TIMERS
+‹         ± ((∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹           § NONVIEXISTS = TRUE))
+‹         ± NONVIEXISTS = TRUE
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc1206_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE
+‹         ± T = TIMERS
+‹         ± ((∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹           § NONVIEXISTS = TRUE))
+‹         ± NONVIEXISTS = FALSE
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± ≥
+‹         (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc1206_3 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± ((∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹           § NONVIEXISTS = TRUE))
+‹         ± (µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0])
+∞
+
+πZ
+‹ vc1206_4 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         NONVIEXISTS : BOOLEAN;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± ((∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹           § NONVIEXISTS = TRUE))
+‹         ± (µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0])
+∞
+
+πZ
+‹ vc1207_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc1207_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (µ ATYPE : ALARMTYPE
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [S/STATEâ0,
+‹               T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120701_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc120701_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc120701_3 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (µ ATYPE : ALARMTYPE
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [S/STATEâ0,
+‹               T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE
+‹         ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹             [S/STATEâ0,
+‹             T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120702_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹       ∑ true
+∞
+
+πZ
+‹ vc120702_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± true
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc120703_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± ALARMTYPEvFIRST º ALARMTYPEvLAST
+‹       ∑ (µ I : ALARMTYPEvFIRST .. ALARMTYPEvLAST
+‹           ∑ STATE DISPLAY I = S DISPLAY I ± TIMERS DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. ALARMTYPEvFIRST - 1
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [I/ATYPE,
+‹               S/STATEâ0,
+‹               T/TIMERSâ0]))
+∞
+
+πZ
+‹ vc120703_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATE
+‹         ± T = TIMERS
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± ALARMTYPEvFIRST > ALARMTYPEvLAST
+‹       ∑ µ ATYPE : ALARMTYPE
+‹         ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹             [S/STATEâ0,
+‹             T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120703_3 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± ATYPE Ω ALARMTYPEvLAST
+‹         ± (µ I : ATYPE + 1 .. ALARMTYPEvLAST
+‹           ∑ STATE DISPLAY I = S DISPLAY I ± TIMERS DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. ATYPE
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [I/ATYPE,
+‹               S/STATEâ0,
+‹               T/TIMERSâ0]))
+‹       ∑ (µ I : ATYPE + 1 .. ALARMTYPEvLAST
+‹           ∑ STATE DISPLAY I = S DISPLAY I ± TIMERS DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. (ATYPE + 1) - 1
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [I/ATYPE,
+‹               S/STATEâ0,
+‹               T/TIMERSâ0]))
+∞
+
+πZ
+‹ vc120703_4 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (µ I : ALARMTYPEvLAST + 1 .. ALARMTYPEvLAST
+‹           ∑ STATE DISPLAY I = S DISPLAY I ± TIMERS DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. ALARMTYPEvLAST
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [I/ATYPE,
+‹               S/STATEâ0,
+‹               T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE
+‹         ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹             [S/STATEâ0,
+‹             T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120704_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (µ I : ATYPE .. ALARMTYPEvLAST
+‹           ∑ STATE DISPLAY I = S DISPLAY I ± TIMERS DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [I/ATYPE,
+‹               S/STATEâ0,
+‹               T/TIMERSâ0]))
+‹       ∑ STATE DISPLAY ATYPE = S DISPLAY ATYPE
+‹         ± TIMERS DISPLAY ATYPE = T DISPLAY ATYPE
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc120704_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | ((µ I : ATYPE .. ALARMTYPEvLAST
+‹           ∑ STATEâ0 DISPLAY I = S DISPLAY I ± TIMERSâ0 DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. ATYPE - 1
+‹           ∑ (DISPLAY ¶ DISPLAY, I ¶ I, S ¶ S, STATE ¶ STATEâ0, T ¶ T,
+‹                 TIMERS ¶ TIMERSâ0)
+‹             ç ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹                 [I/ATYPE,
+‹                 S/STATEâ0,
+‹                 T/TIMERSâ0])))
+‹         ± (µ I : ALARMTYPE
+‹           | I Ω ATYPE
+‹           ∑ STATE DISPLAY I = STATEâ0 DISPLAY I
+‹             ± TIMERS DISPLAY I = TIMERSâ0 DISPLAY I)
+‹         ± ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹             [S/STATEâ0,
+‹             T/TIMERSâ0])
+‹       ∑ (µ I : ATYPE + 1 .. ALARMTYPEvLAST
+‹           ∑ STATE DISPLAY I = S DISPLAY I ± TIMERS DISPLAY I = T DISPLAY I)
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹         ± (µ I : ALARMTYPEvFIRST .. ATYPE
+‹           ∑ ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [I/ATYPE,
+‹               S/STATEâ0,
+‹               T/TIMERSâ0]))
+∞
+
+πZ
+‹ vc120705_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMEOUT : BASICTYPESoTIME;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (STATE DISPLAY ATYPE = S DISPLAY ATYPE
+‹         ± TIMERS DISPLAY ATYPE = T DISPLAY ATYPE
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq AUDIOVISUALFLASH = TRUE
+‹         ± (STATE DISPLAY ATYPE).LEVEL noteq VISUALINVERSE = TRUE
+‹       ∑ (µ I : ALARMTYPE
+‹           | I Ω ATYPE
+‹           ∑ (STATE
+‹                       ´ {DISPLAY
+‹                             Ì STATE DISPLAY
+‹                                 ´ {ATYPE
+‹                                       Ì (LEVEL ¶ VISUALINVERSE,
+‹                                           RAISED ¶ (STATE DISPLAY ATYPE).RAISED,
+‹                                           REOCCURS ¶
+‹                                               (STATE DISPLAY ATYPE).REOCCURS)}})
+‹                     DISPLAY
+‹                   I
+‹               = STATE DISPLAY I
+‹             ± (TIMERS
+‹                       ´ {DISPLAY
+‹                             Ì TIMERS DISPLAY
+‹                                 ´ {ATYPE Ì (ACTIVE ¶ TRUE, TIMEOUT ¶ TIMEOUT)}})
+‹                     DISPLAY
+‹                   I
+‹               = TIMERS DISPLAY I)
+‹         ± (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY, S ¶ S,
+‹               STATE ¶
+‹                   STATE
+‹                       ´ {DISPLAY
+‹                             Ì STATE DISPLAY
+‹                                 ´ {ATYPE
+‹                                       Ì (LEVEL ¶ VISUALINVERSE,
+‹                                           RAISED ¶ (STATE DISPLAY ATYPE).RAISED,
+‹                                           REOCCURS ¶
+‹                                               (STATE DISPLAY ATYPE).REOCCURS)}},
+‹               T ¶ T,
+‹               TIMERS ¶
+‹                   TIMERS
+‹                       ´ {DISPLAY
+‹                             Ì TIMERS DISPLAY
+‹                                 ´ {ATYPE Ì (ACTIVE ¶ TRUE, TIMEOUT ¶ TIMEOUT)}})
+‹           ç ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [S/STATEâ0,
+‹               T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120705_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMEOUT : BASICTYPESoTIME;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (STATE DISPLAY ATYPE = S DISPLAY ATYPE
+‹         ± TIMERS DISPLAY ATYPE = T DISPLAY ATYPE
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq AUDIOVISUALFLASH = TRUE
+‹         ± (STATE DISPLAY ATYPE).LEVEL noteq VISUALINVERSE = FALSE
+‹       ∑ (µ I : ALARMTYPE
+‹           | I Ω ATYPE
+‹           ∑ STATE DISPLAY I = STATE DISPLAY I
+‹             ± (TIMERS
+‹                       ´ {DISPLAY
+‹                             Ì TIMERS DISPLAY
+‹                                 ´ {ATYPE Ì (ACTIVE ¶ TRUE, TIMEOUT ¶ TIMEOUT)}})
+‹                     DISPLAY
+‹                   I
+‹               = TIMERS DISPLAY I)
+‹         ± (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY, S ¶ S, STATE ¶ STATE, T ¶ T,
+‹               TIMERS ¶
+‹                   TIMERS
+‹                       ´ {DISPLAY
+‹                             Ì TIMERS DISPLAY
+‹                                 ´ {ATYPE Ì (ACTIVE ¶ TRUE, TIMEOUT ¶ TIMEOUT)}})
+‹           ç ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [S/STATEâ0,
+‹               T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120705_3 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (STATE DISPLAY ATYPE = S DISPLAY ATYPE
+‹         ± TIMERS DISPLAY ATYPE = T DISPLAY ATYPE
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq AUDIOVISUALFLASH = FALSE
+‹         ± (STATE DISPLAY ATYPE).LEVEL noteq VISUALINVERSE = TRUE
+‹       ∑ (µ I : ALARMTYPE
+‹           | I Ω ATYPE
+‹           ∑ (STATE
+‹                       ´ {DISPLAY
+‹                             Ì STATE DISPLAY
+‹                                 ´ {ATYPE
+‹                                       Ì (LEVEL ¶ VISUALINVERSE,
+‹                                           RAISED ¶ (STATE DISPLAY ATYPE).RAISED,
+‹                                           REOCCURS ¶
+‹                                               (STATE DISPLAY ATYPE).REOCCURS)}})
+‹                     DISPLAY
+‹                   I
+‹               = STATE DISPLAY I
+‹             ± TIMERS DISPLAY I = TIMERS DISPLAY I)
+‹         ± (ATYPE ¶ ATYPE, DISPLAY ¶ DISPLAY, S ¶ S,
+‹               STATE ¶
+‹                   STATE
+‹                       ´ {DISPLAY
+‹                             Ì STATE DISPLAY
+‹                                 ´ {ATYPE
+‹                                       Ì (LEVEL ¶ VISUALINVERSE,
+‹                                           RAISED ¶ (STATE DISPLAY ATYPE).RAISED,
+‹                                           REOCCURS ¶
+‹                                               (STATE DISPLAY ATYPE).REOCCURS)}},
+‹               T ¶ T, TIMERS ¶ TIMERS)
+‹           ç ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹               [S/STATEâ0,
+‹               T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120705_4 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION;
+‹         ATYPE : ALARMTYPE
+‹       | (STATE DISPLAY ATYPE = S DISPLAY ATYPE
+‹         ± TIMERS DISPLAY ATYPE = T DISPLAY ATYPE
+‹         ± (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (STATE DISPLAY ATYPE).LEVEL eq AUDIOVISUALFLASH = FALSE
+‹         ± (STATE DISPLAY ATYPE).LEVEL noteq VISUALINVERSE = FALSE
+‹       ∑ (µ I : ALARMTYPE
+‹           | I Ω ATYPE
+‹           ∑ STATE DISPLAY I = STATE DISPLAY I
+‹             ± TIMERS DISPLAY I = TIMERS DISPLAY I)
+‹         ± ((FirstAcceptance ± NoAcceptance ± InactiveAcceptance)
+‹             [S/STATEâ0,
+‹             T/TIMERSâ0])
+∞
+
+πZ
+‹ vc1208_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | S = STATE
+‹         ± T = TIMERS
+‹         ± ≥
+‹         (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹       ∑ S = STATE
+‹         ± T = TIMERS
+‹         ± ≥
+‹         (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+∞
+
+πZ
+‹ vc1208_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± ≥
+‹         (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (µ ATYPE : ALARMTYPE
+‹           ∑ ((SecondAcceptance ± InactiveAcceptance) [S/STATEâ0, T/TIMERSâ0]))
+‹       ∑ µ ATYPE : ALARMTYPE ∑ (AcceptAlarm [S/STATEâ0, T/TIMERSâ0])
+∞
+
+πZ
+‹ vc120801_1 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS : TIMERSTATE;
+‹         STATE : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | S = STATE
+‹         ± T = TIMERS
+‹         ± ≥
+‹         (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY))
+‹       ∑ true
+∞
+
+πZ
+‹ vc120801_2 ?Ù
+‹     µ S : ALARMSTATE;
+‹         T : TIMERSTATE;
+‹         TIMERS, TIMERSâ0 : TIMERSTATE;
+‹         STATE, STATEâ0 : ALARMSTATE;
+‹         DISPLAY : BASICTYPESoDISPLAYPOSITION
+‹       | (S = STATEâ0
+‹         ± T = TIMERSâ0
+‹         ± ≥
+‹         (∂ ATYPE1 : ALARMTYPE ∑ ATYPE1 ç NonAcceptedAlarms (S, T, DISPLAY)))
+‹         ± (µ ATYPE : ALARMTYPE
+‹           ∑ ATYPE ç InactiveAlarms (STATE, TIMERS, DISPLAY))
+‹       ∑ µ ATYPE : ALARMTYPE
+‹         ∑ ((SecondAcceptance ± InactiveAcceptance) [S/STATEâ0, T/TIMERSâ0])
+∞
+
+πZAX
+‹ ALLDATAINLIMITS : BOOLEAN
+˜¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸¸
+‹ true
+∞
+=IGN
+open_theory "cn";
+duplicate_theory ("Alarm2_body", "ALARM2oTESTPOINTstub");
+open_theory "ALARM2oTESTPOINTstub";
+delete_all_conjectures();
+open_theory "Alarm2_body";
+
+πZ
+‹ vc1501_1 ?Ù
+‹     true
+‹       ¥ (µ DISPLAY : BASICTYPESoDISPLAYPOSITION; ATYPE : ALARMTYPE
+‹         ∑ ATYPE
+‹           ç InactiveAlarms
+‹               (ALARMSTATEvRANGE
+‹                   ∏ {ALARMSTATE1vRANGE
+‹                       ∏ {(LEVEL ¶ ALARMLEVELvFIRST, RAISED ¶ FALSE,
+‹                             REOCCURS ¶ ALARMRESETvFIRST)}},
+‹                 TIMERSTATEvRANGE
+‹                   ∏ {TIMERSTATE1vRANGE
+‹                       ∏ {(ACTIVE ¶ FALSE, TIMEOUT ¶ BASICTYPESoTIMEvLAST)}},
+‹                 DISPLAY))
+∞
+
+=SML
+open_theory "cn";
+duplicate_theory ("Alarm_body", "ALARMoTESTPOINTstub");
+open_theory "ALARMoTESTPOINTstub";
+delete_all_conjectures();
+open_theory "Alarm_body";
+
+(* Number of VCs in theory "SENSORspec" : 0 *)
+
+(* Number of VCs in theory "SHOLSELECTIONspec" : 0 *)
+
+(* Number of VCs in theory "ALARMoTESTPOINTstub" : 0 *)
+
+(* Number of VCs in theory "Alarm_body" : 62 *)
+
+(* Number of VCs in theory "ALARM2oTESTPOINTstub" : 0 *)
+
+(* Number of VCs in theory "Alarm2_body" : 62 *)
+
+=TEX
+
+\end{document}

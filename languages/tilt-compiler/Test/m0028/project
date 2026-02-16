@@ -1,0 +1,3 @@
+unit Test = "word8.sml" {
+	Word8 Int Word List StringCvt
+}

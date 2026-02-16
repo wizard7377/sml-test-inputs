@@ -1,0 +1,48 @@
+(* hash-cons-lib.cm
+ *
+ * This library supports the implementation of hash-consed of data structures.
+ *
+ * COPYRIGHT (c) 2023 The Fellowship of SML/NJ (http://www.smlnj.org)
+ * All rights reserved.
+ *)
+
+Library
+
+  signature HASH_CONS
+  signature HASH_CONS_MAP
+  signature HASH_CONS_SET
+
+  structure HashCons
+  structure HashConsMap
+  structure HashConsSet
+
+  (* standard base types *)
+  structure HashConsAtom
+  structure HashConsBool
+  structure HashConsInt
+  structure HashConsString
+  structure HashConsWord
+
+  functor HashConsGroundFn
+
+is
+
+#if defined(NEW_CM)
+  $/basis.cm
+  $/smlnj-lib.cm
+#else
+  ../Util/smlnj-lib.cm
+#endif
+
+  hash-cons-atom.sml
+  hash-cons-bool.sml
+  hash-cons-ground-fn.sml
+  hash-cons-int.sml
+  hash-cons-map-sig.sml
+  hash-cons-map.sml
+  hash-cons-sig.sml
+  hash-cons.sml
+  hash-cons-set-sig.sml
+  hash-cons-set.sml
+  hash-cons-string.sml
+  hash-cons-word.sml

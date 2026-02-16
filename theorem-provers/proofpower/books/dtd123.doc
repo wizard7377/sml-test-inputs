@@ -1,0 +1,1152 @@
+=IGN
+********************************************************************************
+dtd123.doc: this file is part of the PP system
+
+Copyright (c) 2015 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+=TEX
+\documentclass[a4paper,12pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{epsf}
+\makeindex
+
+\def\Title{Print On Demand ProofPower Manuals}
+
+\def\Abstract{\begin{center}
+{\bf Abstract}\par\parbox{0.7\hsize}
+{\small This document provides strategy and detail concerning the publication in hard copy of the {\Product} user manuals.}
+\end{center}}
+
+\def\Reference{LEMMA1/HOL/DTD123}
+
+\def\Author{Roger Bishop Jones}
+
+\def\EMail{{\tt rbj@rbjones.com}}
+
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+\begin{centering}
+
+
+\end{centering}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\TargetPPRel{3.1w6}
+\def\createspace{{\bf create}space}
+\def\Date{\FormatDate{\VCDate}}
+
+%%%%% NOW BEGIN THE DOCUMENT AND MAKE THE FRONT PAGE
+
+\begin{document}
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+%%%%% STANDARD RED-TAPE SECTIONS (MAY WANT TO INTERLEAVE SOME \newpage COMMANDS IN THESE)
+
+%%%%% CONTENTS:
+
+\subsection{Contents}
+
+\tableofcontents
+
+%%%%% REFERENCES:
+
+\newpage
+\subsection{References}
+
+\bibliographystyle{fmu}
+
+%%%%% CHANGE THE FOLLOWING AS NECESSARY (E.G., TO PICK UP daz.bib):
+{\raggedright
+%\bibliography{fmu}
+}
+%%%%% CHANGES HISTORY:
+\subsection{Changes History}
+\begin{description}
+\item[2015-04-21]
+First working draft.
+
+\item[2015-06-08]
+
+Mainly bringing the detail in line with decisions about authorship and the inclusion of the lemma1 logo on the covers.
+
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+
+%%%%%  CHANGES FORECAST:
+
+\subsection{Changes Forecast}
+
+No further changes are forecast unless there are significant changes to the manuals or the publication policy.
+It is not intended to update the ``target release'' information in this document when new releases are made,
+unless the document is updated for other reasons.
+
+%%%%% DISTRIBUTION LIST
+
+\subsection{Distribution}
+
+
+\newpage
+
+\section{INTRODUCTION}\label{INTRODUCTION}
+
+\subsection{Scope}
+
+This document gives the detailed design for the Print On Demand versions of the {\Product} user manuals.
+
+\subsection{Purpose and Background}
+
+To suggest an approach to publication by Print on Demand (POD) of the {\Product} user manuals.
+To provide the detailed information required for submitting the manuals for publication.
+To suggest minor changes to the manuals to make them more suitable for printing.
+
+\subsection{Approach}
+
+The proposed method for publication is as follows.
+
+The manuals will be published through {\createspace}, an Amazon company, and sold
+through {\createspace} and Amazon web sites.
+They may also be distributed through other {\createspace} distribution channels for which they qualify.
+
+Interior of the published books will be obtained by shrinking the PDF files for the relevant release
+of {\Product} to the standard trim size of 8.5 by 11 inches, with the exception of the two reference
+manals USR029 and USR030, which will be reduced to fit 7.44 by 9.69 inch trim.
+The required shrinks will not change page content or aspect ratios, the difference between the aspect ratio
+of the trim and A4 will translate into larger margins.
+Some of that extra margin is needed to maintain the minimum gutter (margin at spine) of .75 inch after the shrink.
+
+Table \ref{tab:USRDocuments} shows the present proposal for which manuals should be published in this way.
+
+The manuals will be published as a series.
+
+\begin{quote}
+``A series is a connected set of books. If this book is part of a series, identify where the book exists in the sequence with a volume number. We only accept volume numbers in numerical format (``1'', ``2'', or ``3''). Magazines and journals are also often grouped as a series. Identifying the series helps customers find other books in the series.''
+\end{quote}
+
+Quoted passages are from the {\createspace} web site.
+
+The series name will be ``{\Product} Manuals''.
+The numbering of the volumes cannot coincide with the the USR number, since it is not permitted to exceed 99,
+proposed volume numbers are shown in table \ref{tab:USRDocuments}.
+
+\section{PROPOSED INTERIOR CHANGES}\label{PROPOSED INTERIOR CHANGES}
+
+The proposal is to make available printed copies of the existing manuals,
+rather than to produce printed books based on the manuals.
+
+Nevertheless it may be though desirable to make some minor improvements.
+
+It is proposed that the titles be made more consistent before
+first availability in printed form, and that any other desirable changes
+can be introduced in subsequent releases of {\Product}.
+
+Revised titles for the relevant USR documents are shown in table \ref{tab:USRDocuments}.
+The changes are proposed primarily for the sake of consistency and are:
+\begin{itemize}
+\item Consistent capitalisation is realised by eliminating capitals except for initials and acronyms.
+\item Of the three tutorials, the two written to accompany {\Product} HOL and Z courses are made consistent by dropping the ``notes'' in the title of the former.
+To distinguish the earlier more elemetary tutorial (USR004) it is proposed that it be entitled ``{\Product} Introductory Tutorial''.
+\item The compliance tool USR manuals have been brought in line by prefixing {\Product} (which had always appeared on the title page) and eliminating the dashes.
+Without the dashes ``Proving VCs'' didn't read well, so ``Proof Tutorial'' is proposed instead, though this USR is not at present slated for availability in print.
+\end{itemize}
+
+One manual, the SLRP user guide, USR032, does not use the standard USR.sty layout, it is desirable that it be brought in line before being made available in print.
+
+The following changes might be considered for action either before or soon after first availability.
+
+\begin{itemize}
+\item Inclusion of ISBNs in the interior (they automatically appear on the back cover).
+\item Simplification or elimination of footers.
+\item Review of the content of Chapter 0.
+Eliminate mention of ICL?
+\end{itemize}
+
+\section{THE SIGNATURE}\label{THE SIGNATURE}
+
+The principal purpose of this document is to provide the information over and above
+the interior PDF which must be submitted for publication of each volume, in a form
+suitable for review in advance of publication.
+The document will then facilitate the preparation new editions, permitting the
+relevant online forms to be populated by reference to the DTD, using copy and paste
+in many places.
+
+The following two sections provide, respectively, descriptions of the information
+which must be supplied for each book and
+pro-formas for the information be supplied.
+Section \ref{MANUAL SPECIFICS} will supply the details for each volume to be publised..
+
+\subsection{Required Information}
+
+The information in the scope of this document relates to three sections
+in the {\createspace} publication process.
+
+These sections and their roles are as follows:
+
+\begin{description}
+\item[Title Information]
+This is the information required to register the ISBNs for the books, and cannot be changed
+once the ISBN has been registered, which is done when the book is first submitted for review
+by {\createspace} prior to availability of proofs.
+Some of this information, notably the title, author and other credits, is also used on the
+{\createspace} and Amazon web site pages selling the books.
+\item[Cover Information]
+This is information supplied to the {\createspace} application which can be used by
+publishers to make a cover for their books.
+This information can be changed at any time, even after the book has been made available
+for purchase, subject only to a few days delay in availability of the book while changes to
+the cover or the interior are reviewed and then propagated to the distribution channels.
+\item[Description]
+This information is used for marketing the books, and includes the description and author
+bios which appear on the relevant web pages.
+\end{description}
+
+The information required for these three sections is as follows:
+
+\begin{description}
+
+\item[Title Information]
+
+This is information which will be permanently associated with the ISBN for the book supplied by {\createspace}.
+
+\begin{description}
+
+\item[Title *]
+
+\item[Subtitle]
+
+\item[Primary Author *]
+
+Prefix
+
+First Name / Initial
+
+Middle Name / Initial
+
+Last Name / Surname *
+
+Suffix
+
+\item[Other Contributions]
+Similar information for other kinds of contribution, such as
+``index by'', ``prepared for publication by'' or just ``contributions by''.
+
+\item[Series] This book is part of a series (this is a tick box).
+
+\item[Series Title] It is proposed that this should be ``{\Product} Manuals''.
+
+\item[Volume] A number, up to 99.
+Clearly the USR number will not do.
+A proposed allocation of volume numbers is shown in table \ref{tab:USRDocuments}.
+
+\item[Edition number]
+
+What's this?
+
+\begin{quote}
+``A version is a particular edition of a book. Identifying the version number helps readers know whether the book is the original edition, or if it contains updated content. If this is the first time you have published this book, enter the numeral 1. If the book was previously published and the version you are publishing contains significant changes, enter the numeral 2 (and so on).''
+\end{quote}
+
+I suggest we follow the instructions, with a high threshold for consideration of changes as `significant'. start at 1 and increment the edition number only if there is some reason for wanting the previous versions of the manuals to continue to be available in print form, or alternatively, for major releases.
+The interior can be updated for minor releases without creating a new edition, distinct versions can be identified by the version number printed in the interior, which should also be included in the description used for the web site, supplementing the edition number.
+
+\end{description}
+
+\item[Cover]
+This is information to be supplied to the {\createspace} cover creator (a feature of the web-site).
+The structure of the information required here depends upon the cover style selected.
+This would normally include title, author and text for the back cover, as well as the details determining
+the style of cover including image files as necessary.
+These details are technically independent of the `title information' discussed above, and the `description'
+discussed below, but one would of course expect them to be consistent.
+
+\item[Description]
+Information used in the marketing of the books.
+
+\begin{description}
+\item[Description]
+This text appears close to the top of the web page for the book on amazon sites, and also on {\createspace}.com.
+\item[BISAC Category/Code]
+\item[Author Biography]
+This text appears in the web page.
+\item[Search Keywords]
+Not sure where this goes but presumably it plays a role in determining which searches come upm with the book.
+\begin{quote}
+``Search keywords can help your title show up on both Amazon.com and search engines.
+Pick phrases that you think customers are likely to use when either searching for your title specifically,
+or when shopping for products that may be similar in subject matter.''
+\end{quote}
+
+You can add up to five keyword phrases separated by commas.
+\end{description}
+
+\end{description}
+
+\subsection{Proformas}
+
+The following tables are for copying into sections below and filling in for each manual, values included in these proformas are proposed for all volumes:
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} &  \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & ProofPower Team\\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} &  \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} ... \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour:} & Rich Black \\
+\hline
+\end{tabular}
+\end{center}
+
+
+``Peaceful Prairie'' is (an image of) a big field, but selecting a background image replaces that default background leaving
+only a general layout.
+The proposed background is midnight blue, where text appears it is in a box which provides a lighter blue background making a black font acceptable.
+The spine also has that colour.
+Various other textual fields or images are optional; these should all be marked as not visible (by unticking the `visible' box).
+Since the only text supplied is the title, the front and back will be plain black except for a large grey box in the bottom half of the front cover in which the title is given, and the spine (for volumes of greater than 130 pages) which is also grey and carries the title.
+If text is provided for the back page that will be presented in a similar manner with black text on a grey background.
+
+\begin{center}
+\epsfxsize=6.5in \epsffile{V06Cover.eps}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR\emph{xxx}, \emph{title}, as issued in version {\TargetPPRel},  slightly resized from its intended A4 to fit 8.5 x 11 inch paper.
+Apart from sizing, the interior of the book is exactly the same as the PDF provided in version {\TargetPPRel} of {\Product}.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} &  \\
+\hline
+\end{tabular}
+\end{center}
+
+In the case of manuals greater than 630 pages in length the page size will be reduced to 7.44 x 9.69 inches.
+The interior and the description will be updated at each release keeping the available hard copy in sync with the releases.
+
+\section{MANUAL SPECIFICS}\label{MANUAL SPECIFICS}
+
+\subsection{List of manuals to be published}
+
+Two manuals, the \emph{Xpp User Guide} and \emph{Compliance Tool Installation and Operation}, fall below the 24 page minimum size for publication.
+
+The following table shows the USR documents, their proposed titles (dropping capitalisation and adjusting tutorial names) and current lengths.
+The leftmost column indicates a proposed volume-in-series number.
+A gap ni the series numbers has been left after each reference manual in case it should ever prove necessary to split the manual over two volumes.
+The titles which have been changed are those for USR004, 5, 11, 13, 29 and 30.
+
+The \emph{pub} column show whether publication from the existing PDF files appears to be technically
+feasible, and is either y for ``yes'', n for ``no'' (only for documents of less than 24 pages),
+or s for ``conditional on shrink'',
+``Conditional on shrink'' means that the page count exceeds the maximum for the closest to A4 print
+size (8.5 x 11 inches), which is 630, but may be publishable by re-printing from the A4 PDF to a PDF at a smaller size using Adobe Acrobat (7.44 by 9.69 inches seems to work, with a page limit of 828).
+Amazon provides a shrink to fit facility which is more sophisticated, but it gives bad results on the first page of our manuals.
+
+\begin{table}[ht]
+\begin{center}
+{\small
+\begin{tabular}{|l l l l l|}
+\hline
+vol & ref & title & pp & pub\\
+\hline
+1 & USR004 & {\Product} Introductory Tutorial & 87 & y \\
+2 & USR013 & {\Product} HOL Tutorial & 135 & y \\
+3 & USR011 & {\Product} Z Tutorial & 171 & y \\
+4 & USR029 & {\Product} HOL Reference Manual & 638 & s \\
+6 & USR030 & {\Product} Z Reference Manual & 671 & s \\
+8 & USR005 & {\Product} Description & 64 & y \\
+9 & USR001 & {\Product} Document Preparation & 64 & y\\
+10 & USR031 & {\Product} Xpp User Guide & 21 & n \\
+11 & USR032 & {\Product} SLRP User Guide & 60 & y \\
+12 & USR0501 & {\Product} Compliance Tool User Guide & 85 & y \\
+13 & USR0502 & {\Product} Compliance Tool Installation and Operation & 17 & n \\
+14 & USR0503 & {\Product} Compliance Tool Proof Tutorial & 85 & y \\
+15 & USR0504 & {\Product} Compliance Tool Language Description & 104 & y \\
+\hline
+\end{tabular}
+}
+\caption{{\Product} USR Documents}
+\label{tab:USRDocuments}
+\end{center}
+\end{table}
+
+\paragraph{Title Credits}
+
+Certain credit must, and others may, appear in the title information associated
+with the registration of the ISBN.
+The credits here are not necessarily the same as credits shown on the cover or the
+interior of the book, but are used in the pages used on amazon and {\createspace} web sites.
+
+It is desirable I think to keep the credits shown here to a moderate number,
+which in the case of the {\Product} manuals suggests that not all contributors to
+a manual need be listed.
+
+The following table is compiled using git shortlog to determine the
+number of commits, and a certain amount of common sense
+(major contributions may be introduced by a single commit,
+and the reference manuals are compiled primarily from information
+stripped from dtds and therefore a log of the top level document
+is misleading as to the origins of the bulk of the material).
+
+The codes used in the table have the following significance:
+
+\begin{description}
+\item[A] Principal Author
+\item[C] Contributions by
+\item[I] Index by
+\end{description}
+
+The numbers appearing in the table are the number of commits
+by the author to the volume.
+The significance of these numbers is moot, the principal author credits shown are based on memory of RBJ and RDA rather on the number of commits.
+
+\begin{table}[ht]
+\begin{center}
+{\small
+\begin{tabular}{|l l l l l l l l l l l l l|}
+\hline
+name            & V1  & V2  & V3  & V4  & V6  & V8  & V9  & V10 & V11 & V12 & V14 & V15\\
+\hline
+Rob Arthan      & C15 & C7  & C15 & C14 & C10 & A13 & C38 & C41 & A19 & C46 & C21 & A68 \\
+Kevin Blackburn & C1  & C1  & C2  &     &     & C1  & C1  &     &     & C4  & C2  & C8 \\
+Phil Clayton    &     &     &     &     &     &     &     &     &     &     &     & \\
+Adrian Hammon   &     &     &     &     &     &     & C16 &     &     &     &     & \\
+Ardrian Hayward & C1  & C2  & C1  &     &     & C2  & C1  &     &     &     &     & \\
+Roger Jones     & C11 & A17 & A34 &     &     & C16 & C3  &     &     &     &     & \\
+David King      &     &     &     &     &     &     &     &     &     & C2  &     & \\
+Gill Prout      &     &     &     & C1  & C1  &     &     &     &     &     & A6  &    \\
+Geoff Scullard  &     &     &     &     &     &     &     &     &     &     &     &  \\
+Roger Stokes    & A22 &     & C8  & I   & I   &     &     &     &     &     &     &   \\
+Piotr Trojanek & C3  & C4  &     &     &     & C1  & C6  &     & C1  & C8  & C1  & C9 \\
+\hline
+\end{tabular}
+\caption{USR Documents possible title credits}
+\label{tab:USRCredits}
+}
+\end{center}
+\end{table}
+
+\pagebreak
+
+We have now decided to credit in the title information only the principal author,
+where one can be identified and consent can be obtained, and otherwise show the principal
+author as ``ProofPower Team''.
+These credits (subject to consent) are summarised in the following table.
+The whole team will be listed on the page following the title page
+in the interior of the manuals (both in electronic and hard copy form).
+
+\begin{table}[ht]
+\begin{center}
+{\small
+\begin{tabular}{|l l l l l|}
+\hline
+Volume & Principal Author & USR & ISBN-10 & ISBN-13 \\
+\hline
+1 & Roger Stokes & USR004 & 1514208261 &  978-1514208267 \\
+2 & Roger Bishop Jones & USR013 & 1514276860 & 978-1514276860 \\
+3 & Roger Bishop Jones & USR011 & 151427728X & 978-1514277287 \\
+4 & ProofPower Team & USR029 & 1514275627 & 978-1514275627 \\
+6 & ProofPower Team & USR030 & 1511733160 & 978-1511733168 \\
+8 & Rob Arthan & USR005 & 1514277441 & 978-1514277447 \\
+9 & ProofPower Team & USR001 & 151427650X & 978-1514276501 \\
+10 & ProofPower Team & USR031 &  &  \\
+11 & Rob Arthan & USR032 & 1514276844 & 978-1514276846 \\
+12 & ProofPower Team & USR501 & 1514277689 & 978-1514277683 \\
+13 & ProofPower Team & USR502 &  &  \\
+14 & Gill Prout & USR503 & 1514277700 & 978-1514277706 \\
+15 & Rob Arthan & USR504 & 151427776X & 978-1514277768 \\
+\hline
+\end{tabular}
+\caption{USR Documents - Principal Author}
+\label{tab:USRAuthors}
+}
+\end{center}
+\end{table}
+
+
+
+\subsection{Volume 1, Introductory Tutorial}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} Introductory Tutorial \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Roger Stokes \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 1 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Introductory Tutorial \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR004, \emph{Introductory Tutorial}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from its intended A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 2, HOL Tutorial}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} HOL Tutorial \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Roger Jones \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 2 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} HOL Tutorial \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR013, \emph{HOL Tutorial}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from its intended A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 3, Z Tutorial}
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} Z Tutorial \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Roger Jones \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 3 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Z Tutorial \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR011, \emph{Z Tutorial}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 4, HOL Reference Manual}
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} HOL Reference Manual \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & ProofPower Team \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 4 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} HOL Reference Manual \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR029, \emph{HOL Reference Manual}, as issued in version {\TargetPPRel} of {\Product}, resized from A4 to fit 7.44 x 9.69 inch paper.
+The font size is therefore on the small side.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL specification proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 6, Z Reference Manual}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} &  {\Product} Z Reference Manual\\
+{\bf Subtitle} &  \\
+{\bf Primary Author} &  ProofPower Team\\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 6 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Z Reference Manual \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR030, \emph{Z Reference Manual}, as issued in version {\TargetPPRel} of {\Product}, resized from A4 to fit 7.44 x 9.69 inch paper.
+The font size is therefore on the small side. \\
+{\bf BISAC Category/Code} &  Computers / Software Development \& Engineering / Tools MAT018000\\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsection{Volume 8, Description}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} &  {\Product} Description\\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Rob Arthan \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 8 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Description \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR005, \emph{Description}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 9, Document Preparation}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} Document Preparation \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & ProofPower Team \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 9 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Document Preparation \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR001, \emph{Document Preparation}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z logic proof LaTeX \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 11, SLRP User Guide}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} SLRP User Guide \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Rob Arthan \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 11 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} SLRP User Guide \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR032, \emph{SLRP User Guide}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from  A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z logic proof parser\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 12, Compliance Tool User Guide}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} Compliance Tool User Guide \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & ProofPower Team \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 12 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Compliance Tool User Guide \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR501, \emph{Compliance Tool User Guide}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from its intended A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z Ada logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 14, Compliance Tool Proof Tutorial}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} Compliance Tool Proof Tutorial \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Gill Prout\\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 14 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Compliance Tool Proof Tutorial \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR503, \emph{Compliance Tool Proof Tutorial}, as issued in version {\TargetPPRel} of {\Product},  slightly resized from its intended A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z Ada logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Volume 15, Compliance Tool Language Description}
+
+\paragraph{Title Information}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Title} & {\Product} Compliance Tool Language Description \\
+{\bf Subtitle} &  \\
+{\bf Primary Author} & Rob Arthan \\
+{\bf Series} & Yes \\
+{\bf Series Title} & {\Product} Manuals\\
+{\bf Volume} & 15 \\
+{\bf Edition} & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Cover}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Design:} & Cottonwood \\
+{\bf Theme:} & Peaceful Prairie.\\
+{\bf Title:} & {\Product} Compliance Tool Language Description \\
+{\bf Subitle:} & \\
+{\bf Author:} &  \\
+{\bf Background Image:} & midnightblueback.jpeg \\
+{\bf Publisher Logo:} & lemma1\_logo\_mbb.jpeg \\
+{\bf Frame Color:} & midnight blue \\
+{\bf Font Colour: } & Rich Black  \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Description}
+
+\begin{center}
+\begin{tabular}{|l p{8cm}|}
+\hline
+field & content \\
+\hline
+{\bf Description} & This is the {\Product} user manual USR504, \emph{Compliance Tool User Guide}, as issued in version {\TargetPPRel} of {\Product}, slightly resized from its intended A4 to fit 8.5 x 11 inch paper.\\
+{\bf BISAC Category/Code} & Computers / Software Development \& Engineering / Tools MAT018000 \\
+{\bf Author Bio} &  \\
+{\bf Search Keywords} & HOL Z Ada logic proof \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{TEST POLICY}\label{TEST POLICY}
+
+After review of inputs for publication (as specified above), the relevant data will be submitted to {\createspace}.
+An automatic check will be made of the interiors, and any issues raised will be addressed.
+At this point cover images will also be made available for review by Lemma1.
+
+All title information must be correct at this point since it cannot be changed after submission for review by {\createspace}.
+The titles are then submitted for review by {\createspace}.
+After submission for review, electronic proofs will be available, and it will be possible to print proofs.
+It is not anticipated that printed proofs will normally be obtained, but this could be done it it was thought desirable.
+
+If any issues are found in the electronic or printed proofs, or if any late information requiring amendments arises 
+then alterations can still be made.
+If this is done the amended manuals will have then to be resubmitted for review by {\createspace}.
+
+Once {\createspace} and lemma1 both concur the manuals can be published.
+
+Certain further items of information must be agreed between Lemma1 and its publishing agent at this time,
+viz. the channels for publication and the list prices.
+However, these can be changed subsequent to publication.
+
+In order to ensure that the purchasor is properly informed about the version of the manuals available in print,
+the target release of {\Product} ({\TargetPPRel}) is show in the descriptions supplied on publication and are shown in this document.
+If the title changes suggested are not incorporated by  that release, then the publication of the manuals will have to be
+deferred untill they are (or this proposal modified accordingly), and the version numbers shown here and filled into the {\createspace}
+forms will have to be changed.
+
+%\twocolumn[\section{INDEX}]
+%\small
+%\printindex
+\end{document}
+
+
+
+
+
+
+

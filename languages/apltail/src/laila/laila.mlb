@@ -1,0 +1,11 @@
+local
+   $(SML_LIB)/basis/basis.mlb
+   ../lib/github.com/diku-dk/sml-uref/uref.mlb
+   ../util.mlb
+   ../statistics.mlb
+in
+   ../il/il.mlb
+   laila.sig
+   laila-flat-pull-arrays.sml
+   laila.sml
+end

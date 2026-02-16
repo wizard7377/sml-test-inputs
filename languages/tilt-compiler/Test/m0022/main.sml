@@ -1,0 +1,3 @@
+(* null tuple *)
+val _ = ()
+

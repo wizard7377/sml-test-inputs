@@ -1,0 +1,236 @@
+=IGN
+********************************************************************************
+imp052.doc: this file is part of the PPZed system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+% imp052.doc %Z% $Date: 2010/04/01 17:25:13 $ $Revision: 1.31 $ $RCSfile: imp052.doc,v $
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Implementation of Z Individual Semantic Constants}
+
+\def\AbstractText{This document contains the implementation of the Z primitive constants in the theory ``Z'' of the Z Proof Support Subsystem.}
+
+\def\Reference{DS/FMU/IED/IMP052}
+
+\def\Author{G.M. Prout, D.J. King}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{FST PROJECT}  %% Mandatory field
+%% LaTeX2e port: %\TPPvolume{}
+%% LaTeX2e port: %\TPPpart{}
+%% LaTeX2e port: \TPPtitle{Implementation of Z Individual Semantic Constants}  %% Mandatory field
+%% LaTeX2e port: \def\TPPheadtitle{Implementation of Z Individual Semantic Constants \cr in the Theory ``Z''}
+%% LaTeX2e port: \TPPref{DS/FMU/IED/IMP052}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Revision: 1.31 $ %
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2010/04/01 17:25:13 $ %
+%% LaTeX2e port: }}
+%% LaTeX2e port: \TPPstatus{Draft}			%% Mandatory field
+%% LaTeX2e port: \TPPtype{SML Literate Script}
+%% LaTeX2e port: \TPPkeywords{}
+%% LaTeX2e port: %\TPPauthor{G.M.Prout&WIN01}  %% Mandatory field
+%% LaTeX2e port: \TPPauthors{G.M.~Prout&WIN01\\D.J.~King&WIN01 }
+%% LaTeX2e port: \TPPauthorisation{R.B.Jones & Project Manager}
+%% LaTeX2e port: \TPPabstract{This document contains the implementation of the Z primitive constants in the theory ``Z'' of the Z Proof Support Subsystem.}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port: 	    Library
+%% LaTeX2e port: }}
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+\pagebreak
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu}
+
+\subsection{Changes History}
+\begin{description}
+\item [Issue 1.1 (1991/12/09)]
+First draft version.
+\item [Issue 1.2 (1992/01/30)]
+Changes made in step with \cite{DS/FMU/IED/DTD052}.
+\item [Issue 1.4 (1992/06/09)]
+Changed to new fonts
+\item [Issue 1.20 (1992/08/20) (20th August 1992)]
+Removed a spurious $end$.
+\item [Issue 1.22 (1992/10/15) (12th October 1992)]
+Added $Ä$.
+\item [Issue 1.23 (1992/10/19) (12th October 1992)]
+Corrected $Ä$.
+\item [Issue 1.24 (1992/12/03) (3rd December 1992)]
+Added $BOOL$.
+\item[Issue 1.25 (1992/12/10) (10th December 1992)]
+\item[Issue 1.26 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.27 (2002/10/17)] PPZed-specific updates for open source release
+\item[Issue 1.28 (2004/01/19)] The Z universal set is now called É.
+\item[Issue 1.29 (2005/09/06)] Support for let-expressions.
+\item[Issue 1.30 (2010/04/01)] BOOL and CHAR are now renamed as ñ and ø.
+\item[Issue 1.31 (2010/04/01)] Added $z'empty\_binding\_labelled\_product\_spec$ in support of empty schemas.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported PPZed to Lemma 1 document template.
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+%\subsection{Changes Forecast}
+\section{GENERAL}
+\subsection{Scope}
+This document contains an implementation of the
+Z primitive constants in the theory ``Z'' of
+the Z Proof Support System (see \cite{DS/FMU/IED/HLD015}).
+This is called for in \cite{DS/FMU/IED/HLD017}.
+The design is in \cite{DS/FMU/IED/DTD052}.
+\subsection{Introduction}
+\subsubsection{Purpose and Background}
+This document contains an implementation of the
+Z primitive constants in the theory ``Z'' of
+the Z Proof Support System.
+\subsubsection{Dependencies}
+This document takes its signature from \cite{DS/FMU/IED/DTD052},
+and also requires the theory ``hol''.
+\subsubsection{Deficiencies}
+None known.
+\subsection{Design of the Theory ``Z''}
+\section{THE THEORY  ``z\_language''}
+=SML
+structure €ZLanguage› : ZLanguage = struct
+
+val side = open_theory"z_language";
+val side = push_pc"hol";
+
+val €z_totality_def› = get_spec ¨TotalityÆ;
+val €z_u_def› = get_spec ¨$"z'É"Æ;
+val €z'schema_dec_def› = get_spec ¨Z'SchemaDecÆ;
+val €z'dec_def› = get_spec ¨Z'DecÆ;
+val €z'decl_def› = get_spec ¨Z'DeclÆ;
+val €z'_def› = get_spec ¨$"Z'"Æ;
+val €z'µ_def› = get_spec ¨$"Z'µ"Æ;
+val €z'µ_body_def› = get_spec ¨$"Z'µBody"Æ;
+val €z'∂_def› = get_spec ¨$"Z'∂"Æ;
+val €z'∂_body_def› = get_spec ¨$"Z'∂Body"Æ;
+val €z'setd_def› = get_spec ¨Z'SetdÆ;
+val €z'num_list_def› = get_spec ¨Z'NumListÆ;
+val €z'ß¢_def› = get_spec ¨$"Z'ß¢"Æ;
+val €Z'Õ_consistent_thm› = (push_consistency_goal ¨$"Z'Õ"Æ;
+	a(∂_tac ¨Ã set ∑ (≈ y ∑ set = {y})Æ);
+	a(strip_tac THEN rewrite_tac[]);
+	a(lemma_tac¨µ y ∑ {x}={y}§ x=yÆ);
+	(* *** Goal "1" *** *)
+	a(rewrite_tac[sets_ext_clauses]);
+	a(REPEAT strip_tac THEN_LIST [
+		POP_ASM_T (accept_tac o eq_sym_rule o (rewrite_rule[]) o (µ_elim¨yÆ)),
+		asm_rewrite_tac[],asm_rewrite_tac[]]);
+	(* *** Goal "2" *** *)
+	a(POP_ASM_T rewrite_thm_tac);
+	a(rewrite_tac[eq_sym_rule (rewrite_rule[](list_µ_elim[¨Ãy∑x=yÆ,¨xÆ]≈_axiom))]);
+	save_consistency_thm ¨$"Z'Õ"Æ (pop_thm())
+	);
+val €z'Õ_def› = get_spec ¨$"Z'Õ"Æ;
+val €z'app_def› = get_spec ¨Z'AppÆ;
+val €z'empty_binding_def› = get_spec ¨$"Z'Mk_S[]"Æ;
+val €z'empty_binding_labelled_product_spec› = (
+	push_goal ([], ¨µ t ∑ $"Z'Mk_S[]" = tÆ);
+	a µ_tac;
+	a (rewrite_tac [z'empty_binding_def]);
+	a (strip_asm_tac (
+		pure_rewrite_rule [one_def] (
+			µ_elim ¨t : $"Z'S[]"Æ (±_right_elim (get_spec ¨$"Z'Abs_S[]"Æ))
+		)
+	));
+	a (eq_sym_nth_asm_tac 1);
+	save_pop_thm "z'empty_binding_labelled_product_spec"
+);
+val €z' _def› = get_spec ¨$"Z' "Æ;
+val €z'schema_pred_def› = get_spec ¨Z'SchemaPredÆ;
+val €z'≥âs_def› = get_spec ¨$"Z'≥âs"Æ;
+val €z_char_def› = get_spec ¨$"z'ø"Æ;
+val €z_bool_def› = get_spec ¨$"z'ñ"Æ;
+val €z'string_def› = get_spec ¨$"Z'String"Æ;
+val €z'let_def› = get_spec ¨$"Z'Let"Æ;
+val €z'abb_def_def› = get_spec ¨$"Z'AbbDef"Æ;
+val €z'sch_box_def› = get_spec ¨$"Z'SchBox"Æ;
+val €z'ax_des_def› = get_spec ¨$"Z'AxDes"Æ;
+val €z'given_set_def› = get_spec ¨$"Z'GivenSet"Æ;
+val €z'free_type_def_def› = get_spec ¨$"Z'FreeTypeDef"Æ;
+val €z'constraint_def› = get_spec ¨$"Z'Constraint"Æ;
+val _ = (push_consistency_goal ¨$"z'_ Ä _"Æ;
+	a(∂_tac ¨Ã xx ∑ {st|$"Z'T[2]1" st ç  ($"Z'T[1]1" xx) ±
+		$"Z'T[2]2" st ç  ($"Z'T[1]1" xx) ±
+		µ x∑ x ç $"Z'T[1]1" xx ¥ x ç $"Z'T[2]1" st ¥ x ç $"Z'T[2]2" st}Æ);
+	a(rewrite_tac[get_spec ¨$"Z'T[1]1"Æ]);
+	save_consistency_thm ¨$"z'_ Ä _"Æ (pop_thm()));
+
+val €z_Ä_def› = get_spec ¨$"z'_ Ä _"Æ;
+
+val side = pop_pc();
+=TEX
+
+\section{END OF THEORY ``Z''}
+=SML
+end; (* of structure ZLanguage *)
+open ZLanguage;
+=TEX
+\newpage
+\twocolumn[\section{INDEX}]
+\small
+\printindex
+\end{document}
+
+

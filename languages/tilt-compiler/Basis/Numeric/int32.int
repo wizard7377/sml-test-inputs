@@ -1,0 +1,2 @@
+structure Int32 : INTEGER
+	where type int = int

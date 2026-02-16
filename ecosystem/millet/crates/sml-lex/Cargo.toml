@@ -1,0 +1,22 @@
+[package]
+name = "sml-lex"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+diagnostic.workspace = true
+text-size-util.workspace = true
+token.workspace = true
+
+cov-mark.path = "../cov-mark"
+lex-util.path = "../lex-util"
+sml-syntax.path = "../sml-syntax"

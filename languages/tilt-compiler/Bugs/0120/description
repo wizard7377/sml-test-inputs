@@ -1,0 +1,23 @@
+Number: 0120
+Title:       zero-sized word8array
+Keywords:    word8array
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    major
+Problem:     zero-sized word8 vectors cause a seg fault
+Code:        
+	[Supporting files in CVS prior to 1/6/04.]
+	
+	val a = Word8Array.array (0, 0w42)
+	val sum = Word8Array.foldr (fn (e,a) => Word8.toInt e + a) 0 a
+Transcript:  
+Comments:
+	Word8Array.foldr was not dealing with zero-length
+	arrays.  Array.foldr (the only other implementation)
+	did not have this bug.
+Fix:         
+Test: m0056
+Owner: swasey
+Status: closed

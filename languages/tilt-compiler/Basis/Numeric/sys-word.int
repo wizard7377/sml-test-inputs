@@ -1,0 +1,2 @@
+structure SysWord : WORD
+	where type word = word

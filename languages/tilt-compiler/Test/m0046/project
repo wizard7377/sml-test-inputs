@@ -1,0 +1,1 @@
+unit Test = "cases.sml" {Word Word8}

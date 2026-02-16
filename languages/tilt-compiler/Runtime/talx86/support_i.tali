@@ -1,0 +1,10 @@
+	TYPE	<Array8  = fn t:T1 . Exist[?sz:Sint]. (^*[S(?sz)^r,(^*[array(?sz,t^rw)])^r])>
+	TYPE	<Array32 = fn t:T4 . Exist[?sz:Sint]. (^*[S(?sz)^r,(^*[array(?sz,t^rw)])^r])>
+	TYPE	<Array64 = fn t:T8 . Exist[?sz:Sint]. (^*[S(?sz)^r,(^*[array(?sz,t^rw)])^r])>
+	TYPE	<Dyntag = fn a_326_INT:T4 . ^T^rw(a_326_INT^r)*[]>
+	TYPE	<exn = Exist[exn_vt_325_INT:T4]. (^*[(Dyntag exn_vt_325_INT)^r,exn_vt_325_INT^r,(Array8 B1)^r])>
+	TYPE	<Ccode = fn qfrom:Ts qto:T4 . All[cs1:T4 cs2:T4 cs3:T4 cs4:T4 s:Ts]. (code {EAX : junk4,EBX: cs1,ECX : junk4,EDX : junk4,ESI: cs2,EDI: cs3,EBP: cs4,ESP: sptr (code {EAX: qto,EBX: cs1,ECX : junk4,EDX : junk4,ESI: cs2,EDI: cs3,EBP: cs4,ESP : sptr (qfrom # s)})::qfrom # s})>
+
+	VAL 	mkOverflowExn,<Ccode se exn>
+	VAL 	mkSubscriptExn,<Ccode se exn>
+	VAL 	mkDivExn,<Ccode se exn>

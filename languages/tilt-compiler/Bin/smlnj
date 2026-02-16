@@ -1,0 +1,5 @@
+#!/bin/sh
+# Used to isolate TILT's makefiles and supporting scripts
+# from the path to SML/NJ.
+
+exec /usr/local/bin/sml ${1+"$@"}

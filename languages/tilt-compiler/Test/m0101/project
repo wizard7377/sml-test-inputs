@@ -1,0 +1,3 @@
+unit Test = "real6.sml" {
+	Real Int List IEEEReal Math StringCvt
+}

@@ -1,0 +1,2 @@
+unit Plus = "plus.sml" {}
+unit Test = "test.sml" {Plus}

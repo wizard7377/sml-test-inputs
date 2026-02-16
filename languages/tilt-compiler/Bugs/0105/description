@@ -1,0 +1,42 @@
+Number: 0105
+Title:       overloading with words
+Keywords:    overloading, words
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     unresolved overloading
+
+	There are two problems.
+
+	First, given a series of unresolved overloading errors, TILT
+	was printing the first then bombing.  The compiler should
+	print all the errors then reject the user program.
+
+	Second, the code should elaborate.
+
+Code:
+
+	(*$import Word8Vector *)
+	val b : Word8Vector.vector = Word8Vector.fromList []
+	val test10a:unit = ignore(Word8Vector.map (fn x => 0w2*x) b)
+
+Transcript:  
+Comments:
+	[Supporting files in CVS prior to 1/6/04.]
+
+	Resolve_all_overloads was resolving top-level overloads
+	bottom-up.  In this case, the compiler was trying to resolve
+	the overloading for 0w2 before first resolving the overloading
+	for op*.  Functor- and structure-level overload resolution
+	(handled by resolve_overload) was similarly broken.
+
+Fix:
+
+	Overload information is now pulled out of the overload table
+	in FIFO order rather than LIFO order.
+
+Test: m0030
+Owner: swasey
+Status: closed

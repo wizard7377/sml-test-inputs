@@ -1,0 +1,2 @@
+structure Word32 : WORD
+	where type word = word

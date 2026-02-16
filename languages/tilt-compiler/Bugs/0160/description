@@ -1,0 +1,26 @@
+Number: 0160
+Title:       Ugly hack: add_context_label
+Keywords:    Elaborator
+Submitter:   swasey
+Date:        01/22/03
+Version:     CVS
+System:      any
+Severity:    cosmetic
+Problem:
+	IlContext.add_context_label should go away and the
+	pattern compiler should be fixed to work without it.
+
+Code:	This gets used by patterns like "val a as b = 3".
+Transcript:  
+Comments:    
+
+	Bob wrote:
+	> [A] layered pattern introduces two
+	> variables, one of which is bound to the value of the other.  It is a
+	> mistake, I would think, to regard the example [above] as generating a
+	> single variable with two labels.
+
+Fix:         
+Test: 
+Owner: swasey
+Status: open

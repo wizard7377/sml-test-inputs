@@ -1,0 +1,18 @@
+[package]
+name = "sml-scon"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+doctest = false
+test = false
+
+[dependencies]
+num-bigint.workspace = true
+num-traits.workspace = true
+str-util.workspace = true

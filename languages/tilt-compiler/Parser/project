@@ -1,0 +1,193 @@
+include $libdir ^ "/smlnj-lib/project"
+include $libdir ^ "/ml-yacc-lib/project"
+include "../Util/project"
+
+unit CONTROL = "control.sig.sml" {}
+interface Control = "control.int" {CONTROL}
+unit Control : Control = "control.sml" {TextIO CONTROL}
+unit StrgHash = "strghash.sml" {Char Int String}
+unit PpQueue = "ppqueue.sml" {Array}
+unit PRETTYPRINT = "pp.sig.sml" {}
+interface PrettyPrint = "pp.int" {PRETTYPRINT}
+unit PrettyPrint : PrettyPrint = "pp.sml" {
+	General List Control Array Vector PpQueue PRETTYPRINT String
+}
+unit SOURCEMAP = "sourcemap.sig.sml" {}
+unit SourceMap = "sourcemap.sml" {SOURCEMAP}
+unit PATHNAMES = "pathnames.sig.sml" {}
+unit PathNames = "pathnames.sml" {PATHNAMES String}
+unit SOURCE = "source.sig.sml" {
+	SourceMap PrettyPrint TextIO
+}
+interface Source = "source.int" {SOURCE}
+unit Source : Source = "source.sml" {
+	SourceMap PrettyPrint IO SOURCE TextIO PathNames Control
+}
+
+unit ERRORMSG = "errormsg.sig.sml" {
+	SourceMap PrettyPrint Source
+}
+interface ErrorMsg = "errormsg.int" {ERRORMSG}
+unit ErrorMsg : ErrorMsg = "errormsg.sml" {
+	Int Source ERRORMSG PrettyPrint SourceMap Control PathNames
+}
+
+unit SYMBOL = "symbol.sig.sml" {}
+unit ENV = "env.sig.sml" {SYMBOL}
+interface Symbol = "env.int" {SYMBOL ENV}
+unit Symbol : Symbol = "env.sml" {
+	ENV String Int List StrgHash Array Vector Control ErrorMsg
+}
+unit Fixity = "fixity.sml" {Int}
+
+unit PRINTUTIL = "printutil.sig.sml" {SYMBOL ENV}
+interface PrintUtil = "printutil.int" {PRINTUTIL Symbol}
+unit PrintUtil : PrintUtil = "printutil.sml" {
+	PRINTUTIL Symbol SYMBOL Control Char TextIO Int String
+}
+
+unit NAME = "name.sig.sml" {
+	Symbol HashTable ORD_SET ORD_MAP
+}
+interface Name = "name.int" {NAME}
+unit Name : Name = "name.sml" {
+	NAME Util Symbol Int Word SplaySetFn SplayMapFn Char String
+	Stats ORD_KEY HashTable (*RBMap RBSet*) Listops
+}
+unit NAMEBLAST = "nameblast.sig.sml" {
+	NAME Blaster Name
+}
+unit NameBlast = "nameblast.sml" {
+	Name NAMEBLAST Blaster Util Symbol Int
+}
+unit INTSTRMAP = "intstrmap.sig.sml" {}
+unit IntStrMap = "intstrmap.sml" {
+	INTSTRMAP Array List Word Int Control
+}
+
+#if defined (env TILT_FRONTEND) andalso env TILT_FRONTEND S= "2" 
+
+unit AST = "ast2.sig.sml" {
+	Fixity Symbol TilWord64
+}
+unit Ast = "ast2.sml" {
+	Symbol AST Fixity TilWord64
+}
+
+unit ASTHELP = "asthelp2.sig.sml" {
+	Ast Symbol Formatter
+}
+interface AstHelp = "asthelp.int" {ASTHELP}
+unit AstHelp : AstHelp = "asthelp2.sml" {
+	TilWord64 TextIO ASTHELP Ast Util Listops Symbol Formatter
+}
+
+unit ASTUTIL = "astutil2.sig.sml" {
+	ErrorMsg Symbol Ast
+}
+unit AstUtil = "astutil2.sml" {
+	Fixity ErrorMsg Ast Util Listops Symbol Formatter ASTUTIL
+	PrintUtil
+}
+
+unit TVClose = "tvclose2.sml" {Ast Int Symbol}
+unit NamedForm = "namedform2.sml" {
+	Int Symbol Ast ListPair List
+}
+
+unit ML_TOKENS = "ml2.grm.sig" {
+	TilWord64 Symbol PARSER_DATA
+}
+
+unit TokenTable = "tokentable2.sml" {
+	ML_TOKENS Symbol StrgHash IntStrMap
+}
+interface MLLexFun = "ml.lex.int" {
+	ARG_LEXER ML_TOKENS SourceMap ErrorMsg
+}
+unit MLLexFun : MLLexFun = "ml2.lex.sml" {
+	StrgHash Control SourceMap Int String Char ML_TOKENS Symbol
+	ErrorMsg TilWord64 TokenTable Vector
+}
+
+interface MLLrValsFun = "ml.grm.int" {TOKEN ML_TOKENS ErrorMsg Ast}
+unit MLLrValsFun : MLLrValsFun = "ml2.grm.sml" {
+	Fixity Char String TilWord64 TOKEN PARSER_DATA ML_TOKENS
+	Symbol Ast ErrorMsg AstUtil StrgHash Array Int
+}
+
+unit FRONTEND = "frontend2.sig.sml" {Ast Source}
+unit FrontEnd = "frontend2.sml" {
+	ErrorMsg TextIO SourceMap FRONTEND JoinWithArg MLLrValsFun
+	MLLexFun Ast Source Control LrParser Stats
+}
+unit LINKPARSE = "linkparse2.sig.sml" {Ast SourceMap}
+unit LinkParse = "linkparse2.sml" {
+	TextIO Source SourceMap FrontEnd LINKPARSE NamedForm TVClose
+	ErrorMsg Util Stats
+}
+
+#else
+
+unit AST = "ast.sig.sml" {
+	Fixity Symbol TilWord64
+}
+unit Ast = "ast.sml" {
+	Symbol AST Fixity TilWord64
+}
+
+unit ASTHELP = "asthelp.sig.sml" {
+	Ast Symbol Formatter
+}
+interface AstHelp = "asthelp.int" {ASTHELP}
+unit AstHelp : AstHelp = "asthelp.sml" {
+	TilWord64 TextIO ASTHELP Ast Util Listops Symbol Formatter
+}
+
+unit ASTUTIL = "astutil.sig.sml" {
+	ErrorMsg Symbol Ast
+}
+unit AstUtil = "astutil.sml" {
+	Fixity ErrorMsg Ast Util Listops Symbol Formatter ASTUTIL
+	PrintUtil
+}
+
+unit TVClose = "tvclose.sml" {Ast Int Symbol}
+unit NamedForm = "namedform.sml" {
+	Int Symbol Ast ListPair List
+}
+
+unit ML_TOKENS = "ml.grm.sig" {
+	TilWord64 Symbol PARSER_DATA
+}
+
+unit TokenTable = "tokentable.sml" {
+	ML_TOKENS Symbol StrgHash IntStrMap
+}
+interface MLLexFun = "ml.lex.int" {
+	ARG_LEXER ML_TOKENS SourceMap ErrorMsg
+}
+unit MLLexFun : MLLexFun = "ml.lex.sml" {
+	StrgHash Control SourceMap Int String Char ML_TOKENS Symbol
+	ErrorMsg TilWord64 TokenTable Vector
+}
+
+interface MLLrValsFun = "ml.grm.int" {TOKEN ML_TOKENS ErrorMsg Ast}
+unit MLLrValsFun : MLLrValsFun = "ml.grm.sml" {
+	Fixity Char String TilWord64 TOKEN PARSER_DATA ML_TOKENS
+	Symbol Ast ErrorMsg AstUtil StrgHash Array Int
+}
+
+unit FRONTEND = "frontend.sig.sml" {Ast Source}
+unit FrontEnd = "frontend.sml" {
+	ErrorMsg TextIO SourceMap FRONTEND JoinWithArg MLLrValsFun
+	MLLexFun Ast Source Control LrParser Stats
+}
+unit LINKPARSE = "linkparse.sig.sml" {Ast SourceMap}
+unit LinkParse = "linkparse.sml" {
+	TextIO Source SourceMap FrontEnd LINKPARSE NamedForm TVClose
+	ErrorMsg Util Stats
+}
+
+#endif
+

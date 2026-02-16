@@ -1,0 +1,24 @@
+Number: 0142
+Title:       uncaught exception leads to assertion failure in runtime
+Keywords:    uncaught exceptions
+Submitter:   rwh
+Date:        08/18/02
+Version:     CVS
+System:      any
+Severity:    major
+Problem:     title says it all
+Code:        
+Transcript:  
+Comments:    
+Fix:         
+
+	The problem was that our Subscript implementation was raising
+	Overflow rather than Subscript in a few places.  Fixed.
+
+	If the runtime used to die with an assertion failure, then that
+	has been fixed.  The runtime now exits gracefully with "Uncaught
+	exception overflow".
+
+Test: m0115
+Owner: swasey
+Status: closed

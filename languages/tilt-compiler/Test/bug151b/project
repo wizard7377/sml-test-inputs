@@ -1,0 +1,4 @@
+unit A = "a.sml" {}
+unit B = "b.sml" {}
+unit Test = "test.sml" {A B}
+unit Test2 = "test2.sml" {B A}

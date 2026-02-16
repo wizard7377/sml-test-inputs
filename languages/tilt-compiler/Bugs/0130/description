@@ -1,0 +1,20 @@
+Number: 0130
+Title:       type_of failed in Reify2
+Keywords:    type_of, reify
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    critical
+Problem:      ------ ERROR in type_of ---------
+Code:        type_of failed on COERCE( select[+Nbool_in]{}[_r_8639]()[],inject_dyn1{}[_c_8638.bool_sum]() )
+Transcript:  tilt: Empty
+Comments:  
+	[Leaf] The primutils were not using correct code when generating
+	boolean	values.  In particular, the above code fragment uses an
+	expression variable (_r_8639) as a constructor argument.  
+Fix:         
+	[Leaf] Nilprimutilparam now generates correct booleans.
+Test: m0092
+Owner: leaf
+Status: closed

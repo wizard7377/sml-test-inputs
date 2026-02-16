@@ -1,0 +1,86 @@
+Number: 0095
+Title:       Errno is sometimes clobbered leading to incorrect SysErr exceptions from the runtime.
+Keywords:    Runtime
+Submitter:   swasey
+Date:        08/16/02
+Version:     CVS
+System:      solaris
+Severity:    major
+Problem:
+
+	The runtime is throwing SysErr exceptions (when an error actually
+	occurs) with the wrong error message.
+
+	Originally, the bug came up with the following code:
+
+		structure test =
+		struct
+		    val _ = POSIX_Process.fork ()
+		end
+
+	At the time, the runtime demanded a large amount of virtual memory
+	so fork posix_process_fork would fail (this was fixed; see bug 94)
+	The problem is it raised a SysErr exception with errno=22 (EINVAL)
+	on Solaris while truss reports that fork1 failed with errno=12
+	(ENOMEM).
+
+	Hunch: This is due to our use of threads; errno is thread-local.
+	Inspect those manual pages.
+
+	I spotted this bug again in January, 2004 while doing a parallel
+	make on solaris.
+
+	The bug is apparantly reliably reproduced with the following
+	project on cuff:
+
+		(* project *)
+		unit Test = "test.sml" {OS}
+
+		(* test.sml *)
+		val _ = OS.FileSys.remove "nosuchfile"
+
+	Running
+
+		rm nosuchfile	# just in case
+		tilt-nj -o test.exe -c Test project
+		./test.exe
+
+	on cuff yields
+
+		Proc 0: Thread 0 (0): Uncaught exception SysErr: Invalid argument (errno=22)
+
+	Truss shows that unlink() set errno=2 (No such file or directory)
+	but the SysErr shows errno=22.
+
+Code:
+Transcript:
+Comments:
+
+	<ASIDE>
+	The value 22 in in the SysErr exception comes from the
+	processor_info loop around
+
+		../../Runtime/thread.c:/processor_info
+
+	If we handle the case when a processor number is not added to
+	activeProcs[] with "else errno = 0", then the program terminates
+	with
+
+		Proc 0: Thread 0 (0): Uncaught exception SysErr: Error 0 (errno=0)
+	</ASIDE>
+
+	The file /usr/include/errno.h mentions a macro _REENTRANT.  If
+	this is defined (or some other conditions are satisfied), then
+	errno is thread-specific; otherwise it is not.  The manual page
+	intro(2) verifies that defining this macro is required for
+	multi-threaded applications.  (It would be nice if the pthreads
+	manual pages mentioned this or if Solaris got it right without a
+	magic macro.)
+
+Fix:
+
+	I changed the runtime's makefile to invoke the Solaris C compiler
+	with -D_REENTRANT.  This solved the problem.
+
+Owner: swasey
+Status: closed

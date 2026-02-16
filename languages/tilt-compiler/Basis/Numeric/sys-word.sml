@@ -1,0 +1,1 @@
+structure SysWord = Word32

@@ -1,0 +1,18 @@
+Number: 0102
+Title:       word test fails
+Keywords:    Word32, Word8
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    major
+Problem:     test raises failure exception, something to do with words
+Code:        
+Transcript:  
+Comments:    
+	[Leaf] Someone seems to have fixed this.  The test code now
+	passes.
+Fix:         
+Test: m0027
+Owner: rwh
+Status: closed

@@ -1,0 +1,32 @@
+[package]
+name = "lang-srv"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+anyhow.workspace = true
+crossbeam-channel.workspace = true
+diagnostic.workspace = true
+elapsed.workspace = true
+fast-hash.workspace = true
+log.workspace = true
+lsp-server.workspace = true
+lsp-types.workspace = true
+paths.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+text-pos.workspace = true
+
+analysis.path = "../analysis"
+config.path = "../config"
+input.path = "../input"
+sml-namespace.path = "../sml-namespace"

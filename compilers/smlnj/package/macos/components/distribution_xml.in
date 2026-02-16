@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<installer-gui-script minSpecVersion="2">
+    <title>SML/NJ</title>
+    <background file="background.jpg" mime-type="image/jpg" scaling="tofit"/>
+    <os-version min="11" />
+    <options customize="never" require-scripts="false" hostArchitectures="@PRODUCT_ARCH@"/>
+    <welcome file="welcome.html" mime-type="text/html" />
+    <readme file="readme.html" mime-type="text/html" />
+    <license file="license.html" mime-type="text/html" />
+    <conclusion file="conclusion.html" mime-type="text/html" />
+    <choice id="choice8" customLocation="/usr/local/smlnj" customLocationAllowAlternateVolumes="true" visible="false">
+	<pkg-ref id="org.smlnj.@ARCH@.pkg" version="@VERSION@">smlnj.pkg</pkg-ref>
+    </choice>
+    <choices-outline>
+        <line choice="choice8" />
+    </choices-outline>
+</installer-gui-script>

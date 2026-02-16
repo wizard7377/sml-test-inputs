@@ -1,0 +1,22 @@
+unit ARITH = "arith.sig.sml" {}
+unit ArithHelp = "arith-help.sml" {IEEEReal}
+unit PrimArith = "prim-arith.sml" {ARITH ArithHelp}
+unit IntArith = "int-arith.sml" {
+	INTEGER ARITH ArithHelp
+}
+unit WordArith = "word-arith.sml" {
+	WORD ARITH ArithHelp Int LargeInt
+}
+unit RealArith = "real-arith.sml" {
+	REAL ARITH ArithHelp Int
+}
+unit OrdArith = "ord-arith.sml" {
+	CHAR ARITH ArithHelp
+}
+unit FlooredArith = "floored-arith.sml" {ARITH Real Int}
+unit Arith = "arith.sml" {
+	ARITH PrimArith IntArith WordArith RealArith OrdArith FlooredArith
+	Int32 Word8 Word32 Real Char
+}
+
+unit Test = "main.sml" {Arith}

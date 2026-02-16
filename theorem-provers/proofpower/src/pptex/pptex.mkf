@@ -1,0 +1,287 @@
+######################################################################
+#
+#	pptex.mkf $Header: /Users/rda/pp/pptex/RCS/pptex.mkf,v 1.46 2014/05/31 12:58:10 rda Exp rda $
+#
+#	makefile for the PPTEX directory for ProofPower
+#
+######################################################################
+
+# suffixes known
+.SUFFIXES: .db .doc .ldd1 .ldd2 .log .lot .sh .doc .tex .tch
+
+# default make target.  displays a list of more useful targets
+default:
+	@echo "The following are some of the more useful make commands:"
+	@echo " "
+	@echo "make -f pptex.mkf inst        - builds and installs the pptex files"
+	@echo "make -f pptex.mkf srcrel      - makes the pptex source release"
+	@echo "make -f pptex.mkf src         - makes the pptex source files"
+	@echo "make -f pptex.mkf doc         - makes the pptex documents"
+	@echo "make -f pptex.mkf bin         - makes binaries plus what is needed to use them"
+	@echo "make -f pptex.mkf test        - runs some tests"
+	@echo "make -f pptex.mkf build       - build the binaries for use in the current directory"
+	@echo "make -f pptex.mkf packinglist - lists the pptex source file names"
+	@echo " "
+	@echo "Various environment variables influence the behaviour:"
+	@echo " "
+	@echo "    PPCOMPILER  - compiler to use (POLYML or SMLNJ)"
+	@echo "    PPTARGETDIR - target installation directory"
+	@echo "                  (../../bld if not set)"
+	@echo "    PPVER       - product version"
+	@echo "                  (taken from file version if not set)"
+
+
+######################################################################
+#
+#	Makefile Definitions
+#
+######################################################################
+
+PRODNAME=PPTex
+SHORTNAME=pptex
+VERSION=$(shell echo $${PPVER:-`cat version  2>/dev/null || echo XXX.YYY.ZZZ`})
+RELDIR=$(shell echo "$${PPTARGETDIR:-../../bld}")
+PRODUCT=$(PRODNAME)-$(VERSION)
+CWD=$(shell pwd)
+OS=$(shell uname -s | dd conv=lcase 2>/dev/null)
+HAVERCS=$(shell (test -d RCS && echo y ) || echo n)
+# Distinctive tag for binary distribution file
+BINTAG=$(shell eval `arch-os`; echo $$ARCH-$$OS | dd conv=lcase 2>/dev/null)
+
+CC=gcc
+
+# Makefiles
+PPTEXMKF = pptex.mkf
+
+# contents of the pptex bin directory
+IMP100SCRIPTS =  conv_ascii
+IMP100SCRIPTS += conv_extended
+IMP100SCRIPTS += docdvi
+IMP100SCRIPTS += docpr
+IMP100SCRIPTS += docsml
+IMP100SCRIPTS += doctch
+IMP100SCRIPTS += doctds
+IMP100SCRIPTS += doctex
+IMP100SCRIPTS += pptexenv
+IMP100SCRIPTS += texdvi
+
+PPTEXBINRELEASE = $(IMP100SCRIPTS)
+PPTEXBINRELEASE += sieve
+PPTEXBINRELEASE += findfile
+
+# contents of the pptex etc directory
+PPTEXETCRELEASE = sieveview
+PPTEXETCRELEASE += sievekeyword
+
+# contents of the pptex tex directory
+PPTEXTEXRELEASE =  TQ.sty
+PPTEXTEXRELEASE += TQa4.sty
+PPTEXTEXRELEASE += A4.sty
+PPTEXTEXRELEASE += hol1.sty
+PPTEXTEXRELEASE += ProofPower.sty
+PPTEXTEXRELEASE += Lemma1.sty
+PPTEXTEXRELEASE += lemma1.eps
+PPTEXTEXRELEASE += fmu.bst
+PPTEXTEXRELEASE += fmu.bib
+PPTEXTEXRELEASE += hyperbasics.sty
+
+# documents
+PPTEXDOCRELEASE = usr001.dvi
+
+# manual pages
+MANFILES = conv_ascii.1
+MANFILES += docdvi.1
+MANFILES += docpr.1
+MANFILES += doctex.1
+MANFILES += pptexenv.1
+MANFILES += texdvi.1
+
+# packing list for the developer source release (target src).
+PACKINGLIST=
+PACKINGLIST+= A4.sty
+PACKINGLIST+= Lemma1.sty
+PACKINGLIST+= ProofPower.sty
+PACKINGLIST+= TQ.sty
+PACKINGLIST+= TQa4.sty
+PACKINGLIST+= fmu.bib
+PACKINGLIST+= fmu.bst
+PACKINGLIST+= hyperbasics.sty
+PACKINGLIST+= dtd100.doc
+PACKINGLIST+= imp054.doc
+PACKINGLIST+= imp096.doc
+PACKINGLIST+= imp100.doc
+PACKINGLIST+= mdt100.doc
+PACKINGLIST+= lemma1.eps
+PACKINGLIST+= pptex.mkf
+PACKINGLIST+= pptex.skw
+PACKINGLIST+= hol.svf
+PACKINGLIST+= usr001.doc
+PACKINGLIST+= usr024.doc
+PACKINGLIST+= usr024_data.txt
+PACKINGLIST+= int006.doc
+PACKINGLIST+= int007.doc
+PACKINGLIST+= $(MANFILES)
+
+# packing list for user source release
+DISTPACKINGLIST=$(PACKINGLIST)
+
+######################################################################
+#
+#	Building pptex
+#
+######################################################################
+
+pptex: sieve $(PPTEXBINRELEASE) $(PPTEXETCRELEASE)  $(PPTEXTEXRELEASE)
+
+$(IMP100SCRIPTS): imp100.doc sieve sieveview sievekeyword
+	sieve sml < imp100.doc
+
+imp096.c: imp096.doc
+	rm -f imp096.c
+	ln -s imp096.doc imp096.c
+
+imp096.tex: imp096.doc imp096.sieveview sieve sievekeyword
+	doctex -f imp096.sieveview imp096
+
+imp096.sieveview: imp096.doc
+	sed -e '/^# imp096.sieveview/,/^# end of imp096.sieveview/!d' \
+		-e 's/^	//' imp096.doc > imp096.sieveview
+
+findfile.c: imp096.doc imp096.sieveview sieve sievekeyword
+	sieve -f imp096.sieveview -K findfile_prog < imp096.doc > findfile.c
+
+findfile: findfile.c
+	$(CC) -o findfile -DVERSION="\"$(PPVER)\"" $(CFLAGS) findfile.c
+
+sieve: imp096.doc imp096.c
+	$(CC) -o sieve -DVERSION="\"$(PPVER)\"" $(CFLAGS) imp096.c
+
+sievekeyword: pptex.skw
+	cat pptex.skw > $@
+
+sieveview: hol.svf
+	cat hol.svf > $@
+
+hol1.sty: imp054.doc imp054.sml
+	@sed -e 's/[    ]%.*$$//' \
+	-e 's/^[        ][      ]*//' \
+	-e 's/[         ][      ]*$$//' imp054.sml > hol1.sty
+
+
+usr001.dvi: hol1.sty USR.sty usr001.doc usr024_data.tex fmu.bib fmu.bst
+	doctex usr001
+	texdvi usr001 > usr001.dvi.ldd1 </dev/null
+	- bibtex usr001
+	texdvi usr001 > usr001.dvi.ldd2 </dev/null
+	texdvi usr001
+
+usr024_data.tex: usr024_data.txt
+	@sed	-e /PRODUCT/s#PRODUCT#$(PRODUCT)#g \
+		-e "/DATETIME/s#DATETIME#`date +'%H:%M:%S %d/%m/%Y'`"#g \
+		-e "/YEAR/s#YEAR#`date +'%Y'`"#g \
+		<usr024_data.txt >usr024_data.tex
+
+USR.sty: usr024.doc usr024.sml usr024_data.tex
+	@sed -e 's/[ 	]%.*$$//' \
+	-e 's/^[ 	][ 	]*//' \
+	-e 's/[ 	][ 	]*$$//' usr024.sml > USR.sty
+
+
+######################################################################
+#
+#	tests
+#
+######################################################################
+
+test:	usr001.dvi int006.dvi int007.dvi mdt100.ttd
+	@echo "Please inspect usr001.dvi, int006.dvi int007.dvi"
+	@egrep "module" mdt100.ttd || \
+		echo "Missing test output from mdt100.doc"
+
+#####################################################################
+#
+#	Constructing release or installation directories
+#
+######################################################################
+
+reldir:
+	if [ "$${PPTARGETDIR:-}" = "" ]; \
+	then \
+		rm -rf "$(RELDIR)"; \
+	fi
+	[ -d   "$(RELDIR)" ] || mkdir "$(RELDIR)"
+	
+
+bindir: reldir
+	[ -d   "$(RELDIR)"/bin ] || mkdir "$(RELDIR)"/bin
+	[ -d   "$(RELDIR)"/etc ] || mkdir "$(RELDIR)"/etc
+	[ -d   "$(RELDIR)"/tex ] || mkdir "$(RELDIR)"/tex
+
+docdir: reldir
+	[ -d   "$(RELDIR)"/doc ] || mkdir "$(RELDIR)"/doc
+
+srcdir : reldir
+	[ -d   "$(RELDIR)"/src ] || mkdir "$(RELDIR)"/src
+
+mandir:	reldir
+	[ -d   "$(RELDIR)"/man ] || mkdir "$(RELDIR)"/man
+	[ -d   "$(RELDIR)"/man/man1 ] || mkdir "$(RELDIR)"/man/man1
+
+binrel	: bindir  $(PPTEXBINRELEASE) $(PPTEXETCRELEASE)  $(PPTEXTEXRELEASE)
+	cp $(PPTEXBINRELEASE) "$(RELDIR)"/bin
+	cp $(PPTEXETCRELEASE) "$(RELDIR)"/etc
+	cp $(PPTEXTEXRELEASE) "$(RELDIR)"/tex
+	chmod -R a-w "$(RELDIR)"
+	chmod -R g-w "$(RELDIR)"
+	chmod -R u+w "$(RELDIR)"
+
+docrel	:  docdir 	$(PPTEXDOCRELEASE)  \
+		mandir $(MANFILES)
+	cp $(PPTEXDOCRELEASE) "$(RELDIR)"/doc
+	chmod -R a-w "$(RELDIR)"
+	chmod -R g-w "$(RELDIR)"
+	chmod -R u+w "$(RELDIR)"
+	cp $(MANFILES) "$(RELDIR)"/man/man1
+
+build	: $(PPTEXBINRELEASE) $(PPTEXETCRELEASE) $(PPTEXTEXRELEASE)
+
+bininst:	binrel
+
+inst:	binrel docrel
+
+# useful target to print out the names of all the files in the source release
+packinglist:
+	@echo $(PACKINGLIST)
+
+
+######################################################################
+#
+#	Tidying Up
+#
+######################################################################
+
+clean:
+	rm -f *.aux *.dvi *.idx *.log *.sid *.tex *.toc \
+		*.sml *.bbl *.blg *.ldd* \
+		docdvi docpr docsml doctch doctds \
+		$(PPTEXBINRELEASE) $(PPTEXETCRELEASE) \
+		USR.sty hol1.sty imp096.c imp096.sieveview \
+		findfile.c pptex_common
+
+######################################################################
+#
+#	Generic Rules
+#
+######################################################################
+
+%.sml: %.doc
+	docsml $*
+
+%.tex: %.doc
+	doctex $*
+
+%.dvi: %.tex fmu.bib fmu.bst
+	texdvi $*
+
+%.ttd:	%.doc sieve sieveview
+	sieve -f sieveview sml <$*.doc >$*.ttd

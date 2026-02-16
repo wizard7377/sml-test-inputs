@@ -1,0 +1,9 @@
+unit PARSER_DATA = "bug.parser-data.sig" {}
+
+interface MLLrVals = "bug.int" {PARSER_DATA}
+unit MLLrVals : MLLrVals = "ParserData.sml" {}
+
+interface BugJoin = "bug.join.int" {PARSER_DATA}
+unit BugJoin : BugJoin = "join.sml" {PARSER_DATA}
+
+unit FrontEnd = "bug.frontend.sml" {MLLrVals BugJoin}

@@ -1,0 +1,20 @@
+Number: 0092
+Title:       There are too many steps to reporting bugs.
+Keywords:    Bugs
+Submitter:   swasey
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:
+	It needs to be automated.
+Code:
+Transcript:
+Comments:
+Fix:
+	You can now use ml96/Bugs/new to carve out bug reports.
+	For example,
+		./Bugs/new 'something is broken in TILT'
+	will carve out a new bug report with the given description.
+Owner: swasey
+Status: closed

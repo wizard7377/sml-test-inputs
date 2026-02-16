@@ -1,0 +1,241 @@
+#!/bin/sh
+
+case $1 in
+  "") cc=cc;;
+   *) cc="$@";;
+esac
+export cc
+
+cd auto-aux
+rm -f s.h m.h
+
+# Check the sizes of data types
+
+echo "Checking the sizes of integers and pointers..."
+set - `sh runtest sizes.c`
+case "$1,$2,$3" in
+  4,4,4) echo "OK, this is a regular 32 bit architecture.";;
+  4,8,8) echo "Wow! A 64 bit architecture!"
+         echo "#define SIXTYFOUR" >> m.h;;
+  8,8,8) echo "Wow! A 64 bit architecture!"
+         echo "Unfortunately, Caml Light has never been tested in the case"
+         echo "sizeof(int) = 8."
+         echo "Caml Light won't run on this architecture."
+         exit 2;;
+  4,4,8) echo "Wow! A 64 bit architecture!"
+         echo "Unfortunately, Caml Light cannot work in the case"
+         echo "sizeof(long) != sizeof(long *)."
+         echo "Caml Light won't run on this architecture."
+         exit 2;;
+      *) echo "This architecture seems to be neither 32 bits nor 64 bits."
+         echo "Caml Light won't run on this architecture."
+         exit 2;;
+esac
+
+# Are chars signed?
+
+sh runtest schar.c
+case $? in
+  0) echo "The char type is signed. Good!";;
+  1) echo "The char type is not signed. Let's see if 'signed char' works."
+     sh runtest schar2.c
+     case $? in
+      0) echo "Yes, it works. Good!"
+         echo "#define SIGNED_CHAR_WORKS" >> s.h;;
+      *) echo "No, it does not work. Let's try some compiler options."
+         goodopt=""
+         for option in -signed -fsigned-char; do
+           sh runtest $option schar.c
+           case $? in
+             0) goodopt=$option; break;;
+           esac
+         done
+         case "$goodopt" in
+           "") echo "Sorry, I can't find the right option."
+               echo "Please figure it out yourself, and"
+               echo "add it to OTHEROPTS in src/runtime/Makefile.";;
+            *) echo "Yippie! Option $goodopt works. Good!"
+               echo "Add \"$goodopt\" to OTHEROPTS in src/runtime/Makefile.";;
+         esac;;
+     esac;;
+esac
+
+# Determine endianness
+
+sh runtest endian.c
+case $? in
+  0) echo "This is a big-endian architecture."
+     echo "#define MOSML_BIG_ENDIAN" >> m.h;;
+  1) echo "This is a little-endian architecture."
+     echo "#undef MOSML_BIG_ENDIAN" >> m.h;;
+  2) echo "This architecture seems to be neither big endian nor little endian."
+     echo "Caml Light won't run on this architecture."
+     exit 2;;
+  *) echo "Something went wrong during endianness determination."
+     echo "You'll have to figure out endianness yourself"
+     echo "(option MOSML_BIG_ENDIAN in m.h).";;
+esac
+
+# Determine alignment constraints
+
+volatile=""
+while true; do
+  sh runtest $volatile align.c
+  case $? in
+  100) echo "Your compiler chokes on the \"volatile\" modifier."
+       echo "Never mind, we'll do without it."
+       volatile="-Dvolatile=";;
+    0) echo "This architecture has no alignment constraints."
+       echo "#undef ALIGNMENT" >> m.h
+       break;;
+    1) echo "This architecture has alignment constraints."
+       echo "#define ALIGNMENT" >> m.h
+       break;;
+    *) echo "Something went wrong during alignment determination."
+       echo "I'm going to assume this architecture has alignment constraints."
+       echo "That's a safe bet: Caml Light will work even if it turns out that"
+       echo "this architecture actually has no alignment constraints."
+       echo "#define ALIGNMENT" >> m.h
+       break;;
+  esac
+done
+
+sh runtest dblalign.c
+case $? in
+  0) echo "Doubles can be word-aligned.";;
+  1) echo "Doubles must be doubleword-aligned."
+     echo "#define ALIGN_DOUBLE" >> m.h;;
+  *) echo "Something went wrong during alignment determination for doubles."
+     echo "I'm going to assume this architecture has alignment constraints over doubles."
+     echo "That's a safe bet: Caml Light will work even if it turns out that"
+     echo "this architecture actually has no alignment constraints."
+     echo "#define ALIGN_DOUBLE" >> m.h;;
+esac
+
+# To find a good byte copy function
+
+if sh runtest -Dcopy=memmove -Dreverse bytecopy.c; then
+  echo "Function \"memmove\" is provided and handles overlapping moves correctly."
+  echo "#define HAS_MEMMOVE" >> s.h
+fi
+if sh runtest -Dcopy=bcopy bytecopy.c; then
+  echo "Function \"bcopy\" is provided and handles overlapping moves correctly."
+  echo "#define HAS_BCOPY" >> s.h
+fi
+if sh runtest -Dcopy=memcpy -Dreverse bytecopy.c; then
+  echo "Function \"memcpy\" is provided and handles overlapping moves correctly."
+  echo "#define HAS_MEMCPY" >> s.h
+fi
+
+# Check for _longjmp and _setjmp
+
+sh runtest setjmp.c
+case $? in
+  0) echo "_setjmp and _longjmp appear to work. Good!"
+     echo "#define HAS__SETJMP" >> s.h;;
+  *) echo "No _setjmp, _longjmp. We'll use setjmp and longjmp instead."
+esac
+
+# Try to find the type of signal handlers
+
+h=""
+
+for ty in void int; do
+  rm -f /tmp/output$$
+  if $cc -c -DSIGRETURN=$ty sighandler.c 2>/tmp/output$$; then
+    if grep -s -i warning /tmp/output$$; then
+      :
+    else
+      h=$ty
+      break
+    fi
+  fi
+done
+rm -f sighandler.o
+
+case "$h" in
+  "") echo "Sorry, I can't determine the return type for signal handlers."
+      echo "I'm assuming \"void\". If this seems to cause errors,"
+      echo "try to change \"sighandler_return_type\" in s.h"
+      h=void;;
+   *) echo "The return type for signal handlers appears to be \"$h\".";;
+esac
+echo "#define sighandler_return_type $h" >> s.h
+
+# Check the semantics of signal handlers
+
+ostype=`uname`
+
+if test "IRIX64" != "$ostype"; then
+if sh runtest signals.c; then
+  echo "Signals have the BSD semantics."
+  echo "#define BSD_SIGNALS" >> s.h
+else
+  echo "Signals have the System V semantics."
+fi
+fi
+
+# Test for .h files
+
+test_header() {
+    if echo "#include <$1> " | gcc -E - > /dev/null 2> /dev/null; then
+        echo "$1 found."
+        echo "#define $2" >> s.h
+    else
+        echo "Couldn't find $1"
+    fi
+}
+
+test_header "dirent.h" HAVE_DIRENT_H
+test_header "termios.h" HAVE_TERMIOS_H
+test_header "sys/param.h" HAVE_SYS_PARAM_Y
+test_header "sys/resource.h" HAVE_SYS_RESOURCE_H
+test_header "sys/socket.h" HAVE_SYS_SOCKET_H
+test_header "sys/stat.h" HAVE_SYS_STAT_H
+test_header "sys/types.h" HAVE_SYS_TYPES_H
+test_header "sys/time.h" HAVE_SYS_TIME_H
+test_header "sys/wait.h" HAVE_SYS_WAIT_H
+test_header "utime.h" HAVE_UTIME_H
+test_header "unistd.h" HAVE_UNISTD_H
+
+
+# Test for functions
+# usage:
+# test_function VAR_TO_DEFINE f1 f2 f3 ...
+test_functions() {
+    VAR_TO_DEFINE="${1:?MISSING}"; shift
+
+    if sh hasgot "$@"; then
+        echo "Found function(s): $@"
+        echo "#define $VAR_TO_DEFINE" >> s.h
+    else
+        echo "Couldn't find function(s): $@"
+    fi
+}
+
+# For the sys module
+
+test_functions HAS_RENAME rename
+test_functions HAS_STRERROR strerror
+
+# For the Unix library
+
+test_functions HAS_SOCKETS socket socketpair bind listen accept connect
+test_functions HAS_LOCKF lockf
+test_functions HAS_MKFIFO mkfifo
+test_functions HAS_GETPRIORITY getpriority setpriority
+test_functions HAS_UTIME utime
+test_functions HAS_UTIMES utimes
+test_functions HAS_DUP2 dup2
+test_functions HAS_FCHMOD fchmod fchown
+test_functions HAS_TRUNCATE truncate ftruncate
+test_functions HAS_SELECT select
+test_functions HAS_SYMLINK symlink readlink lstat
+test_functions HAS_WAIT3 wait3
+test_functions HAS_WAITPID waitpid
+test_functions HAS_GETGROUPS getgroups
+test_functions HAS_TERMIOS tcgetattr tcsetattr tcsendbreak tcflush tcflow
+
+rm -f tst
+rm -f ../m.h ../s.h
+mv m.h s.h ..

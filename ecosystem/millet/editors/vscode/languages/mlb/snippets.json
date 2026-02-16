@@ -1,0 +1,18 @@
+{
+  "`let` exp": {
+    "prefix": "let",
+    "body": ["let", "  ${1:...}", "in", "  ${2:...}", "end"]
+  },
+  "`bas` exp": {
+    "prefix": "bas",
+    "body": ["bas", "  ${1:...}", "end"]
+  },
+  "`local` dec": {
+    "prefix": "local",
+    "body": ["local", "  ${1:...}", "in", "  ${2:...}", "end"]
+  },
+  "`ann` dec": {
+    "prefix": "ann",
+    "body": ["ann \"${1:...}\" in", "  ${2:...}", "end"]
+  }
+}

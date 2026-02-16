@@ -1,0 +1,149 @@
+include $libdir ^ "/smlnj-lib/project"
+include $libdir ^ "/ml-yacc-lib/project"
+include $libdir ^ "/arg/project"
+include "../Util/project"
+include "../Parser/project"
+include "../Elaborator/project"
+include "../Nil/project"
+include "../Rtl/project"
+include "../Backend/project"
+include "../Sparc/project"
+include "../TAL/project"
+
+(* Shared Manager stuff *)
+
+unit TARGET = "target.sig.sml" {Platform}
+unit Target = "target.sml" {
+	TARGET Platform Util Linkrtl Core Word32 CompilerControl
+}
+
+unit FILECACHE = "filecache.sig.sml" {Crc}
+unit FileCache = "filecache.sml" {
+	Util Int FILECACHE Stats ListMergeSort List HashTableFn Option
+}
+
+unit POS = "pos.sig.sml" {Blaster Formatter}
+unit Pos = "pos.sml" {POS Util Blaster Formatter POS Int}
+unit ExtSyn = "extsyn.sml" {Pos Name}
+
+unit Project_TOKENS = "project.grm.sig" {PARSER_DATA}
+interface ProjectLrValsFun = "project.grm.int" {
+	TOKEN Project_TOKENS ExtSyn
+}
+unit ProjectLrValsFun : ProjectLrValsFun = "project.grm.sml" {
+	TOKEN PARSER_DATA Project_TOKENS Char String Array
+	ExtSyn Name Symbol Pos
+}
+interface ProjectLexFun = "project.lex.int" {
+	ARG_LEXER Project_TOKENS ExtSyn
+}
+unit ProjectLexFun : ProjectLexFun = "project.lex.sml" {
+	Project_TOKENS List Char Vector String ExtSyn Pos
+}
+
+unit FS = "fs.sig.sml" {LinkIl Blaster Name Crc}
+unit Fs = "fs.sml" {
+	FS FileCache LinkIl Blaster Name Util Platform 
+	Stats Listops Crc HashString 
+	Word32 OS List BinIO Word8Vector ListPair String Int
+}
+
+#if defined (env TILT_FRONTEND) andalso env TILT_FRONTEND S= "2" 
+
+unit Version = "version2.sml" {Int}
+
+unit INTSYN = "intsyn.sig.sml" {Pos Name Crc Blaster Formatter}
+unit IntSyn = "intsyn2.sml" {
+	INTSYN Util Pos Name Blaster NameBlast Formatter
+	OS Target Fs Crc Listops Ppil Option Bool
+}
+
+#else
+
+unit Version = "version.sml" {Int}
+
+unit INTSYN = "intsyn.sig.sml" {Pos Name Crc Blaster Formatter}
+unit IntSyn = "intsyn.sml" {
+	INTSYN Util Pos Name Blaster NameBlast Formatter
+	OS Target Fs Crc Listops Ppil Option Bool
+}
+
+#endif
+
+unit PROJECT = "project.sig.sml" {IntSyn ExtSyn TextIO}
+interface PROJECT = "project.int" {PROJECT}
+unit Project : PROJECT = "project.sml" {
+	PROJECT IntSyn ExtSyn Name Util Stats Pos TextIO Fs Platform
+	Target String Bool Listops Option OS IO JoinWithArg LrParser
+	ProjectLrValsFun ProjectLexFun Symbol Version List Int LinkIl
+}
+
+unit TOOLS = "tools.sig.sml" {}
+interface Tools = "tools.int" {TOOLS}
+unit Tools : Tools = "tools.sml" {
+	TOOLS Util Stats String OS Target IntSyn Platform List Fs
+	Listops Int
+}
+unit COMPILER = "compiler.sig.sml" {Name IntSyn}
+interface Compiler = "compiler.int" {COMPILER}
+unit Compiler : Compiler = "compiler.sml" {
+	COMPILER Name IntSyn ExtSyn LinkParse LinkIl Linknil Linksparc
+	Timestamp Util Stats List Pos Fs Crc Ast Lil Rtl Target
+	Platform Tools Listops OS TextIO Project Symbol Linkrtl Linklil
+	LinkTAL Option
+}
+
+unit COMMUNICATION = "communication.sig.sml" {
+	Name IntSyn Blaster Formatter Platform Stats
+}
+unit Communication = "communication.sml" {
+	COMMUNICATION Queue Util Blaster Formatter
+	Stats Name IntSyn NameBlast String Posix OS
+	List Platform BinIO Bool Fs Target
+}
+
+unit SLAVE = "slave.sig.sml" {}
+unit Slave = "slave.sml" {
+	SLAVE Util Stats Communication Time Platform IntSyn Compiler
+	UtilError Fs Name
+}
+
+unit UPDATE = "update.sig.sml" {IntSyn}
+interface UPDATE = "update.int" {UPDATE}
+unit Update : UPDATE = "update.sml" {
+	UPDATE IntSyn Compiler Name Util Stats Crc Fs Blaster Pos List
+	Target Listops
+}
+unit MASTER = "master.sig.sml" {Name}
+interface Master = "master.int" {MASTER}
+unit Master : Master = "master.sml" {
+	MASTER IntSyn Name Stats Formatter Util Time HashString Graph
+	List OS Update Compiler Communication Real Vector String Int
+	Listops SplayMapFn ListMergeSort Platform Target Project Date
+	Bool Pos Fs
+}
+
+unit MANAGER = "manager.sig.sml" {}
+interface Manager = "manager.int" {MANAGER}
+unit Manager : Manager = "manager.sml" {
+	MANAGER Util Stats Name Slave Update Compiler Master LinkParse
+	Linkrtl Linksparc LinkIl Linknil Linklil IlContext Hoist
+	Inline NilStatic Specialize Normalize Tools LilTypecheck Int
+	List UtilError IntSyn LinkTAL Bool Substring StringCvt Arg
+	Target ToNil Version TextIO Platform
+}
+
+unit MAIN = "main.sig.sml" {OS}
+interface Main = "main.int" {MAIN}
+unit Main : Main = "main.sml" {MAIN OS UtilError Manager}
+
+unit Dump = "dump.sml" {
+	MAIN Util Blaster Formatter List Char String Ppil IlBlast
+	IntSyn Compiler Communication Crc TextIO OS UtilError Arg
+}
+
+unit RUN = "run.sig.sml" {OS}
+unit Run = "run.sml" {Posix Word8 OS RUN CommandLine}
+unit Top = "top.sml" {Run Main}
+unit DumpTop = "dumptop.sml" {Run Dump}
+

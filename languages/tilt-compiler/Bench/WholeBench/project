@@ -1,0 +1,27 @@
+(*
+	tilt-nj -vv -fBootstrap -c Whole -o whole.exe project
+*)
+
+#if not $bootstrapping
+#error "Compile WholeBench with -fBootstrap."
+#endif
+
+interface TiltPrim = primitive
+unit TiltPrim : TiltPrim = primitive
+
+interface TiltVectorEq = "../../Basis/vector_eq.int" {TiltPrim}
+unit TiltVectorEq : TiltVectorEq = "../../Basis/vector_eq.sml" {TiltPrim}
+
+interface TiltPrelude = "Prelude.sml" {TiltPrim}
+unit TiltPrelude : TiltPrelude = "Prelude.sml" {TiltPrim}
+
+interface TiltExternTys = "externtys.sml" {TiltPrim}
+unit TiltExternTys : TiltExternTys = "externtys.sml" {TiltPrim}
+
+interface TiltExtern = "extern.sml" {TiltPrim TiltExternTys}
+unit TiltExtern : TiltExtern = "extern.sml" {TiltPrim TiltExternTys}
+
+interface WHOLE = "whole.int" {}
+unit Whole : WHOLE = "whole.sml" {
+	TiltPrim TiltVectorEq TiltPrelude TiltExternTys TiltExtern
+}

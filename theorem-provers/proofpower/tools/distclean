@@ -1,0 +1,62 @@
+#!/bin/sh
+# clean-up program for the open source edition of ProofPower
+# removes all files other than sources from the src directory.
+#
+# clean: this file is part of the ProofPower system
+#
+# Copyright (c) 2002-$YEAR Lemma 1 Ltd.
+#
+# See the file LICENSE for your rights to use and change this file.
+#
+# Contact: Rob Arthan < rda@lemma-one.com >
+#
+USAGE="usage: distclean [-r] [-h]"
+#
+PROGNAME=`basename "$0"`
+diag() {
+	echo $PROGNAME: $* 1>&2
+}
+fail() {
+	diag $*
+	exit 1
+}
+help() {
+echo $PROGNAME: $USAGE
+echo "
+$PROGNAME tidies up the ProofPower src directory with extreme prejudice.
+It deletes everything not listed in the packing list (src/packinglist).
+The options are as follows:
+
+    -r  report: print what would be deleted, but do not delete anything;
+    -h  help: print out this help text and exit.
+"
+}
+#
+GO=y
+while getopts rh arg
+do
+	case $arg in
+	'r')	GO=n ;;
+	'h')	help ; exit 0 ;;
+	'?')	fail $USAGE ;;
+	esac
+done
+#
+# Check we have a src directory
+#
+CWD=`pwd`
+if	[ ! -d src ]
+then	fail "the directory $CWD/src does not exist"
+fi
+if	[ ! -f src/packinglist ]
+then	fail "there is no packing list in $CWD/src"
+fi
+HAVE=`find src/*`
+WANT=`cat src/packinglist`
+DELENDA=`echo $HAVE $WANT | tr ' ' '\n' | sort | uniq -u`
+if	[ "$DELENDA" = "" ]
+then	echo $PROGNAME: no unwanted files 1>&2
+elif	[ "$GO" = "y" ]
+then	rm -rf $DELENDA
+else	echo $DELENDA
+fi

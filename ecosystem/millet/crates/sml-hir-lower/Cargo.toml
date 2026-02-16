@@ -1,0 +1,27 @@
+[package]
+name = "sml-hir-lower"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+doctest = false
+test = false
+
+[dependencies]
+diagnostic.workspace = true
+fast-hash.workspace = true
+str-util.workspace = true
+text-size-util.workspace = true
+
+config.path = "../config"
+cov-mark.path = "../cov-mark"
+lex-util.path = "../lex-util"
+sml-file.path = "../sml-file"
+sml-hir.path = "../sml-hir"
+sml-path.path = "../sml-path"
+sml-syntax.path = "../sml-syntax"

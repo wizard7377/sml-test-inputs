@@ -1,0 +1,20 @@
+Number: 0113
+Title:       Parsing of (op*)
+Keywords:    parser
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     disagreement over parsing
+Code:        
+Transcript:  
+Comments:    
+Fix:         
+
+	I eliminate the lexical rule that complained about unmatched *) so
+	the lexer now views (op*) as LPAREN OP ASTERISK RPAREN.
+
+Test: m0045
+Owner: swasey
+Status: closed

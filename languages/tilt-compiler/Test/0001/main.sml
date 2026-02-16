@@ -1,0 +1,1 @@
+val _ = Arith.test()

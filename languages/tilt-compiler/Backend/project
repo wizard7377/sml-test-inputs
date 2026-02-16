@@ -1,0 +1,82 @@
+include $libdir ^ "/smlnj-lib/project"
+include "../Util/project"
+include "../Parser/project"
+include "../Rtl/project"
+
+unit CORE = "core.sig.sml" {
+	ORD_MAP ORD_SET Rtl TilWord32
+}
+unit Core = "core.sml" {
+	TilWord32 ORD_KEY RTL CORE String Rtl Stats Util Char Int
+	BinarySetFn SplayMapFn SplaySetFn
+}
+unit MACHINE = "machine.sig.sml" {
+	Core Rtl Name TilWord32
+}
+unit MACHINEUTILS = "machineutils.sig.sml" {
+	Core ORD_MAP ORD_SET
+}
+unit CALLCONV = "callconv.sig.sml" {MACHINE}
+unit TRACETABLE = "tracetable.sig.sml" {Rtl Core}
+unit Tracetable = "tracetable.sml" {
+	TilWord32 Rtl Core TRACETABLE Int Util List Pprtl Stats
+}
+unit BBLOCK = "bblock.sig.sml" {
+	Core MACHINE MACHINEUTILS TRACETABLE
+}
+unit Bblock = "bblock.sml" {
+	Core MACHINE MACHINEUTILS BBLOCK Int Util Listops TRACETABLE
+	List Stats
+}
+unit PRINTUTILS = "printutils.sig.sml" {
+	Core Rtl BBLOCK TRACETABLE MACHINE MACHINEUTILS Array
+}
+unit PrintUtils = "printutils.sml" {
+	Int Array Core BBLOCK MACHINEUTILS TRACETABLE PRINTUTILS TextIO
+	Util Listops IO OS
+}
+
+unit IFGRAPH = "ifgraph.sig.sml" {Core}
+unit IfGraph = "ifgraph.sml" {
+	Word List Int MONO_HASH_TABLE Core MACHINE IFGRAPH Util
+	HashTableFn
+}
+unit TRACKSTORAGE = "trackstorage.sig.sml" {Core}
+unit COLOR = "color.sig.sml" {
+	IFGRAPH TRACKSTORAGE MACHINEUTILS Core
+}
+unit Color = "color1.sml" {
+	Core MACHINE IFGRAPH TRACKSTORAGE MACHINEUTILS PRINTUTILS Stats
+	COLOR List
+}
+
+unit TOASM = "toasm.sig.sml" {
+	Core MACHINE BBLOCK TRACETABLE Rtl
+}
+unit INTRAPROC = "intraproc.sig.sml" {
+	Core BBLOCK TRACETABLE
+}
+interface Chaitin = "chaitin.int" {
+	COLOR PRINTUTILS MACHINEUTILS CALLCONV INTRAPROC
+}
+unit Chaitin : Chaitin = "chaitin.sml" {
+	Core Int Rtl PRINTUTILS BBLOCK CALLCONV TRACKSTORAGE IFGRAPH
+	COLOR TRACETABLE MACHINEUTILS INTRAPROC Stats TextIO Util Listops
+	List UtilError
+}
+
+unit Labelgraph = "labelgraph.sml" {
+	Rtl MACHINE GRAPH HashTableFn Graph MACHINE HashString Pprtl
+}
+
+unit RECURSION = "recursion.sig.sml" {Rtl}
+unit Recursion = "recursion.sml" {
+	Rtl Array Pprtl GRAPH PRINTUTILS RECURSION Util Labelgraph
+}
+unit RTLTOASM = "rtltoasm.sig.sml" {Rtl}
+unit RtlToAsm = "rtltoasm.sml" {
+	Rtl Core PRINTUTILS CALLCONV INTRAPROC RECURSION TOASM
+	MACHINEUTILS Stats RTLTOASM Int Util Listops List
+}
+
+unit LINKASM = "link.sig.sml" {Rtl}

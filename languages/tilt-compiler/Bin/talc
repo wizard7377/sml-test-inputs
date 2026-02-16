@@ -1,0 +1,8 @@
+#!/bin/sh
+bindir=`dirname "$0"`
+tiltroot=`cd "$bindir"/..; pwd`
+os=`"$bindir"/ostype`
+TALCLIB="$tiltroot/Lib/talx86/$os"
+PATH="$tiltroot/Bin/talx86/$os;$PATH"
+export TALCLIB PATH
+exec "$tiltroot/Bin/talx86/$os/talc.exe" ${1+"$@"}

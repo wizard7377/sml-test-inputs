@@ -1,0 +1,3 @@
+structure CharVector : MONO_VECTOR
+	where type elem = char
+	where type vector = TiltPrim.word8vector 

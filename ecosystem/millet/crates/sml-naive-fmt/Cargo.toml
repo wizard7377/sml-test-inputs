@@ -1,0 +1,20 @@
+[package]
+name = "sml-naive-fmt"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+fast-hash.workspace = true
+text-size-util.workspace = true
+
+sml-comment.path = "../sml-comment"
+sml-syntax.path = "../sml-syntax"

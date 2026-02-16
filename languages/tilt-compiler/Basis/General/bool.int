@@ -1,0 +1,2 @@
+structure Bool : BOOL
+	where type bool = bool

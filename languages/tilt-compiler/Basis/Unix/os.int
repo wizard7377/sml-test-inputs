@@ -1,0 +1,5 @@
+structure OS : OS
+	where type IO.iodesc = PreOS.IO.iodesc
+	where type IO.poll_desc = PreOS.IO.poll_desc 
+	where type IO.poll_info = PreOS.IO.poll_info
+	where type syserror = Posix.Error.syserror 

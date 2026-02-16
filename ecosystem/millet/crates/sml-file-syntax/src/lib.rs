@@ -1,0 +1,43 @@
+//! See [`SourceFileSyntax`].
+
+/// A source file analyzed at the purely syntactic level.
+#[derive(Debug)]
+pub struct SourceFileSyntax {
+  /// The position database for this file.
+  pub pos_db: text_pos::PositionDb,
+  /// Lex errors from the file.
+  pub lex_errors: Vec<sml_lex::Error>,
+  /// The lossless concrete syntax tree.
+  pub parse: sml_parse::Parse,
+  /// The lowered HIR.
+  pub lower: sml_hir_lower::Lower,
+  /// The kind of source file this is.
+  pub kind: sml_file::Kind,
+}
+
+impl SourceFileSyntax {
+  /// Starts processing a single source file.
+  pub fn new(
+    fix_env: &mut sml_fixity::Env,
+    lang: &config::lang::Language,
+    kind: sml_file::Kind,
+    contents: &str,
+  ) -> Self {
+    elapsed::log("SourceFileSyntax::new", || {
+      let (lex_errors, parse) = Self::lex_and_parse(fix_env, contents);
+      let mut lower = sml_hir_lower::get(lang, kind, &parse.root);
+      sml_ty_var_scope::get(&mut lower.arenas, &lower.root);
+      Self { pos_db: text_pos::PositionDb::new(contents), lex_errors, parse, lower, kind }
+    })
+  }
+
+  /// Lex and parse a source file.
+  pub fn lex_and_parse(
+    fix_env: &mut sml_fixity::Env,
+    contents: &str,
+  ) -> (Vec<sml_lex::Error>, sml_parse::Parse) {
+    let lexed = sml_lex::get(contents);
+    let parse = sml_parse::get(&lexed.tokens, fix_env);
+    (lexed.errors, parse)
+  }
+}

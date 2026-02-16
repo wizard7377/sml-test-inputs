@@ -1,0 +1,44 @@
+Group is
+(* ------ SML/NJ library ------ *)
+../smlnj-lib.cm
+(* ------ Our own utilities --- *)
+util-error.sig.sml
+util-error.sml
+util.sig.sml
+util.sml
+platform.sig.sml
+# if defined(OPSYS_WIN32)
+platform-nt.sml
+# else
+platform.sml
+# endif
+sequence.sig.sml
+sequence.sml
+tilword.sig.sml
+tilwordfromword.sml
+tilwordfromhalf.sml
+tilword32.sml
+tilword64.sml
+listops.sig.sml
+listops.sml
+vectorops.sig.sml
+vectorops.sml
+formatter.sig.sml
+formatter.sml
+graphutil.sig.sml
+graphutil.sml
+stats.sig.sml
+stats.sml
+compiler_control.sig.sml
+compiler_control.sml
+timestamp.sml
+graph.sig.sml
+graph.sml
+crc.sig.sml
+crc.sml
+blast.sig.sml
+blast.sml
+bin_io_util.sig.sml
+bin_io_util.sml
+specific-nj.sml
+trace.sml

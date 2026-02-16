@@ -1,0 +1,31 @@
+[package]
+name = "sml-statics-types"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+chain-map.workspace = true
+code-h2-md-map.workspace = true
+drop_bomb.workspace = true
+fast-hash.workspace = true
+fmt-util.workspace = true
+idx.workspace = true
+paths.workspace = true
+str-util.workspace = true
+
+config.path = "../config"
+cov-mark.path = "../cov-mark"
+sml-hir.path = "../sml-hir"
+sml-path.path = "../sml-path"
+
+[features]
+sync = ["chain-map/sync"]

@@ -1,0 +1,21 @@
+[package]
+name = "millet-ls"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "millet-ls"
+test = false
+
+[dependencies]
+anyhow.workspace = true
+env_logger.workspace = true
+log.workspace = true
+
+lang-srv.path = "../lang-srv"
+panic-hook.path = "../panic-hook"

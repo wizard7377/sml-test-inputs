@@ -1,0 +1,234 @@
+ ------------------------------------------
+|Sensible Structure Sharing for Standard ML|
+ ------------------------------------------
+
+Introduction
+------------
+
+The topic of structure sharing came up a while back in the context of
+the TILT compiler, and we spent quite a bit of time heatedly hashing
+this out.  The consensus was that structure sharing as defined by the
+Definition is overly restrictive to the point of being useless, since
+you can rarely share structures whose signatures contain any type
+definitions.  SML/NJ extends the Definition to allow sharing between
+structures whose signatures are the same signature *variable*.  This
+seems to cover most cases that come up in practice, but the limitation
+to signature variables was felt to be somewhat arbitrary.  In
+addition, it seems strange that one cannot replace an occurrence of a
+signature variable with the signature it is supposed to abbreviate.
+
+In this note, we will present our proposal for sensible structure
+sharing.  It is strictly more permissive than both the Definition and
+SML/NJ.  First, we will go into some detail on the Definition of type
+and structure sharing, for those not intimately familiar with the
+details.  Some terminology given here (some from the Definition, some
+of our own) will be important in the subsequent description of our
+proposal.
+
+
+The Details of the Problem
+--------------------------
+
+1) How is structure sharing Defined?
+
+The Definition says that the (n-ary) structure sharing specification
+
+> spec sharing A1 = ... = An
+
+is a derived form that expands out to "spec" modified by a series of
+type sharing constraints, each of the form
+
+> sharing type Ai.longtycon = Aj.longtycon
+
+for every pair of longtycons Ai.longtycon and Aj.longtycon specified
+by the spec such that 1 <= i < j <= n.  Below, we will refer to any
+such pair as "type components of the same name".  Note that sharing
+occurs here between pairs of type components, so there is no
+requirement that the type components being shared need to exist in all
+the structures.  This leads us to:
+
+2) How is type sharing Defined?
+
+The problem is that type sharing constraints are only permitted
+between abstract types defined in the spec.  Actually, the Definition
+is slightly looser: type sharing is permitted only between type
+components that denote "flexible type names" of the same "arity".  A
+flexible type name is an abstract type name that was introduced by the
+spec being constrained.  The arity of a type is the number of type
+variables it is parameterized over.  For example, consider the spec
+
+> type s
+> type t = s
+> type u
+> type v = u
+
+Introducing a sharing type constraint between any two types here is
+legal because all of them are equal to abstract types introduced by
+the spec.  (Sharing between (s and u), (s and v) or (t and v) would
+introduce a sharing constraint between s and u, and any other sharing
+would add no constraints.)  Now, consider the following spec:
+
+> type s
+> type t = s * s
+> type u
+> type v = u * u
+
+The only legal sharing type constraint we can add to this spec is
+between s and u, because neither t nor v denotes a flexible type name.
+We will say that the "flexible type components" of a spec are the
+longtycons defined by the spec that denote flexible type names.  It
+should be noted that the set of flexible types of a spec remains the
+same after a sharing type constraint is introduced --- the sharing has
+the effect of equating the type names that each flexible type denotes,
+but they are still flexible.
+
+So, in summary, the problem is that sharing between structures that
+have any non-flexible (for instance, transparent) type components of
+the same name, will expand into a bunch of sharing type constraints,
+including some between the non-flexible components, which are illegal.
+This seems overly restrictive: at a minimum, it seems silly not to be
+able to share between two structures that have *equivalent*
+signatures.
+
+
+Our Proposal
+------------
+
+The core proposal is that structure sharing will induce type sharing
+constraints between all pairs of flexible type components of the same
+name and arity (and only those components).  In other words, it will
+only expand into the type sharing constraints that are guaranteed to
+be legal.  This completely defines what spec is generated from the
+(n-ary) structure sharing constraint.
+
+The remainder of the proposal involves what extra "sanity" checks are
+performed after the sharing between the flexible components has been
+added to the spec.  There are two variations to this, both of which
+are implemented in almost exactly the same way.  The plan is to make
+the choice between them a flag in the compiler.
+
+In both variations, any pair of non-flexible type components of the
+same name and arity which denote equivalent types (or type
+constructors) will be silently accepted.  This allows for the
+signatures of two structures being shared to contain transparent type
+definitions, so long as they are equivalent.
+
+In the first variation, all other pairs of type components of the same
+name will generate a compiler warning.
+
+In the second variation, all other pairs of type components of the
+same name will generate a compiler error.
+
+So for example, consider the following varieties of behavior for
+
+> structure A : sig A_spec end
+> structure B : sig B_spec end
+> sharing A = B
+
+depending on what A_spec and B_spec are:
+
+A_spec          B_spec		variation 1	variation 2
+--------------------------------------------------------------
+type t		type t		A.t = B.t	A.t = B.t
+--------------------------------------------------------------
+type t = int	type t = int	silent accept	silent accept
+--------------------------------------------------------------
+type t		type t = int	warning		reject (error)
+--------------------------------------------------------------
+type t = int	type t = bool	warning		reject (error)
+
+
+Discussion
+----------
+
+1) It is important that the sharing between the flexible components be
+added to the spec first, before the extra checks are performed.  For
+example, consider the following:
+
+> structure A : sig type t type s = t * int end
+> structure B : sig type t type s = t * int end
+> sharing A = B
+
+In this case, A.s and B.s are only equivalent *after* the sharing
+of A.t and B.t is added to the spec, so the sharing between all
+flexible type components must be added first.
+
+2) It is worth noting that, in variation 1, structure sharing is
+always legal; the compiler may just whine a lot if you use it weirdly.
+
+3) Why bother with the two variations?  At the time we studied this
+issue, we couldn't agree on which was better and it seemed easy to
+implement them both.  The distinction comes up in the case that there
+are two type components of the same name that cannot be shared (as in
+the third and fourth pairs of specs above).  The Definition of course
+says to reject such cases.  When one of the types is flexible, one
+could attempt to implement real sharing here, using a "where type" or
+something to realize the flexible component in terms of the
+non-flexible one, but it is unclear how to do this in general.
+Consider for example,
+
+> structure A : sig type a  type t        type s = a*a end
+> structure B : sig type b  type t = b*b  type s end
+> sharing A = B
+
+Therefore, we decided that no definitions would be introduced in this
+case, and that the compiler would emit either a warning or an error.
+
+The argument for raising an error is that in some sense a structure
+sharing spec can be thought of as a check, in addition to simply as a
+mechanism for introducing type sharing specs.  It seems
+counter-intuitive that a structure sharing spec can succeed without
+all of the types present in both signatures being equal.  Raising an
+error means that if a sharing spec is actually accepted, then any two
+type components of the same name are known to be equal.
+
+The argument for a warning is that the programmer might wish to share
+two such signatures without expecting that all of the types will be
+made equal, and hence should be allowed to do so.  However, at the
+least a warning is desired to indicate that not all type components
+of the same name can be made equal.
+
+4) Another alternative idea we discussed was to give a stronger
+meaning to multiple structure sharing specs, namely to only add type
+sharing constraints between type components existing in all the
+structures (as opposed to any two).  This seems like a reasonable
+approach, but we opted against it because it causes some valid SML
+programs to be rejected (i.e. it is not strictly more permissive than
+the Definition).  For example,
+
+> structure A : sig type t end
+> structure B : sig type s end
+> structure C : sig type t end
+> sharing A = B = C
+
+induces the sharing of A.t and C.t according to the Definition (and
+thus our proposal), but no sharing according to the stronger idea
+outlined above (since t is not present in the signature of B).
+Admittedly, this is a stupid example.  We would be interested to know
+if there are any examples of real SML programs that would not
+typecheck under a stronger interpretation of multiple structure
+sharing that induces less type sharing in this fashion.
+
+
+Credits
+-------
+
+This proposal arose out of extended discussions among the TILT
+developers:
+  Robert Harper
+  Karl Crary 
+  Perry Cheng
+  Derek Dreyer 
+  Joshua Dunfield
+  Tom Murphy
+  Leaf Petersen
+  Chris Stone
+  David Swasey
+  Joe Vanderwaart
+
+Comments and suggestions are appreciated as always, especially
+regarding the question of whether the first or second variation is
+preferable.
+
+Derek Dreyer & Leaf Petersen
+

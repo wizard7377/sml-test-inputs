@@ -1,0 +1,13 @@
+(* sources.cm
+ *
+ * COPYRIGHT (c) 2024 The Fellowship of SML/NJ (https://www.smlnj.org)
+ * All rights reserved.
+ *)
+
+Group is
+  $/basis.cm
+  $/smlnj-lib.cm
+  ../regexp-lib.cm
+
+  test-fn.sml
+  engines.sml

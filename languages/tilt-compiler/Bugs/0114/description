@@ -1,0 +1,26 @@
+Number: 0114
+Title:       Overloading 0w0 : Word8.word sometimes fails.
+Keywords:    overload
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    reject
+Problem:
+	The following code does not typecheck.
+Code:        
+	val f : Word8.word -> int = fn 0w0 => 1
+Transcript:  
+
+	test.sml:1.29-1.40 Warning: match nonexhaustive
+	test.sml:1.1-1.40 Error: actual type does not match constraint in pattern
+	  Actual type: ((mvar_2262_2 == UINT32) -> (fullResultType_2263_3 == INT32))
+	  Pattern type: (CON_PATH(_2258.Word8_STR. word_TYC) -> INT32)
+	slave cuff.link.16287 found an error in unit Test
+	tilt: mapfile:1: could not elaborate test.sml
+
+Comments:    
+Fix:         
+Test: bug114 m0046
+Owner: swasey
+Status: open

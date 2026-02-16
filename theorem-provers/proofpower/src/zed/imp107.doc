@@ -1,0 +1,3541 @@
+=IGN
+********************************************************************************
+imp107.doc: this file is part of the PPZed system
+
+Copyright (c) 2002 Lemma 1 Ltd.
+
+See the file LICENSE for your rights to use and change this file.
+
+Contact: Rob Arthan < rda@lemma-one.com >
+********************************************************************************
+% imp107.doc   %Z% $Date: 2007/08/04 13:44:08 $ $Revision: 1.28 $ $RCSfile: imp107.doc,v $
+=TEX
+%%%%% YOU MAY WANT TO CHANGE POINT SIZE IN THE FOLLOWING:
+\documentclass[a4paper,11pt]{article}
+
+%%%%% YOU CAN ADD OTHER PACKAGES AS NEEDED BELOW:
+\usepackage{A4}
+\usepackage{Lemma1}
+\usepackage{ProofPower}
+\usepackage{latexsym}
+\usepackage{epsf}
+\makeindex
+
+%%%%% YOU WILL WANT TO CHANGE THE FOLLOWING TO SUIT YOU AND YOUR DOCUMENT:
+
+\def\Title{Implementation: Z Finiteness and Sequences}
+
+\def\AbstractText{This document contains the implementation of material for Z finiteness and sequences}
+
+\def\Reference{DS/FMU/IED/IMP107}
+
+\def\Author{R.D. Arthan, K. Blackburn}
+
+
+\def\EMail{C/O {\tt rda@lemma-one.com}}
+
+\def\Phone{C/O +44 7497 030682}
+
+\def\Abstract{\begin{center}{\bf Abstract}\par\parbox{0.7\hsize}
+{\small \AbstractText}
+\end{center}}
+
+%%%%% YOU MAY WANT TO CHANGE THE FOLLOWING TO GET A NICE FRONT PAGE:
+\def\FrontPageTitle{ {\huge \Title } }
+\def\FrontPageHeader{\raisebox{16ex}{\begin{tabular}[t]{c}
+\bf Copyright \copyright\ : Lemma 1 Ltd \number\year\\\strut\\
+\end{tabular}}}
+
+%%%%% THE FOLLOWING DEFAULTS WILL GENERALLY BE RIGHT:
+
+\def\Version{\VCVersion}
+\def\Date{\FormatDate{\VCDate}}
+
+%% LaTeX2e port: =TEX
+%% LaTeX2e port: % TQtemplate.tex
+%% LaTeX2e port: \documentstyle[hol1,11pt,TQ]{article}
+%% LaTeX2e port: \ftlinepenalty=9999
+\def\Hide#1{}
+%% LaTeX2e port: \def\Bool{``$\it{:}bool\,$''}
+%% LaTeX2e port: \makeindex
+%% LaTeX2e port: \TPPproject{FST PROJECT}  %% Mandatory field
+%% LaTeX2e port: %\TPPvolume{}
+%% LaTeX2e port: %\TPPpart{}
+%% LaTeX2e port: \TPPtitle{Implementation: Z Finiteness and Sequences}  %% Mandatory field
+%% LaTeX2e port: \TPPref{DS/FMU/IED/IMP107}  %% Mandatory field
+%% LaTeX2e port: \def\SCCSversion{$Revision: 1.28 $%
+%% LaTeX2e port: }
+%% LaTeX2e port: \TPPissue{\SCCSversion}  %% Mandatory field
+%% LaTeX2e port: \TPPdate{\FormatDate{$Date: 2007/08/04 13:44:08 $%
+%% LaTeX2e port: }}
+%% LaTeX2e port: \TPPstatus{Draft}			%% Mandatory field
+%% LaTeX2e port: \TPPtype{Specification}
+%% LaTeX2e port: \TPPkeywords{HOL}
+%% LaTeX2e port: %\TPPauthor{ & WIN01}  %% Mandatory field
+%% LaTeX2e port: \TPPauthors{R.D.~Arthan&WIN01\\K.~Blackburn&WIN01}
+%% LaTeX2e port: \TPPauthorisation{R.D.~Arthan & FST Team Leader}
+%% LaTeX2e port: \TPPabstract{This document contains the implementation of
+%% LaTeX2e port: material for Z finiteness and sequences}
+%% LaTeX2e port: %\TPPabstractB{}
+%% LaTeX2e port: %\TPPabstractC{}
+%% LaTeX2e port: %\TPPabstractD{}
+%% LaTeX2e port: %\TPPabstractE{}
+%% LaTeX2e port: %\TPPabstractF{}
+%% LaTeX2e port: \TPPdistribution{\parbox[t]{4.0in}{%
+%% LaTeX2e port:       Library}}
+%% LaTeX2e port: 
+%% LaTeX2e port: %\TPPclass{CLASSIFICATION}
+%% LaTeX2e port: %\def\TPPheadlhs{}
+%% LaTeX2e port: %\def\TPPheadcentre{}
+%% LaTeX2e port: %def\TPPheadrhs{}
+%% LaTeX2e port: %\def\TPPfootlhs{}
+%% LaTeX2e port: %\def\TPPfootcentre{}
+%% LaTeX2e port: %\def\TPPfootrhs{}
+%% LaTeX2e port: 
+%% LaTeX2e port: \begin{document}
+%% LaTeX2e port: \TPPsetsizes
+%% LaTeX2e port: \makeTPPfrontpage
+%% LaTeX2e port: 
+%% LaTeX2e port: \vfill
+%% LaTeX2e port: \begin{centering}
+%% LaTeX2e port: 
+%% LaTeX2e port: \bf Copyright \copyright\ : Lemma 1 Ltd. \number\year
+%% LaTeX2e port: 
+%% LaTeX2e port: \end{centering}
+
+\begin{document}
+
+\headsep=0mm
+\FrontPage
+\headsep=10mm
+
+\setcounter{section}{-1}
+
+\newpage
+\section{DOCUMENT CONTROL}
+\subsection{Contents List}
+\tableofcontents
+\subsection{Document Cross References}
+\bibliographystyle{fmu}
+\bibliography{fmu}
+
+\subsection{Changes History}  % to get section number `0.3'
+\begin{description}
+\item [Issue 1.1 (1996/01/16) -1.3 (1996/01/19)(16th January 1996)]
+First versions, derived from wrk056.
+\item [Issue 1.4 (1996/01/23) (23rd January 1996)]
+Corrected theory hierarchy.
+\item [Issue 1.5 (1996/01/24) (24th January 1996)]
+Correct names of theorems.
+\item [Issue 1.6 (1996/02/22) (20th February 1996)]
+Added $abs$, $mod$ and $div$ theorems to theory $z\_numbers$.
+\item [Issue 1.7 (1996/03/13)]
+Added some $´$ material.
+\item [Issue 1.8 (1996/03/21)]
+Added material about $succ$.
+\item [Issue 1.9 (1996/03/26)-1.11 (1996/03/27)]
+Added $z\_size\_dot\_dot\_conv$.
+\item [Issue 1.12 (1996/06/14)]
+Fixed $z\_size\_dot\_dot\_conv$.
+\item [Issue 1.13 (2001/07/05)]
+Added material on sequence displays.
+\item[Issue 1.14 (2002/07/10)]
+Added new induction tactic and some extra theorems for sequences;
+fixed misleading error messages in the induction tactics.
+\item[Issue 1.15 (2002/10/17)] Copyright and banner updates for open source release.
+\item[Issue 1.16 (2002/10/17)] PPZed-specific updates for open source release
+\item[Issue 1.17 (2003/04/28)] {\it z\_size\_seq\_thm1} had a free variable that is now universally quantified.
+\item[Issue 1.18 (2003/04/30)] Added conversion for equality of sequence displays.
+\item[Issue 1.19 (2003/04/30)] Work-around SML/NJ syntax restriction.
+\item[Issue 1.20 (2003/07/16)]  Allowed for corrections to theorems in {\it z\_functions}.
+\item[Issue 1.21 (2004/01/19)] The Z universal set is now called É.
+\item[Issue 1.22 (2005/02/26)] Precedences and associativity of toolkit operators now follow \cite{ISO02}.
+\item[Issue 1.23 (2005/08/03)] Added new theorems from mutilated chessboard proof.
+\item[Issue 1.24 (2005/08/11)] Allowed for corrections to {\em z\_dom\_clauses} and {\em z\_ran\_clauses}.
+\item[Issue 1.25 (2006/02/02)] Functional composition is now called ``Ö''.
+\item[Issue 1.26 (2007/05/28)] Added {\em z\_dot\_dot\_conv}.
+\item[Issue 1.27 (2007/05/30)] Fixed SML/NJ incompatibility.
+\item[Issue 1.28 (2007/08/04)] The integer range operator is now referred to as {\em dot\_dot} in all cases.
+\item[Issue 1.29 (2008/02/10)] Allowed for changes to lexical rules for underscores.
+\item[2014/07/23]
+Augmented old RCS version numbers in the changes history with dates.
+Dates will be used in place of version numbers in future.
+
+\item[2015/04/17]
+Ported PPZed to Lemma 1 document template.
+\item[2018/09/21]
+Added
+=INLINEFT
+z_string_eq_conv
+=TEX
+.
+
+%%%% END OF CHANGES HISTORY %%%%
+\end{description}
+\subsection{Changes Forecast}
+None.
+\section{GENERAL}
+\subsection{Scope}
+This document contains the implementation
+of the Z Library functions
+given in \cite{DS/FMU/IED/DTD107}.
+\subsection{Introduction}
+\subsection{Purpose and Background}
+See \cite{DS/FMU/IED/DTD107}.
+\subsection{Dependencies}
+The theories generated are constrained by the signatures of the same name, specified
+in \cite{DS/FMU/IED/DTD107}.
+
+\subsection{Interface}
+The interface for the structure is defined by the detailed design signatures
+(see\cite{DS/FMU/IED/DTD107}).
+
+\subsection{Possible Enhancements}
+None known.
+
+\subsection{Deficiencies}
+None known.
+
+\section{THE STRUCTURE $ZFunctions1$}
+\subsection{Preamble}
+=SML
+structure €ZFunctions1› : ZFunctions1 = struct
+=TEX
+=SML
+val lthy = get_current_theory_name();
+val _ = open_theory €"z_functions1"›;
+val _ = push_pc "z_fun_ext";
+val _ = set_flag("z_type_check_only",false);
+=TEX
+
+\subsection{Overrides with Maplets}
+=SML
+val €z_´_Ì_app_thm› = (
+set_pc"z_rel_ext";
+set_goal([], Ò(µf : É; x : É; y : É ∑ (f ´ {x Ì y}) x = y)Æ);
+a(REPEAT strip_tac);
+a(z_app_eq_tac);
+a(REPEAT strip_tac);
+	save_pop_thm "z_´_Ì_app_thm"
+);
+=TEX
+=SML
+val €z_dom_´_Ì_thm› = (
+set_pc"z_rel_ext";
+set_goal([], Òµf : É; x : É; y : É ∑
+	dom(f ´ {x Ì y}) = dom f ¿ {x}Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(cases_tac Òx1 = xÆ);
+(* *** Goal "2.1" *** *)
+a(all_var_elim_asm_tac);
+a(z_∂_tac ÒyÆ THEN  REPEAT strip_tac);
+(* *** Goal "2.2" *** *)
+a(z_∂_tac Òy'Æ THEN  REPEAT strip_tac);
+(* *** Goal "3" *** *)
+a(all_var_elim_asm_tac);
+a(z_∂_tac ÒyÆ THEN  REPEAT strip_tac);
+	save_pop_thm "z_dom_´_Ì_thm"
+);
+=TEX
+N.B. Range form of the above is more complex (you have to subtract $f\ x$
+from the range).
+=SML
+val €z_´_Ì_ç_≠_thm› = (
+set_pc "z_fun_ext";
+set_goal([], Ò[X, Y](µf : X ≠ Y; x : X; y : Y ∑
+	f ´ {x Ì y} ç X ≠ Y)Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" = 7 *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "3" = 8 *** *)
+a(all_var_elim_asm_tac);
+(* *** Goal "4" *** *)
+a(all_var_elim_asm_tac);
+(* *** Goal "5" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "6" *** *)
+a(all_var_elim_asm_tac THEN REPEAT strip_tac);
+(* *** Goal "9" *** *)
+a(cases_tac Òx1 = xÆ);
+(* *** Goal "9.1" *** *)
+a(all_var_elim_asm_tac);
+a(z_∂_tac ÒyÆ THEN REPEAT strip_tac);
+(* *** Goal "9.2" *** *)
+a(DROP_NTH_ASM_T 5 (ante_tac o z_µ_elim Òx1Æ) THEN asm_rewrite_tac[]);
+	save_pop_thm "z_´_Ì_ç_≠_thm"
+);
+=TEX
+=SML
+val €z_´_Ì_app_thm1› = (
+set_pc"z_fun_ext";
+set_goal([], Ò[X, Y](µf : X ≠ Y; x2 : X; x1 : É; y : É |
+	≥ x2 = x1 ∑
+	(f ´ {x1 Ì y}) x2 = f x2)Æ);
+a(REPEAT strip_tac);
+a(z_app_eq_tac);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_app_eq_tac);
+a(REPEAT strip_tac);
+a(all_asm_fc_tac[]);
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(all_fc_tac [z_≠_app_thm]);
+(* *** Goal "3" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(all_fc_tac [z_≠_app_thm]);
+	save_pop_thm "z_´_Ì_app_thm1"
+);
+=TEX
+
+\subsection{Miscellany}
+This section provides some results which do not fall into any particularly
+noteworthy pattern.
+=SML
+val _ = set_pc"z_fun_ext";
+=TEX
+=SML
+val €z_Ú_≠_thm› = (
+set_goal([], Ò[Y, Z](µX:É; f:Y ≠ Z∑ X Ä Y ¥ (X Ú f) ç X ≠ (ran (X Ú f)))Æ);
+a(rewrite_tac[] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒx1Æ THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[] THEN all_asm_fc_tac[]);
+(* *** Goal "3" *** *)
+a(asm_rewrite_tac[]);
+a(all_asm_fc_tac[]);
+a(ALL_ASM_FC_T1 fc_canon1 (MAP_EVERY strip_asm_tac) []);
+a(contr_tac THEN all_asm_fc_tac[]);
+save_pop_thm"z_Ú_≠_thm"
+);
+=TEX
+=SML
+val €z_ran_Ú_thm› = (
+set_goal([], Ò[Y, Z](µX:É; f:Y ≠ Z∑
+	ran(X Ú f) = ran f \ {y : É | µx : É | (x, y) ç f ∑ ≥x ç X})Æ);
+a(rewrite_tac[] THEN contr_tac THEN all_asm_fc_tac[]);
+save_pop_thm"z_ran_Ú_thm"
+);
+=TEX
+=SML
+val €z_ç_≠_thm› = (
+set_goal([], Ò(µX:É; Y:É∑ µ f:X ≠ Y; x:É; y:É | (x, y) ç f ∑ x ç X ± y ç Y)Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+save_pop_thm"z_ç_≠_thm"
+);
+=TEX
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_≠_ran_eq_Ô_thm› = (
+set_goal([], Ò(µA:É; B : É∑ (∂f : A ≠ B∑ ran f = B) § (∂f : A Ô B∑ true))Æ);
+a(rewrite_tac(map z_get_spec[Ò(_è_)Æ, Ò(_Ô_)Æ, Ò(_œ_)Æ]));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+a(all_fc_tac[z_≠_thm]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+save_pop_thm"z_≠_ran_eq_Ô_thm"
+);
+=TEX
+=SML
+val €z_‡_ran_eq_è_thm› = (
+set_goal([], Ò(µA:É; B : É∑ (∂f : A ‡ B∑ ran f = B) § (∂f : A è B∑ true))Æ);
+a(rewrite_tac(map get_spec[Ò(_è_)Æ, Ò(_‡_)Æ, Ò(_Ô_)Æ, Ò(_œ_)Æ]));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+a(asm_ante_tacÒf ç A ˛ BÆ THEN rewrite_tac[z_get_specÒ(_˛_)Æ]
+	THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+save_pop_thm"z_‡_ran_eq_è_thm"
+);
+=TEX
+=SML
+val €z_ran_mono_thm› =(
+set_goal([], ÒµX:É; Y, Z:É; f:É | f ç X ≠ Y ± ran f Ä Z ∑ f ç X ≠ ZÆ);
+a(rewrite_tac[z_get_specÒ(_≠_)Æ] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(PC_T1 "z_rel_ext" asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒyÆ THEN REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(PC_T1 "z_rel_ext" asm_prove_tac[]);
+(* *** Goal "2.2" *** *)
+a(PC_T1 "z_rel_ext" asm_prove_tac[]);
+save_pop_thm"z_ran_mono_thm"
+);
+=TEX
+\subsection{Characterising the Arrows}
+=TEX
+This section develops a reasonably comprehensive approach to reasoning
+about the various function arrows.
+The idea is to prefer total arrows to partial arrows and to prefer
+membership of the function {\em qua} set (e.g., $(x, y) \in f$)
+to predicates involving application (e.g., $y = f(x)$).
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_ﬂ_thm2› = save_thm("z_ﬂ_thm2",
+	merge_pcs_rule1 ["z_fun_ext", "'z_fc"] prove_rule[]
+	ÒµA:É; B:É; f:É∑ f ç  A ﬂ B § f ç dom f ≠ B ± dom f Ä AÆ);
+=TEX
+=SML
+val €z_Ô_thm1› = save_thm("z_Ô_thm1",
+	merge_pcs_rule1 ["z_fun_ext", "'z_fc"] prove_rule[]
+	ÒµA:É; B:É; f:É∑ f ç A Ô B § f ç A ≠ B ± B Ä ran fÆ);
+=TEX
+=SML
+val €z_˛_thm1› = (
+set_goal([],
+	Ò [X, Y]
+	(X ˛ Y =
+	{f : X ﬂ Y | µ x1, x2 : É; y:É∑ (x1, y) ç f ± (x2, y) ç f¥ x1 = x2})Æ);
+a(PC_T1 "z_sets_ext" rewrite_tac[z_get_specÒ(_˛_)Æ, z_ﬂ_thm2]
+	THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(lemma_tacÒx1 ç dom x3 ± x2 ç dom x3Æ THEN1
+	(REPEAT_N 2 (POP_ASM_T ante_tac) THEN PC_T1"z_rel_ext"prove_tac[]));
+a(all_fc_tac[z_≠_ç_rel_§_app_eq_thm]);
+a(all_var_elim_asm_tac1 THEN all_asm_fc_tac[]);
+(* *** Goal "3" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "4" *** *)
+a(GET_ASM_T Òx3 x1 = x3 x2Æ (asm_tac o eq_sym_rule));
+a(ALL_FC_T1 fc_canon1 (MAP_EVERY strip_asm_tac) [z_≠_ç_rel_§_app_eq_thm]);
+a(POP_ASM_T ante_tac THEN once_asm_rewrite_tac[] THEN strip_tac
+	THEN all_asm_fc_tac[]);
+save_pop_thm"z_˛_thm1"
+);
+=TEX
+=SML
+val €z_≠_dom_thm› = (
+set_goal([],
+	ÒµA:É; B:É; f:É∑
+		f ç A ≠ B
+	¥	f ç dom f ≠ BÆ);
+a(PC_T1 "z_fun_ext" REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(contr_tac THEN all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(PC_T1 "z_fun_ext" all_asm_fc_tac[]);
+(* *** Goal "3" *** *)
+a(PC_T1 "z_fun_ext" all_asm_fc_tac[]);
+a(all_asm_fc_tac[]);
+save_pop_thm"z_≠_dom_thm"
+);
+=TEX
+=SML
+val €z_‡_thm1› = (
+set_goal([],
+	ÒµA:É; B:É; f:É∑
+		f ç A ‡ B
+	§	f ç A ≠ B ± (µx, y:É; z:É∑ (x, z) ç f ± (y, z) ç f ¥ x = y)Æ);
+a(rewrite_tac[z_get_specÒ(_‡_)Æ, z_˛_thm1, z_ﬂ_thm2]);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(all_fc_tac[z_≠_dom_thm]);
+(* *** Goal "3" *** *)
+a(asm_ante_tacÒf ç A ≠ BÆ THEN PC_T1 "z_fun_ext" prove_tac[]);
+(* *** Goal "4" *** *)
+a(all_asm_fc_tac[]);
+save_pop_thm"z_‡_thm1"
+);
+=TEX
+\subsection{Forming Functions as Unions}
+This section provides theorems about functions constructed as unions;
+in particular it provides theorems intended for use in forward chaining
+which help one to prove that a union of injections (resp. surjections or
+bijections) is an injection (resp. surjection or bijection).
+=SML
+val _ = set_pc"z_sets_alg";
+=SML
+val €z_¿_™_thm› = save_thm("z_¿_™_thm",
+	pc_rule1"z_rel_ext"prove_rule[]
+	ÒµA:É; B:É; C:É; D:É; f:É; g:É∑
+			f ç A ™ B ± g ç C ™ D
+		¥	f ¿ g ç (A ¿ C) ™ (B ¿ D)Æ);
+=TEX
+=SML
+val €z_ran_¿_thm› = save_thm("z_ran_¿_thm",
+	pc_rule1"z_rel_ext"prove_rule[]
+	Òµf:É; g:É∑ran (f ¿ g) = ran f ¿ ran gÆ);
+=TEX
+=SML
+val €z_¿_≠_thm› = (
+set_goal([], ÒµA:É; B:É; C:É; D:É; f:É; g:É∑
+		f ç A ≠ B ± g ç C ≠ D ± A ° C = {}
+	¥	f ¿ g ç (A ¿ C) ≠ (B ¿ D)Æ);
+a(rewrite_tac[z_get_specÒ(_≠_)Æ] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_fc_tac[z_¿_™_thm]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒyÆ THEN REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2.2" *** *)
+a(lemma_tacÒx ç CÆ THEN1
+	(asm_ante_tacÒg ç C ™ DÆ THEN asm_ante_tacÒ(x, y') ç gÆ
+		THEN PC_T1"z_rel_ext" prove_tac[]));
+a(swap_nth_asm_concl_tac 1
+	THEN asm_ante_tacÒx ç AÆ THEN asm_ante_tacÒA ° C = {}Æ
+		THEN PC_T1"z_sets_ext" prove_tac[]);
+(* *** Goal "2.3" *** *)
+a(lemma_tacÒy' ç BÆ THEN1
+	(asm_ante_tacÒf ç A ™ BÆ THEN asm_ante_tacÒ(x, y') ç fÆ
+		THEN PC_T1"z_rel_ext" prove_tac[]));
+a(all_asm_fc_tac[]);
+(* *** Goal "2.4" *** *)
+a(lemma_tacÒx ç CÆ THEN1
+	(asm_ante_tacÒg ç C ™ DÆ THEN asm_ante_tacÒ(x, y') ç gÆ
+		THEN PC_T1"z_rel_ext" prove_tac[]));
+a(swap_nth_asm_concl_tac 1
+	THEN asm_ante_tacÒx ç AÆ THEN asm_ante_tacÒA ° C = {}Æ
+		THEN PC_T1"z_sets_ext" prove_tac[]);
+(* *** Goal "3" *** *)
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒyÆ THEN REPEAT strip_tac);
+(* *** Goal "3.1" *** *)
+a(lemma_tacÒx ç AÆ THEN1
+	(asm_ante_tacÒf ç A ™ BÆ THEN asm_ante_tacÒ(x, y') ç fÆ
+		THEN PC_T1"z_rel_ext" prove_tac[]));
+a(swap_nth_asm_concl_tac 1
+	THEN asm_ante_tacÒx ç CÆ THEN asm_ante_tacÒA ° C = {}Æ
+		THEN PC_T1"z_sets_ext" prove_tac[]);
+(* *** Goal "3.2" *** *)
+a(lemma_tacÒy' ç DÆ THEN1
+	(asm_ante_tacÒg ç C ™ DÆ THEN asm_ante_tacÒ(x, y') ç gÆ
+		THEN PC_T1"z_rel_ext" prove_tac[]));
+a(all_asm_fc_tac[]);
+(* *** Goal "3.3" *** *)
+a(lemma_tacÒx ç AÆ THEN1
+	(asm_ante_tacÒf ç A ™ BÆ THEN asm_ante_tacÒ(x, y') ç fÆ
+		THEN PC_T1"z_rel_ext" prove_tac[]));
+a(swap_nth_asm_concl_tac 1
+	THEN asm_ante_tacÒx ç CÆ THEN asm_ante_tacÒA ° C = {}Æ
+		THEN PC_T1"z_sets_ext" prove_tac[]);
+(* *** Goal "3.4" *** *)
+a(all_asm_fc_tac[]);
+save_pop_thm"z_¿_≠_thm"
+);
+=TEX
+=SML
+val €z_¿_‡_thm› = (
+set_goal([], ÒµA:É; B:É; C:É; D:É; f:É; g:É∑
+		f ç A ‡ B ± g ç C ‡ D ± A ° C = {} ± B ° D = {}
+	¥	f ¿ g ç (A ¿ C) ‡ (B ¿ D)Æ);
+a(rewrite_tac[z_‡_thm1] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_fc_tac[z_¿_≠_thm]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "3" *** *)
+a(lemma_tacÒz ç B ° DÆ THEN1
+	(LIST_GET_NTH_ASM_T [1,2,6,8] (MAP_EVERY ante_tac)
+		THEN PC_T1 "z_fun_ext" prove_tac[]));
+a(i_contr_tac THEN LIST_GET_NTH_ASM_T [1,2,5] (MAP_EVERY ante_tac)
+	THEN PC_T1 "z_sets_ext" prove_tac[]);
+(* *** Goal "4" *** *)
+a(lemma_tacÒz ç B ° DÆ THEN1
+	(LIST_GET_NTH_ASM_T [1,2,6,8] (MAP_EVERY ante_tac)
+		THEN PC_T1 "z_fun_ext" prove_tac[]));
+a(i_contr_tac THEN LIST_GET_NTH_ASM_T [1,2,5] (MAP_EVERY ante_tac)
+	THEN PC_T1 "z_sets_ext" prove_tac[]);
+(* *** Goal "5" *** *)
+a(all_asm_fc_tac[]);
+save_pop_thm"z_¿_‡_thm"
+);
+=TEX
+=SML
+val €z_¿_Ô_thm› = (
+set_goal([], ÒµA:É; B:É; C:É; D:É; f:É; g:É∑
+		f ç A Ô B ± g ç C Ô D ± A ° C = {}
+	¥	f ¿ g ç (A ¿ C) Ô (B ¿ D)Æ);
+a(rewrite_tac[z_Ô_thm1] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_fc_tac[z_¿_≠_thm]);
+(* *** Goal "2" *** *)
+a(PC_T1 "z_sets_ext" asm_prove_tac[z_ran_¿_thm]);
+save_pop_thm"z_¿_Ô_thm"
+);
+=TEX
+=SML
+val €z_¿_è_thm› = (
+set_goal([], ÒµA:É; B:É; C:É; D:É; f:É; g:É∑
+		f ç A è B ± g ç C è D ± A ° C = {} ± B ° D = {}
+	¥	f ¿ g ç (A ¿ C) è (B ¿ D)Æ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ] THEN
+	REPEAT strip_tac THEN all_fc_tac[z_¿_Ô_thm, z_¿_‡_thm]);
+save_pop_thm"z_¿_è_thm"
+);
+=TEX
+\subsection{Forming Functions as Compositions}
+This section provides theorems analogous to those of the previous
+section but for composition rather than union.
+=SML
+val _ = set_pc"z_sets_alg";
+=SML
+val €lemma_f1› = pc_rule1 "z_rel_ext" prove_rule[]
+	ÒµA:É; B:É; C:É; f:É; g:É∑
+			f ç A ™ B ± g ç B ™ C
+		¥	g Ö f ç A ™ CÆ;
+=TEX
+=SML
+val €z_Ö_≠_thm› = (
+set_goal([], 	ÒµA:É; B:É; C:É; f:É; g:É∑
+		f ç A ≠ B ± g ç B ≠ C
+	¥	g Ö f ç A ≠ CÆ);
+a(rewrite_tac[z_get_specÒ(_≠_)Æ]);
+a(REPEAT strip_tac THEN1 all_fc_tac[lemma_f1]);
+a(LIST_GET_NTH_ASM_T [4] all_fc_tac);
+a(LIST_GET_NTH_ASM_T [5] all_fc_tac);
+a(z_∂â1_tacÒy'Æ THEN PC_T1 "z_rel_ext" asm_rewrite_tac[]);
+a(REPEAT strip_tac THEN1 CONTR_T (fn th => all_fc_tac[th]));
+a(PC_T1 "z_rel_ext" (LIST_GET_NTH_ASM_T [14]) all_fc_tac);
+a(LIST_GET_NTH_ASM_T [8] all_fc_tac);
+a(var_elim_nth_asm_tac 1);
+a(LIST_GET_NTH_ASM_T [3] all_fc_tac);
+save_pop_thm"z_Ö_≠_thm"
+);
+=TEX
+=SML
+val €z_Ö_Ô_thm› = (
+set_goal([], 	ÒµA:É; B:É; C:É; f:É; g:É∑
+		f ç A Ô B ± g ç B Ô C
+	¥	g Ö f ç A Ô CÆ);
+a(rewrite_tac[z_Ô_thm1]);
+a(PC_T1"z_rel_ext" REPEAT strip_tac THEN1 all_fc_tac[z_Ö_≠_thm]);
+a(PC_T1"z_rel_ext" (LIST_GET_NTH_ASM_T [2])
+	(ALL_FC_T1 fc_canon1 (MAP_EVERY strip_asm_tac)));
+a(DROP_ASM_T Òg ç B ≠ CÆ
+	(fn th => PC_T1"z_rel_ext"all_fc_tac[rewrite_rule[z_get_specÒ(_≠_)Æ]th]));
+a(PC_T1"z_rel_ext" (LIST_GET_NTH_ASM_T [5])
+	(ALL_FC_T1 fc_canon1 (MAP_EVERY strip_asm_tac)));
+a(z_∂_tacÒx'Æ THEN PC_T1"z_rel_ext" REPEAT strip_tac);
+a(CONTR_T (fn th => all_fc_tac[th]));
+save_pop_thm"z_Ö_Ô_thm"
+);
+=TEX
+=SML
+val €z_Ö_‡_thm› = (
+set_goal([], 	ÒµA:É; B:É; C:É; f:É; g:É∑
+		f ç A ‡ B ± g ç B ‡ C
+	¥	g Ö f ç A ‡ CÆ);
+a(rewrite_tac[z_‡_thm1]);
+a(PC_T1"z_rel_ext" REPEAT strip_tac THEN1 all_fc_tac[z_Ö_≠_thm]);
+a(all_asm_fc_tac[] THEN all_var_elim_asm_tac1);
+a(all_asm_fc_tac[] THEN all_var_elim_asm_tac1);
+save_pop_thm"z_Ö_‡_thm"
+);
+=TEX
+=SML
+val €z_Ö_è_thm› = (
+set_goal([], 	ÒµA:É; B:É; C:É; f:É; g:É∑
+		f ç A è B ± g ç B è C
+	¥	g Ö f ç A è CÆ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ] THEN
+	REPEAT strip_tac THEN all_fc_tac[z_Ö_Ô_thm, z_Ö_‡_thm]);
+save_pop_thm"z_Ö_è_thm"
+);
+=TEX
+\subsection{Bijectivity of Inverse Functions}
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_rel_inv_è_thm› = (
+set_goal([], 	ÒµA:É; B:É; f:É∑
+		f ç A è B  ¥ f Á~Í ç B è AÆ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ, z_Ô_thm1, z_‡_thm1]
+	THEN MERGE_PCS_T1 ["z_fun_ext", "'z_fc"] prove_tac[]);
+save_pop_thm"z_rel_inv_è_thm"
+);
+=TEX
+\subsection{Bijectivity of Identity Functions}
+This section contains a proof that any identity function is a bijection.
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_id_thm1› = save_thm("z_id_thm1",
+	merge_pcs_rule1 ["z_rel_ext", "'z_fc"] prove_rule[]
+	ÒµX:É; x, y:É∑ (x, y) ç id X § x ç X ± x = yÆ);
+=TEX
+=SML
+val €z_id_è_thm› = (
+set_goal([], ÒµX:É∑ id X ç X è XÆ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ, z_Ô_thm1, z_‡_thm1]
+	THEN PC_T1 "z_fun_ext" rewrite_tac[z_id_thm1]);
+a(prove_tac[]);
+save_pop_thm"z_id_è_thm"
+);
+=TEX
+\subsection{Transitivity of Bijections}
+The set of bijections from $X$ to $X$ are said to act transitively on $X$,
+i.e., given any $x$ and $y$ in $X$ there is a bijection mapping $x$ to $y$.
+A lemma is required to do this (which actually shows us more, the action
+is doubly transitive: there is a bijection mapping $x$ to $y$ and $y$ to $x$).
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_simple_swap_è_thm› = (
+set_goal([], Òµx, y:É∑ {(x, y), (y, x)} ç {x, y} è {x, y}Æ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ, z_Ô_thm1, z_‡_thm1]
+	THEN PC_T1 "z_fun_ext" rewrite_tac[]);
+a(prove_tac[]);
+save_pop_thm"z_simple_swap_è_thm"
+);
+=TEX
+=SML
+val €z_swap_è_thm› = (
+set_goal([], ÒµX:É∑ µx, y:X∑ ∂g : X è X∑ (x, y) ç g ± (y, x) ç gÆ);
+a(REPEAT strip_tac);
+a(z_∂_tacÒ(id(X \ {x, y})) ¿ {(x, y), (y, x)}Æ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(z_µ_elimÒ(x¶x,y¶y)Æz_simple_swap_è_thm));
+a(strip_asm_tac(z_µ_elimÒX \ {x, y}Æz_id_è_thm));
+a(lemma_tac Ò(X \ {x, y}) ° {x, y} = {}Æ THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(all_fc_tac[z_¿_è_thm]);
+a(POP_ASM_T ante_tac THEN LEMMA_T Ò(X \ {x, y}) ¿ {x, y} = XÆrewrite_thm_tac
+	THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+save_pop_thm"z_swap_è_thm"
+);
+=TEX
+=SML
+val €z_è_trans_thm› = (
+set_goal([], ÒµX:É∑ µx, y:X∑ ∂g : X è X∑ (x, y) ç gÆ);
+a(contr_tac THEN all_fc_tac[z_swap_è_thm] THEN all_asm_fc_tac[]);
+save_pop_thm"z_è_trans_thm"
+);
+=TEX
+\subsection{A bijection between $f$ and $dom\,f$}
+It is useful, for example in reasoning about the size of sequences, to
+know that a function {\em qua} set is in bijection with its domain.
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_dom_f_™_f_thm› = (
+set_goal([], ÒµA:É; B:É; f:É∑
+		f ç A ™ B
+	¥	{x : A; y : B | (x, y) ç f∑ (x, (x, y)) } ç dom f ™ fÆ);
+a(PC_T1 "z_rel_ext" prove_tac[]);
+save_pop_thm"z_dom_f_™_f_thm"
+);
+=TEX
+=SML
+val €z_dom_f_≠_f_thm› = (
+set_goal([], ÒµA:É; B:É; f:É∑
+		f ç A ≠ B
+	¥	{x : A; y : B | (x, y) ç f∑ (x, (x, y)) } ç dom f ≠ fÆ);
+a(rewrite_tac[z_get_specÒ(_≠_)Æ]);
+a(REPEAT strip_tac THEN1 all_fc_tac[z_dom_f_™_f_thm]);
+a(POP_ASM_T (PC_T1 "z_rel_ext" strip_asm_tac));
+a(lemma_tac Òx ç AÆ THEN1 PC_T1 "z_rel_ext" asm_prove_tac[]);
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒ(x, y')Æ THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒ(x'¶x, y''¶y')Æ THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(POP_ASM_T (strip_asm_tac o eq_sym_rule) THEN asm_rewrite_tac[]);
+a(all_var_elim_asm_tac1);
+a(all_asm_fc_tac[]);
+save_pop_thm"z_dom_f_≠_f_thm"
+);
+=TEX
+=SML
+val €z_dom_f_Ô_f_thm› = (
+set_goal([], ÒµA:É; B:É; f:É∑
+		f ç A ≠ B
+	¥	{x : A; y : B | (x, y) ç f∑ (x, (x, y)) } ç dom f Ô fÆ);
+a(rewrite_tac[z_Ô_thm1]);
+a(REPEAT strip_tac THEN1 all_fc_tac[z_dom_f_≠_f_thm]);
+a(asm_ante_tac Òf ç A ≠ BÆ THEN rewrite_tac[z_get_specÒ(_≠_)Æ]);
+a(strip_tac THEN asm_ante_tac Òf ç A ™ BÆ);
+a(DROP_ASMS_T discard_tac THEN PC_T1"z_rel_ext" REPEAT strip_tac);
+a(z_∂_tacÒx1Æ THEN REPEAT strip_tac);
+a(z_∂_tacÒ(x¶x1, y¶x2)Æ THEN asm_prove_tac[]);
+save_pop_thm"z_dom_f_Ô_f_thm"
+);
+=TEX
+=SML
+val €z_dom_f_‡_f_thm› = (
+set_goal([], ÒµA:É; B:É; f:É∑
+		f ç A ≠ B
+	¥	{x : A; y : B | (x, y) ç f∑ (x, (x, y)) } ç dom f ‡ fÆ);
+a(rewrite_tac[z_‡_thm1]);
+a(REPEAT strip_tac THEN1 all_fc_tac[z_dom_f_≠_f_thm]);
+a(all_var_elim_asm_tac1);
+a(all_var_elim_asm_tac1);
+a(REPEAT strip_tac);
+save_pop_thm"z_dom_f_‡_f_thm"
+);
+=TEX
+=SML
+val €z_dom_f_è_f_thm› = (
+set_goal([], ÒµA:É; B:É; f:É∑
+		f ç A ≠ B
+	¥	{x : A; y : B | (x, y) ç f∑ (x, (x, y)) } ç dom f è fÆ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ]);
+a(REPEAT strip_tac THEN all_fc_tac[z_dom_f_‡_f_thm, z_dom_f_Ô_f_thm]);
+save_pop_thm"z_dom_f_è_f_thm"
+);
+=TEX
+\subsection{Forming Functions as Intersections}
+This section provides theorems analogous to those proved
+earlier for union and composition but this time for union.
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+The following could go in the theory of relations:
+=SML
+val €z_°_™_thm› = save_thm("z_°_™_thm",
+	pc_rule1 "z_rel_ext" prove_rule[]
+	ÒµX:É; Y:É; f, g:É | f ç X ™ Y ∑
+		(f ° g) ç dom (f ° g) ™ ran(f ° g)Æ);
+=TEX
+The following could go in the theory of relations:
+=SML
+val €z_™_ran_thm› = save_thm("z_™_ran_thm",
+	pc_rule1 "z_rel_ext" prove_rule[]
+	ÒµX:É; f:É ∑ f ç X ™ ran f § f ç X ™ ÉÆ);
+=TEX
+=SML
+val €z_≠_ran_thm› = (
+set_goal([], ÒµX:É; f:É ∑ f ç X ≠ ran f § f ç X ≠ ÉÆ);
+a(rewrite_tac[z_get_specÒ(_≠_)Æ] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[z_™_ran_thm]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒyÆ THEN asm_rewrite_tac[]);
+a(REPEAT strip_tac);
+a(lemma_tacÒy' ç ran fÆ THEN1
+	(POP_ASM_T ante_tac THEN PC_T1"z_rel_ext" prove_tac[]));
+a(all_asm_fc_tac[]);
+(* *** Goal "3" *** *)
+a(ALL_FC_T1 fc_canon1 rewrite_tac[z_™_ran_thm]);
+(* *** Goal "4" *** *)
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒyÆ THEN asm_rewrite_tac[]);
+a(strip_tac THEN1
+	(GET_NTH_ASM_T 2 ante_tac THEN PC_T1"z_rel_ext" prove_tac[]));
+a(REPEAT strip_tac THEN all_asm_fc_tac[]);
+save_pop_thm"z_≠_ran_thm"
+);
+=TEX
+=SML
+val €z_°_≠_thm› = (
+set_goal([], ÒµX:É; Y:É; f, g:É | f ç X ≠ Y ∑
+		(f ° g) ç dom (f ° g) ≠ ran(f ° g)Æ);
+a(rewrite_tac[z_≠_ran_thm]);
+a(rewrite_tac[z_get_specÒ(_≠_)Æ] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[rewrite_rule[z_™_ran_thm] z_°_™_thm]);
+(* *** Goal "2" *** *)
+a(lemma_tacÒx ç XÆ THEN1
+	(DROP_NTH_ASM_T 2 discard_tac THEN PC_T1"z_rel_ext" asm_prove_tac[]));
+a(all_asm_fc_tac[]);
+a(z_∂â1_tacÒyÆ THEN asm_rewrite_tac[]);
+a(PC_T1 "z_rel_ext" (GET_NTH_ASM_T 5) strip_asm_tac);
+a(lemma_tacÒ(x, y') ç f ¥ y' ç YÆ THEN1
+	(GET_NTH_ASM_T 9 ante_tac THEN PC_T1"z_rel_ext" prove_tac[]));
+a(LIST_GET_NTH_ASM_T [4] all_fc_tac THEN all_var_elim_asm_tac1);
+a(REPEAT strip_tac);
+a(lemma_tacÒ(x, y') ç f ¥ y' ç YÆ THEN1
+	(GET_NTH_ASM_T 10 ante_tac THEN PC_T1"z_rel_ext" prove_tac[]));
+a(LIST_GET_NTH_ASM_T [5] all_fc_tac);
+save_pop_thm"z_°_≠_thm"
+);
+=TEX
+=SML
+val €z_°_‡_thm› = (
+set_goal([], ÒµX:É; Y:É; f, g:É | f ç X ‡ Y ∑
+		(f ° g) ç dom (f ° g) ‡ ran(f ° g)Æ);
+a(rewrite_tac[z_‡_thm1] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[z_°_≠_thm]);
+(* *** Goal "2" *** *)
+a(all_asm_fc_tac[]);
+save_pop_thm"z_°_‡_thm"
+);
+=TEX
+=SML
+val €z_Ô_ran_thm› = (
+set_goal([], ÒµX:É; Y:É; f:É | f ç X ≠ Y ∑ f ç dom f Ô ran fÆ);
+a(rewrite_tac[z_Ô_thm1] THEN REPEAT strip_tac);
+a(all_fc_tac[z_≠_thm]);
+a(asm_rewrite_tac[]);
+a(LIST_DROP_NTH_ASM_T [1,2] discard_tac);
+a(asm_ante_tac Òf ç X ≠ YÆ THEN PC_T1 "z_fun_ext" REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_fc_tac[]);
+(* *** Goal "2" *** *)
+a(CONTR_T (fn th => all_fc_tac[th]));
+(* *** Goal "3" *** *)
+a(LIST_GET_NTH_ASM_T [8] all_fc_tac);
+a(LIST_GET_NTH_ASM_T [11] all_fc_tac);
+(* *** Goal "4" = Goal "1" *** *)
+(* *** Goal "5" *** *)
+a(ALL_ASM_FC_T1 fc_canon1 (MAP_EVERY strip_asm_tac) []);
+a(PC_T1 "z_rel_ext" POP_ASM_T strip_asm_tac);
+a(CONTR_T (fn th => all_fc_tac[th]));
+save_pop_thm"z_Ô_ran_thm"
+);
+=TEX
+=SML
+val €z_°_Ô_thm› = (
+set_goal([], ÒµX:É; Y:É; f, g:É | f ç X Ô Y ∑
+		(f ° g) ç dom (f ° g) Ô ran(f ° g)Æ);
+a(rewrite_tac[z_Ô_thm1] THEN REPEAT strip_tac);
+a(ALL_FC_T rewrite_tac[z_°_≠_thm]);
+save_pop_thm"z_°_Ô_thm"
+);
+=TEX
+=SML
+val €z_°_è_thm› = (
+set_goal([], ÒµX:É; Y:É; f, g:É | f ç X è Y ∑
+		(f ° g) ç dom (f ° g) è ran(f ° g)Æ);
+a(rewrite_tac[z_get_specÒ(_è_)Æ] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[z_°_Ô_thm]);
+(* *** Goal "1" *** *)
+a(ALL_FC_T rewrite_tac[z_°_‡_thm]);
+save_pop_thm"z_°_è_thm"
+);
+=TEX
+\subsection{Lemmas about Functions and Singleton Sets}
+=SML
+val _ = set_pc"z_sets_alg";
+=TEX
+=SML
+val €z_≠_diff_singleton_thm› = (
+set_goal([], ÒµX:É; Y:É∑ µ f:X ≠ Y; x:É; y:É∑ (x, y) ç f ¥
+	(f \ {(x, y)}) ç (X \ {x}) ≠ Y Æ);
+a(REPEAT strip_tac);
+a(lemma_tacÒf ç X ™ YÆ THEN1 PC_T1 "z_fun_ext" asm_prove_tac[]);
+a(lemma_tacÒ(x, y) ç X ∏ YÆ THEN1 PC_T1 "z_rel_ext" asm_prove_tac[]);
+a(lemma_tacÒX = dom fÆ THEN1 all_fc_tac[z_≠_thm]
+	THEN all_var_elim_asm_tac1 THEN REPEAT strip_tac);
+a(all_fc_tac[z_°_≠_thm] THEN POP_ASM_T (ante_tac o µ_elimÒÉ \ {(x, y)}Æ));
+a(LEMMA_TÒf \ {(x, y)} = f ° (É \ {(x, y)})Ærewrite_thm_tac
+	THEN1 PC_T1 "z_rel_ext" prove_tac[]);
+a(LEMMA_TÒdom f \ {x} = dom(f ° (É \ {(x, y)}))Æasm_rewrite_thm_tac
+	THEN1 PC_T1 "z_rel_ext" REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒy'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒy'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(z_∂_tacÒy'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "4" *** *)
+a(contr_tac THEN all_var_elim_asm_tac1);
+a(all_fc_tac[z_≠_ç_rel_§_app_eq_thm]);
+a(all_var_elim_asm_tac1);
+(* *** Goal "5" *** *)
+a(lemma_tacÒf ç dom f ≠ Y ¥ ran f Ä YÆ
+	THEN1 PC_T1 "z_fun_ext" prove_tac[]);
+a(lemma_tacÒran f Ä Y ¥ ran (f ° (É \ {(x, y)})) Ä YÆ
+	THEN PC_T1 "z_rel_ext" prove_tac[]);
+a(all_fc_tac[z_ran_mono_thm]);
+save_pop_thm"z_≠_diff_singleton_thm"
+);
+=TEX
+=SML
+val €z_è_diff_singleton_thm› = (
+set_goal([], ÒµX:É; Y:É∑ µ f:X è Y; x:X; y:Y∑ (x, y) ç f ¥
+	(f \ {(x, y)}) ç (X \ {x}) è (Y \ {y})Æ);
+a(REPEAT strip_tac);
+a(lemma_tacÒf ç X ≠ Y ± X = dom f ± Y = ran fÆ THEN1
+	(all_fc_tac[z_è_thm] THEN all_fc_tac[z_≠_thm])
+	THEN all_var_elim_asm_tac1 THEN REPEAT strip_tac);
+a(all_fc_tac[z_°_è_thm] THEN POP_ASM_T (strip_asm_tac o µ_elimÒÉ \ {(x, y)}Æ));
+a(LEMMA_TÒf \ {(x, y)} = f ° (É \ {(x, y)})Ærewrite_thm_tac
+	THEN1 PC_T1 "z_rel_ext" prove_tac[]);
+a(LEMMA_TÒdom f \ {x} = dom(f ° (É \ {(x, y)}))
+	± ran f \ {y} = ran(f ° (É \ {(x, y)}))Æasm_rewrite_thm_tac
+	THEN1 PC_T1 "z_rel_ext" REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒy'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒy'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(z_∂_tacÒy'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "4" *** *)
+a(contr_tac THEN all_var_elim_asm_tac1);
+a(lemma_tacÒ(x, y') ç f ¥ y' ç ran fÆ
+	THEN1 PC_T1 "z_rel_ext" prove_tac[]);
+a(all_fc_tac[z_≠_thm] THEN all_fc_tac[z_ﬂ_thm]);
+(* *** Goal "5" *** *)
+a(z_∂_tacÒx'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "6" *** *)
+a(z_∂_tacÒx'Æ THEN asm_rewrite_tac[]);
+(* *** Goal "7" *** *)
+a(contr_tac THEN all_var_elim_asm_tac1);
+a(lemma_tacÒ(x', y) ç f ¥ x' ç dom fÆ
+	THEN1 PC_T1 "z_rel_ext" prove_tac[]);
+a(all_fc_tac[z_≠_ç_rel_§_app_eq_thm]);
+a(all_var_elim_asm_tac1 THEN all_fc_tac[z_è_thm] THEN all_var_elim_asm_tac1);
+(* *** Goal "8" *** *)
+a(z_∂_tacÒx'Æ THEN asm_rewrite_tac[]);
+save_pop_thm"z_è_diff_singleton_thm"
+);
+=TEX
+=SML
+val €z_singleton_app_thm› = (
+set_goal([], Òµx : É; y: É∑ {(x, y)} x = yÆ);
+a(REPEAT strip_tac THEN z_app_eq_tac);
+a(PC_T1 "z_rel_ext" asm_prove_tac[]);
+save_pop_thm"z_singleton_app_thm"
+);
+=TEX
+=TEX
+\subsection{Lemmas about Functions and the Empty Set}
+=SML
+val _ = set_pc"z_sets_alg";
+=SML
+val €z_empty_Ô_thm› = (
+set_goal([], ÒµX: É∑ (∂f: {} Ô X∑ true) § X = {}Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_asm_ante_tac THEN rewrite_tac[z_Ô_thm1,
+	pc_rule1"z_fun_ext"prove_rule[]Ò[X]({} ≠ X = {{}})Æ]);
+a(REPEAT strip_tac THEN all_var_elim_asm_tac1 THEN all_asm_ante_tac);
+a(rewrite_tac[pc_rule1"z_rel_ext"prove_rule[]Òran {} = {}Æ]);
+a(PC_T1 "z_sets_ext" prove_tac[]);
+(* *** Goal "2" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tacÒ{}Æ THEN PC_T1 "z_fun_ext" prove_tac[]);
+save_pop_thm"z_empty_Ô_thm"
+);
+=TEX
+=SML
+val €z_≠_empty_thm› = (
+set_goal([], ÒµX: É∑ (∂f: X ≠ {}∑ true) § X = {}Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(PC_T1 "z_fun_ext" asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[] THEN z_∂_tacÒ{}Æ THEN PC_T1 "z_fun_ext" prove_tac[]);
+save_pop_thm"z_≠_empty_thm"
+);
+=TEX
+\subsection{EPILOG OF ZFunctions1}
+Final restoration of original proof context
+=SML
+val _ = pop_pc();
+=TEX
+=SML
+end (* of structure ZFunctions1 *);
+open ZFunctions1;
+=TEX
+\section{THE STRUCTURE $ZNumbers1$}
+\subsection{Preamble}
+=SML
+structure €ZNumbers1› : ZNumbers1 = struct
+=TEX
+=SML
+val lthy = get_current_theory_name();
+val _ = open_theory €"z_numbers1"›;
+val _ = push_merge_pcs["'z_numbers", "z_sets_alg"];
+val _ = set_flag("z_type_check_only",false);
+=TEX
+
+=SML
+val €z_dot_dot_clauses› = (
+set_goal([], Òµi, i1, i2, j1, j2:É∑
+	(i ç i1 .. i2 § i1 º i º i2)
+±	(i1 .. i2 = {} § i2 < i1)
+±	(i1 .. i2 Ä j1 .. j2 § i2 < i1 ≤ (j1 º i1 ± i2 º j2))Æ);
+a(rewrite_tac[z_get_specÒ(_.._)Æ]);
+a(PC_T1"z_sets_ext"rewrite_tac[]);
+a(REPEAT strip_tac THEN_TRY SOLVED_T
+	(contr_tac THEN
+	REPEAT_N 2(all_asm_fc_tac[z_º_less_trans_thm,
+			z_less_º_trans_thm, z_º_trans_thm])));
+(* *** Goal "1" *** *)
+a(z_spec_nth_asm_tac 2 Òi1Æ);
+a(all_fc_tac[z_º_less_trans_thm, z_less_º_trans_thm, z_º_trans_thm]);
+(* *** Goal "2" *** *)
+a(z_spec_nth_asm_tac 2 Òi2Æ);
+a(all_fc_tac[z_º_less_trans_thm, z_less_º_trans_thm, z_º_trans_thm]);
+save_pop_thm"€z_dot_dot_clauses›"
+);
+=TEX
+=SML
+val €z_dot_dot_plus_thm› = (
+set_goal([], Òµn, i1, i2 : É∑
+	{i : i1 .. i2 ∑ i + n} = i1 + n .. i2 + nÆ);
+a(REPEAT strip_tac THEN PC_T"z_sets_ext"strip_tac THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_var_elim_asm_tac1
+	THEN contr_tac
+	THEN all_fc_tac[z_º_less_trans_thm, z_less_º_trans_thm, z_º_trans_thm]);
+(* *** Goal "2" *** *)
+a(all_var_elim_asm_tac1
+	THEN contr_tac
+	THEN all_fc_tac[z_º_less_trans_thm, z_less_º_trans_thm, z_º_trans_thm]);
+(* *** Goal "3" *** *)
+a(all_asm_ante_tac);
+a(LEMMA_TÒx1 = (x1 - n) + nÆ once_rewrite_thm_tac
+	THEN1 rewrite_tac[z_plus_assoc_thm]);
+a(REPEAT strip_tac);
+a(z_∂_tacÒx1 - nÆ THEN asm_rewrite_tac[z_plus_assoc_thm]);
+save_pop_thm"z_dot_dot_plus_thm"
+);
+=TEX
+=SML
+val €z_less_cases_thm› = (
+set_goal([],  Òµi, j:É∑ i < j ≤ i = j ≤ j < iÆ);
+a(z_µ_tac);
+a(ante_tac (rewrite_rule[z_º_less_eq_thm] (z_µ_elimÒ(i¶i, j¶j)Æz_º_cases_thm)));
+a(rewrite_tac[prove_rule[]¨j = i § i = jÆ]);
+a(taut_tac);
+save_pop_thm"z_less_cases_thm"
+);
+=TEX
+=SML
+val €z_º_º_plus1_thm› = (
+set_goal([],  Òµi, j:É∑ i º j º i + 1 § j = i ≤ j = i + 1Æ);
+a(contr_tac THEN_TRY SOLVED_T all_var_elim_asm_tac1);
+a(strip_asm_tac (z_µ_elimÒ(i¶j,j¶i+1)Æ z_less_cases_thm));
+(* *** Goal "1" *** *)
+a(POP_ASM_T (strip_asm_tac o once_rewrite_rule[z_get_specÒ(_<_)Æ])
+	THEN all_fc_tac[z_º_antisym_thm]);
+(* *** Goal "2" *** *)
+a(all_fc_tac[z_º_less_trans_thm]);
+save_pop_thm"z_º_º_plus1_thm"
+);
+=TEX
+=SML
+val €z_dot_dot_diff_thm› = (
+set_goal([],  Òµi:Ó∑ (1 .. i + 1) \ {i + 1} = 1 .. iÆ);
+a(MERGE_PCS_T1 ["'z_numbers", "z_sets_ext"]REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(contr_tac);
+a(lemma_tacÒi º x1Æ THEN1 (contr_tac THEN all_fc_tac[z_less_trans_thm]));
+a(lemma_tacÒ≥x1 = iÆ THEN1 (contr_tac THEN all_var_elim_asm_tac1));
+a(all_fc_tac[z_º_º_plus1_thm]);
+(* *** Goal "2" *** *)
+a(ante_tac(z_µ_elimÒ(i¶x1, j¶i, k¶i+1)Æz_º_trans_thm));
+a(asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(contr_tac THEN all_var_elim_asm_tac1);
+save_pop_thm"z_dot_dot_diff_thm"
+);
+=TEX
+=SML
+val €z_dot_dot_¿_thm› = (
+set_goal([],  Òµi:Ó∑ (1 .. i) ¿ {i + 1} = 1 .. i + 1Æ);
+a(REPEAT strip_tac);
+a(all_fc_tac[z_dot_dot_diff_thm]);
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(PC_T1 "z_sets_ext" prove_tac[]);
+a(asm_rewrite_tac[]);
+save_pop_thm"z_dot_dot_¿_thm"
+);
+=TEX
+=SML
+val €z_dot_dot_°_thm› = (
+set_goal([],  Òµi:Ó∑ (1 .. i) ° {i + 1} = {}Æ);
+a(MERGE_PCS_T1 ["'z_numbers", "z_sets_ext"]REPEAT strip_tac);
+a(all_var_elim_asm_tac1);
+save_pop_thm"z_dot_dot_°_thm"
+);
+=TEX
+\subsection{Theorems on Finiteness}
+\subsubsection{An Inductive Characterisation of Finiteness}
+In this section we prove an inductive characterisation of the set
+$ÊX$ of finite subsets of $X$.
+This requires quite a number of preliminaries.
+=SML
+val €lemma_n1› = (
+set_goal([], ÒµX:É; n:Ó∑ µf: 1 .. n + 1 ≠ X | ran f = X∑
+		∂x:X; Y:É∑ ∂ g:1 .. n ≠ Y∑ ran g = Y ± X = Y ¿ {x}Æ);
+a(REPEAT strip_tac);
+a(lemma_tacÒdom f = 1 .. n + 1Æ THEN1
+	(asm_ante_tac Òf ç 1 .. n + 1 ≠ XÆ THEN prove_tac[z_≠_thm]));
+a(PC_T1 "z_fun_ext" lemma_tacÒn + 1 ç dom fÆ THEN1 asm_rewrite_tac[]);
+a(z_∂_tacÒ(x¶y, Y¶ran((1..n)Úf))Æ THEN REPEAT strip_tac
+	THEN1 PC_T1"z_fun_ext" asm_prove_tac[]);
+a(z_∂_tacÒ(1..n)ÚfÆ THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(lemma_tacÒ1 .. n Ä 1 .. n + 1Æ THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(all_fc_tac[z_Ú_≠_thm]);
+(* *** Goal "2" *** *)
+a(ALL_FC_T asm_rewrite_tac [z_ran_Ú_thm]);
+a(PC_T1 "z_sets_ext" REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(PC_T1 "z_fun_ext" lemma_tacÒx1 ç ran fÆ THEN1 asm_rewrite_tac[]);
+a(lemma_tacÒx ç dom fÆ THEN1
+	(POP_ASM_T ante_tac THEN PC_T1 "z_fun_ext" prove_tac[]));
+a(POP_ASM_T ante_tac THEN asm_rewrite_tac[] THEN REPEAT strip_tac);
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_º_less_eq_thm]);
+a(once_rewrite_tac[z_get_specÒ(_<_)Æ] THEN REPEAT strip_tac);
+(* *** Goal "2.1.1" *** *)
+a(all_asm_fc_tac[] THEN all_asm_fc_tac[z_º_less_trans_thm]);
+(* *** Goal "2.1.2" *** *)
+a(all_var_elim_asm_tac1);
+a(PC_T1 "z_sets_ext" lemma_tacÒn + 1 ç 1 .. n + 1Æ THEN1 asm_rewrite_tac[]);
+a(all_fc_tac[z_≠_ç_rel_§_app_eq_thm]);
+a(all_var_elim_asm_tac1 THEN strip_tac);
+(* *** Goal "2.2" *** *)
+a(all_var_elim_asm_tac1);
+a(POP_ASM_T ante_tac THEN PC_T1 "z_fun_ext" prove_tac[]);
+Combinators.K (pop_thm()) "lemma_n1"
+);
+=TEX
+=SML
+val €lemma_n2› = (
+set_goal([],  Ò[X](Ê X Ä •{u :   X| {} ç u ± (µ x:X; a:u∑ (a ¿ {x}) ç u)})Æ);
+a(rewrite_tac[get_specÒ(Ê_)Æ]);
+a(REPEAT strip_tac THEN PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac);
+a(MAP_EVERY asm_ante_tac [Òran f = x1Æ, Òf ç 1 .. n ≠ x1Æ, Òx1 Ä XÆ]);
+a(z_intro_µ_tacÒ(f ¶ f,a¶x1)Æ THEN z_º_induction_tacÒnÆ);
+(* *** Goal "1" *** *)
+a(LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(rewrite_tac[pc_rule1"z_fun_ext"prove_rule[]Ò[X]({} ≠ X = {{}})Æ]);
+a(REPEAT_N 4 z_strip_tac THEN asm_rewrite_tac[]);
+a(rewrite_tac[pc_rule1"z_rel_ext"prove_rule[]Òran {} = {}Æ]);
+a(REPEAT strip_tac THEN all_var_elim_asm_tac1);
+(* *** Goal "2" *** *)
+a(REPEAT strip_tac);
+a(all_fc_tac[lemma_n1]);
+a(lemma_tacÒY Ä XÆ THEN1
+	(asm_ante_tac Òa Ä XÆ THEN asm_ante_tac Òa = Y ¿ {x}Æ
+		THEN PC_T1 "z_sets_ext" prove_tac[]));
+a(LIST_GET_NTH_ASM_T [9] all_fc_tac);
+a(PC_T1 "z_sets_ext" (LIST_GET_NTH_ASM_T [9]) all_fc_tac);
+a(LIST_GET_NTH_ASM_T [13] (ALL_FC_T asm_rewrite_tac));
+Combinators.K (pop_thm()) "lemma_n2"
+);
+=TEX
+=SML
+val €z_empty_Ê_thm› = (
+set_goal([],  Ò[X]({} ç Ê X)Æ);
+a(rewrite_tac[z_get_specÒ(Ê_)Æ, z_≠_ran_eq_Ô_thm]);
+a(z_∂_tac Ò0Æ THEN REPEAT strip_tac);
+a(LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(rewrite_tac[z_empty_Ô_thm]);
+save_pop_thm"z_empty_Ê_thm"
+);
+=TEX
+=SML
+val €z_Ê_¿_singleton_thm› = (
+set_goal([],  Ò[X](µx : X; a : Ê X∑ (a ¿ {x}) ç Ê X)Æ);
+a(rewrite_tac[z_get_specÒ(Ê_)Æ, z_≠_ran_eq_Ô_thm]);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(PC_T1 "z_sets_ext" asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tac Òn+1Æ THEN all_fc_tac[z_Ó_plus1_thm] THEN asm_rewrite_tac[]);
+a(lemma_tacÒ {(n + 1, x)} ç {n + 1} Ô {x} Æ THEN PC_T1 "z_fun_ext" prove_tac[]);
+a(strip_asm_tac(z_µ_elimÒnÆz_dot_dot_°_thm) THEN1 all_fc_tac[z_º_less_trans_thm]);
+a(all_fc_tac[z_¿_Ô_thm]);
+a(POP_ASM_T ante_tac THEN ALL_FC_T rewrite_tac[z_dot_dot_¿_thm]);
+a(PC_T1 "z_predicates" prove_tac[]);
+save_pop_thm"z_Ê_¿_singleton_thm"
+);
+=TEX
+=SML
+val €lemma_n3› = (
+set_goal([],  Ò[X](•{u :   X| {} ç u ± (µ x:X; a:u∑ (a ¿ {x}) ç u)} Ä Ê X)Æ);
+a(REPEAT strip_tac THEN PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac);
+a(POP_ASM_T (strip_asm_tac o z_µ_elimÒÊ XÆ));
+(* *** Goal "1" *** *)
+a(i_contr_tac THEN PC_T1 "z_sets_ext" asm_prove_tac[z_get_specÒ(Ê_)Æ]);
+(* *** Goal "2" *** *)
+a(asm_prove_tac[z_empty_Ê_thm]);
+(* *** Goal "3" *** *)
+a(all_fc_tac[z_Ê_¿_singleton_thm]);
+Combinators.K (pop_thm()) "lemma_n3"
+);
+=TEX
+Our desired inductive characterisation of $ÊX$ may now be proved:
+=SML
+val €z_Ê_thm1› = (
+set_goal([],  Ò[X](Ê X = •{u :   X| {} ç u ± (µ x:X; a:u∑ (a ¿ {x}) ç u)})Æ);
+a(rewrite_tac[pc_rule1"z_sets_ext"prove_rule[]Òµa, b:É∑a = b § a Ä b ± b Ä aÆ,
+	lemma_n2, lemma_n3]);
+save_pop_thm"z_Ê_thm1"
+);
+=TEX
+\subsubsection{The Induction Principle}
+The inductive characterisation of $ÊX$ proved in the previous section
+makes it fairly easy to derive an induction principle.
+
+First a supplementary lemma:
+=SML
+val €lemma_n4› = (
+set_goal([], ÒµX:É; Y:É∑ µ f:X è Y; x:X; y:Y∑ ∂g : X è Y∑ (x, y) ç gÆ);
+a(REPEAT strip_tac);
+a(lemma_tacÒ∂z:Y∑(x, z) ç fÆ THEN1
+	(asm_ante_tac Òx ç XÆ THEN asm_ante_tac Òf ç X è YÆ
+		THEN PC_T1 "z_rel_ext"
+			prove_tac(z_Ô_thm1 :: map z_get_spec[Ò(_è_)Æ, Ò(_≠_)Æ])));
+a(strip_asm_tac(z_µ_elimÒ(x¶z, y¶y)Æ(rewrite_rule[]
+				(z_µ_elimÒYÆ z_è_trans_thm))));
+a(z_∂_tacÒg Ö fÆ);
+a(ALL_FC_T rewrite_tac[z_Ö_è_thm]);
+a(PC_T1 "z_rel_ext" asm_prove_tac[]);
+Combinators.K (pop_thm()) "lemma_n4"
+);
+=TEX
+=SML
+val €lemma_n5› = (
+set_goal([], Òµm, n: Ó∑( ∂f: 1..m è 1..n∑ true) § m = nÆ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(POP_ASM_T ante_tac THEN POP_ASM_T ante_tac THEN
+	z_intro_µ_tacÒ(f¶f,n¶n)Æ THEN z_º_induction_tacÒmÆ);
+(* *** Goal "1.1" *** *)
+a(LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(rewrite_tac[z_get_specÒ(_è_)Æ] THEN REPEAT strip_tac);
+a(all_fc_tac[z_empty_Ô_thm]);
+a(contr_tac);
+a(strip_asm_tac(z_µ_elimÒnÆ z_Ó_cases_thm)
+	THEN1 all_fc_tac[z_º_less_trans_thm] THEN all_var_elim_asm_tac1);
+a(swap_asm_concl_tac Ò1 .. j + 1 = {}Æ THEN PC_T1 "z_sets_ext" REPEAT strip_tac);
+a(z_∂_tacÒ1Æ THEN asm_rewrite_tac[z_dot_dot_clauses]);
+(* *** Goal "1.2" *** *)
+a(contr_tac);
+a(lemma_tacÒ1 º nÆ);
+(* *** Goal "1.2.1" *** *)
+a(contr_tac);
+a(strip_asm_tac(z_µ_elimÒnÆ z_Ó_cases_thm)
+	THEN_TRY all_var_elim_asm_tac1
+	THEN_TRY (SOLVED_T (all_fc_tac[z_less_º_trans_thm, z_º_less_trans_thm])));
+a(swap_asm_concl_tacÒf ç 1 .. i + 1 è 1 .. 0Æ
+	THEN (LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1
+			rewrite_tac[z_dot_dot_clauses]));
+a(rewrite_tac[z_get_specÒ(_è_)Æ, z_Ô_thm1]);
+a(contr_tac THEN all_fc_tac[z_≠_empty_thm]);
+a(swap_asm_concl_tacÒ1 .. i + 1 = {}Æ THEN PC_T1 "z_sets_ext" REPEAT strip_tac);
+a(z_∂_tacÒ1Æ THEN asm_rewrite_tac[]);
+(* *** Goal "1.2.2" *** *)
+a(strip_asm_tac(z_µ_elimÒnÆ z_Ó_cases_thm)
+	THEN_TRY all_var_elim_asm_tac1
+	THEN_TRY (SOLVED_T (all_fc_tac[z_less_º_trans_thm, z_º_less_trans_thm])));
+a(strip_asm_tac(rewrite_rule[](z_µ_elimÒ(f¶f, x¶i+1, y¶j+1)Æ
+	(rewrite_rule[](z_µ_elimÒ(X¶1..i+1, Y¶1..j+1)Æ lemma_n4))))
+	THEN_TRY (SOLVED_T (all_fc_tac[z_less_º_trans_thm, z_º_less_trans_thm])));
+a(strip_asm_tac(rewrite_rule[](z_µ_elimÒ(f¶g, x¶i+1, y¶j+1)Æ
+	(rewrite_rule[](z_µ_elimÒ(X¶1..i+1, Y¶1..j+1)Æ z_è_diff_singleton_thm))))
+	THEN_TRY (SOLVED_T (all_fc_tac[z_less_º_trans_thm, z_º_less_trans_thm])));
+a(swap_nth_asm_concl_tac 1);
+a(ALL_FC_T rewrite_tac[z_dot_dot_diff_thm]);
+a(contr_tac THEN all_asm_fc_tac[]);
+a(all_var_elim_asm_tac1);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[] THEN z_∂_tacÒid (1..n)Æ THEN rewrite_tac[z_id_è_thm]);
+Combinators.K (pop_thm()) "lemma_n5"
+);
+=TEX
+Now we prove the induction principle, which we state in a mixture of Z and
+HOL suitable for use with HOL's generic function for deriving induction
+tactics.
+=SML
+val €z_Ê_induction_thm› = (
+set_goal([],
+	¨µ X p ∑
+		p Ò{}Æ
+	±	(µ x a∑ p ÒaÆ ± Òa ç Ê XÆ ± Òx ç XÆ ± Ò≥x ç aÆ ¥ p Òa ¿ {x}Æ)
+      ¥ (µ a∑ Òa ç Ê XÆ ¥ p a)Æ);
+a(REPEAT µ_tac THEN strip_tac);
+a(rewrite_tac[z_Ê_thm1] THEN REPEAT strip_tac);
+a(POP_ASM_T (strip_asm_tac o z_µ_elimÒ{a : Ê X | ¨p aÆ}Æ));
+(* *** Goal "1" *** *)
+a(swap_nth_asm_concl_tac 1 THEN PC_T1 "z_sets_ext" prove_tac[z_get_specÒ(Ê_)Æ]);
+(* *** Goal "2" *** *)
+a(all_fc_tac[z_empty_Ê_thm]);
+(* *** Goal "3" *** *)
+a(all_fc_tac[z_Ê_¿_singleton_thm]);
+(* *** Goal "4" *** *)
+a(cases_tacÒx ç a'Æ);
+(* *** Goal "4.1" *** *)
+a(lemma_tacÒa' ¿ {x} = a'Æ THEN1 PC_T1 "z_sets_ext" asm_prove_tac[]);
+a(asm_ante_tac Ò≥ ¨p Òa' ¿ {x}ÆÆÆ THEN asm_rewrite_tac[]);
+(* *** Goal "4.2" *** *)
+a(all_asm_fc_tac[]);
+save_pop_thm"z_Ê_induction_thm"
+);
+=TEX
+We now define the induction tactic:
+=SML
+local
+val ZGVar (Ê_name, _, _) = dest_z_term ÒÊ {}Æ;
+
+fun €dest_ç_Ê› (tm : TERM) : TERM * TERM = (
+	let	val (x, Êa) = dest_z_ç tm;
+		val (Ê, _, a) = dest_z_gvar Êa;
+	in	if	Ê = Ê_name
+		then	(x, hd a)
+		else	fail "dest_ç_Ê" 0 []	(* always caught below *)
+	end
+);
+in
+fun €z_Ê_induction_tac› (tm : TERM) : TACTIC = (
+	if not (is_var tm)
+	then term_fail "z_Ê_induction_tac" 107032 [tm]
+	else ( fn(asms, conc) =>
+	let	fun d t = (dest_ç_Ê t, t);
+		val ((x, a), asm) = find
+			(mapfilter d asms) (fn ((x, _), _) => x =$ tm)
+			handle Fail _ => fail "z_Ê_induction_tac" 107033 [];
+		val thm = µ_elim a z_Ê_induction_thm;
+	in	if not (is_free_in tm conc)
+			then term_fail "z_Ê_induction_tac" 86404 [tm]
+		else if any (asms drop (fn t => t =$ asm)) (is_free_in tm)
+			then term_fail "z_Ê_induction_tac" 86403 [tm]
+		else	(asm_ante_tac asm THEN gen_induction_tac1 thm) (asms, conc)
+	end
+	)
+);
+end;
+=TEX
+\subsubsection{Concerning the Size Function}
+We now prove theorems for determining the size of
+finite sets constructed in various ways, e.g. as a union.
+First of all, the next few lemmas build up to a result of very
+general utility: to show a set is finite and has size $n$, put
+it in one-one correspondence with the interval $1..n$.
+=SML
+val €lemma_n6› = (
+set_goal([], Ò[X](µA:Ê X∑ ∂n:Ó∑ ∂f : 1 .. n è A∑ true)Æ);
+a(REPEAT strip_tac);
+a(z_Ê_induction_tacÒAÆ);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒ0Æ THEN REPEAT strip_tac);
+a(LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(z_∂_tacÒ{}Æ THEN REPEAT strip_tac);
+a(PC_T1 "z_fun_ext" prove_tac[]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac(z_µ_elimÒnÆ z_Ó_plus1_thm) THEN1 all_fc_tac[z_º_less_trans_thm]);
+a(z_∂_tacÒn+1Æ THEN REPEAT strip_tac);
+a(z_∂_tacÒf ¿ {(n+1, x)}Æ THEN REPEAT strip_tac);
+a(lemma_tacÒ{(n+1, x)} ç {n+1} è {x}Æ THEN1
+	(PC_T1 "z_fun_ext" prove_tac[] THEN asm_rewrite_tac[]));
+a(strip_asm_tac(z_µ_elimÒnÆz_dot_dot_°_thm) THEN1 all_fc_tac[z_º_less_trans_thm]);
+a(lemma_tacÒA ° {x} = {}Æ
+	THEN1 (PC_T"z_sets_ext"contr_tac THEN all_var_elim_asm_tac1));
+a(all_fc_tac[z_¿_è_thm]);
+a(POP_ASM_T ante_tac THEN ALL_FC_T rewrite_tac[z_dot_dot_¿_thm]);
+Combinators.K (pop_thm()) "lemma_n6"
+);
+=TEX
+=SML
+val €lemma_n7› = (
+set_goal([], Ò[X](µA:Ê X∑ ∂â1 n:Ó∑ ∂f : 1 .. n è A∑ true)Æ);
+a(REPEAT strip_tac);
+a(all_fc_tac[lemma_n6]);
+a(z_∂â1_tacÒnÆ THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(lemma_tacÒf Á~Í Ö f' ç  1 .. n' è 1 ..nÆ
+	THEN1 (all_fc_tac[z_rel_inv_è_thm] THEN all_fc_tac[z_Ö_è_thm]));
+a(all_fc_tac[lemma_n5]);
+Combinators.K (pop_thm()) "lemma_n7"
+);
+=TEX
+=SML
+val €lemma_n8› = (
+set_goal([], Ò[X](Ê X = {A :  X | ∂n:Ó∑ ∂f : 1 .. n è A∑ true})Æ);
+a(strip_tac THEN PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_Ê_induction_tacÒx1Æ THEN PC_T1 "z_sets_ext" asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(all_fc_tac[lemma_n7]);
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+(* *** Goal "3" *** *)
+a(POP_ASM_T ante_tac THEN
+	rewrite_tac(map z_get_spec [Ò(_è_)Æ, Ò(Ê_)Æ, Ò(_‡_)Æ]));
+a(REPEAT strip_tac);
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+a(all_fc_tac[z_Ô_thm]);
+Combinators.K (pop_thm()) "lemma_n8"
+);
+=TEX
+=SML
+val €z_Ê__thm› = (
+set_goal([], Ò[X](Ê X =  X ° (Ê_))Æ);
+a(rewrite_tac[lemma_n8] THEN strip_tac
+	THEN PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+a(z_∂_tacÒfÆ THEN REPEAT strip_tac);
+(* *** Goal "2" duplicates goal "1" *** *)
+save_pop_thm "z_Ê__thm"
+);
+=TEX
+=SML
+val €z_Ê_size_thm› = (
+set_goal([], ÒµA:É; f:É; n:Ó| f ç 1 .. n è A∑ A ç (Ê _) ± # A = nÆ);
+a(REPEAT_UNTIL is_± strip_tac);
+a(lemma_tac ÒA ç (Ê _)Æ THEN1
+	(rewrite_tac[lemma_n8]
+		THEN contr_tac THEN all_asm_fc_tac[] THEN all_asm_fc_tac[]));
+a(ALL_FC_T rewrite_tac[z_get_specÒ#Æ]);
+a(asm_rewrite_tac[z_‡_ran_eq_è_thm]);
+a(bc_tac[rewrite_rule[](z_µ_elimÒnÆ
+		(z_Õ_ruleÒÕ n : Ó | ∂ f : 1 .. n è A ∑ true ∑ nÆ))]);
+(* *** Goal "1" *** *)
+a(all_fc_tac[lemma_n7]);
+a(contr_tac);
+a(all_asm_fc_tac[]);
+a(all_var_elim_asm_tac1);
+(* *** Goal "2" *** *)
+a(all_fc_tac[lemma_n7]);
+a(contr_tac);
+a(all_asm_fc_tac[]);
+save_pop_thm"z_Ê_size_thm"
+);
+=TEX
+In use it is convenient to have the two empty sets in the following have
+the same type.
+=SML
+val €z_size_empty_thm› = (
+set_goal([], Ò({} ∫  X) ç (Ê_) ± # ({} ∫  X) = 0Æ);
+a(lemma_tacÒ∂f: 1 .. 0 è {} ∑ trueÆ);
+(* *** Goal "1" *** *)
+a(LEMMA_TÒ1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(z_∂_tacÒ{}Æ THEN PC_T1 "z_fun_ext" prove_tac[]);
+(* *** Goal "2" *** *)
+a(LEMMA_T Ò0 º 0Æ asm_tac THEN all_fc_tac[z_Ê_size_thm] THEN REPEAT strip_tac);
+save_pop_thm"z_size_empty_thm"
+);
+=TEX
+=SML
+val €z_size_singleton_thm› = (
+set_goal([], Òµx : É∑ {x} ç (Ê_) ± # {x} = 1Æ);
+a(z_µ_tac THEN rewrite_tac[]);
+a(lemma_tacÒ∂f: 1 .. 1 è {x} ∑ trueÆ);
+(* *** Goal "1" *** *)
+a(LEMMA_TÒ1 .. 1 = {1}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(z_∂_tacÒ{(1, x)}Æ THEN PC_T1 "z_fun_ext" prove_tac[]);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(LEMMA_T Ò0 º 1Æ asm_tac THEN all_fc_tac[z_Ê_size_thm] THEN REPEAT strip_tac);
+save_pop_thm"z_size_singleton_thm"
+);
+=TEX
+=SML
+val €z_size_dot_dot_thm› = (
+set_goal([], Òµn:Ó∑ 1 .. n ç (Ê _) ± # (1 .. n) = nÆ);
+a(REPEAT_UNTIL is_± strip_tac);
+a(strip_asm_tac(z_µ_elimÒ1 .. nÆz_id_è_thm));
+a(all_fc_tac[z_Ê_size_thm]);
+a(REPEAT strip_tac);
+save_pop_thm"z_size_dot_dot_thm"
+);
+=TEX
+=SML
+val €lemma_n10› = (
+set_goal([], ÒµX:É; Y:É; f:É∑
+		f ç X è Y ± X ç (Ê_) ¥ Y ç (Ê_)Æ);
+a(rewrite_tac[lemma_n8] THEN REPEAT strip_tac);
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+a(z_∂_tacÒf Ö f'Æ THEN REPEAT strip_tac);
+a(all_fc_tac[z_Ö_è_thm]);
+Combinators.K (pop_thm()) "lemma_n10"
+);
+=TEX
+=SML
+val €lemma_n11› = (
+set_goal([], ÒµX:É; Y:É; f:É∑
+		(f ç X è Y)
+	¥	(X ç (Ê_) § Y ç (Ê_)) ± (X ç (Ê_) ≤ Y ç (Ê_) ¥ #X = #Y)Æ);
+a(z_strip_tac THEN strip_tac THEN strip_tac);
+a(LEMMA_TÒY ç (Ê _) § X ç (Ê _)Ærewrite_thm_tac);
+(* *** Goal "1" *** *)
+a(all_fc_tac[z_rel_inv_è_thm]);
+a(REPEAT strip_tac THEN all_fc_tac[lemma_n10]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[lemma_n8] THEN REPEAT strip_tac);
+a(all_fc_tac[z_Ö_è_thm]);
+a(ALL_FC_T rewrite_tac[z_Ê_size_thm]);
+Combinators.K (pop_thm()) "lemma_n11"
+);
+=TEX
+=SML
+val €z_size_ü_thm› = (
+set_goal([], ÒµX:É; Y:É; f:É | f ç X ü Y ∑ f ç (Ê_) ± #f = #(dom f)Æ);
+a(rewrite_tac[z_ﬂ_thm2, z_get_specÒ(_ü_)Æ] THEN REPEAT_UNTIL is_± strip_tac);
+a(POP_ASM_T (strip_asm_tac o once_rewrite_rule[z_Ê__thm]));
+a(all_fc_tac[z_dom_f_è_f_thm]);
+a(ALL_FC_T rewrite_tac [lemma_n11]);
+save_pop_thm"z_size_ü_thm"
+);
+=TEX
+=SML
+val €z_size_seq_thm› = (
+set_goal([], ÒµX:É; f:É; n : Ó | f ç 1 .. n ≠ X ∑ #f = nÆ);
+a(REPEAT strip_tac);
+a(all_fc_tac[z_dom_f_è_f_thm, z_≠_thm]);
+a(DROP_NTH_ASM_T 3 ante_tac THEN asm_rewrite_tac[]
+	THEN REPEAT strip_tac);
+a(all_fc_tac[z_Ê_size_thm]);
+save_pop_thm"z_size_seq_thm"
+);
+=TEX
+=SML
+val _ = set_merge_pcs["'z_numbers", "z_sets_alg"];
+=TEX
+=SML
+val €z_size_¿_singleton_thm› = (
+set_goal([], Òµa : (Ê_); x: É | ≥x ç a ∑ # (a ¿ {x}) = #a + 1Æ);
+a(rewrite_tac[lemma_n8] THEN REPEAT strip_tac);
+a(lemma_tacÒ{(n + 1, x)} ç {n + 1} è {x}Æ THEN1
+	(PC_T1 "z_fun_ext" prove_tac[] THEN asm_rewrite_tac[]));
+a(lemma_tacÒ(1 .. n) ° {n + 1} = {}Æ THEN1 ALL_FC_T rewrite_tac[z_dot_dot_°_thm]);
+a(lemma_tac Òa ° {x} = {}Æ THEN1 PC_T1 "z_fun_ext" asm_prove_tac[]);
+a(all_fc_tac[z_¿_è_thm]);
+a(POP_ASM_T ante_tac THEN ALL_FC_T rewrite_tac[z_dot_dot_¿_thm] THEN strip_tac);
+a(all_fc_tac[z_Ó_plus1_thm]);
+a(all_fc_tac[z_Ê_size_thm]);
+a(asm_rewrite_tac[]);
+save_pop_thm"z_size_¿_singleton_thm"
+);
+=TEX
+=SML
+val €z_Ê_°_thm› = (
+set_goal([], Òµa, b : É | a ç (Ê_) ≤ b ç (Ê_) ∑ (a ° b) ç (Ê_)Æ);
+a(lemma_tac Òµc, d : É | c ç (Ê_) ∑ (c ° d) ç (Ê_)Æ);
+a(REPEAT strip_tac);
+a(z_Ê_induction_tacÒcÆ);
+(* *** Goal "1.1" *** *)
+a(rewrite_tac[z_empty_Ê_thm]);
+(* *** Goal "1.2" *** *)
+a(cases_tacÒx ç dÆ);
+(* *** Goal "1.2.1" *** *)
+a(lemma_tacÒ≥x ç c ± x ç d ¥ (c ¿ {x}) ° d = (c ° d) ¿ {x}Æ
+	THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(strip_asm_tac (z_µ_elimÒ(x¶x, a¶c ° d)Æ
+	(µ_elimÒÉ ∫XÆz_Ê_¿_singleton_thm)));
+a(asm_rewrite_tac[]);
+(* *** Goal "1.2.2" *** *)
+a(lemma_tacÒ≥ x ç d ¥ (c ¿ {x}) ° d = c ° dÆ
+	THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(REPEAT strip_tac THEN all_asm_fc_tac[]);
+(* *** Goal "2.1" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(LEMMA_TÒa ° b = b ° aÆ asm_rewrite_thm_tac THEN PC_T1 "z_sets_ext" prove_tac[]);
+save_pop_thm"z_Ê_°_thm"
+);
+=TEX
+=SML
+val €z_Ê_diff_thm› = (
+set_goal([], Òµa, b : É | a ç (Ê_) ∑ (a \ b) ç (Ê_)Æ);
+a(REPEAT strip_tac);
+a(LEMMA_T Òa \ b = a ° (É \ b)Æ rewrite_thm_tac THEN1
+		PC_T1 "z_sets_ext"prove_tac[]);
+a(FC_T rewrite_tac[z_Ê_°_thm]);
+save_pop_thm"z_Ê_diff_thm"
+);
+=TEX
+=SML
+val €z_Ä_Ê_thm› = (
+set_goal([], Òµa:(Ê_); b: É | b Ä a ∑ b ç (Ê_)Æ);
+a(REPEAT strip_tac);
+a(LEMMA_TÒb = a \ {x:a|≥x ç b}Æ once_rewrite_thm_tac
+	THEN1 PC_T1 "z_sets_ext" asm_prove_tac[]);
+a(ALL_FC_T rewrite_tac[z_Ê_diff_thm]);
+save_pop_thm"z_Ä_Ê_thm"
+);
+=TEX
+=SML
+val €z_size_¿_thm› = (
+set_goal([], Òµa, b : (Ê_)∑ (a ¿ b) ç (Ê_) ± # (a ¿ b) + #(a ° b) = #a + #bÆ);
+a(REPEAT_UNTIL is_± strip_tac);
+a(z_Ê_induction_tacÒbÆ);
+(* *** Goal "1" *** *)
+a(asm_rewrite_tac[z_size_empty_thm]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[
+	pc_rule1"z_sets_ext" prove_rule[]ÒµA, B, C:É∑A ¿ (B ¿ C) = (A ¿ B) ¿ CÆ]);
+a(ALL_FC_T rewrite_tac[µ_elimÒÉ ∫XÆz_Ê_¿_singleton_thm,
+	z_size_¿_singleton_thm]);
+a(cases_tacÒx ç aÆ);
+(* *** Goal "2.1" *** *)
+a(lemma_tac Òx ç a ¥ ((a ¿ b') ¿ {x}) = a ¿ b' ±  a ° (b' ¿ {x}) = (a ° b') ¿ {x}Æ
+	THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(strip_asm_tac (z_µ_elimÒ(a¶a, b¶b')Æz_Ê_°_thm));
+a(strip_asm_tac (z_µ_elimÒ(a¶a ° b', x¶x)Æz_size_¿_singleton_thm));
+a(asm_rewrite_tac[z_µ_elimÒ1Æ z_plus_order_thm]);
+(* *** Goal "2.2" *** *)
+a(lemma_tac Ò≥x ç a ± ≥ x ç b' ¥ a ° (b' ¿ {x}) = (a ° b')Æ
+	THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(strip_asm_tac (z_µ_elimÒ(a¶a ¿ b', x¶x)Æz_size_¿_singleton_thm));
+a(asm_rewrite_tac[z_µ_elimÒ1Æ z_plus_order_thm]);
+save_pop_thm"z_size_¿_thm"
+);
+=TEX
+=SML
+val €z_ﬁ_Ê_thm› = (
+set_goal([], Òµu : Ê(Ê_)∑ ﬁu ç (Ê_)Æ);
+a(REPEAT strip_tac);
+a(z_Ê_induction_tacÒuÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_size_empty_thm]);
+(* *** Goal "2" *** *)
+a(all_fc_tac[z_size_¿_thm]);
+a(LEMMA_T Òﬁ (u ¿ {x}) = ﬁ u ¿ xÆ asm_rewrite_thm_tac);
+a(DROP_ASMS_T discard_tac THEN PC_T1 "z_sets_ext" prove_tac[]);
+a(z_∂_tacÒxÆ THEN REPEAT strip_tac);
+save_pop_thm"z_ﬁ_Ê_thm"
+);
+=TEX
+=SML
+val €z_size_diff_thm› = (
+set_goal([], Òµ a : (Ê _); b: É ∑ a \ b ç (Ê _) ±  # (a \ b) + # (a ° b) = # aÆ);
+a(REPEAT_UNTIL is_± strip_tac);
+a(lemma_tac Òa \ b ç (Ê _)ÆTHEN1 ALL_FC_T rewrite_tac[z_Ê_diff_thm]);
+a(lemma_tac Òa ° b ç (Ê _)ÆTHEN1 ALL_FC_T rewrite_tac[z_Ê_°_thm]);
+a(REPEAT strip_tac);
+a(strip_asm_tac(z_µ_elimÒ(a ¶ a \ b, b ¶ a ° b)Æ z_size_¿_thm));
+a(POP_ASM_T ante_tac);
+a(rewrite_tac[pc_rule1"z_sets_ext" prove_rule[]
+	Ò(a \ b) ¿ a ° b = a ± (a \ b) ° (a ° b) = {}Æ, z_size_empty_thm]);
+a(STRIP_T rewrite_thm_tac);
+save_pop_thm"z_size_diff_thm"
+);
+=TEX
+=SML
+val €z_size_Ó_thm› = (
+set_goal([], Òµa : (Ê_) ∑ # a ç ÓÆ);
+a(rewrite_tac[lemma_n8] THEN REPEAT strip_tac);
+a(all_fc_tac[z_Ê_size_thm]);
+a(asm_rewrite_tac[]);
+save_pop_thm"z_size_Ó_thm"
+);
+=TEX
+=SML
+val €z_Ê_size_thm1› = (
+set_goal([], Òµa: (Ê_) ∑ (∂f:1 .. #a è a ∑true)Æ);
+a(REPEAT strip_tac);
+a(z_Ê_induction_tac ÒaÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_size_empty_thm] THEN REPEAT strip_tac);
+a(z_∂_tacÒ{}Æ THEN PC_T1 "z_fun_ext" REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(all_fc_tac[z_size_¿_singleton_thm, z_size_Ó_thm]);
+a(asm_rewrite_tac[]);
+a(ALL_FC_T rewrite_tac[conv_rule(ONCE_MAP_C eq_sym_conv) z_dot_dot_¿_thm]);
+a(z_∂_tacÒf ¿ {(#a + 1, x)}Æ THEN rewrite_tac[]);
+a(bc_thm_tac
+	(rewrite_rule[](conv_rule (MAP_C z_µ_elim_conv) (z_¿_è_thm))));
+a(asm_rewrite_tac[
+	pc_rule1 "z_fun_ext" prove_rule[]
+		Òµx:É; y:É∑{(x, y)} ç {x} è {y}Æ]);
+a(PC_T1 "z_rel_ext" REPEAT strip_tac
+	THEN all_var_elim_asm_tac1);
+save_pop_thm"z_Ê_size_thm1"
+);
+=TEX
+=SML
+val €z_size_mono_thm› = (
+set_goal([], Òµa : (Ê_); b: É | b Ä a ∑ #b º #aÆ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(z_µ_elimÒ(a ¶ a, b ¶ a \ b)Æ z_size_diff_thm));
+a(POP_ASM_T ante_tac);
+a(lemma_tacÒb Ä a ¥ a \ (a \ b) = b ± a ° (a \ b) = a \ bÆ
+	THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(asm_rewrite_tac[]);
+a(STRIP_T (rewrite_thm_tac o eq_sym_rule));
+a(lemma_tac Òa \ b ç (Ê_)Æ THEN1 ALL_FC_T rewrite_tac[z_size_diff_thm]);
+a(all_fc_tac[z_size_Ó_thm]);
+save_pop_thm"z_size_mono_thm"
+);
+=TEX
+=SML
+val €z_size_¿_º_thm› = (
+set_goal([], Òµa, b : (Ê_)  ∑ #(a ¿ b) º #a + #bÆ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(z_µ_elimÒ(a ¶ a, b ¶ b)Æ z_size_¿_thm));
+a(strip_asm_tac(z_µ_elimÒ(a ¶ a, b ¶ b)Æ z_Ê_°_thm));
+a(strip_asm_tac(z_µ_elimÒ(a ¶ a ° b)Æ z_size_Ó_thm));
+a(lemma_tacÒ# (a ¿ b) + # (a ° b) º (# a + # b) + # (a ° b)Æ);
+a(pure_asm_rewrite_tac[z_plus_assoc_thm]);
+a(asm_rewrite_tac[]);
+save_pop_thm"z_size_¿_º_thm"
+);
+=TEX
+=SML
+val €z_size_eq_thm› = (
+set_goal([], Òµa, b:(Ê_) | a Ä b ± #a = #b ∑ a = bÆ);
+a(PC_T "z_sets_ext" contr_tac
+	THEN1 all_asm_fc_tac[]);
+a(lemma_tacÒa Ä a ¿ {x1} ± a ¿ {x1} Ä bÆ THEN1
+	PC_T1 "z_sets_ext" asm_prove_tac[]);
+a(strip_asm_tac (z_µ_elimÒ(x ¶ x1, a ¶ a)Æ z_size_¿_singleton_thm));
+a(strip_asm_tac (z_µ_elimÒ(x ¶ x1, a ¶ a)Æ (z_gen_pred_elim[ÒÉÆ] z_Ê_¿_singleton_thm)));
+a(strip_asm_tac (z_µ_elimÒ(a ¶ b, b ¶ a ¿ {x1})Æ z_size_mono_thm));
+a(PC_T1 "z_lin_arith" asm_prove_tac[]);
+save_pop_thm"z_size_eq_thm"
+);
+=TEX
+=SML
+val €z_size_0_thm› = (
+set_goal([], Òµa : (Ê_) ∑ # a = 0 § a = {}Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(POP_ASM_T ante_tac THEN z_Ê_induction_tac ÒaÆ
+	THEN_TRY asm_rewrite_tac[z_size_singleton_thm]);
+a(all_fc_tac[z_size_Ó_thm, z_size_¿_singleton_thm]);
+a(asm_rewrite_tac[]);
+a(contr_tac);
+a(LEMMA_TÒ# a +  (1 + ~ 1) = ~1Æ (strip_asm_tac o rewrite_rule[])
+	THEN1 asm_rewrite_tac[z_plus_assoc_thm1]);
+a(swap_nth_asm_concl_tac 4 THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_size_empty_thm]);
+save_pop_thm"z_size_0_thm"
+);
+=TEX
+=SML
+val €z_size_1_thm› = (
+set_goal([], Òµa : (Ê_) ∑ # a = 1 § (∂x:É∑ a = {x})Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(lemma_tacÒ≥ #a = 0Æ THEN1 asm_rewrite_tac[]);
+a(strip_asm_tac(z_µ_elimÒaÆ z_size_0_thm));
+a(PC_T1 "z_sets_ext" POP_ASM_T strip_asm_tac);
+a(lemma_tacÒ x1 ç a ¥ (a \ {x1}) ¿ {x1} = aÆ THEN1 PC_T1 "z_sets_ext" prove_tac[]);
+a(strip_asm_tac(z_µ_elimÒ(a¶a, b  ¶ {x1})Æ z_Ê_diff_thm));
+a(ante_tac (z_µ_elimÒ(a¶ a \ {x1}, x¶ x1)Æz_size_¿_singleton_thm)
+	THEN asm_rewrite_tac[]);
+a(ante_tac(z_µ_elimÒ(a¶ a \ {x1})Æz_size_0_thm) THEN asm_rewrite_tac[]);
+a(STRIP_T rewrite_thm_tac);
+a(REPEAT strip_tac);
+a(z_∂_tacÒx1Æ THEN rewrite_tac[]);
+a(POP_ASM_T ante_tac THEN PC_T1 "z_sets_ext" prove_tac[]);
+(* *** Goal "2" *** *)
+a(asm_rewrite_tac[z_size_singleton_thm]);
+save_pop_thm"z_size_1_thm"
+);
+=TEX
+=SML
+val €z_size_pair_thm› = (
+set_goal([], Òµx, y:É | ≥x = y ∑ {x, y} ç (Ê_) ± #{x, y} = 2Æ);
+a(z_µ_tac THEN strip_tac);
+a(lemma_tacÒ{y} ç (Ê_) ± #{y} = 1Æ THEN1 rewrite_tac[z_size_singleton_thm]);
+a(ante_tac (z_µ_elimÒ(x ¶ x, a ¶ {y})Æ z_size_¿_singleton_thm));
+a(ante_tac (z_µ_elimÒ(x ¶ x, a ¶ {y})Æ  (z_gen_pred_elim[ÒÉÆ] z_Ê_¿_singleton_thm)));
+a(asm_rewrite_tac[z_size_singleton_thm]);
+a(LEMMA_T Ò{x, y} = {y} ¿ {x}Æ rewrite_thm_tac
+	THEN PC_T1 "z_sets_ext" prove_tac[]);
+save_pop_thm"z_size_pair_thm"
+);
+=TEX
+=SML
+val €z_size_2_thm› = (
+set_goal([], Òµa:(Ê_) ∑ #a = 2 § (∂x, y:É∑≥x = y ± a = {x, y})Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(PC_T1 "z_sets_ext" lemma_tac Ò≥a = {}Æ
+	THEN1 (swap_nth_asm_concl_tac 1 THEN asm_rewrite_tac[z_size_empty_thm]));
+a(PC_T1 "z_sets_ext" lemma_tac Ò≥a = {x1}Æ
+	THEN1 (swap_nth_asm_concl_tac 2 THEN asm_rewrite_tac[z_size_singleton_thm])
+	THEN_TRY all_var_elim_asm_tac1);
+a(lemma_tacÒ{x2, x1} ç (Ê_) ± #{x2, x1} = 2Æ THEN1
+	ALL_FC_T rewrite_tac[z_size_pair_thm]);
+a(LEMMA_TÒ{x2, x1} Ä aÆ asm_tac THEN1
+	PC_T1 "z_sets_ext" asm_prove_tac[]);
+a(ante_tac (z_µ_elimÒ(a ¶ {x2, x1}, b ¶ a)Æ z_size_eq_thm));
+a(asm_rewrite_tac[] THEN REPEAT strip_tac);
+a(z_∂_tacÒ(x ¶ x2, y ¶ x1)Æ THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(ALL_FC_T asm_rewrite_tac[z_size_pair_thm]);
+save_pop_thm"z_size_2_thm"
+);
+=TEX
+=SML
+val €z_size_∏_thm› = (
+set_goal([], Òµa : (Ê_); b:(Ê_) ∑ a ∏ b ç (Ê_) ± #(a ∏ b) = #a * #bÆ);
+a(z_µ_tac THEN strip_tac);
+a(z_Ê_induction_tacÒaÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_size_empty_thm]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[
+	pc_rule1 "z_rel_ext"
+		prove_rule[] Ò(a ¿ {x}) ∏ b = (a ∏ b) ¿ ({x} ∏ b)Æ]);
+a(lemma_tacÒ(a ∏ b) ° ({x} ∏ b) = {}Æ THEN1
+	PC_T1 "z_sets_ext" asm_prove_tac[]);
+a(lemma_tacÒ({x} ∏ b) ç (Ê_) ± #({x} ∏ b) = #bÆ);
+(* *** Goal "2.1" *** *)
+a(LIST_DROP_NTH_ASM_T [1, 2, 3, 4, 5] discard_tac);
+a(z_Ê_induction_tacÒbÆ
+	THEN1 rewrite_tac[z_size_empty_thm]);
+a(rewrite_tac[
+	pc_rule1 "z_rel_ext"
+		prove_rule[] Ò{x} ∏ (b ¿ {x'}) = ({x} ∏ b) ¿ {(x, x')}Æ]);
+a(LEMMA_TÒ≥(x, x') ç ({x} ∏ b)Æ asm_tac THEN1
+	PC_T1 "z_sets_ext" asm_prove_tac[]);
+a(ante_tac (z_µ_elimÒ(x ¶ (x, x'), a ¶ {x} ∏ b)Æ z_size_¿_singleton_thm));
+a(ante_tac (z_µ_elimÒ(x ¶ x', a ¶ b)Æ z_size_¿_singleton_thm));
+a(ante_tac (z_µ_elimÒ(x ¶ (x, x'), a ¶ {x} ∏ b)Æ (z_gen_pred_elim[ÒÉÆ] z_Ê_¿_singleton_thm)));
+a(REPEAT strip_tac THEN asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(ante_tac (z_µ_elimÒ(a ¶ a ∏ b, b ¶ {x} ∏ b)Æ z_size_¿_thm));
+a(asm_rewrite_tac[z_size_empty_thm]);
+a(REPEAT strip_tac THEN asm_rewrite_tac[]);
+a(ALL_FC_T rewrite_tac[z_size_¿_singleton_thm]);
+a(PC_T1 "z_lin_arith" prove_tac[]);
+save_pop_thm"z_size_∏_thm"
+);
+=TEX
+=SML
+val €z_size_º_1_thm› = (
+set_goal([], Òµa : (Ê_) | # a º 1 ∑ a = {} ≤ (∂x:É∑a = {x})Æ);
+a(REPEAT strip_tac);
+a(all_fc_tac[z_size_Ó_thm]);
+a(fc_tac[z_size_0_thm]);
+a(ante_tac (z_µ_elimÒ(i¶ 0, j¶ #a)Æz_º_º_plus1_thm) THEN asm_rewrite_tac[]);
+a(ante_tac(z_µ_elimÒ(a¶ a)Æz_size_1_thm) THEN asm_rewrite_tac[]);
+a(STRIP_T rewrite_thm_tac);
+save_pop_thm"z_size_º_1_thm"
+);
+=TEX
+The following is a more general result for ranges of numbers:
+=SML
+val _ = set_merge_pcs["'z_numbers", "z_sets_alg"];
+=TEX
+=SML
+val €z_size_dot_dot_thm1› = (
+set_goal([], Òµi,j : ˙ ∑ i .. j ç (Ê_) ±
+		(i º j ¥ # (i .. j) = (j + ~ i) + 1) ±
+		(j < i ¥ # (i .. j) = 0)Æ);
+a(z_µ_tac THEN strip_tac);
+a(cases_tac Òj < iÆ THEN POP_ASM_T strip_asm_tac);
+(* *** Goal "1" *** *)
+a(PC_T1 "z_sets_alg" strip_asm_tac (z_µ_elim Ò(i ¶ i, j ¶ j)Æ z_≥_º_thm));
+a(PC_T1 "z_sets_alg" asm_rewrite_tac[]);
+a(ante_tac (rewrite_rule[](z_µ_elim Ò(i ¶ 0, i1 ¶ i, i2 ¶ j, j1 ¶ i, j2 ¶ j)Æ
+	 z_dot_dot_clauses)));
+
+a(asm_rewrite_tac[]);
+a(¥_T rewrite_thm_tac);
+a(rewrite_tac[z_size_empty_thm]);
+
+(* *** Goal "2" *** *)
+a(PC_T1 "z_sets_alg" strip_asm_tac (z_µ_elim Ò(i ¶ j, j ¶ i)Æ z_≥_less_thm));
+a(PC_T1 "z_sets_alg" asm_rewrite_tac[]);
+
+a(strip_asm_tac (z_µ_elim Ò(A ¶ i .. j,
+		f ¶ {n : 1 .. ((j + ~ i) + 1) ∑ (n, n + (i - 1))},
+		n ¶ ((j + ~ i) + 1))Æ z_Ê_size_thm));
+
+(* *** Goal "2.1" *** *)
+a(PC_T1 "z_sets_alg" strip_asm_tac
+	(z_µ_elim Ò(i ¶ 0, j ¶ (j + ~ i) + 1)Æ z_≥_º_thm));
+a(ante_tac(z_µ_elim Ò(i ¶ i, j ¶ j)Æ z_º_º_0_thm));
+a(asm_rewrite_tac[]);
+a(strip_tac);
+a(PC_T1 "z_sets_alg" lemma_tac Ò(i + ~ j) + (j + ~ i) º 0 + (j + ~ i)Æ);
+(* *** Goal "2.1.1" *** *)
+a(PC_T1 "z_sets_alg" asm_rewrite_tac [z_º_clauses]);
+(* *** Goal "2.1.2" *** *)
+a(POP_ASM_T (asm_tac o pure_rewrite_rule[(z_µ_elim Ò~ jÆ z_plus_order_thm)]));
+a(POP_ASM_T (asm_tac o rewrite_rule[(z_µ_elim ÒjÆ z_plus_order_thm)]));
+a(ante_tac(rewrite_rule[]
+	(z_µ_elim Ò(i ¶ 0, j ¶ (j + ~ i), k ¶ (j + ~ i) + 1)Æ z_º_trans_thm)));
+a(PC_T "z_sets_alg" (REPEAT strip_tac));
+
+(* *** Goal "2.2" *** *)
+a(SWAP_NTH_ASM_CONCL_T 1 discard_tac);
+a(rewrite_tac[]);
+a(MERGE_PCS_T ["'z_numbers", "z_fun_ext"] (REPEAT strip_tac));
+(* *** Goal "2.2.1" *** *)
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(rewrite_tac[z_µ_elim ÒiÆ z_plus_order_thm]);
+a(PC_T1 "z_sets_alg" lemma_tac Ò1 + ~ 1 º x1 + ~1Æ);
+(* *** Goal "2.2.1.1" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2.1.2" *** *)
+a(POP_ASM_T (rewrite_thm_tac o pure_rewrite_rule [z_plus_minus_thm]));
+
+(* *** Goal "2.2.2" *** *)
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(PC_T1 "z_sets_alg" lemma_tac Òx1 + (i + ~ 1) º ((j + ~ i) + 1) + (i + ~1)Æ);
+(* *** Goal "2.2.2.1" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2.2.2" *** *)
+a(POP_ASM_T ante_tac);
+a(PC_T1 "z_sets_alg" rewrite_tac[ z_plus_assoc_thm]);
+a(PC_T1 "z_sets_alg" rewrite_tac[ z_µ_elim ÒiÆ z_plus_order_thm,
+	 z_plus_minus_thm, z_plus_clauses]);
+
+(* *** Goal "2.2.3" *** *)
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+
+(* *** Goal "2.2.4" *** *)
+a(z_∂_tac Òx1 + (i + ~ 1)Æ);
+a(asm_rewrite_tac[]);
+
+(* *** Goal "2.2.7" (2.2.5 and 2.2.6 were duplicates) *** *)
+a(z_∂_tac Òx1 - ( i + ~ 1 )Æ);
+a(asm_rewrite_tac[z_minus_thm]);
+a(asm_rewrite_tac[z_µ_elim ÒjÆ z_plus_order_thm]);
+a(asm_rewrite_tac[z_µ_elim Òx1Æ z_plus_order_thm]);
+a(asm_rewrite_tac[z_µ_elim ÒiÆ z_plus_order_thm]);
+a(asm_rewrite_tac[z_µ_elim Ò~ iÆ z_plus_order_thm]);
+a(asm_rewrite_tac[z_µ_elim Ò1Æ z_plus_order_thm]);
+a(PC_T1 "z_sets_alg" lemma_tac Ò(~i) + i º (~ i) + x1Æ);
+(* *** Goal "2.2.7.1" *** *)
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2.7.2" *** *)
+a(POP_ASM_T (rewrite_thm_tac o pure_rewrite_rule[z_minus_clauses]));
+
+(* *** Goal "2.2.8" *** *)
+a(DROP_NTH_ASM_T 5 discard_tac);
+a(DROP_NTH_ASM_T 2 discard_tac);
+a(ante_tac (rewrite_rule[](z_µ_elim Ò(a ¶ x1, f ¶ {n : 1 .. (j + ~ i) + 1 ∑
+	(n, n + (i + ~ 1))}, x ¶ x1 + (i + ~ 1))Æ z_app_thm)));
+a(ante_tac (rewrite_rule[](z_µ_elim Ò(a ¶ x2, f ¶ {n : 1 .. (j + ~ i) + 1 ∑
+	(n, n + (i + ~ 1))}, x ¶ x2 + (i + ~ 1))Æ z_app_thm)));
+a(asm_rewrite_tac[]);
+a(strip_tac);
+(* *** Goal "2.2.8.1" *** *)
+a(GET_NTH_ASM_T 2 (strip_asm_tac o eq_sym_rule));
+
+(* *** Goal "2.2.8.2" *** *)
+a(POP_ASM_T rewrite_thm_tac);
+a(strip_tac);
+(* *** Goal "2.2.8.2.1" *** *)
+a(GET_NTH_ASM_T 2 (strip_asm_tac o eq_sym_rule));
+a(asm_rewrite_tac[]);
+
+(* *** Goal "2.3" *** *)
+a(asm_rewrite_tac[]);
+
+save_pop_thm"z_size_dot_dot_thm1"
+);
+=TEX
+
+\subsection{The Pigeon-Hole Principle}
+
+It is a little more natural to prove the pigeon hole theorem in the
+following guise first: if $u$ is a family of sets each of which has
+at most $1$ element, then the union of the sets in $u$ has no more elements
+than $u$.
+=SML
+val z_pigeon_hole_thm1 = (
+set_goal([], Òµu : Ê (Ê_) | (µa:u∑ #a º 1) ∑ # (ﬁu) º # uÆ);
+a(REPEAT strip_tac);
+a(POP_ASM_T ante_tac THEN z_Ê_induction_tac ÒuÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_size_empty_thm]);
+(* *** Goal "2" *** *)
+a(REPEAT strip_tac);
+a(z_spec_nth_asm_tac 1 Òu'Æ);
+a(all_fc_tac[z_º_less_trans_thm]);
+(* *** Goal "3" *** *)
+a(REPEAT strip_tac);
+a(z_spec_nth_asm_tac 1 ÒxÆ);
+a(LEMMA_T Òﬁ (u ¿ {x}) = ﬁ u ¿ xÆ asm_rewrite_thm_tac);
+(* *** Goal "3.1" *** *)
+a(DROP_ASMS_T discard_tac THEN PC_T1 "z_sets_ext" prove_tac[]);
+a(z_∂_tacÒxÆ THEN REPEAT strip_tac);
+(* *** Goal "3.2" *** *)
+a(GET_ASM_T Òu ç Ê (Ê _)Æ (strip_asm_tac o once_rewrite_rule[z_Ê__thm]));
+a(ALL_FC_T rewrite_tac[z_size_¿_singleton_thm]);
+a(lemma_tacÒ# (ﬁ u ¿ x) º #(ﬁ u) + #xÆ);
+(* *** Goal "3.2.1" *** *)
+a(all_fc_tac[z_ﬁ_Ê_thm]);
+a(strip_asm_tac(z_µ_elimÒ(a ¶ ﬁ u, b ¶ x)Æ z_size_¿_º_thm));
+(* *** Goal "3.2.2" *** *)
+a(PC_T1 "z_predicates"
+	strip_asm_tac(rewrite_rule[]
+		(z_µ_elimÒ(i ¶ # (ﬁ u ¿ x), j ¶ # (ﬁ u) + # x, k ¶ # (ﬁ u) + 1)Æ
+			z_º_trans_thm)));
+a(PC_T1 "z_predicates"
+	strip_asm_tac(rewrite_rule[]
+		(z_µ_elimÒ(i ¶ # (ﬁ u ¿ x), j ¶ # (ﬁ u) + 1, k ¶ # u + 1)Æ
+			z_º_trans_thm)));
+pop_thm()
+);
+=TEX
+Finally, as a simple consequence of the last theorem, we can readily
+derive the pigeon hole principle in a more standard formulation: if $u$
+is a family of sets, whose union contains more elements than $u$ itself,
+then some set in $u$ contains more than one element.
+=SML
+val z_pigeon_hole_thm = (
+set_goal([], Òµu : Ê (Ê_) | # (ﬁu) > # u ∑ ∂a:u∑ #a > 1Æ);
+a(contr_tac);
+a(POP_ASM_T (strip_asm_tac o rewrite_rule[]));
+a(all_fc_tac[z_pigeon_hole_thm1]);
+a(all_fc_tac[z_less_º_trans_thm]);
+save_pop_thm"z_pigeon_hole_thm"
+);
+=TEX
+\subsection{More on Arithmetic}
+=SML
+val €z_div_thm› = (
+set_goal([],Òµ i,j,k : ˙ | ≥j = 0 ∑ (i div j = k) §
+	(∂ m : ˙ ∑ i = k * j + m ± 0 º m ± m < abs j)Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒi mod jÆ);
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ j,d ¶ k ,r ¶ i mod j)Æ z_div_mod_unique_thm));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ j,d ¶ k ,r ¶ m)Æ z_div_mod_unique_thm));
+a(asm_rewrite_tac[]);
+a ¥_tac;
+a(DROP_NTH_ASM_T 2 (rewrite_thm_tac o eq_sym_rule));
+save_pop_thm"z_div_thm"
+);
+=TEX
+=SML
+val €z_mod_thm› = (
+set_goal([],Òµ i,j,k : ˙ | ≥j = 0 ∑ (i mod j = k) §
+	(∂ d : ˙ ∑ i = d * j + k ± 0 º k ± k < abs j)Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒi div jÆ);
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ j,d ¶ i div j ,r ¶ k)Æ z_div_mod_unique_thm));
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(ante_tac (z_µ_elim
+	Ò(i ¶ i,j ¶ j,d ¶ d ,r ¶ k)Æ z_div_mod_unique_thm));
+a(asm_rewrite_tac[]);
+a ¥_tac;
+a(POP_ASM_T (rewrite_thm_tac o eq_sym_rule));
+save_pop_thm"z_mod_thm"
+);
+=TEX
+=SML
+val €z_abs_pos_thm› = (
+set_goal([],Òµ i:˙| 0 < i ∑ abs i = i ± abs ~ i = iÆ);
+a(z_µ_tac THEN ¥_T strip_asm_tac);
+a(lemma_tacÒ0 º iÆTHEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(ALL_ASM_FC_T rewrite_tac[z_abs_thm]);
+save_pop_thm"z_abs_pos_thm"
+);
+=TEX
+=SML
+val €z_abs_neg_thm› = (
+set_goal([],Òµ i:˙| i < 0 ∑ abs i = ~i ± abs ~ i = ~iÆ);
+a(z_µ_tac THEN ¥_T strip_asm_tac);
+a(strip_asm_tac (z_µ_elim¨iÆz_˙_cases_thm)
+	THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(all_var_elim_asm_tac1);
+a(ALL_ASM_FC_T rewrite_tac[z_abs_thm]);
+save_pop_thm"z_abs_neg_thm"
+);
+=TEX
+=SML
+val €z_abs_º_times_thm› = (
+set_goal([],Òµ i,j:˙| ≥ i = 0 ± ≥ j = 0 ∑ abs j º abs (i * j)Æ);
+a(REPEAT strip_tac);
+a(rewrite_tac[z_abs_times_thm]);
+a(strip_asm_tac (z_µ_elim¨jÆz_˙_cases_thm) THEN all_var_elim_asm_tac1
+	THEN all_asm_fc_tac[z_abs_thm]THEN asm_rewrite_tac[]);
+(* *** Goal "1" *** *)
+a(DROP_NTH_ASM_T 4 asm_tac);
+set_labelled_goal"2";
+(* *** Goal "2" *** *)
+a(LEMMA_TÒ≥ ~ j' = 0 ¥ ≥  j' = 0 Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 4 rewrite_thm_tac);
+a(¥_tac);
+a(strip_asm_tac (z_µ_elim¨iÆz_˙_cases_thm) THEN all_var_elim_asm_tac1
+	THEN all_asm_fc_tac[z_abs_thm]THEN asm_rewrite_tac[]);
+(* *** Goal "2.1" *** *)
+a(DROP_NTH_ASM_T 8 asm_tac);
+set_labelled_goal"2.2";
+(* *** Goal "2.2" *** *)
+a(LEMMA_TÒ≥ ~ j = 0 ¥ ≥  j = 0 Æante_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 8 rewrite_thm_tac);
+a(¥_tac);
+a(LIST_DROP_NTH_ASM_T[2,3,6,7](MAP_EVERY discard_tac));
+a(lemma_tacÒ1 º j' ± 1 º jÆTHEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(LIST_DROP_NTH_ASM_T[3,4,5,6](MAP_EVERY discard_tac));
+a(z_º_induction_tacÒjÆ THEN_TRY asm_rewrite_tac[]);
+a(PC_T1"z_lin_arith"asm_prove_tac[]);
+save_pop_thm"z_abs_º_times_thm"
+);
+=TEX
+=SML
+val €z_abs_0_less_thm› = (
+set_goal([],Òµ i:˙| ≥ i = 0 ∑ 0 < abs iÆ);
+a(REPEAT strip_tac);
+a(strip_asm_tac (z_µ_elim¨iÆz_˙_cases_thm) THEN all_var_elim_asm_tac1);
+(* *** Goal "1" *** *)
+a(LEMMA_T Ò0 < jÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]
+	THEN ALL_ASM_FC_T asm_rewrite_tac[z_abs_pos_thm]);
+(* *** Goal "2" *** *)
+a(LEMMA_T Ò0 < jÆasm_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]
+	THEN ALL_ASM_FC_T asm_rewrite_tac[z_abs_pos_thm]);
+save_pop_thm"z_abs_0_less_thm"
+);
+=TEX
+=SML
+val €z_0_less_times_thm› = (
+set_goal([],Òµ i,j : ˙ ∑ 0 < i * j § (0 < i ± 0 < j) ≤ (i < 0 ± j < 0)Æ);
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(POP_ASM_T (strip_asm_tac o rewrite_rule[z_º_less_eq_thm]));
+a(all_var_elim_asm_tac1);
+a(asm_prove_tac[]);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 ante_tac);
+a(z_º_induction_tacÒjÆTHEN_TRY asm_rewrite_tac[]);
+a(PC_T1"z_lin_arith"asm_prove_tac[]);
+(* *** Goal "3" *** *)
+a(swap_nth_asm_concl_tac 1);
+a(DROP_NTH_ASM_T 2 ante_tac);
+a(z_º_induction_tacÒiÆTHEN_TRY asm_rewrite_tac[]);
+a(PC_T1"z_lin_arith"asm_prove_tac[]);
+(* *** Goal "4" *** *)
+a(POP_ASM_T (strip_asm_tac o rewrite_rule[z_º_less_eq_thm]));
+a(all_var_elim_asm_tac1);
+a(asm_prove_tac[]);
+(* *** Goal "5" *** *)
+a(LEMMA_TÒ0 < i ¥ 1 º iÆante_tac THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(DROP_NTH_ASM_T 2 rewrite_thm_tac THEN ¥_tac);
+a(z_º_induction_tacÒiÆTHEN_TRY asm_rewrite_tac[]);
+a(PC_T1"z_lin_arith"asm_prove_tac[]);
+(* *** Goal "6" *** *)
+a(LEMMA_TÒ≥ i = 0 ± ≥ j = 0Æ strip_asm_tac
+	THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(strip_asm_tac (z_µ_elim¨iÆz_˙_cases_thm) THEN all_var_elim_asm_tac1
+	THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 5 discard_tac);
+a(LEMMA_TÒ≥ j' = 0Æ ante_tac THEN1 PC_T1"z_lin_arith"asm_prove_tac[]);
+a(DROP_NTH_ASM_T 3 discard_tac);
+a(z_º_induction_tacÒj'ÆTHEN_TRY asm_rewrite_tac[] THEN
+	 PC_T1"z_lin_arith"asm_prove_tac[]);
+save_pop_thm"z_0_less_times_thm"
+);
+=TEX
+=SML
+val €z_times_less_0_thm› = (
+set_goal([],Òµ i,j : ˙  ∑ i * j < 0 § (0 < i ± j < 0) ≤ (i < 0 ± 0 < j)Æ);
+a(z_µ_tac THEN ¥_T strip_asm_tac);
+a(ante_tac (z_µ_elimÒ(i  ¶ ~i ,j ¶ j)Æz_0_less_times_thm));
+a(asm_rewrite_tac[z_minus_times_thm]);
+a(LEMMA_TÒµx:˙∑ (0 < ~x § x < 0) ± (~x < 0 § 0 < x)Ærewrite_thm_tac
+	THEN1 PC_T1"z_lin_arith"prove_tac[]);
+a(taut_tac);
+save_pop_thm"z_times_less_0_thm"
+);
+=TEX
+\subsection{Material on succ}
+=SML
+val _ = set_merge_pcs ["'z_numbers1", "z_sets_alg", "'z_rel_alg"];
+val €z_ç_succ_thm› =  (
+	set_goal([], ¨µ i j ∑
+	Ò(i, j) ç succ § (0 º i) ± (j = i + 1)ÆÆ);
+	a(strip_tac THEN strip_tac);
+	a(ante_tac (µ_intro ÒzÆ (z_µ_elim Ò(f ¶  succ, x ¶  i, z ¶  i + 1)Æ
+		(rewrite_rule[](z_µ_elim Ò(X ¶ Ó, Y ¶ Ó)Æ
+		 z_≠_app_eq_§_ç_rel_thm)))));
+	a(strip_asm_tac (z_get_spec ÒsuccÆ));
+	a(asm_rewrite_tac[]);
+	a(CASES_T Ò0 º iÆ asm_tac THEN asm_rewrite_tac[]);
+	(* *** Goal "1" *** *)
+	a(GET_NTH_ASM_T 2 ( strip_asm_tac o
+		 rewrite_rule[] o z_µ_elim ÒiÆ));
+	a(asm_rewrite_tac[]);
+	a(REPEAT strip_tac);
+(* *** Goal "1.1" *** *)
+	a(GET_NTH_ASM_T 6 (PC_T1 "z_fun_ext" strip_asm_tac));
+	a(GET_NTH_ASM_T 2 (ante_tac o z_µ_elim Ò(x ¶ i, y1 ¶ j, y2 ¶ i + 1)Æ));
+	a(asm_rewrite_tac[]);
+	a(GET_NTH_ASM_T 3 (fn t => fc_tac[t]));
+	a(PC_T1 "z_sets_alg" REPEAT strip_tac);
+(* *** Goal "1.2" *** *)
+	a(var_elim_asm_tac Òj = i + 1Æ);
+(* *** Goal "2" *** *)
+	a(GET_NTH_ASM_T 3 (PC_T1 "z_fun_ext" strip_asm_tac));
+	a(GET_NTH_ASM_T 3 (strip_asm_tac o z_µ_elim Ò(x1 ¶ i, x2 ¶ j)Æ));
+	save_pop_thm "z_ç_succ_thm"
+	);
+=TEX
+=SML
+val _ = set_merge_pcs ["'z_numbers1", "z_sets_alg", "'z_rel_alg"];
+val €z_succÁ0Í_thm› = (
+set_goal ([], Òsucc Á 0 Í  = id ˙Æ);
+a(pure_rewrite_tac[ (z_µ_elim Ò(r ¶ succ, k ¶ 0)Æ (±_right_elim
+	(z_gen_pred_elim [ÒÉÆ] (z_get_spec Ò(_Á_Í)Æ))))]);
+a(pure_rewrite_tac[z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)]);
+a(MERGE_PCS_T1 ["z_fun_ext", "'z_numbers1"] REPEAT strip_tac);
+save_pop_thm "z_succÁ0Í_thm");
+=TEX
+=SML
+val _ = set_merge_pcs ["'z_numbers1", "z_sets_alg", "'z_rel_alg"];
+val €z_succÁnÍ_thm› = (
+set_goal ([], Òµ n : ˙ | 1 º n ∑ succ Á n Í  = {m : Ó ∑ (m Ì m + n)}Æ);
+a(z_µ_tac THEN strip_tac);
+a(pure_rewrite_tac[ (z_µ_elim Ò(r ¶ succ, k ¶ n)Æ (±_right_elim
+	(z_gen_pred_elim [ÒÉÆ] (z_get_spec Ò(_Á_Í)Æ))))]);
+a(z_º_induction_tac ÒnÆ);
+(* *** Goal "1" *** *)
+a(strip_asm_tac (z_µ_elim ÒsuccÆ (
+	±_right_elim(z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)))));
+a(DROP_NTH_ASM_T 2 (rewrite_thm_tac o rewrite_rule [] o z_µ_elim Ò0Æ));
+a(MERGE_PCS_T1 ["z_fun_ext", "'z_numbers1"] asm_rewrite_tac[z_ç_succ_thm]);
+a(REPEAT strip_tac);
+(* *** Goal "1.1" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tac Òx1Æ THEN REPEAT strip_tac);
+(* *** Goal "1.2" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tac Òx1 + 1Æ THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(strip_asm_tac (z_µ_elim ÒsuccÆ (
+	±_right_elim(z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)))));
+a(DROP_NTH_ASM_T 2 (strip_asm_tac o z_µ_elim ÒiÆ));
+(* *** Goal "2.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac[]);
+(* *** Goal "2.2" *** *)
+a(MERGE_PCS_T1 ["z_fun_ext", "'z_numbers1"] asm_rewrite_tac[]);
+a(REPEAT strip_tac);
+(* *** Goal "2.2.1" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tac Òx1Æ THEN REPEAT strip_tac);
+(* *** Goal "2.2.1.1" *** *)
+a(DROP_NTH_ASM_T 2 (strip_asm_tac o rewrite_rule[z_ç_succ_thm]));
+(* *** Goal "2.2.1.2" *** *)
+a(DROP_NTH_ASM_T 2 (strip_asm_tac o rewrite_rule[z_ç_succ_thm]));
+a(all_var_elim_asm_tac1);
+a(PC_T1 "z_lin_arith" prove_tac []);
+(* *** Goal "2.2.2" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tac Òx1 + 1Æ THEN rewrite_tac [z_ç_succ_thm] THEN REPEAT strip_tac);
+a(z_∂_tac Òx1 + 1Æ THEN REPEAT strip_tac);
+(* *** Goal "2.2.2.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2.2.2" *** *)
+a(PC_T1 "z_lin_arith" prove_tac []);
+save_pop_thm "z_succÁnÍ_thm"
+);
+=TEX
+=SML
+val _ = set_merge_pcs ["'z_numbers1", "z_sets_alg", "'z_rel_alg"];
+val €z_succÁminus_nÍ_thm› = (
+set_goal ([], Òµ n : Ó | 1 º n ∑ succ Á ~ n Í  = {m : Ó  ∑ (m + n Ì m)}Æ);
+a(z_µ_tac THEN strip_tac);
+a(pure_rewrite_tac[ (z_µ_elim Ò(r ¶ succ, k ¶ ~ n)Æ (±_right_elim
+	(z_gen_pred_elim [ÒÉÆ] (z_get_spec Ò(_Á_Í)Æ))))]);
+a(DROP_NTH_ASM_T 2 (fn x => id_tac));
+a(z_º_induction_tac ÒnÆ);
+(* *** Goal "1" *** *)
+a(strip_asm_tac (z_µ_elim ÒsuccÆ (
+	±_right_elim(z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)))));
+a(DROP_NTH_ASM_T 1 (rewrite_thm_tac o rewrite_rule [] o z_µ_elim Ò1Æ));
+a(strip_asm_tac (z_µ_elim Òsucc Á~ÍÆ (
+	±_right_elim(z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)))));
+a(DROP_NTH_ASM_T 2 (rewrite_thm_tac o rewrite_rule [] o z_µ_elim Ò0Æ));
+a(MERGE_PCS_T1 ["z_fun_ext", "'z_numbers1"] asm_rewrite_tac[z_ç_succ_thm]);
+a(REPEAT strip_tac);
+(* *** Goal "1.1" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tac Òx2Æ THEN REPEAT strip_tac);
+(* *** Goal "1.2" *** *)
+a(all_var_elim_asm_tac1);
+a(z_∂_tac Òx2Æ THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(strip_asm_tac (z_µ_elim ÒsuccÆ (
+	±_right_elim(z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)))));
+a(GET_NTH_ASM_T 1 (strip_asm_tac o z_µ_elim Òi + 1Æ));
+(* *** Goal "2.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2" *** *)
+a(DROP_NTH_ASM_T 1 rewrite_thm_tac);
+a(DROP_NTH_ASM_T 1 (strip_asm_tac o z_µ_elim ÒiÆ));
+(* *** Goal "2.2.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2.2" *** *)
+a(DROP_NTH_ASM_T 4 ante_tac);
+a(DROP_NTH_ASM_T 1 rewrite_thm_tac);
+a(strip_tac);
+a(strip_asm_tac (z_µ_elim Òsucc Á~ÍÆ (
+	±_right_elim(z_gen_pred_elim[ÒÉÆ](z_get_spec ÒiterÆ)))));
+a(DROP_NTH_ASM_T 2 (strip_asm_tac o z_µ_elim ÒiÆ));
+(* *** Goal "2.2.2.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2.2.2" *** *)
+a(DROP_NTH_ASM_T 1 rewrite_thm_tac);
+a(DROP_NTH_ASM_T 1 (fn _ => id_tac));
+a(DROP_NTH_ASM_T 2 rewrite_thm_tac);
+a(MERGE_PCS_T1 ["z_fun_ext", "'z_numbers1"] rewrite_tac[z_ç_succ_thm]);
+a(REPEAT strip_tac THEN all_var_elim_asm_tac1);
+(* *** Goal "2.2.2.2.1" *** *)
+a(z_∂_tac Òx2Æ THEN REPEAT strip_tac);
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2.2.2.2" *** *)
+a(z_∂_tac Òx2 + iÆ THEN REPEAT strip_tac);
+(* *** Goal "2.2.2.2.2.1" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2.2.2.2.2" *** *)
+a(PC_T1 "z_lin_arith" asm_prove_tac []);
+(* *** Goal "2.2.2.2.2.3" *** *)
+a(z_∂_tac Òx2Æ THEN REPEAT strip_tac);
+save_pop_thm "z_succÁminus_nÍ_thm"
+);
+=TEX
+=IGN
+z_size_dot_dot_conv Ò# (2 .. 7)Æ;
+z_size_dot_dot_conv Ò# (8 .. 5)Æ;
+=SML
+local
+	val pat1 = Ò#(a .. b)Æ;
+	val tma = Òa ∫ ˙Æ;
+	val tmb = Òb ∫ ˙Æ;
+	val pat2 = Òa .. bÆ;
+	val local_rw_conv = merge_pcs_rule1 ["z_sets_alg", "'z_numbers1"]
+		 rewrite_conv [];
+=TEX
+=SML
+val €base_thm› : THM = (
+set_goal([], ¨µi j∑Ò
+	j < i ¥ i .. j = {}ÆÆ);
+a(PC_T1 "z_sets_ext" rewrite_tac[z_dot_dot_def] THEN PC_T1 "z_lin_arith" prove_tac[]);
+pop_thm());
+=TEX
+=SML
+val €step_thm1› : THM = (
+set_goal([], ¨µi j∑Ò
+	i º j ¥ i .. j = ((i+1) .. j) ¿ {i}ÆÆ);
+a(PC_T1 "z_sets_ext" rewrite_tac[z_dot_dot_def] THEN PC_T1 "z_lin_arith" prove_tac[]);
+pop_thm());
+=TEX
+=SML
+val €step_thm2› : THM = (
+set_goal([], ¨µx l∑Ò
+	¨Z'Setd lÆ ¿ {x} = ¨Z'Setd (Cons x l)ÆÆÆ);
+a(MERGE_PCS_T1 ["sets_ext", "z_sets_ext"] rewrite_tac[z'setd_def]);
+pop_thm());
+=TEX
+=SML
+val €z_dot_dot› = Ò(_ .. _)Æ;
+in
+val z_size_dot_dot_conv : CONV = (fn (tm : TERM) =>
+let	val (_, tm_matches) = term_match tm pat1;
+	val (a, b) = (subst tm_matches tma, subst tm_matches tmb);
+	val aint = dest_z_signed_int a;
+	val bint = dest_z_signed_int b;
+	val binding = mk_z_binding [("i", a), ("j", b)];
+	val thm1 = (z_µ_elim binding z_size_dot_dot_thm1);
+	val thm2 = conv_rule (RATOR_C local_rw_conv) thm1;
+	val thm3 = ±_right_elim (¥_elim thm2 t_thm);
+in
+	if	bint @< aint
+	then	let val thm4 = ¥_elim (conv_rule (LEFT_C z_less_conv)
+			(±_right_elim thm3)) t_thm;
+		in
+			thm4
+		end
+	else	let	val thm4 = ¥_elim (conv_rule (LEFT_C z_º_conv)
+			(±_left_elim thm3)) t_thm;
+			val thm5 = conv_rule (RIGHT_C (MAP_C z_anf_conv)) thm4;
+		in
+			thm5
+		end
+end	handle (Fail _) =>
+	term_fail "z_size_dot_dot_conv" 107001 [tm]
+);
+=TEX
+=SML
+val rec €z_dot_dot_conv› : CONV = (fn tm =>
+let	val (_, tm_matches) = term_match tm pat2;
+	val (lo, hi) = (subst tm_matches tma, subst tm_matches tmb);
+	val ilo = dest_z_signed_int lo;
+	val ihi = dest_z_signed_int hi;
+in	if	ilo @> ihi
+	then	let	val thm1 = list_µ_elim[lo, hi] base_thm;
+			val cond = mk_z_less(hi, lo);
+			val thm2 = §_t_elim (z_less_conv cond);
+			val thm3 = ¥_mp_rule thm1 thm2;
+		in	thm3
+		end
+	else	let	val thm1 = list_µ_elim[lo, hi] step_thm1;
+			val cond = mk_z_º(lo, hi);
+			val thm2 = §_t_elim (z_º_conv cond);
+			val thm3 = ¥_mp_rule thm1 thm2;
+			val conv4 = RIGHT_C(Z_LEFT_C(Z_LEFT_C z_plus_conv));
+			val thm4 = conv_rule conv4 thm3;
+			val lo' = mk_z_signed_int(ilo @+ one);
+			val tm' = mk_z_app(z_dot_dot, mk_z_tuple[lo', hi]);
+			val thm5 = z_dot_dot_conv tm';
+			val conv6 = RIGHT_C(Z_LEFT_C (simple_eq_match_conv thm5));
+			val thm6 = conv_rule conv6 thm4;
+			val conv7 = RIGHT_C(simple_eq_match_conv step_thm2);
+			val thm7 = conv_rule conv7 thm6;
+		in	thm7
+		end
+end	handle Fail _ =>
+	term_fail "z_dot_dot_conv" 107002 [tm]
+);
+end;
+=TEX
+\section{EPILOG OF ZNumbers1}
+Final restoration of original proof context
+=SML
+val _ = pop_pc();
+=TEX
+=SML
+end (* of structure ZNumbers1 *);
+open ZNumbers1;
+=TEX
+\section{THE STRUCTURE $ZSequences1$}
+\subsection{Preamble}
+=SML
+structure €ZSequences1› : ZSequences1 = struct
+=TEX
+=SML
+val lthy = get_current_theory_name();
+val _ = open_theory €"z_sequences1"›;
+val _ = push_merge_pcs["'z_numbers", "z_sets_alg"];
+val _ = set_flag("z_type_check_only",false);
+=TEX
+
+=SML
+val €z_seq_thm› = (
+set_goal([], ÒµX:É∑ seq X = ﬁ{n : Ó∑ 1 .. n ≠ X}Æ);
+a(rewrite_tac[z_get_specÒ(seq _)Æ]
+	THEN REPEAT_N 4 (PC_T "z_sets_ext" strip_tac));
+a(REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(GET_ASM_T Òx1 ç Ó ü XÆ ante_tac THEN
+		rewrite_tac[z_ﬂ_thm2,  z_get_specÒ(_ü_)Æ]);
+a(REPEAT strip_tac);
+a(z_∂_tacÒdom x1 ≠ XÆ THEN REPEAT strip_tac);
+a(z_∂_tacÒ#x1Æ THEN asm_rewrite_tac[]);
+a(all_fc_tac[z_size_ü_thm]);
+a(all_fc_tac[rewrite_rule[z_get_specÒ#Æ](z_µ_elim
+	Ò(f¶ #[É ∫  (˙ ∏ X)], x¶ x1, X¶ (Ê(É ∫  (˙ ∏ X))), Y¶ Ó)Æ
+		z_fun_ç_clauses)]);
+(* *** Goal "2" *** *)
+a(all_var_elim_asm_tac1);
+a(rewrite_tac[z_get_specÒ(_ü_)Æ, z_ﬂ_thm2]);
+a(lemma_tacÒdom x1 = 1 .. nÆ THEN1 all_fc_tac[z_≠_thm]);
+a(once_rewrite_tac[z_Ê__thm]);
+a(ALL_FC_T asm_rewrite_tac [z_size_dot_dot_thm]);
+a(PC_T1 "z_sets_ext" rewrite_tac[] THEN rewrite_tac[z_dot_dot_clauses]);
+a(contr_tac);
+a(all_fc_tac[z_º_less_trans_thm]);
+(* *** Goal "3" *** *)
+a(all_var_elim_asm_tac1);
+a(LEMMA_TÒdom x1 = 1 .. nÆ rewrite_thm_tac THEN1 all_fc_tac[z_≠_thm]);
+a(ALL_FC_T asm_rewrite_tac [z_size_seq_thm]);
+save_pop_thm"z_seq_thm"
+);
+=TEX
+=SML
+val €z_prim_seq_induction_thm› = (
+set_goal([],
+	¨µ X p ∑
+		p Ò{}Æ
+	±	(µ x n s∑
+			Òx ç XÆ ± Òn ç ÓÆ ± Òs ç 1 .. n ≠ XÆ ± p ÒsÆ
+		¥	p Òs ¿ {(n + 1, x)}Æ)
+      ¥ (µ s∑ Òs ç (seq X)Æ ¥ p s)Æ);
+a(rewrite_tac[z_seq_thm] THEN REPEAT strip_tac);
+a(all_var_elim_asm_tac1);
+a(POP_ASM_T ante_tac THEN z_intro_µ_tacÒ(s¶s)Æ THEN z_º_induction_tac ÒnÆ);
+(* *** Goal "1" *** *)
+a(LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(rewrite_tac[pc_rule1"z_fun_ext"prove_rule[]Ò[X]({} ≠ X = {{}})Æ]);
+a(REPEAT strip_tac THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(REPEAT strip_tac);
+a(PC_T1 "z_rel_ext" lemma_tac Òi + 1 ç dom sÆ
+	THEN1 (ALL_FC_T asm_rewrite_tac[z_≠_thm]));
+a(lemma_tacÒ∂f:1 .. i ≠ X∑ s = f ¿ {(i+1, y)}Æ);
+(* *** Goal "2.1" *** *)
+a(all_fc_tac[z_≠_diff_singleton_thm]);
+a(POP_ASM_T ante_tac THEN
+	ALL_FC_T rewrite_tac [z_dot_dot_diff_thm]
+	THEN strip_tac);
+a(z_∂_tacÒs \ {(i + 1, y)}Æ THEN REPEAT strip_tac);
+a(all_fc_tac [pc_rule1"z_sets_ext"prove_rule[]
+	Òµx:É; a:É | x ç a ∑ a = (a \ {x}) ¿ {x}Æ]);
+(* *** Goal "2.2" *** *)
+a(lemma_tacÒ(i + 1, y) ç s ± s ç 1 .. i + 1 ≠ X ¥ y ç XÆ
+	THEN PC_T1 "z_fun_ext" prove_tac[]);
+a(DROP_NTH_ASM_T 4 discard_tac	(* else irrelevant case split *)
+	THEN all_var_elim_asm_tac1);
+a(all_asm_fc_tac[] THEN all_asm_fc_tac[]);
+save_pop_thm"z_prim_seq_induction_thm"
+);
+=TEX
+=SML
+val €z_seq_thm1› = (
+set_goal([], ÒµX:É; n:É∑ seq X = {s:É | ∂n: Ó∑ s ç 1 .. n ≠ X}Æ);
+a(rewrite_tac[z_seq_thm] THEN REPEAT strip_tac
+	THEN PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒnÆ THEN all_var_elim_asm_tac1 THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒ1 .. n ≠ XÆ THEN REPEAT strip_tac);
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+save_pop_thm"z_seq_thm1"
+);
+=TEX
+=SML
+val €z_size_seq_thm1› = (
+set_goal([], ÒµX:É; s : É; n:Ó∑ s ç seq X ± #s = n § s ç 1 .. n ≠ XÆ);
+a(rewrite_tac[z_seq_thm1] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_var_elim_asm_tac1);
+a(all_fc_tac [z_size_seq_thm]);
+a(all_var_elim_asm_tac1);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+(* *** Goal "3" *** *)
+a(all_fc_tac [z_size_seq_thm]);
+save_pop_thm"z_size_seq_thm1"
+);
+=TEX
+=SML
+val €z_size_seq_thm2› = (
+set_goal([], Òµn:Ó; s : (seq _)∑ #s = n § dom s = 1 .. nÆ);
+a(rewrite_tac[z_seq_thm1] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(all_var_elim_asm_tac1);
+a(all_fc_tac [z_size_seq_thm]);
+a(all_var_elim_asm_tac1);
+a(all_fc_tac[z_fun_dom_clauses]);
+(* *** Goal "2" *** *)
+a(LEMMA_TÒs ç dom s ≠ ÉÆ ante_tac THEN1
+	(POP_ASM_T discard_tac THEN ALL_FC_T asm_rewrite_tac[z_≠_thm]));
+a(LIST_DROP_NTH_ASM_T [1,2,3] rewrite_tac);
+a(REPEAT strip_tac THEN all_fc_tac [z_size_seq_thm]);
+save_pop_thm"z_size_seq_thm2"
+);
+=TEX
+=SML
+val €z_size_seq_Ó_thm› = (
+set_goal([], Òµs : (seq _)∑ #s ç ÓÆ);
+a(rewrite_tac [z_seq_thm1] THEN REPEAT strip_tac);
+a(all_fc_tac [z_size_seq_thm] THEN all_var_elim_asm_tac1 THEN REPEAT strip_tac);
+save_pop_thm"z_size_seq_Ó_thm"
+);
+=TEX
+=SML
+val €z_singleton_seq_thm› = (
+set_goal([], Òµx : É∑
+	ßx¢ ç (seq _) ± dom ßx¢ = {1} ± ran ßx¢ = {x} ± ßx¢ 1 = xÆ);
+a(rewrite_tac[z_seq_thm1] THEN REPEAT_UNTIL is_± strip_tac);
+a(conv_tac (ONCE_MAP_C z_ß¢_conv));
+a(rewrite_tac[z_singleton_app_thm]);
+a(strip_tac THEN_LIST [id_tac, PC_T1 "z_rel_ext" prove_tac[]]);
+a(z_∂_tacÒ1Æ THEN REPEAT strip_tac);
+a(LEMMA_TÒ1 .. 1 = {1}Æ rewrite_thm_tac);
+(* *** Goal "1" *** *)
+a(PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(PC_T1 "z_fun_ext" asm_prove_tac[]);
+save_pop_thm"z_singleton_seq_thm"
+);
+=TEX
+=SML
+val €z_seq_u_thm› = (
+set_goal([], ÒµX:É∑ µ s:seq X∑s ç (seq _)Æ);
+a(rewrite_tac[z_seq_thm1]);
+a(REPEAT strip_tac);
+a(z_∂_tacÒnÆ THEN REPEAT strip_tac);
+a(FC_T bc_tac [z_ran_mono_thm] THEN REPEAT strip_tac);
+save_pop_thm"z_seq_u_thm"
+);
+=TEX
+=SML
+val z_Î_thm = (
+set_goal([],
+	ÒµX, Y:É∑ µ s:seq X; t:seq Y∑s Î t  = s ¿ {n : dom t ∑ n + # s Ì t n}Æ);
+a(REPEAT strip_tac);
+a(all_fc_tac[z_seq_u_thm]);
+a(ALL_FC_T rewrite_tac[z_get_specÒ(_Î_)Æ]);
+save_pop_thm"z_Î_thm"
+);
+=TEX
+=SML
+val €z_Î_ç_seq_thm› = (
+set_goal([], ÒµX, Y:É∑ µ s:seq X; t:seq Y∑s Î t ç (seq _)Æ);
+a(REPEAT strip_tac);
+a(all_fc_tac[z_seq_u_thm]);
+a(bc_tac(fc_rule(fc_canon z_fun_ç_clauses)
+	(strip_±_rule (all_µ_elim (z_get_specÒ(_Î_)Æ)))));
+a(REPEAT strip_tac);
+save_pop_thm"z_Î_ç_seq_thm"
+);
+=TEX
+=SML
+val €z_Î_ç_seq_thm1› = save_thm(
+	"z_Î_ç_seq_thm1",
+	rewrite_rule[](z_µ_elimÒ(X¶(É ∫  X), Y¶(É ∫  X))Æ z_Î_ç_seq_thm));
+=TEX
+=SML
+val €z_Î_def_thm› = (
+set_goal([], Òµi : É; t : (seq _)∑
+		{n : dom t ∑ n + i Ì t n}
+	=	{n : É; x : É | (n, x) ç t ∑ (n + i, x)}Æ);
+a(PC_T1 "z_fun_ext" REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(GET_ASM_T Òt ç (seq _)Æ (strip_asm_tac o rewrite_rule[z_seq_thm1]));
+a(z_∂_tacÒ(n¶ n, x¶ x2)Æ THEN all_var_elim_asm_tac1 THEN REPEAT strip_tac);
+a(all_fc_tac[z_fun_app_clauses]);
+a(asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒ(n¶ n)Æ THEN all_var_elim_asm_tac1 THEN
+	PC_T1 "z_rel_ext" REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(z_∂_tacÒx2Æ THEN  REPEAT strip_tac);
+(* *** Goal "2.2" *** *)
+a(GET_ASM_T Òt ç (seq _)Æ (strip_asm_tac o rewrite_rule[z_seq_thm1]));
+a(all_fc_tac[z_fun_app_clauses]);
+save_pop_thm"z_Î_def_thm"
+);
+=TEX
+=SML
+val €z_Î_singleton_thm› = (
+set_goal([], Ò[X](µs : seq X; x: X∑ s Î ßx¢ = s ¿ {(#s + 1, x)})Æ);
+a(REPEAT strip_tac);
+a(lemma_tacÒßx¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(ALL_FC_T rewrite_tac [z_Î_thm, z_Î_def_thm]);
+a(LEMMA_TÒ{n : É; x' : É | n = 1 ± x' = x ∑ (n + # s, x')} = {(# s + 1, x)}Æ
+	rewrite_thm_tac);
+a(rewrite_tac[z_µ_elimÒ1Æ z_plus_order_thm]);
+a(PC_T1 "z_sets_ext" prove_tac[] THEN asm_rewrite_tac[]);
+save_pop_thm"z_Î_singleton_thm"
+);
+=TEX
+=SML
+val €z_Î_singleton_thm1› = save_thm("z_Î_singleton_thm1",
+					µ_elimÒÉÆ z_Î_singleton_thm);
+=TEX
+=SML
+val z_ß¢_thm= (
+set_goal([], Òß¢ = {}Æ);
+a(rewrite_tac(map get_spec[Òß¢Æ, ¨Z'NumListÆ]));
+a(PC_T1"z_sets_ext" REPEAT strip_tac);
+a(PC_T1 "sets_ext" asm_prove_tac[]);
+save_pop_thm"z_ß¢_thm"
+);
+=TEX
+=SML
+val €z_ß¢_seq_thm› = (
+set_goal([], ÒµX:É∑ ß¢ ç seq XÆ);
+a(rewrite_tac[z_ß¢_thm, z_seq_thm1]);
+a(REPEAT strip_tac);
+a(z_∂_tac Ò0Æ THEN REPEAT strip_tac);
+a(LEMMA_TÒ 1 .. 0 = {}Æ rewrite_thm_tac THEN1 rewrite_tac[z_dot_dot_clauses]);
+a(rewrite_tac[pc_rule1"z_fun_ext"prove_rule[]Ò[X]({} ≠ X = {{}})Æ]);
+save_pop_thm"z_ß¢_seq_thm"
+);
+=TEX
+Now we prove the HOL theorem which will justify the pattern of induction on sequences in which a singleton sequence is tacked on at the end of a sequence.
+=SML
+val €z_seq_induction_thm› = (
+set_goal([],
+	¨µ X p ∑
+		p Òß¢Æ
+	±	(µ x s∑
+			Òx ç XÆ ± Òs ç seq XÆ ± p ÒsÆ
+		¥	p Òs Î ßx¢Æ)
+      ¥ (µ s∑ Òs ç (seq X)Æ ¥ p s)Æ);
+a(rewrite_tac[z_ß¢_thm] THEN REPEAT_N 3 strip_tac);
+a(bc_tac[z_prim_seq_induction_thm] THEN REPEAT strip_tac);
+a(lemma_tacÒs ç seq XÆ THEN1
+	(rewrite_tac[z_seq_thm1] THEN contr_tac THEN all_asm_fc_tac[]));
+a(lemma_tacÒs ¿ {(#s + 1, x)} = s Î ßx¢Æ THEN1
+	(ALL_FC_T rewrite_tac[z_Î_singleton_thm]));
+a(lemma_tacÒ#s = nÆ THEN1 all_fc_tac[z_size_seq_thm]);
+a(all_var_elim_asm_tac1 THEN asm_rewrite_tac[]);
+a(all_asm_fc_tac[]);
+save_pop_thm"z_seq_induction_thm"
+);
+=TEX
+=SML
+local
+val ZGVar (seq_name, _, _) = dest_z_term Òseq XÆ;
+
+fun €dest_ç_seq› (tm : TERM) : TERM * TERM = (
+	let	val (x, seqa) = dest_z_ç tm;
+		val (seq, _, a) = dest_z_gvar seqa;
+	in	if	seq = seq_name
+		then	(x, hd a)
+		else	fail "dest_ç_seq" 0 []	(* always caught below *)
+	end
+);
+in
+fun €gen_z_seq_induction_tac›
+	(tac_name : string)
+	(ind_thm : THM)
+	(tm : TERM) : TACTIC = (
+	if not (is_var tm)
+	then term_fail tac_name 107032 [tm]
+	else ( fn(asms, conc) =>
+	let	fun d t = (dest_ç_seq t, t);
+		val ((x, a), asm) = find
+			(mapfilter d asms) (fn ((x, _), _) => x =$ tm)
+			handle Fail _ => fail tac_name 107031 [];
+		val thm = µ_elim a ind_thm;
+	in	if not (is_free_in tm conc)
+			then term_fail tac_name 86404 [tm]
+		else if any (asms drop (fn t => t =$ asm)) (is_free_in tm)
+			then term_fail tac_name 86403 [tm]
+		else	(asm_ante_tac asm THEN gen_induction_tac1 thm) (asms, conc)
+	end
+	)
+);
+end;
+val €z_seq_induction_tac› : TERM -> TACTIC =
+	gen_z_seq_induction_tac "z_seq_induction_tac" z_seq_induction_thm;
+=TEX
+=SML
+val €z_Î_ß¢_thm› = (
+set_goal([], Òµ X : É
+    ∑ µ s : seq X ∑
+		s Î ß¢ = sÆ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(z_µ_elim(z_type_ofÒs xÆ) z_ß¢_seq_thm));
+a(ALL_FC_T rewrite_tac[z_Î_thm]);
+a(rewrite_tac[z_ß¢_thm, pc_rule1"z_rel_ext"prove_rule[]Òdom {} = {}Æ]);
+a(PC_T1 "z_sets_ext" prove_tac[]);
+save_pop_thm"z_Î_ß¢_thm"
+);
+=TEX
+=SML
+val €z_ß¢_Î_thm› = (
+set_goal([], Òµ X : É
+    ∑ µ s : seq X ∑
+		ß¢ Î s = sÆ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(z_µ_elim(z_type_ofÒs xÆ) z_ß¢_seq_thm));
+a(all_fc_tac [z_seq_u_thm]);
+a(ALL_FC_T rewrite_tac[z_Î_thm, z_Î_def_thm]);
+a(rewrite_tac[z_ß¢_thm, z_size_empty_thm]);
+a(PC_T1 "z_sets_ext" prove_tac[]);
+save_pop_thm"z_ß¢_Î_thm"
+);
+=TEX
+=SML
+val €z_dom_seq_thm› = (
+set_goal([], Òµ s : (seq _) ∑ dom s = 1 .. #sÆ);
+a(REPEAT strip_tac);
+a(GET_ASMS_T (MAP_EVERY (strip_asm_tac o rewrite_rule[z_seq_thm1])));
+a(all_fc_tac[z_fun_dom_clauses]);
+a(all_fc_tac [z_size_seq_thm] THEN all_var_elim_asm_tac1);
+save_pop_thm"z_dom_seq_thm"
+);
+=TEX
+=SML
+val €z_dom_Î_thm› = (
+set_goal([], Òµ s : (seq _); t : (seq _) ∑ dom(s Î t) = 1 .. (#s + #t)Æ);
+a(REPEAT strip_tac);
+a(GET_ASMS_T (MAP_EVERY (strip_asm_tac o rewrite_rule[z_seq_thm1])));
+a(all_fc_tac [z_size_seq_thm] THEN all_var_elim_asm_tac1);
+a(ALL_FC_T rewrite_tac [z_Î_thm]);
+a(rewrite_tac[pc_rule1"z_rel_ext"
+	prove_rule[]Òµr1, r2:É∑dom(r1 ¿ r2) = dom r1 ¿ dom r2Æ]);
+a(ALL_FC_T rewrite_tac [z_dom_seq_thm, z_Î_def_thm]);
+a(LEMMA_T Òdom {n : É; x : É | (n, x) ç t ∑ (n + # s, x)}
+	= {i : dom t∑ (i + #s)}Æ rewrite_thm_tac THEN1
+	(MERGE_PCS_T1 ["z_rel_ext", "'z_fc"] prove_tac[]));
+a(ALL_FC_T rewrite_tac [z_dom_seq_thm]);
+a(asm_rewrite_tac[z_dot_dot_plus_thm,
+	z_dot_dot_clauses,
+	pc_rule1"z_rel_ext"
+	prove_rule[]Òµa, b, c:É∑a ¿ b = c § a Ä c ± b Ä c ± c Ä a ¿ bÆ]);
+a(PC_T "z_sets_ext" strip_tac);
+a(rewrite_tac[] THEN z_strip_tac THEN strip_tac);
+a(rewrite_tac[z_µ_elimÒ#sÆz_plus_order_thm]);
+a(PC_T1 "z_sets_alg" REPEAT strip_tac);
+a(POP_ASM_T (ante_tac o once_rewrite_rule[z_get_specÒ(_<_)Æ] o rewrite_rule[]));
+a(REPEAT strip_tac);
+save_pop_thm"z_dom_Î_thm"
+);
+=TEX
+=SML
+val €z_ran_Ä_thm› = (
+set_goal([], ÒµX:É; Y:É; f : É∑ f ç X ≠ É ± ran f Ä Y § f ç X ≠ YÆ);
+a(PC_T1 "z_fun_ext" z_fc_prove_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val €z_seq_seq_x_thm› = (
+set_goal([], Òµ X :É; s : (seq _) ∑ s ç seq X § ran s Ä XÆ);
+a(rewrite_tac[z_seq_thm1] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(POP_ASM_T ante_tac THEN PC_T1 "z_fun_ext" prove_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒnÆ THEN ALL_FC_T asm_rewrite_tac [z_ran_Ä_thm]);
+save_pop_thm"z_seq_seq_x_thm"
+);
+=TEX
+=SML
+val €z_singleton_seq_x_thm› = (
+set_goal([], Òµ X :É∑µx:É∑ ßx¢ ç seq X § x ç XÆ);
+a(REPEAT_UNTIL is_§  strip_tac);
+a(lemma_tacÒßx¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(ALL_FC_T1 fc_§_canon rewrite_tac [z_seq_seq_x_thm]);
+a(rewrite_tac[z_singleton_seq_thm]);
+a(PC_T1"z_sets_ext" asm_prove_tac[]);
+save_pop_thm "z_singleton_seq_x_thm"
+);
+=TEX
+=SML
+val €z_Î_seq_x_thm› = (
+set_goal([], Òµ X :É; s1, s2:(seq _)∑ s1 Î s2 ç seq X § s1 ç seq X ± s2 ç seq XÆ);
+a(REPEAT_UNTIL is_§ strip_tac);
+a(LEMMA_T Òs1 Î s2 ç (seq _)Æ ante_tac THEN1 all_fc_tac[z_Î_ç_seq_thm]);
+a(ALL_FC_T rewrite_tac[z_Î_thm, z_Î_def_thm]);
+a(strip_tac THEN ALL_FC_T1 fc_§_canon  rewrite_tac [z_seq_seq_x_thm]);
+a(rewrite_tac[pc_rule1 "z_rel_ext" prove_rule[]Òµf, g:É∑ran (f ¿ g) = ran f ¿ ran gÆ]);
+a(LEMMA_T Ò ran {n : É; x : É | (n, x) ç s2 ∑ (n + # s1, x)} = ran s2Æ rewrite_thm_tac
+	THEN1 PC_T1 "z_rel_ext" prove_tac[]);
+a(PC_T1 "z_sets_ext" prove_tac[]);
+save_pop_thm "z_Î_seq_x_thm"
+);
+=TEX
+=SML
+val €z_size_Î_thm› = (
+set_goal([], Òµ s, t : (seq _); x:É ∑#(s Î t) = #s + #tÆ);
+a(REPEAT strip_tac);
+a(lemma_tac Òs Î t ç (seq _)Æ THEN1 all_fc_tac[z_Î_ç_seq_thm]);
+a(all_fc_tac[z_size_seq_Ó_thm]);
+a(lemma_tac Ò#s + #t ç ÓÆ THEN1 (all_fc_tac[z_Ó_plus_thm] THEN REPEAT strip_tac));
+a(lemma_tac Òdom(s Î t) = 1 .. # s + # tÆ THEN1 all_fc_tac[z_dom_Î_thm]);
+a(strip_asm_tac (z_µ_elimÒ(n¶ # s + # t, s¶ s Î t)Æ z_size_seq_thm2));
+a(all_fc_tac[z_less_º_trans_thm]);
+save_pop_thm"z_size_Î_thm"
+);
+=TEX
+=SML
+val €z_size_singleton_seq_thm› = (
+set_goal([], Òµ x:É ∑#ßx¢ = 1Æ);
+a(conv_tac(ONCE_MAP_C z_ß¢_conv));
+a(rewrite_tac[z_size_singleton_thm]);
+save_pop_thm"z_size_singleton_seq_thm"
+);
+=TEX
+=SML
+val €z_seq_cases_thm› = (
+set_goal([], Òµ s : (seq _)∑
+		s = ß¢ ≤ (∂s1 : (seq _); x:É∑ s = s1 Î ßx¢)Æ);
+a(z_µ_tac THEN ¥_tac);
+a(z_seq_induction_tacÒsÆ THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒ(s1¶ s, x'¶ x)Æ THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒ(s1¶ s, x'¶ x)Æ THEN REPEAT strip_tac);
+save_pop_thm"z_seq_cases_thm"
+);
+=TEX
+=SML
+val €z_≥_Î_empty_thm› = (
+set_goal([], Òµ s : (seq _); x:É∑ ≥s Î ßx¢ = ß¢Æ);
+a(REPEAT strip_tac);
+a(ALL_FC_T rewrite_tac[z_Î_singleton_thm1]);
+a(PC_T1 "z_sets_ext" prove_tac[z_ß¢_thm]);
+save_pop_thm"z_≥_Î_empty_thm"
+);
+=TEX
+=SML
+val €z_Î_one_one_thm› = (
+set_goal([], Òµ s : (seq _); t : (seq _); x, y:É ∑
+		s Î ßx¢ = t Î ßy¢ § s = t ± x = yÆ);
+a(REPEAT_UNTIL is_§ strip_tac THEN §_tac
+	THEN_LIST [id_tac, REPEAT strip_tac THEN asm_rewrite_tac[]]);
+a(lemma_tacÒ#s = #tÆ);
+(* *** Goal "1" *** *)
+a(LEMMA_TÒ#(s Î ßx¢) = #(t Î ßy¢)Æ ante_tac THEN1 asm_rewrite_tac[]);
+a(lemma_tacÒßx¢ ç (seq _) ± ßy¢ ç (seq _)Æ
+	THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(rename_tac[(ÒtÆ, "u")] THEN ALL_FC_T rewrite_tac[z_size_Î_thm]);
+a(rewrite_tac[z_size_Î_thm, z_size_singleton_seq_thm]);
+(* *** Goal "2" *** *)
+a(GET_ASM_T Òs ç (seq _)Æ (strip_asm_tac o rewrite_rule[z_seq_thm1]));
+a(GET_ASM_T Òt ç (seq _)Æ (strip_asm_tac o rewrite_rule[z_seq_thm1]));
+a(all_fc_tac [z_size_seq_thm] THEN all_var_elim_asm_tac1);
+a(DROP_ASM_T Òs Î ßx¢ = t Î ßy¢Æ ante_tac);
+a(strip_asm_tac(z_µ_elimÒ(s¶s, x¶x)Æ
+	(z_gen_pred_elim[ÒÉÆ] z_Î_singleton_thm)));
+a(strip_asm_tac(z_µ_elimÒ(s¶t, x¶y)Æ
+	(z_gen_pred_elim[ÒÉÆ] z_Î_singleton_thm)));
+a(asm_rewrite_tac[]);
+a(PC_T1 "z_sets_ext" REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(all_fc_tac[z_ç_≠_thm]);
+a(POP_ASM_T ante_tac THEN asm_rewrite_tac[] THEN strip_tac);
+a(lemma_tacÒ≥x1 = #t + 1Æ THEN1 (contr_tac THEN all_var_elim_asm_tac1));
+a(DROP_NTH_ASM_T 5 (ante_tac o z_µ_elimÒ(x1¶ x1, x2¶ x2)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(all_fc_tac[z_ç_≠_thm]);
+a(lemma_tacÒ≥x1 = #t + 1Æ THEN1
+	(contr_tac THEN all_var_elim_asm_tac1));
+a(DROP_NTH_ASM_T 5 (ante_tac o z_µ_elimÒ(x1¶ x1, x2¶ x2)Æ));
+a(asm_rewrite_tac[]);
+(* *** Goal "2.3" *** *)
+a(POP_ASM_T (ante_tac o z_µ_elimÒ(x1¶ # t + 1, x2¶ y)Æ));
+a(asm_rewrite_tac[]);
+a(LEMMA_TÒ≥ (# t + 1, y) ç sÆ (fn th => prove_tac[th]));
+a(contr_tac THEN all_fc_tac[z_ç_≠_thm]);
+a(POP_ASM_T ante_tac THEN asm_rewrite_tac[]);
+save_pop_thm"z_Î_one_one_thm"
+);
+=TEX
+=SML
+val €z_Î_assoc_thm› = (
+set_goal([], Òµ s1, s2, s3 : (seq _)∑ (s1 Î s2) Î s3 = s1 Î (s2 Î s3)Æ);
+a(REPEAT strip_tac);
+a(lemma_tacÒs1 Î s2 ç (seq _) ± s2 Î s3 ç (seq _)Æ
+	THEN1 ALL_FC_T rewrite_tac [z_Î_ç_seq_thm]);
+a(ALL_FC_T once_rewrite_tac [z_Î_thm]);
+a(ALL_FC_T rewrite_tac [z_Î_def_thm]);
+a(ALL_FC_T rewrite_tac [z_size_Î_thm]);
+a(ALL_FC_T rewrite_tac [z_Î_thm, z_Î_def_thm]);
+a(rewrite_tac[pc_rule1"z_sets_ext"
+	prove_rule[]Òµa, b, c:É∑(a ¿ b) ¿ c = a ¿ (b ¿ c)Æ]);
+a(LEMMA_TÒ
+		{n : É; x : É | (n, x) ç s2 ∑ (n + # s1, x)}
+	¿	{n : É; x : É | (n, x) ç s3 ∑ (n + (# s1 + # s2), x)}
+	=	{n : É; x : É |
+		(n, x) ç s2 ≤
+		(∂ n' : É; x' : É | (n', x') ç s3 ∑ n' + # s2 = n ± x' = x)
+                 ∑ (n + # s1, x)}Ærewrite_thm_tac);
+a(PC_T "z_sets_ext" strip_tac THEN REPEAT strip_tac
+	THEN_TRY all_var_elim_asm_tac1);
+(* *** Goal "1" *** *)
+a(z_∂_tacÒ(n'¶ n, x¶ x2)Æ THEN asm_rewrite_tac[]);
+(* *** Goal "2" *** *)
+a(z_∂_tacÒ(n'¶ n + #s2, x ¶ x2)Æ THEN
+	asm_rewrite_tac[z_µ_elimÒ#s1Æz_plus_order_thm]);
+a(≤_right_tac THEN z_∂_tacÒ(n''¶ n, x' ¶ x2)Æ THEN asm_rewrite_tac[]);
+(* *** Goal "3" *** *)
+a(LIST_DROP_NTH_ASM_T [1] fc_tac);
+(* *** Goal "4" *** *)
+a(contr_tac THEN LIST_DROP_NTH_ASM_T [1] fc_tac);
+a(POP_ASM_T ante_tac THEN rewrite_tac[z_µ_elimÒ#s1Æz_plus_order_thm]);
+save_pop_thm"z_Î_assoc_thm"
+);
+=TEX
+=SML
+val €z_Î_assoc_thm1› = (
+	save_thm("z_Î_assoc_thm1",
+		conv_rule (ONCE_MAP_C eq_sym_conv) z_Î_assoc_thm)
+);
+=TEX
+=SML
+val €z_seq_u_induction_thm1› = (
+set_goal([], ¨µ p∑
+	p Òß¢Æ
+±	(µ x s∑ s ç Ò(seq _)Æ ± p s ¥ p Òßx¢ Î sÆ)
+¥	(µ s∑ s ç Ò(seq _)Æ ¥ p s)Æ);
+a(REPEAT strip_tac);
+a(lemma_tac¨µx∑ p Òßx¢ÆÆ THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(strip_asm_tac (z_µ_elimÒxÆ z_singleton_seq_thm));
+a(LEMMA_T Òßx¢ = ßx¢ Î ß¢Æ once_rewrite_thm_tac THEN1 ALL_FC_T rewrite_tac [z_Î_ß¢_thm]);
+a(GET_NTH_ASM_T 6 bc_thm_tac);
+a(asm_rewrite_tac[z_ß¢_seq_thm]);
+(* *** Goal "2" *** *)
+a(lemma_tac¨µs1∑ s1 ç Ò(seq _)Æ ¥ (p s1 ± µs2∑ s2 ç Ò(seq _)Æ ± p s2 ¥ p Òs1 Î s2Æ)Æ );
+(* *** Goal "2.1" *** *)
+a(REPEAT_N 2 strip_tac);
+a(z_seq_induction_tacÒs1Æ THEN REPEAT strip_tac);
+(* *** Goal "2.1.1" *** *)
+a(ALL_FC_T asm_rewrite_tac [z_ß¢_Î_thm]);
+(* *** Goal "2.1.2" *** *)
+a(TOP_ASM_T bc_thm_tac);
+a(asm_rewrite_tac[z_singleton_seq_thm]);
+(* *** Goal "2.1.3" *** *)
+a(lemma_tacÒßx¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(ALL_FC_T rewrite_tac[z_Î_assoc_thm]);
+a(lemma_tac¨pÒßx¢ Î s12ÆÆ THEN1 (GET_NTH_ASM_T 9 bc_thm_tac THEN REPEAT strip_tac));
+a(GET_NTH_ASM_T 5 bc_thm_tac THEN REPEAT strip_tac);
+a(ALL_FC_T rewrite_tac[z_Î_ç_seq_thm]);
+(* *** Goal "2.2" *** *)
+a(ALL_ASM_FC_T rewrite_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val €z_seq_induction_thm1› = (
+set_goal([], ¨µ X p∑
+	p Òß¢Æ
+±	(µ x s∑ x ç X ± s ç Òseq XÆ ± p s ¥ p Òßx¢ Î sÆ)
+¥	(µ s∑ s ç Òseq XÆ ¥ p s)Æ);
+a(REPEAT strip_tac);
+a(strip_asm_tac(conv_rule(MAP_C ¬_conv)(µ_elim¨Ãs∑Òs ç seq XÆ ¥ p sÆz_seq_u_induction_thm1)));
+(* *** Goal "1" *** *)
+a(POP_ASM_T discard_tac THEN i_contr_tac);
+a(swap_nth_asm_concl_tac 2 THEN REPEAT strip_tac);
+a(POP_ASM_T ante_tac);
+a(lemma_tac Òßx¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(ALL_FC_T1 fc_§_canon rewrite_tac [z_Î_seq_x_thm] THEN taut_tac);
+(* *** Goal "2" *** *)
+a(swap_nth_asm_concl_tac 1 THEN REPEAT strip_tac);
+a(DROP_NTH_ASM_T 6 bc_thm_tac);
+a(lemma_tac Òßx¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(DROP_NTH_ASM_T 3 ante_tac);
+a(ALL_FC_T1 fc_§_canon  rewrite_tac [z_Î_seq_x_thm]);
+a(rewrite_tac[z_singleton_seq_x_thm] THEN REPEAT strip_tac);
+(* *** Goal "3" *** *)
+a(all_fc_tac[z_seq_u_thm] THEN all_asm_fc_tac[]);
+save_pop_thm"z_seq_induction_thm1"
+);
+=TEX
+=SML
+val €z_seq_induction_tac1› =
+	gen_z_seq_induction_tac "z_seq_induction_tac1" z_seq_induction_thm1;
+=TEX
+\subsection{Sequence Displays}
+=SML
+val _ = set_merge_pcs["z_sets_alg", "'z_rel_alg", "'z_numbers1", "'Ó"];
+=TEX
+=SML
+val hol_¿_z_¿_lemma = (
+set_goal([], ¨µa b∑ a ¿ b = Òa ¿ bÆÆ);
+a(MERGE_PCS_T1 ["z_sets_ext", "sets_ext"] prove_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val €hol_setd_z_setd_lemma› = (
+set_goal([], ¨µx∑ {x} = Ò{x}ÆÆ);
+a(MERGE_PCS_T1 ["z_sets_ext", "sets_ext"] prove_tac[]);
+pop_thm()
+);
+=TEX
+=SML
+val €z_num_list_thm› = save_thm ("z_num_list_thm", (
+set_goal([], ¨µl:'a LIST; n∑
+	Z'NumList(l, n) =
+	Ò{i:É; x:É | (i, x) ç ¨$"Z'ß¢" lÆ ∑ (i+¨Z'Int nÆ, x)}ÆÆ);
+a(rewrite_tac[get_specÒß¢Æ]);
+a(µ_tac THEN list_induction_tac¨l:'a LISTÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[get_spec¨Z'NumListÆ]);
+a(PC_T1 "z_rel_ext" rewrite_tac[]);
+a(PC_T1 "sets_ext" rewrite_tac[] THEN REPEAT strip_tac);
+(* *** Goal "2" *** *)
+a(rewrite_tac[get_spec¨Z'NumListÆ]);
+a(REPEAT strip_tac);
+a(POP_ASM_T once_rewrite_thm_tac);
+a(PC_T1 "z_rel_ext" REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(z_∂_tacÒ(i ¶ x1 + ~¨Z'Int nÆ, x' ¶ x2)Æ THEN PC_T1 "z_rel_ext" rewrite_tac[]);
+a(rewrite_tac[z_plus_assoc_thm]);
+a(POP_ASM_T ante_tac THEN PC_T1 "sets_ext" rewrite_tac[]);
+a(rewrite_tac[z_int_homomorphism_thm]);
+a(once_rewrite_tac[z_˙_eq_thm]);
+a(conv_tac(ONCE_MAP_C z_anf_conv));
+a(rewrite_tac[]);
+(* *** Goal "2.2" *** *)
+a(all_var_elim_asm_tac1);
+a(POP_ASM_T ante_tac THEN PC_T1 "sets_ext" rewrite_tac[]);
+a(rewrite_tac[z_int_homomorphism_thm]);
+a(once_rewrite_tac[z_˙_eq_thm]);
+a(conv_tac(ONCE_MAP_C z_anf_conv));
+a(rewrite_tac[]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_seqd_ç_seq_thm› = save_thm ("z_seqd_ç_seq_thm", (
+set_goal([], ¨µl: 'a LIST∑Ò¨$"Z'ß¢" lÆ ç (seq _)ÆÆ);
+a(µ_tac THEN list_induction_tac¨l:'a LISTÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_ß¢_seq_thm]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[get_spec¨$"Z'ß¢"Æ, get_spec¨Z'NumListÆ, hol_¿_z_¿_lemma]);
+a(µ_tac);
+a(lemma_tacÒßx¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(LEMMA_T Ò
+	¨Z'NumList (l, 1)Æ ¿ ¨{Ò(1, x)Æ}Æ =
+	ßx¢ Î ¨$"Z'ß¢" lÆÆ rewrite_thm_tac);
+(* *** Goal "2.1" *** *)
+a(ALL_FC_T rewrite_tac[z_Î_thm]);
+a(rewrite_tac[z_num_list_thm]);
+a(rewrite_tac[z_size_singleton_seq_thm, hol_setd_z_setd_lemma]);
+a(ALL_FC_T rewrite_tac[z_Î_def_thm]);
+a(conv_tac (ONCE_MAP_C z_ß¢_conv));
+a(PC_T1 "z_rel_ext" prove_tac[]);
+(* *** Goal "2.2" *** *)
+a(ALL_FC_T rewrite_tac[z_Î_ç_seq_thm]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_seqd_Î_thm› = save_thm ("z_seqd_Î_thm", (
+set_goal([], ¨µa :'a; l∑$"Z'ß¢" (Cons a l) = Òßa¢ Î ¨$"Z'ß¢" lÆÆÆ);
+a(REPEAT strip_tac);
+a(conv_tac (LEFT_C (rewrite_conv[get_spec¨$"Z'ß¢"Æ])));
+a(once_rewrite_tac[get_spec¨Z'NumListÆ] THEN rewrite_tac[]);
+a(lemma_tacÒßa¢ ç (seq _)Æ THEN1 rewrite_tac[z_singleton_seq_thm]);
+a(strip_asm_tac (µ_elim¨lÆz_seqd_ç_seq_thm));
+a(ALL_FC_T rewrite_tac[z_Î_thm]);
+a(rewrite_tac[z_num_list_thm]);
+a(rewrite_tac[z_size_singleton_seq_thm, hol_setd_z_setd_lemma]);
+a(ALL_FC_T rewrite_tac[z_Î_def_thm]);
+a(conv_tac (ONCE_MAP_C z_ß¢_conv));
+a(rewrite_tac[hol_¿_z_¿_lemma]);
+a(PC_T1 "z_rel_ext" prove_tac[]);
+pop_thm()
+));
+=TEX
+=SML
+=TEX
+=SML
+val €z_seqd_Î_rw_thm› = save_thm ("z_seqd_Î_rw_thm", (
+set_goal([], ¨µa b :'a; l∑$"Z'ß¢" (Cons a (Cons b l)) = Òßa¢ Î (ßb¢ Î ¨$"Z'ß¢" lÆ)ÆÆ);
+a(REPEAT µ_tac);
+a(rewrite_tac[list_µ_elim [¨aÆ, ¨Cons b lÆ]z_seqd_Î_thm,
+	list_µ_elim [¨bÆ, ¨lÆ]z_seqd_Î_thm]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_ç_seq_app_eq_thm› = save_thm ("z_ç_seq_app_eq_thm", (
+set_goal([], Òµs : (seq _); m : É; x : É∑ (m, x) ç s ¥ s m = xÆ);
+a(rewrite_tac[z_seq_thm] THEN REPEAT strip_tac);
+a(all_var_elim_asm_tac1 THEN ALL_FC_T rewrite_tac[z_fun_app_clauses]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_ç_seqd_app_eq_thm› = save_thm ("z_ç_seqd_app_eq_thm", (
+set_goal([], ¨µl m x∑ Ò(m, x) ç ¨$"Z'ß¢" lÆ ¥ ¨$"Z'ß¢" lÆ m = xÆÆ);
+a(REPEAT µ_tac);
+a(lemma_tacÒ¨$"Z'ß¢" lÆ ç (seq _)Æ THEN1 rewrite_tac[z_seqd_ç_seq_thm]);
+a(REPEAT strip_tac THEN all_fc_tac[z_ç_seq_app_eq_thm]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_seqd_app_conv› : CONV = (fn tm =>
+	let	val (s, itm) = dest_z_app tm
+			handle Fail _ => term_fail "z_seqd_app_conv" 107011 [tm];
+		val i = nat_of_string(dest_z_int itm)
+			handle Fail _ => term_fail "z_seqd_app_conv" 107012 [itm];
+		val ys = snd(dest_z_ß¢ s)
+			handle Fail _ => term_fail "z_seqd_app_conv" 107011 [tm];
+		val y = nth (i-1) ys
+			handle Fail _ => term_fail "z_seqd_app_conv" 107013 [itm, s];
+		val el = mk_z_tuple [itm, y];
+		val cond = mk_z_ç (el, s);
+		val th1 = §_t_elim
+			((z_ç_ß¢_conv THEN_C z_ç_setd_conv THEN_C
+				PC_C1 "predicates" rewrite_conv[]) cond);
+	in	simple_¥_match_mp_rule z_ç_seqd_app_eq_thm th1
+	end
+);
+=TEX
+=SML
+val €z_size_seqd_thm› = save_thm ("z_size_seqd_thm", (
+set_goal([], ¨
+	Ò#ß¢ = 0Æ
+±	µa :'a; l∑Ò#¨$"Z'ß¢" (Cons a l)ÆÆ = Ò1 + #¨$"Z'ß¢" lÆÆÆ);
+a(rewrite_tac[z_ß¢_thm, z_size_empty_thm]);
+a(REPEAT strip_tac THEN once_rewrite_tac[z_seqd_Î_thm]);
+a(lemma_tac Òßa¢ ç (seq _) ± ¨$"Z'ß¢" lÆ ç (seq _)Æ
+	THEN1 rewrite_tac[z_singleton_seq_thm, z_seqd_ç_seq_thm]);
+a(ALL_FC_T rewrite_tac[z_size_Î_thm]);
+a(conv_tac (ONCE_MAP_C z_ß¢_conv) THEN
+	rewrite_tac[z_size_empty_thm, z_size_singleton_thm]);
+pop_thm()
+));
+=TEX
+Having a conversion to compute sizes of sequence displays is easy to
+code and is likely to be faster than doing it by rewriting.
+=SML
+local
+	val base_conv = simple_eq_match_conv(±_left_elim z_size_seqd_thm);
+	fun STEP_C c = simple_eq_match_conv(±_right_elim z_size_seqd_thm)
+			THEN_C RAND_C (RIGHT_C c) THEN_C z_plus_conv;
+in
+	val rec €z_size_seqd_conv› : CONV = (fn tm =>
+		(STEP_C z_size_seqd_conv ORELSE_C base_conv) tm
+		handle Fail _ => term_fail "z_size_seqd_conv" 107021 [tm]
+	);
+end;
+=TEX
+=SML
+val €z_size_seqd_length_thm› = save_thm ("z_size_seqd_length_thm", (
+set_goal([], ¨µl: 'a LIST∑Ò#¨$"Z'ß¢" lÆÆ = Z'Int (Length l)Æ);
+a(REPEAT strip_tac THEN list_induction_tac¨l:'a LISTÆ THEN
+	asm_rewrite_tac[z_size_seqd_thm, length_def, z'int_def]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_dom_seqd_thm› = save_thm ("z_dom_seqd_thm", (
+set_goal([], ¨µl: 'a LIST∑Òdom ¨$"Z'ß¢" lÆ = 1 .. #¨$"Z'ß¢" lÆÆÆ);
+a(REPEAT strip_tac);
+a(lemma_tac Ò¨$"Z'ß¢" lÆ ç (seq _)Æ THEN1 rewrite_tac[z_seqd_ç_seq_thm]);
+a(ALL_FC_T rewrite_tac[z_dom_seq_thm]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_ran_seqd_thm› = save_thm ("z_ran_seqd_thm", (
+set_goal([], ¨µl: 'a LIST∑Òran ¨$"Z'ß¢" lÆ = ¨Z'Setd lÆÆÆ);
+a(REPEAT strip_tac THEN list_induction_tac ¨l : 'a LISTÆ);
+(* *** Goal "1" *** *)
+a(rewrite_tac[z_ß¢_thm]);
+(* *** Goal "2" *** *)
+a(once_rewrite_tac[z_seqd_Î_thm, z'setd_def] THEN REPEAT strip_tac);
+a(lemma_tac Òßx¢ ç (seq _) ± ¨$"Z'ß¢" lÆ ç (seq _)Æ
+	THEN1 rewrite_tac[z_singleton_seq_thm, z_seqd_ç_seq_thm]);
+a(ALL_FC_T rewrite_tac[z_Î_thm, z_Î_def_thm]);
+a(GET_NTH_ASM_T 3 (rewrite_thm_tac o eq_sym_rule));
+a(rewrite_tac[hol_¿_z_¿_lemma, hol_setd_z_setd_lemma]);
+a(conv_tac (ONCE_MAP_C (z_ß¢_conv ORELSE_C z_size_seqd_conv)));
+a(PC_T1 "z_rel_ext" prove_tac[]);
+pop_thm()
+));
+=TEX
+=SML
+val €z_seqd_Î_ß¢_clauses› = save_thm ("z_seqd_Î_ß¢_clauses", (
+set_goal([], ¨µl: 'a LIST∑
+	Ò¨$"Z'ß¢" lÆ Î ß¢ = ¨$"Z'ß¢" lÆÆ
+±	Òß¢ Î ¨$"Z'ß¢" lÆ  = ¨$"Z'ß¢" lÆÆÆ);
+a(REPEAT µ_tac);
+a(lemma_tac Ò¨$"Z'ß¢" lÆ ç (seq _)Æ THEN1 rewrite_tac[z_seqd_ç_seq_thm]);
+a(ALL_FC_T rewrite_tac[z_Î_ß¢_thm, z_ß¢_Î_thm]);
+pop_thm()
+));
+=TEX
+We now want to show that the representation of sequence displays defines a one-to-one
+function from HOL lists to Z sequences.
+The following lemma is the first useful fact about the representation of sequence displays.
+It is saying in terms of the representation that there is no need to keep looking
+for $(m, x)$ in a sequence display once you've got up to the $m$-th element.
+=SML
+val _ = set_pc"basic_hol";
+val z_seqd_eq_lemma1 =(
+set_goal([], ¨µl m x n∑ Ò(¨Z'Int mÆ, x)Æ ç Z'NumList (l, n)  ¥ n < mÆ);
+a(µ_tac THEN rewrite_tac[get_spec¨Z'IntÆ]);
+a(list_induction_tac¨lÆ THEN REPEAT strip_tac
+	THEN POP_ASM_T ante_tac THEN rewrite_tac[get_spec¨Z'NumListÆ]);
+(* *** Goal "1" *** *)
+a(PC_T1 "sets_ext1" prove_tac[]);
+(* *** Goal "2" *** *)
+a(rewrite_tac[get_spec¨Z'IntÆ]);
+a(cases_tac¨Ò(¨Ó˙ mÆ, x')Æ ç Z'NumList(l, n+1)Æ THEN REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(all_asm_fc_tac[]);
+a(POP_ASM_T ante_tac THEN PC_T1 "lin_arith" prove_tac[]);
+(* *** Goal "2.2" *** *)
+a(LEMMA_T¨Ò(¨Ó˙ mÆ, x')Æ ç  {Ò(¨Ó˙ (n + 1)Æ, x)Æ}Æ ante_tac
+	THEN1 PC_T1 "sets_ext1" asm_prove_tac[]);
+a(PC_T1"sets_ext1" rewrite_tac[]);
+a(PC_T1 "z_language" REPEAT strip_tac);
+a(all_fc_tac[Ó˙_one_one_thm]);
+a(asm_rewrite_tac[] THEN PC_T1 "lin_arith" prove_tac[]);
+pop_thm()
+);
+=TEX
+The next lemma is just  a convenience for the proof of the fact that $Z'NumList$ is
+one-to-one.
+=SML
+val z_seqd_eq_lemma2 =(
+set_goal([], ¨µA B x∑ A ¿ {x} = B ¿ {x} ± ≥x ç A  ± ≥x ç B ¥ A = BÆ);
+a(PC_T1 "sets_ext1" rewrite_tac[] THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(spec_nth_asm_tac 4 ¨x'Æ THEN all_var_elim_asm_tac);
+(* *** Goal "2" *** *)
+a(spec_nth_asm_tac 4 ¨x'Æ THEN all_var_elim_asm_tac);
+pop_thm()
+);
+=TEX
+Now we show that $Z'NumList$ is one-to-one. The proof is by list induction
+on the first of the two HOL lists in the statement of the theorem.
+=SML
+val z_seqd_eq_lemma3 = (
+set_goal([], ¨µl1 l2 n∑ Z'NumList (l1, n) = Z'NumList(l2, n) ¥ l1 = l2Æ);
+a(µ_tac);
+a(list_induction_tac¨l1Æ THEN REPEAT strip_tac);
+(* *** Goal "1" *** *)
+a(strip_asm_tac(µ_elim¨l2Æ list_cases_thm) THEN all_var_elim_asm_tac1
+	THEN REPEAT strip_tac);
+a(POP_ASM_T ante_tac THEN rewrite_tac[get_spec¨Z'NumListÆ]);
+a(PC_T1 "sets_ext1" prove_tac[]);
+(* *** Goal "2" *** *)
+a(strip_asm_tac(µ_elim¨l2Æ list_cases_thm) THEN all_var_elim_asm_tac1
+	THEN PC_T1 "predicates" REPEAT strip_tac);
+(* *** Goal "2.1" *** *)
+a(POP_ASM_T ante_tac THEN rewrite_tac[get_spec¨Z'NumListÆ]);
+a(PC_T1 "sets_ext1" prove_tac[]);
+(* *** Goal "2.2" *** *)
+a(lemma_tac¨x = x'Æ);
+(* *** Goal "2.2.1" *** *)
+a(POP_ASM_T ante_tac THEN rewrite_tac[get_spec¨Z'NumListÆ]);
+a(PC_T1 "sets_ext1" REPEAT strip_tac);
+a(lemma_tac ¨Ò(¨Z'Int (n + 1)Æ, x)Æ ç Ò¨Z'NumList (l1, n + 1)ÆÆ ¿ {Ò(¨Z'Int (n + 1)Æ, x)Æ}Æ
+	THEN1 PC_T1 "sets_ext1" prove_tac[]);
+a(all_asm_fc_tac[]);
+a(POP_ASM_T (PC_T1 "sets_ext1" strip_asm_tac));
+(* *** Goal "2.2.1.1" *** *)
+a(all_fc_tac[z_seqd_eq_lemma1]);
+(* *** Goal "2.2.1.2" *** *)
+a(POP_ASM_T (PC_T1 "z_language" strip_asm_tac));
+(* *** Goal "2.2.2" *** *)
+a(all_var_elim_asm_tac);
+a(POP_ASM_T ante_tac THEN rewrite_tac[get_spec¨Z'NumListÆ]);
+a(REPEAT strip_tac);
+a(GET_NTH_ASM_T 2 bc_thm_tac);
+a(∂_tac¨n+1Æ THEN bc_thm_tac z_seqd_eq_lemma2);
+a(∂_tac¨Ò(¨Z'Int (n + 1)Æ, x')ÆÆ);
+a(asm_rewrite_tac[] THEN REPEAT strip_tac THEN contr_tac THEN all_fc_tac[z_seqd_eq_lemma1]);
+pop_thm()
+);
+=TEX
+The following theorem states the previous result in terms of the HOL constant $OneOne$.
+=SML
+val z'ß¢_one_one_lemma = (
+set_goal([], ¨OneOne $"Z'ß¢" Æ);
+a(rewrite_tac[one_one_def, get_specÒß¢Æ] THEN REPEAT strip_tac);
+a(all_fc_tac[z_seqd_eq_lemma3]);
+pop_thm()
+);
+=TEX
+The following theorem states that the semantic constant for Z sequence displays is one-to-one.
+=SML
+val €z_seqd_one_one_thm› = (
+set_goal([], ¨µx y∑ $"Z'ß¢" x = $"Z'ß¢" y § x = y Æ);
+a (accept_tac (§_match_mp_rule one_one_thm z'ß¢_one_one_lemma));
+pop_thm ()
+);
+=TEX
+The following recasts the previous result in the form we shall want in the conversion for
+equality of sequence displays.
+=SML
+val €z_seqd_eq_thm› = (
+set_goal ([], ¨
+	µ x y l1 l2∑
+	$"Z'ß¢" (Cons x l1) = $"Z'ß¢" (Cons y l2) § x = y ± $"Z'ß¢" l1 = $"Z'ß¢" l2
+Æ);
+a (REPEAT µ_tac);
+a (rewrite_tac [z_seqd_one_one_thm]);
+save_pop_thm "z_seqd_eq_thm"
+);
+=TEX
+The following is for use in the conversion when the two display are not equal:
+=SML
+val €z_seqd_≥_eq_ß¢_thm› = (
+set_goal ([], ¨
+	µ x l
+	  ∑ ≥ Òß¢Æ = ¨$"Z'ß¢" (Cons x l)Æ
+	      ± ≥ ¨$"Z'ß¢" (Cons x l)Æ = Òß¢Æ
+Æ);
+a (REPEAT µ_tac);
+a (MERGE_PCS_T1 ["z_language", "'list"] rewrite_tac [z_seqd_one_one_thm]);
+pop_thm ()
+);
+=TEX
+The following little lemma is used in the conversions to eliminate trivial equalities.
+=SML
+val €z_x_eq_x_lemma› = (
+set_goal ([], ¨µx∑ x = x § TÆ);
+a (REPEAT strip_tac);
+pop_thm ()
+);
+=TEX
+Now we can give the conversion for equality of sequence displays. It eliminates
+trivial equalities and simplifies $true$ and $false$ out of the resulting conjunction.
+=SML
+local
+val €z_seqd_eq_rw_thms› =
+	current_ad_rw_canon() z_seqd_eq_thm @
+	current_ad_rw_canon() z_x_eq_x_lemma @
+	current_ad_rw_canon() z_seqd_≥_eq_ß¢_thm;
+val €z_seqd_eq_convs› = map simple_eq_match_conv z_seqd_eq_rw_thms;
+val €true_false_thms› = z_x_eq_x_lemma ::
+	(current_ad_rw_canon() o prove_rule[])
+	¨µp∑ (p ± T § p) ± (p ± F § F) ± (T ± p § p) ± (F ± p § F)Æ;
+val €true_false_convs› = map simple_eq_match_conv true_false_thms;
+in	
+val €z_seqd_eq_conv› : CONV = (
+	let	fun step tm = FIRST_C z_seqd_eq_convs tm handle
+			Fail _	=> term_fail "z_seqd_eq_conv" 107020 [tm];
+		val rec conv : CONV = fn tm => (
+			step THEN_TRY_C (RIGHT_C conv)
+			THEN_TRY_C FIRST_C true_false_convs
+			THEN_TRY_C FIRST_C true_false_convs
+			THEN_TRY_C LEFT_C (FIRST_C true_false_convs)
+			THEN_TRY_C RIGHT_C (FIRST_C true_false_convs)
+		) tm;
+
+	in	conv
+	end
+);
+end;
+
+local
+	val equal_string_conv = (simple_eq_match_conv o all_µ_intro o §_t_intro o refl_conv) Òs ∫ seq øÆ;
+	val prop_simp_conv = (REPEAT_C o FIRST_C o map (simple_eq_match_conv o taut_rule))
+								[¨µp∑ T ± p § pÆ, ¨µp∑ F ± p § FÆ];
+in
+	val z_string_eq_conv : CONV = (fn tm =>
+		(((dest_z_string ** dest_z_string) o dest_eq) tm
+			handle Fail _ => term_fail "z_string_eq_conv" 107030 [tm];
+		(equal_string_conv
+			ORELSE_C
+				(RANDS_C z_string_conv THEN_C z_seqd_eq_conv
+					THEN_TRY_C (ONCE_MAP_C char_eq_conv THEN_C prop_simp_conv))) tm)
+);
+end;
+
+=TEX
+\subsection{EPILOG OF ZSequences1}
+=TEX
+Final restoration of original proof context
+=SML
+val _ = pop_pc();
+=SML
+end (* of structure ZSequences1 *);
+open ZSequences1;
+=TEX
+Now mke $z\_sequences1$ a parent of $z\_library$.
+=SML
+open_theory "z_library";
+new_parent "z_sequences1";
+=TEX
+\twocolumn[\section{INDEX}]
+\small
+\printindex
+
+\end{document}

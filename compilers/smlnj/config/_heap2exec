@@ -1,0 +1,80 @@
+#!@SHELL@
+#
+# COPYRIGHT (c) 2025 The Fellowship of SML/NJ (https://smlnj.org)
+# All rights reserved.
+#
+# usage: heap2exec execfile
+#
+# converts execfile.<arch>-<opsys> to an executable named <exefile>
+
+CMD=`basename "$0"`
+
+usage() {
+  echo "usage: $CMD <execfile>"
+  exit 1
+}
+
+die () {
+  echo "${CMD}: $1"
+  exit 1
+}
+
+if [ x${SMLNJ_HOME} = x ] ; then
+  BIN_DIR="@BINDIR@"
+  RUNBIN_DIR="@INSTALLDIR@/runtime/bin"
+else
+  BIN_DIR="${SMLNJ_HOME}/bin"
+  RUNBIN_DIR="${SMLNJ_HOME}/runtime/bin"
+fi
+
+SUFFIX=`"$BIN_DIR/sml" @SMLsuffix`
+
+RTLIB="${BIN_DIR}/.run/runx.${SUFFIX}"
+H2O="${RUNBIN_DIR}/heap2obj"
+LLVM_CONFIG="${RUNBIN_DIR}/llvm-config"
+
+# determine the command to link the executable
+# TODO: create a script in the LLVM project, since we know the c++ command there
+case `uname -s` in
+  Darwin)
+    CXX=clang++
+    ;;
+  Linux|FreeBSD|NetBSD|OpenBSD)
+    CXX=c++
+    ;;
+  *)
+    die "unsupported system: ${OPSYS}"
+    ;;
+esac
+
+if [ $# != 1 ] ; then
+  usage
+fi
+
+heapfile=$1.$SUFFIX
+execfile=$1
+objfile=$1.o
+
+if [ ! -f "$heapfile" ] ; then
+  die "missing heap file $heapfile"
+fi
+
+if [ ! -x "$H2O" ]; then
+    echo "${CMD}: heap2obj is not installed"
+    exit 2
+fi
+
+if ${H2O} -o "$objfile" "$heapfile" ; then
+    LIBS=`"$LLVM_CONFIG" --system-libs`
+    ${CXX} -o "$execfile" "$objfile" "$RTLIB" $LIBS
+    RESULT=$?
+    rm -f "$objfile"
+else
+    die "${H2O} failed"
+fi
+
+if [ $RESULT != 0 ] ; then
+    die "linking failed with return code $RESULT"
+fi
+
+exit 0

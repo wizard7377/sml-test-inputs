@@ -1,0 +1,19 @@
+Number: 0109
+Title:       listpair discrepancies
+Keywords:    list, listpair
+Submitter:   rwh
+Date:        08/16/02
+Version:     CVS
+System:      any
+Severity:    minor
+Problem:     test case reports "wrong" results
+Code:        
+Transcript:  
+Comments:    
+	[Leaf] The print statements in the file were changed without changing
+	       the result files (renaming check to chck).
+Fix:         
+	[Leaf] Renamed back to chck, since name clash with runtime is gone.
+Test: m0032
+Owner: rwh
+Status: closed

@@ -1,0 +1,45 @@
+local
+  $(SML_LIB)/basis/basis.mlb
+  $(SML_LIB)/basis/mlton.mlb
+  $(SML_LIB)/basis/mpl.mlb
+  $(SML_LIB)/basis/unsafe.mlb
+
+  local
+    $(SML_LIB)/basis/build/sources.mlb
+  in
+    signature ARRAY_EXTRA
+    signature ARRAY_SLICE_EXTRA
+    structure ArrayExtra = Array
+    structure ArraySliceExtra = ArraySlice
+    structure Primitive
+
+    functor Int_ChooseFromInt
+  end
+
+  CumulativePerProcTimer.sml
+  SimpleRandom.sml
+  ann
+    "allowFFI true"
+    "allowPrim true"
+  in
+    DequeABP.sml
+  end
+  Result.sml
+  
+  ann
+     "exnDecElab app"
+  in
+    Universal.sml
+  end
+
+  ann
+    "allowFFI true"
+    "allowPrim true"
+  in
+    Heartbeat.sml
+    Scheduler.sml
+  end
+  ForkJoin.sml
+in
+  structure ForkJoin
+end

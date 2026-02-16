@@ -1,0 +1,40 @@
+Number: 0094
+Title:       The Runtime uses too much virtual memory.
+Keywords:    Runtime
+Submitter:   swasey
+Date:        08/16/02
+Version:     CVS
+System:      solaris,alpha
+Severity:    major
+Problem:
+	Our technique of grabbing as much virtual memory as there is
+	physical memory can cause TILT-generated binaries to fail on
+	startup or on fork().
+
+	On Solaris, fork1() fails with ENOMEM if there is not enough
+	virtual memory to accomodate parent and child.
+
+	Example: Fill up /tmp on cuff with a copy of TILT or some
+	other large files.  This consumes swap space.  Then run the
+	program below under truss.  You will see that the call to
+	fork1() in fails with ENOMEM.
+
+Code:
+	(*$import Prelude TopLevel POSIX_Process *)
+
+	structure test =
+	struct
+	    val _ = POSIX_Process.fork ()
+	end
+Transcript:
+Comments:
+	During the TILT work week, Daniel Spoonhower and Perry Cheng
+	worked on a plan to fix this problem.
+Fix:
+
+	Dan fixed this by using MMAP_NORESERVE on the sparc.  The alpha
+	still maps a lot of (virtual) memory on startup but TILT now
+	respects getrusage(2) limits if that is a problem.
+
+Owner:
+Status: closed

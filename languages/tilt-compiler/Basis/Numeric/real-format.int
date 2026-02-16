@@ -1,0 +1,6 @@
+structure RealFormat :
+sig
+
+    val fmtReal : StringCvt.realfmt -> real -> string
+
+end

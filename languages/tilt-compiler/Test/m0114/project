@@ -1,0 +1,3 @@
+unit Test = "stringcvt.sml" {
+	Int Bool Char StringCvt List TextIO OS
+}

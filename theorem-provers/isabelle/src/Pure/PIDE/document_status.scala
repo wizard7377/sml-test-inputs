@@ -1,0 +1,449 @@
+/*  Title:      Pure/PIDE/document_status.scala
+    Author:     Makarius
+
+Document status based on markup information.
+*/
+
+package isabelle
+
+
+import scala.collection.immutable.SortedMap
+
+
+object Document_Status {
+  /* theory status: via 'theory' or 'end' commands */
+
+  object Theory_Status extends Enumeration {
+    val NONE, INITIALIZED, FINALIZED, CONSOLIDATING, CONSOLIDATED = Value
+
+    def initialized(t: Value): Boolean = t >= INITIALIZED
+    def finalized(t: Value): Boolean = t >= FINALIZED
+    def consolidating(t: Value): Boolean = t >= CONSOLIDATING
+    def consolidated(t: Value): Boolean = t >= CONSOLIDATED
+
+    def merge(t1: Value, t2: Value): Value = if (t1 >= t2) t1 else t2
+  }
+
+  trait Theory_Status {
+    def theory_status: Theory_Status.Value
+    def initialized: Boolean = Theory_Status.initialized(theory_status)
+    def finalized: Boolean = Theory_Status.finalized(theory_status)
+    def consolidating: Boolean = Theory_Status.consolidating(theory_status)
+    def consolidated: Boolean = Theory_Status.consolidated(theory_status)
+  }
+
+
+  /* command timings: for pro-forma command with actual commands at offset */
+
+  sealed case class Command_Running(name: String, line: Int, start: Date) {
+    def time(now: Date): Time = now - start
+  }
+
+  object Command_Timings {
+    type Entry_Running = (Symbol.Offset, Command_Running)
+    type Entry = (Symbol.Offset, Time)
+    val empty: Command_Timings =
+      new Command_Timings(SortedMap.empty, SortedMap.empty, Time.zero)
+    def merge(args: IterableOnce[Command_Timings]): Command_Timings =
+      args.iterator.foldLeft(empty)(_ ++ _)
+  }
+
+  final class Command_Timings private(
+    private val running: SortedMap[Symbol.Offset, Command_Running],  // start time (in Scala)
+    private val finished: SortedMap[Symbol.Offset, Time],  // elapsed time (in ML)
+    private val sum_finished: Time
+  ) {
+    def is_empty: Boolean = running.isEmpty && finished.isEmpty
+
+    def has_running: Boolean = running.nonEmpty
+    def long_running(now: Date, threshold: Time): List[Command_Running] =
+      List.from(for (run <- running.valuesIterator if run.time(now) >= threshold) yield run)
+    def add_running(entry: Command_Timings.Entry_Running): Command_Timings =
+      new Command_Timings(running + entry, finished, sum_finished)
+
+    def count_finished: Int = finished.size
+    def get_finished(offset: Symbol.Offset): Time = finished.getOrElse(offset, Time.zero)
+    def add_finished(entry: Command_Timings.Entry): Command_Timings = {
+      val (offset, t) = entry
+      val running1 = running - offset
+      val finished1 = finished + (offset -> (get_finished(offset) + t))
+      val sum_finished1 = sum_finished + t
+      new Command_Timings(running1, finished1, sum_finished1)
+    }
+
+    def sum(now: Date): Time =
+      running.valuesIterator.foldLeft(sum_finished)({ case (t, run) => t + run.time(now) })
+
+    def ++ (other: Command_Timings): Command_Timings =
+      if (is_empty) other
+      else other.running.foldLeft(other.finished.foldLeft(this)(_ add_finished _))(_ add_running _)
+
+
+    override def hashCode: Int = (running, finished).hashCode
+    override def equals(that: Any): Boolean =
+      that match {
+        case other: Command_Timings => running == other.running && finished == other.finished
+        case _ => false
+      }
+    override def toString: String =
+      running.mkString("Command_Timings(running = (", ", ", "), ") +
+      finished.mkString("finished = (", ", ", "))")
+  }
+
+
+  /* command status */
+
+  object Command_Status {
+    val proper_elements: Markup.Elements =
+      Markup.Elements(Markup.ACCEPTED, Markup.FORKED, Markup.JOINED, Markup.RUNNING,
+        Markup.FINISHED, Markup.FAILED, Markup.CANCELED)
+
+    val liberal_elements: Markup.Elements =
+      proper_elements + Markup.WARNING + Markup.LEGACY + Markup.ERROR
+
+    val empty: Command_Status =
+      new Command_Status(
+        theory_status = Theory_Status.NONE,
+        touched = false,
+        accepted = false,
+        warned = false,
+        failed = false,
+        canceled = false,
+        forks = 0,
+        runs = 0,
+        timings = Command_Timings.empty)
+
+    def make(
+      now: Date,
+      markups: List[Markup] = Nil,
+      warned: Boolean = false,
+      failed: Boolean = false
+    ): Command_Status = {
+      empty.update(now, markups = markups, warned = warned, failed = failed)
+    }
+
+    def merge(args: IterableOnce[Command_Status]): Command_Status =
+      args.iterator.foldLeft(empty)(_ + _)
+  }
+
+  final class Command_Status private(
+    val theory_status: Theory_Status.Value,
+    private val touched: Boolean,
+    private val accepted: Boolean,
+    private val warned: Boolean,
+    private val failed: Boolean,
+    private val canceled: Boolean,
+    val forks: Int,
+    val runs: Int,
+    val timings: Command_Timings
+  ) extends Theory_Status {
+    override def toString: String =
+      if (is_empty) "Command_Status.empty"
+      else if (failed) "Command_Status(failed)"
+      else if (warned) "Command_Status(warned)"
+      else "Command_Status(...)"
+
+    def is_empty: Boolean =
+      !Theory_Status.initialized(theory_status) &&
+      !touched && !accepted && !warned && !failed && !canceled &&
+      forks == 0 && runs == 0 && timings.is_empty
+
+    def + (that: Command_Status): Command_Status =
+      if (is_empty) that
+      else if (that.is_empty) this
+      else {
+        new Command_Status(
+          theory_status = Theory_Status.merge(theory_status, that.theory_status),
+          touched = touched || that.touched,
+          accepted = accepted || that.accepted,
+          warned = warned || that.warned,
+          failed = failed || that.failed,
+          canceled = canceled || that.canceled,
+          forks = forks + that.forks,
+          runs = runs + that.runs,
+          timings = timings ++ that.timings)
+      }
+
+    def update(
+      now: Date,
+      markups: List[Markup] = Nil,
+      warned: Boolean = false,
+      failed: Boolean = false
+    ): Command_Status = {
+      var theory_status1 = theory_status
+      var touched1 = touched
+      var accepted1 = accepted
+      var warned1 = this.warned || warned
+      var failed1 = this.failed || failed
+      var canceled1 = canceled
+      var forks1 = forks
+      var runs1 = runs
+      var timings1 = timings
+      for (markup <- markups) {
+        markup.name match {
+          case Markup.INITIALIZED =>
+            theory_status1 = Theory_Status.merge(theory_status1, Theory_Status.INITIALIZED)
+          case Markup.FINALIZED =>
+            theory_status1 = Theory_Status.merge(theory_status1, Theory_Status.FINALIZED)
+          case Markup.CONSOLIDATING =>
+            theory_status1 = Theory_Status.merge(theory_status1, Theory_Status.CONSOLIDATING)
+          case Markup.CONSOLIDATED =>
+            theory_status1 = Theory_Status.merge(theory_status1, Theory_Status.CONSOLIDATED)
+          case Markup.ACCEPTED => accepted1 = true
+          case Markup.FORKED => touched1 = true; forks1 += 1
+          case Markup.JOINED => forks1 -= 1
+          case Markup.RUNNING => touched1 = true; runs1 += 1
+          case Markup.FINISHED => runs1 -= 1
+          case Markup.WARNING | Markup.LEGACY => warned1 = true
+          case Markup.FAILED | Markup.ERROR => failed1 = true
+          case Markup.CANCELED => canceled1 = true
+          case Markup.Command_Timing.name =>
+            val props = markup.properties
+            val offset = Position.Offset.get(props)
+            val is_running = props.contains(Markup.command_running)
+            timings1 =
+              if (is_running) {
+                val name = Markup.Name.get(props)
+                val line = Position.Line.get(props)
+                timings1.add_running(offset -> Command_Running(name, line, now))
+              }
+              else timings1.add_finished(offset -> Time.seconds(Markup.Elapsed.get(props)))
+          case _ =>
+        }
+      }
+      if (this.theory_status == theory_status1 &&
+          this.touched == touched1 &&
+          this.accepted == accepted1 &&
+          this.warned == warned1 &&
+          this.failed == failed1 &&
+          this.canceled == canceled1 &&
+          this.forks == forks1 &&
+          this.runs == runs1 &&
+          this.timings.eq(timings1)) this
+      else {
+        new Command_Status(
+          theory_status = theory_status1,
+          touched = touched1,
+          accepted = accepted1,
+          warned = warned1,
+          failed = failed1,
+          canceled = canceled1,
+          forks = forks1,
+          runs = runs1,
+          timings = timings1)
+      }
+    }
+
+    def maybe_consolidated: Boolean = touched && forks == 0 && runs == 0
+
+    def is_unprocessed: Boolean = accepted && !failed && (!touched || (forks != 0 && runs == 0))
+    def is_running: Boolean = runs != 0
+    def is_warned: Boolean = warned
+    def is_failed: Boolean = failed
+    def is_finished: Boolean = !failed && touched && forks == 0 && runs == 0
+    def is_canceled: Boolean = canceled
+    def is_terminated: Boolean = canceled || touched && forks == 0 && runs == 0
+  }
+
+
+  /* node status */
+
+  object Node_Status {
+    val empty: Node_Status = Node_Status()
+
+    def make(
+      now: Date,
+      state: Document.State,
+      version: Document.Version,
+      name: Document.Node.Name,
+      threshold: Time = Time.max
+    ): Node_Status = {
+      val node = version.nodes(name)
+
+      var theory_status = Document_Status.Theory_Status.NONE
+      var unprocessed = 0
+      var running = 0
+      var warned = 0
+      var failed = 0
+      var finished = 0
+      var canceled = false
+      var terminated = true
+      var cumulated_time = Time.zero
+      var max_time = Time.zero
+      var command_timings = Map.empty[Document_ID.Command, Command_Timings]
+
+      for (command <- node.commands.iterator) {
+        val status = state.command_status(version, command)
+
+        theory_status = Theory_Status.merge(theory_status, status.theory_status)
+
+        if (status.is_running) running += 1
+        else if (status.is_failed) failed += 1
+        else if (status.is_warned) warned += 1
+        else if (status.is_finished) finished += 1
+        else unprocessed += 1
+
+        if (status.is_canceled) canceled = true
+        if (!status.is_terminated) terminated = false
+
+        val t = status.timings.sum(now)
+        cumulated_time += t
+        if (t > max_time) max_time = t
+        if (t.is_notable(threshold)) command_timings += (command.id -> status.timings)
+      }
+
+      def percent(a: Int, b: Int): Int =
+        if (b == 0) 0 else ((a.toDouble / b) * 100).toInt
+
+      val percentage: Int = {
+        node.get_theory match {
+          case None =>
+            if (Theory_Status.consolidated(theory_status)) 100
+            else {
+              val total = unprocessed + running + warned + failed + finished
+              percent(total - unprocessed, total).min(99)
+            }
+          case Some(command) =>
+            val total = command.span.theory_commands
+            val processed = state.command_status(version, command).timings.count_finished
+            percent(processed, total)
+        }
+      }
+
+      Node_Status(
+        theory_status = theory_status,
+        suppressed = version.nodes.suppressed(name),
+        unprocessed = unprocessed,
+        running = running,
+        warned = warned,
+        failed = failed,
+        finished = finished,
+        canceled = canceled,
+        terminated = terminated,
+        cumulated_time = cumulated_time,
+        max_time = max_time,
+        threshold = threshold,
+        command_timings = command_timings,
+        percentage)
+    }
+  }
+
+  sealed case class Node_Status(
+    theory_status: Theory_Status.Value = Theory_Status.NONE,
+    suppressed: Boolean = false,
+    unprocessed: Int = 0,
+    running: Int = 0,
+    warned: Int = 0,
+    failed: Int = 0,
+    finished: Int = 0,
+    canceled: Boolean = false,
+    terminated: Boolean = false,
+    cumulated_time: Time = Time.zero,
+    max_time: Time = Time.zero,
+    threshold: Time = Time.zero,
+    command_timings: Map[Document_ID.Command, Command_Timings] = Map.empty,
+    percentage: Int = 0
+  ) extends Theory_Status {
+    def is_empty: Boolean = this == Node_Status.empty
+
+    def ok: Boolean = failed == 0
+    def total: Int = unprocessed + running + warned + failed + finished
+
+    def quasi_consolidated: Boolean = !suppressed && !finalized && terminated
+
+    def progress: Boolean = running > 0 || command_timings.valuesIterator.exists(_.has_running)
+
+    def started: Boolean = percentage == 0
+    def completed: Boolean = percentage == 100
+
+    def json: JSON.Object.T =
+      JSON.Object("ok" -> ok, "total" -> total, "unprocessed" -> unprocessed,
+        "running" -> running, "warned" -> warned, "failed" -> failed, "finished" -> finished,
+        "canceled" -> canceled, "consolidated" -> consolidated,
+        "percentage" -> percentage)
+  }
+
+
+  /* nodes status */
+
+  enum Overall_Status { case ok, failed, pending }
+
+  object Nodes_Status {
+    val empty: Nodes_Status = new Nodes_Status(Map.empty)
+  }
+
+  final class Nodes_Status private(private val rep: Map[Document.Node.Name, Node_Status]) {
+    def is_empty: Boolean = rep.isEmpty
+    def apply(name: Document.Node.Name): Node_Status = rep.getOrElse(name, Node_Status.empty)
+    def get(name: Document.Node.Name): Option[Node_Status] = rep.get(name)
+    def iterator: Iterator[(Document.Node.Name, Node_Status)] = rep.iterator
+
+    def quasi_consolidated(name: Document.Node.Name): Boolean =
+      get(name) match {
+        case Some(st) => st.quasi_consolidated
+        case None => false
+      }
+
+    def overall_status(name: Document.Node.Name): Overall_Status =
+      get(name) match {
+        case Some(st) if st.consolidated =>
+          if (st.ok) Overall_Status.ok else Overall_Status.failed
+        case _ => Overall_Status.pending
+      }
+
+    def update_node(
+      now: Date,
+      state: Document.State,
+      version: Document.Version,
+      name: Document.Node.Name,
+      threshold: Time = Time.max
+    ): Nodes_Status = {
+      val node_status =
+        Document_Status.Node_Status.make(now, state, version, name, threshold = threshold)
+      new Nodes_Status(rep + (name -> node_status))
+    }
+
+    def update_nodes(
+      now: Date,
+      resources: Resources,
+      state: Document.State,
+      version: Document.Version,
+      threshold: Time = Time.max,
+      domain: Option[Set[Document.Node.Name]] = None,
+      trim: Boolean = false
+    ): Nodes_Status = {
+      val domain1 = version.nodes.domain
+      val that =
+        domain.getOrElse(domain1).iterator.foldLeft(this)(
+          { case (a, name) =>
+              if (Resources.hidden_node(name) || resources.loaded_theory(name)) a
+              else a.update_node(now, state, version, name, threshold = threshold) })
+      if (trim) new Nodes_Status(that.rep -- that.rep.keysIterator.filterNot(domain1))
+      else that
+    }
+
+    override def hashCode: Int = rep.hashCode
+    override def equals(that: Any): Boolean =
+      that match {
+        case other: Nodes_Status => rep == other.rep
+        case _ => false
+      }
+
+    override def toString: String = {
+      var ok = 0
+      var failed = 0
+      var pending = 0
+      var canceled = 0
+      for (name <- rep.keysIterator) {
+        overall_status(name) match {
+          case Overall_Status.ok => ok += 1
+          case Overall_Status.failed => failed += 1
+          case Overall_Status.pending => pending += 1
+        }
+        if (apply(name).canceled) canceled += 1
+      }
+      "Nodes_Status(ok = " + ok + ", failed = " + failed + ", pending = " + pending +
+        ", canceled = " + canceled + ")"
+    }
+  }
+}

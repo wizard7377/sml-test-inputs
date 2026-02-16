@@ -1,0 +1,38 @@
+include $libdir ^ "/smlnj-lib/project"
+include "../Util/project"
+include "../Parser/project"
+include "../Rtl/project"
+include "../Backend/project"
+
+unit SPARC = "sparc.sig.sml" {
+	Word32 Rtl MACHINE Core
+}
+interface Sparc = "sparc.int" {SPARC}
+unit Sparc : Sparc = "sparc.sml" {
+	TilWord32 Int Name Word32 Core SPARC String Rtl Util Char Listops
+	Stats List
+}
+unit SparcUtils = "sparcutils.sml" {
+	String Core MACHINEUTILS Sparc Int Util
+}
+unit SparcCallConv = "sparccallconv.sml" {
+	Listops Core Sparc SparcUtils CALLCONV Util
+}
+unit SparcTrackStorage = "sparctrackstorage.sml" {
+	Core Int ORD_KEY Sparc PRINTUTILS MACHINEUTILS ORD_MAP ORD_SET
+	TRACKSTORAGE SplaySetFn Util Stats
+}
+interface ToSparc = "tosparc.int" {
+	MACHINEUTILS TRACETABLE BBLOCK TOASM Sparc
+}
+unit ToSparc : ToSparc = "tosparc.sml" {
+	TilWord32 Core Name Rtl Int Array Sparc MACHINEUTILS TRACETABLE
+	BBLOCK TOASM Util Pprtl
+}
+interface Linksparc = "linksparc.int" {LINKASM}
+unit Linksparc : Linksparc = "linksparc.sml" {
+	Util Rtl Stats LINKASM Linkrtl Sparc SparcUtils
+	IfGraph SparcCallConv Bblock Tracetable ToSparc PrintUtils
+	SparcTrackStorage Color Chaitin RtlToAsm Recursion
+	Tortl
+}

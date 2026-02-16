@@ -1,0 +1,20 @@
+[package]
+name = "config"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+fast-hash.workspace = true
+serde.workspace = true
+str-util.workspace = true
+
+sml-path.path = "../sml-path"

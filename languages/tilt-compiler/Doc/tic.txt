@@ -1,0 +1,441 @@
+
+-----------------
+Structure of TILT
+-----------------
+The TILT compiler consists of 3 main phases which we will call the front end,
+the middle end, and the back end.  The front end, also called the elaborator,
+is responsible for type-checking the source ML program and converts the program 
+to HIL or high-intermediate language.  The HIL program is then phase-split
+to remove modules and signatures, resulting in a MIL (middle-intermediate-language)
+program.  MIL programs are optimized and closure-converted before being converted
+to RTL.  Until the translation to RTL, the program remains explicitly typed.
+In the back-end, RTL is then converted to a machine-specific assembly
+program.  At this time, register allocation and stack layout is determined.
+The result is an assembly file which is sent to the system assembler, producing an
+object file that is linked with the runtime.
+
+------------
+What is HIL?
+------------
+
+HIL is a strongly-typed language with expressions, types, kinds, signatures, and
+modules.  The elaborator type checks an ML program and generates a fully-typed
+HIL program.  During elaboration, we compile datatype, patterns, and polymorphism
+to the more primitive constructs of HIL.  Equality types, coercions,
+and hidden types are made explicit in HIL as well.
+
+
+----------
+Elaborator
+----------
+
+Throughout elaboration, types are inferred using a standard unification algorithm.
+To achieve type inference for ML, three type constructs 
+(type meta-variable, flexible record types, and overloaded types)
+and one term constrct (overloaded expression) were added to HIL.
+
+Whenever we encounter a variable binding without an explicit type,
+we create a new type meta-variable to stand for the unknown type.  
+For a well-typed program, the meta-variable will eventually be unified with a type.
+(Note that type variables and type meta-variable are different.
+Type variables are part of the HIL language whereas
+meta-variable exist solely for the purpose of type inference.)
+
+Flexible record types are needed to typecheck the ML projection construct "#" and "...".
+When unified with record types, they become inflexible.
+Two flexible record types can also be unified to produce a consistent union
+flexible record type.
+
+Overloaded types are needed to typecheck overloaded identifiers like "+".
+An overloaded type is a disjunction of several types.
+During unification with other types, the choices of overloaded types are 
+pruned until only one choice remains.  Corresponding to each overloaded type
+is an overloaded expression which consists of the same number of choices.
+When an overloaded type is narrowed, the corresponding expression is narrowed.
+
+If there is still an unresolved meta-variable, flexible record type, or overloaded type
+when the compilation unit has been elaborated, an appropriate default is taken.
+Meta-variables are resolved to the unit type, flexible record types are made inflexible
+without additional widening, and the default choice of the overloaded type is used.
+
+Meta-variables include two flags indicating whether it is an equality
+type and whether it may be generalized.  Meta-variables that have been
+unified with overloaded types may no longer be generalized.  At a
+valuable binding, type meta-variables created during elaboration of the
+bound expression that have not been unified or marked ungeneralizable
+may be generalized to yield a polymorphic value binding.  If an
+equality type is required the generalization must parameterize over
+the unknown type and an equality function at that type.  The
+translation of an ML polymorphic value is a HIL module which takes a
+structure containing types and equality functions.
+
+Datatypes are compiled structures containing a abstract type constructor,
+an equality function on the datatype,
+functions corresponding to the datatype constructors, and a function taking
+datatype values to the members of a corresponding sum type.
+
+Patterns are compiled into variable bindings, uses of equality
+functions, projections, and derefernces, and case analyses on sums and
+exceptions tags.
+
+All uses of where (type) and sharing (type) are translated into 
+uses of type abbreviations.
+
+Equality functions on base types are primitive.  On sum types, product types,
+recursive types, they are generated as needed.  Equality functions are 
+passed to polymorphic functions expecting an eqaulity type as well as to other 
+equality functions.
+
+When a module is given a subsignature, a new module is generated via
+by copying the needed components and sub-component, with 
+partial or total polymorphic instantiation as needed.  Sometimes, 
+to propagate type information, extra type components with hidden names
+need to be included.  Similarly, functor arguments are always named 
+to expand their scope, allowing functor results to refer to the 
+functor arguments.
+
+---------------------------------
+Elaborator: Implementation Issues
+---------------------------------
+
+When a signature is added to the translation context, the signature is
+"selfifed" with respect to the path that the signature describes.
+This permits the classifier of the translations of paths to be
+determined quickly since there will be no dependencies in the
+selfified signature.  Transparent type components are selfified to
+replace occurrences of previous components with self paths while
+opaque type components are made transparent with a self path.
+
+During type inference, types are normalized before being unified.
+Normalization involves beta reduction and looking up type definitions
+in the context.  Since it is apparent which projections are true 
+type definitions and which arose from selfified opaque components,
+normalization will not enter a loop.
+
+When a structure path is locally bound (just inside a let or local),
+the bound variable becomes an alias.  Occurrences of that variable will
+be replaced by the path.  This may be irrelevant given the pre-projection
+performed in phase-splitting.
+
+Given a label, the context normally returns a path and a classifier.
+Sometimes, an expression rather than a path is returned.  This permits
+primitives and datatype constructors to be inlined.  This may be extended
+to inline expressions, types, and modules.
+
+Whenever there is an application in the ML code, the translation is
+reduced if the function is a lambda.  If the argument is a variable,
+the varible is substituted into body; otherwise, the argument is
+let-bound around the body.  In conjunction with the inlining, this
+will get rid of many small functions and their calls.
+
+The HIL datatype also contains eta-expanded primitives (primitives
+that are applied only to their type arguments) in addition to
+fully-applied primitives.  This theoretically permits only one copy of
+each primitive at each type for the whole program.  In contrast,
+eta-expanding the primitives with a lambda can cause many small functions
+to be generated if the primitives are not applied and thus reducible.
+ML primitives are translated to eta-expanded HIL primitives.
+Since most primitives in ML are imediately applied,
+their translation becomes applications of eta-expanded primitives 
+which are immediately reduced by beta-reduction.
+
+There are other minor differences from the "Tech Report."  For
+efficiency reasons, "let" is not a derived form.  Cases analysis on
+exception tags are n-ary.  Pattern compilation is different.  (No
+exceptions are used and decision tree generated is not ridiculous.)
+Datatype definitions are compiled to reduce structure nesting.
+Polymorphic arguments are compiled to be a flat structure taking types
+and equality functions rather than a list of strucutres each
+containing one type and possibly one equality function.
+
+--------------
+Phase-Splitter
+--------------
+
+The translation from HIL to MIL is accomplished via a
+"phase-splitting" transformation based on the work of Harper,
+Mitchell, and Moggi.  The primary result is that every HIL module is
+separated into a constructor-level piece and an expression-level
+piece.  Structures turn into a record of types and a record of values.
+Functors turn into a function mapping types to types and a polymorphic
+function mapping values to values.  (The function is polymorphic
+since the values returned by the functor may have types depending
+on the type inputs of the functor.)
+
+The primary difference from the HMM calculus is that the MIL
+has no primitive structure construct.  Instead, the association
+between the type-level and expression-level parts of a module
+is maintained at the metalevel.
+
+One difficulty in using the phase-splitting transformation is
+that it doesn't match the "type generativity" of SML functors.
+Due to datatypes and opaque signature ascription, applying the
+same functor twice to exactly the same input should yield
+"different" abstract types for the two applications.  In contrast,
+all functions on types at the MIL constructor level are total
+(or "functional") in the sense that they return exactly
+the same type every time they are given the same input types.
+Fortunately, by this point in the compiler we have verified
+that the program respects abstraction, and hence it is safe
+to drop the generativity constraint.
+
+Were the source language strengthened to include a conditional at the
+module level, it would no longer be possible to do this
+phase-splitting; the types returned by a functor would depend on input
+\emph{values}.
+
+For efficiency we have added several minor optimizations to this
+transformation.  Since MIL supports polymorphic recursion but
+HIL doesn't, the two levels have different forms for collections of 
+mutually-recursive polymorphic functions:  a collection of polymorphic
+functions compared to polymorphic function returning a collection
+of functions.  Fortunately, such cases are easy to recognize so we
+handle these specially.
+
+We also eliminate "trivial" constructors, such as empty records of
+constructors or functions returning such empty records.  Sometimes
+they cannot be eliminated entirely, but can be simplified.  
+
+Early projection?
+
+One optimization we would like to add is to preserve the
+sharing of types generated by the elaborator's unification
+algorithm.  That is, the phase-splitting translates a 
+HIL type metavariable by translating the HIL type
+with which it is unified.  Several unified
+metavariables thus generate several translations of the type.
+In contrast, we could do some on-the-fly CSE guided by
+this sharing information we get for free.
+
+"avoiding inlining (hence duplication) of constructors" ?
+
+
+------------
+What is MIL?
+------------
+Unlike HIL, MIL is a language without modules or signatures.
+Instead, there are expressions, constructors, and kinds.
+There are singleton kinds, dependent record, and dependent arrow kinds.
+For optimization reasons, extra term and type constructs are introduced
+into MIL that are not present in HIL.
+
+-------------
+Design of MIL
+-------------
+
+To optimize datatype constructors that are not value-carrying, we specialize
+sum types by designating the number of non value-carrying arms carried by the sum.
+(The other possibility is to convert non-value-carrying arms into arms that carry unit.)
+By doing so, the data representation of sums can be
+made more efficient.  In particular, non value-carrying constructors
+are now represented by a tag rather than a pointer to a tag.  This augmentation 
+of sum types makes the distinction between value-carrying and non-value-carrying
+constructors explicitin the sum type, avoiding extra runtime checks needed in 
+certain datatypes like:
+
+	datatype 'a dt = A | B of 'a
+
+If no special care were taken, then the constructor B must check whether 'a is
+unit or not.  In our scheme, we decide at compile-time that we will never
+specialize B, whether 'a is instantiated at unit or not.
+
+Since datatypes of records are a common ML idiom, we would like a particularly
+efficient data representation that would flatten such sums of records.  In general,
+this means that the inject primitive must use its constructor argument.
+However, the head normal-form is often known to be a record.  In this case,
+we can optimize the inject primitive into the inject_record primitive which does
+not use its type (not constructor) argument.  Similarly, at deconstruction,
+we convert as many occurrences of project_sum into uses of project_sum_record as possible.
+
+To support efficient floating-point arithmetic, we make a distinction between
+the types float and boxed-float.  Consequently, boxing and unboxing operations
+are also explicit allowing the optimizer to remove as much boxing as possible.
+Types that classify terms are classified by kinds into TYPE and WORD.
+Terms of types of kind WORD fit into a machine word.  In contrast,
+the type float has kind WORD since floating-point values do not (in general) fit into
+a general-purpose register.
+
+MIL functions and arrow types are multi-argument.  Further, the
+distinction in kinds permit functions to take two set of arguments:
+word arguments and float-point arguments.  These refinements in
+functions reflects the realities of modern architecture: registers are
+fast and seprated into general-purpose and floating-point.  By making
+these separations in MIL, we permit MIL optimizations to take
+advantage of the archtecture.
+
+Since closure conversion occurs as a MIL transformation and we want to 
+be able to typecheck the closure converted result, we distinguish
+between open functions and code functions, giving them different types.
+In order to typecheck, code functions must be closed with respect to 
+non top-level term and constructor variables.  However, it may be open with
+respect to any top-level variables as well as type variables within scope.
+Finally, closures are created from aggregating code functions with their
+environment.  Each of these three constructs are given a different arrow type.
+Similarly, applications may be open, closed, or code.  After closure-conversion,
+there will be no open lambdas, open arrow types, or open application calls.
+Instead, only the closed or code version will remain.
+
+Term functions in MIL take type and term arguments simultaneously.  Similarly,
+all applications can pass both type and term arguments.  This was designed so that
+applications of polymorphic functions can be made with one call.  By currying,
+it is still possible to take only type arguments and perform type specialization.
+
+In MIL, type dispatch occurs in the typecase/Typecase constructs as well as primitives.
+The typecase constructs are present to permit the type dispatches to be lifted out of the
+primitives and coalesced.  As usual, the arms of a typecase may be optimized based on
+the extra type information present with the typecase.  Unlike TIL, TILT only supports
+typecase rather than typerec.  
+
+What have we lost with dropping typerec?
+Why sub vs floatsub?
+
+We plan to perform a systematic argument flattening transformation as in TIL.
+As in TIL, MIL has vararg and Vararg as primitives.  If only bounded record
+flattening is desired, vararg and Vararg are definable in terms of typecase/Typecase.
+From an implementation standpoint, using vararg/Vararg primitives rather than 
+inlining their definitions reduces code bloat and makes reduction steps in
+the optimizer faster.  Also, this approach faciliates experimenting with
+versions of vararg/Vararg that flatten arguments in a way that is inexpressible
+with typecase/Typecase alone.
+
+
+----------------------
+Transformations in MIL
+----------------------
+One of the simplest to implement yet useful transformation is dead code elimination.
+Unused constructors expression and effect-free term expressions are removed.  Running this
+optimization first cuts down on the program size so that other optimizations run faster.
+
+As alluded to before, the optimizer attempts to rewrite all uses of project_sum to the more
+efficient project_sum_record.  This is accomplished with 2 optimizations: known record projection
+and dead code elimination.  Consider the ML code below.
+
+	datatype dt = A of int | B of int * int
+	fun f (arg as (B(x,y))) = x + y
+ 	              ^^^^^^^^^^^^^^^^^
+
+The underlined portion is initially compiled to the following MIL code:
+
+	let val v = project_sum arg
+	    val x = v.1
+	    val y = v.2
+	in  x + y
+	end
+
+When the project_sum_record is replaced by project_sums, we obtain:
+
+	let val tmp1 = project_sum_record(1,arg)
+	    val tmp2 = project_sum_record(2,arg)
+	    val v = (tmp1,tmp2)
+	    val x = v.1
+	    val y = v.2
+	in  x + y
+	end
+
+Finally, dead code elimination reduces the above to:
+
+	let val x = project_sum_record(1,arg)
+	    val y = project_sum_record(2,arg)
+	in  x + y
+	end
+
+
+Closure-conversion in MIL is accomplished in two steps.  In the first phase,
+the free variables for each term-level and constructor-level function are gathered.
+Since variables bound at the top level are always accessible, functions do not have
+to be closed with respect to these variables.  Consequently, such variables are not
+considered free during this analysis.  While computing free variables,
+we perform escape analysis to deduce which functions escape and
+which functions are directly called by other functions.  Then, using the call-graph
+obtained, we perform a transitive closure operation to determine the final 
+free varaibles sets for each function.  In the second phase, the program is
+rewritten so that each open function is replaced by a code function and
+a closure.  In the case that the function does not escape, the closure is
+not created.  In addition, known function calls are replaced by calls to
+the code function rather than through the closure.  This latter optimization
+is the reason that we must compute the transitive closure in the first phase.
+We give an example of closure-converting monomorphic code.
+For example, the unclosed MIL code:
+
+fun_open f (x : int) = 
+  let val a = x + 5
+      val b = x + 3
+      fun_open h(y : int) = y + a
+      fun_open g(z : int) = h (z + b)
+  in  g
+  end
+
+is converted to the following.  Note that since h does not escape, we do not need
+to create a closure for it.
+
+fun_code fcode (x : int) = 
+  let val a = x + 5
+      val b = x + 3
+      fun_open hcode(y : int, (a : int)) = y + a
+      fun_open gcode(z : int, (a : int, b : int)) = hcode (z + b, a)
+      fun_closure g = gcode(z, (a,b))
+  in  g
+  end
+fun_closure f = (f,(),())
+
+(I've elided the details of an unpacking function.)
+
+During closure-conversion, it is important to distinguish between types and
+constructors.  In particular, since types are not used at run-time and are
+present only for type-checking, there is no need to be closed with respect to
+to types.  Without this distinction, the type environment may be excessively large,
+leading to unnecessarily large programs.  This problem is very evident in compiling
+heavily functorized code.
+
+
+-------------------
+Typechecking of MIL
+-------------------
+
+-----------
+Performance
+-----------
+CW - object seems to be twice as big.
+
+-----------
+Reflections
+-----------
+
+To some extent, the two steps from SML through HIL to MIL might be
+unnecessary.  Changing the HIL elaboration to go directly to MIL
+(including the phase splitting) would be an option except that we
+could not enforce SML type generativity.  Therefore, we would have to
+do a pre-typecheck of the SML code (perhaps simply following the
+stamp-based approach of The Definition) to ensure that abstraction is
+being respected and then ignore generativity in the MIL as we do now.
+It might be difficult to do this efficiently in a non-ad-hoc
+manner, however, since SML cannot be written in a fully-type-explicit
+manner (explicit in ML) and we wouldn't want to do type inference twice.
+
+A different alternative would be to discard the MIL entirely, and
+extend the HIL with enough constructs (closures, etc.) to allow the
+remaining phases to transform HIL code.  We considered this, but
+decided against it because (1) the HIL was insufficiently close to the
+old TIL1 IL to reuse code, and (2) working with the HIL would have
+required more duplication of code for the expression and module levels
+(e.g., closure converting functions and functors).  It turns out 
+we didn't reuse much code anyway.
+
+A solution to (2) would be to work with a first-class module
+system.  However, Mark Lillibridge has shown the typechecking
+problem to be undecidable in general, which makes it less suitable
+for our purposes.
+
+The translation of SML polymorphism to HIL functors is elegant.
+However, given that we immediately translate these back to MIL
+polymorphism again, we might have just added explicit polymorphism as
+a special "derived form" (like let) to the HIL datatype and translated
+this specially.
+
+Even once the decision to use phase-splitting was made, there
+was still a fair amount of flexability left in deciding exactly
+what the MIL would be like.  The main question was whether
+we wanted to use singleton kinds and dependent types or
+whether these should be eliminated entirely. (The FLINT compiler
+took the latter route.)  
+

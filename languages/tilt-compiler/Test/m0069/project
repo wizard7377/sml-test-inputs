@@ -1,0 +1,1 @@
+unit Test = "fast2.sml" {Int}

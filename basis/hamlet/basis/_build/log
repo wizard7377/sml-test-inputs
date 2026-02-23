@@ -1,0 +1,7 @@
+# dune init project basis --kind library
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/asherf/.cache/dune/db
+# Workspace root:
+# /home/asherf/Projects/OCaml/shibboleth/examples/input/basis/hamlet/basis
+# Auto-detected concurrency: 16
